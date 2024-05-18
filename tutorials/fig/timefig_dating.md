@@ -25,9 +25,9 @@ This tutorial explores how to perform a biogeographic dating analysis using the 
 
 Genetic data are critical to estimate phylogenetic relationships among living species. In general, genetic content is more similar among closely related species, and less similar among more highly divergent species. As mutations accumulate within a genome that is inherited across generations over time, the distances in genetic similarity will increase as phylogenetic lineages increasingly diverge over time.
 
-Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of *expected substitutions per site*. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the *molecular clock* {% cite Zuckerkandl1967 %}. An accurate estimate of such a clock rate would enable *molecular dating*, because a research would only need to convert molecular distances into clock "ticks" to estimate the ages of species in units of geological time. 
+Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of *expected substitutions per site*. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the *molecular clock* {% cite Zuckerkandl1967 %}. An accurate estimate of such a clock rate would enable *molecular dating*, because a research would only need to convert molecular distances into clock "ticks" to estimate the ages of species in units of geological time.
 
-Ideally, a molecular phylogenetic model would be able to decompose estimates of molecular distance into separate estimates of substitution rates and evolutionary time. Unfortunately, standard phylogenetic methods cannot do this intrinsically. In real biological settings, we never know the precise time or rate underlying a molecular distance, so we must somehow model the uncertainty in these parameters. 
+Ideally, a molecular phylogenetic model would be able to decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $d$. For example, the products of $r=10, t=1$ and $r=2, t=5$ both yield $d=10$. Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same amount of evolutionary change, and are not statistically identifiable from one another.  
 
 In practice, biologists use extrinsic evidence to "calibrate" the molecular clock to a geological timescale. Fossil evidence can be used to constrain the minimum age of a phylogenetic divergence event (e.g. a child species cannot be older than its parent species), which effectively constrains time and, indirectly, rate estimates. Two main approaches have been used to deploy fossil-based calibrations. Prior-based calibrations assign a node age distribution to internal nodes on a phylogeny, selected and specified using expert knowledge. Process-based calibrations explicitly incorporate fossil morphology and ages as data during phylogenetic inference to assign ages to clades. Read these excellent papers to read more about fossil-based dating. 
 
@@ -41,121 +41,99 @@ Biogeographic dating with a process-based approach uses paleogeographically-info
 
 This tutorial builds up to a process-based biogeographic dating analysis using the TimeFIG model. It begins with a simple molecular phylogenetic analysis that has *no* capability for time calibration. Then, we'll repeat the analysis using a prior-based biogeographic node age calibration. Lastly, we'll perform a process-based TimeFIG analyses to estimate divergence times.
 
-Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian Kadua.
+As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 new homologous genetic markers obtained from the Angiosperms353 protocol.
+
+Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
 
 
 {% section Molecular phylogenetics %}
 
 First, we'll run a simple molecular phylogenetic analysis *without* any information to time-calibrate the tree. The tutorial reviews several important concepts for phylogenetic tree estimation, such as the relaxed molecular clock. It also demonstrates that extrinsic (non-molecular) evidence is needed to time-calibrate divergence times using standard phylogenetic approaches.
 
-Let's get started! First set up filesystem variables.
+For this example, we'll compose a model where the phylogeny was generated by a constant-rate birth-death process and genes evolve under a relaxed molecular clock. We'll refer to this as the `BDP_uncalibrated` analysis.
+
+Now to get started! First, we create variables to locate input datasets.
 
 ```
-# filesystem
-analysis      = "BDP_dating"
+analysis      = "BDP_uncalibrated"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 calib_fn      = dat_fp + "kadua_calib.csv"
 out_fn        = "./output/" + analysis
+```
 
-# model source code
+We'll also create variables to locate additional RevBayes scripts, which can be loaded using `source()` rather than typing all the code by hand.
+
+```
 mol_code_fn   = "./scripts/timefig_dating/mol_timeFIG.Rev"
 phylo_code_fn = "./scripts/timefig_dating/phylo_BDP.Rev"
-clade_fn      = "./scripts/timefig_dating/clade.Rev"
-
+clade_fn      = "./scripts/timefig_dating/clade.Rev" 
 ```
 
-Make the tree
+Set empty vectors for moves and monitors, to be populated later.
 ```
-# get phylogenetic data
+moves = VectorMoves()
+monitors = VectorMonitors()
+```
+
+Next, we read in a phylogenetic tree. To simplify this analysis, we assume the tree topology is known (fixed) while the divergence times are unknown (estimated). We will use the first (only!) tree stored in `phy_fn` to define the topology.
+
+```
 phy          <- readTrees(phy_fn)[1]
-phy.rescale( 5./phy.rootAge() )
-tree_height  <- phy.rootAge()
 taxa         = phy.taxa()
 num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 ```
 
-Read molecular data, handle missing taxa
+After that, we read in 10 molecular sequence alignments, each one corresponding to a different Angiosperms353 locus.
 
 ```
-# get molecular data
-num_loci     = 10
+mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
+num_loci = mol_idx.size()
 for (i in 1:num_loci) {
     mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
     num_sites[i] = dat_mol[i].nchar()
 }
+```
 
-### hopefully we don't need this junk
 
-#subset the molecular alignments to match the taxa in the tree
-# get the names of taxa on the tree
-for(i in 1:taxa.size()) {
-    taxa_names[i] = taxa[i].getName()
-}
-
-for(i in 1:num_loci) {
-    # first, exclude all taxa
+```
+for (i in 1:num_loci) {
     dat_mol[i].excludeTaxa(dat_mol[i].taxa())
-    
-    # now, include taxa from tree
-    dat_mol[i].includeTaxa(taxa_names)
-
-    # make sure we include missing data (add taxa that are missing in the alignment but appear in the tree)    
-    dat_mol[i].addMissingTaxa(taxa_names)
+    dat_mol[i].includeTaxa(taxa[i].getName())
+    dat_mol[i].addMissingTaxa(taxa[i].getName())
 }
-
 ```
 
+Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source( phylo_code_fn )`.
 
-Load the contents of the file `clade.Rev`. This code defines several Kadua clades so that we can easily track their ages.
-
-```
-# load ingroup clade info
-source(clade_fn)
-```
-
-
-Next, we will manually configure the birth-death model by entering commands. Once you feel comfortable with this exercise, you can instead load the model definition using the `source()` function.
-```
-# load phylogeny model script
-source( phylo_code_fn )
-```
-
-
-Set up birth and death rates for birth-death process. We assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Net diversification rate controls how rapidly species accumuluation, whereas turnover proportion controls the speed of extinction relative to speciation. This parameterization often behaves better for model fitting, and many biologists prefer to think in these terms. 
+We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Net diversification rate controls how rapidly species accumuluation, whereas turnover proportion controls the speed of extinction relative to speciation. This parameterization often behaves better for model fitting, and many biologists prefer to think in these terms. 
 
 ```
-# base rate parameters
 diversification ~ dnExp(1)
 turnover ~ dnBeta(2,2)
 birth := diversification / abs(1.0 - turnover)
 death := birth * turnover
-
 ```
 
 We have most, but not all, taxa. Tell model about missing taxa.
 
 ```
-# tip state sampling probabilities
-# assume that ranges with ingroup regions (RKOMH) are perfectly
-# sampled, while the outgroup region (Z) has very low sampling
-
 # see ref Lorence 2010
 n_total <- 32
 n_sample <- 27
 rho <- n_sample / n_total
 ```
 
-
 Set up root age prior. Note, we will modify this in the next section.
 
 ```
 root_age ~ dnUniform(0.0, 32.0)
 root_age.setValue(tree_height)
-```
 
+moves.append( mvScale(root_age, weight=15) )
+```
 
 Set up tree model, constant rate birth death process.
 
@@ -168,85 +146,89 @@ timetree ~ dnBDP(lambda=birth,
                  condition="time",
                  taxa=taxa)
 
-
+moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
 ```
 
-Collect info about node ages
+We now initialize the `timetree` variable with the phylogeny we read from file, stored in `phy`.
+```
+timetree.setValue(phy)
+```
+
+We want the crown node ages of important clades in Hawaiian *Kadua* to appear in our MCMC trace file. Calling `source( clade_fn )` will construct six clades based on predefined *Kadua* taxon sets. We then create deterministic nodes to track the crown node ages of these clades using the `tmrca()` function, which will be monitored.
 
 ```
-#####################
-# Node age monitors #
-#####################
-
+source(clade_fn)
 age_ingroup := tmrca(timetree, clade_ingroup)
 age_affinis := tmrca(timetree, clade_affinis)
 age_centrantoides := tmrca(timetree, clade_centrantoides)
 age_flynni := tmrca(timetree, clade_flynni)
 age_littoralis := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
-
 ```
 
-Set an initial tree
-```
-# associate phylo/biogeo data with model
-timetree.setValue(phy)
-```
+Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. This can all be loaded by calling `source( mol_code_fn )`, but you should specify the model by hand to better understand its composition.
 
-Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will use a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites.
-
-First, we create the relaxed clock model. This creates a uncorrelated lognormal relaxed molecular clock that allows for rates to vary among branches.
+First, we create the relaxed clock model. The following code creates a vector of clock rates that are lognormally distributed. Later, the rates in this vector will be used to define branch-varying clock rates. To do so, we first define a base clock rate, `mu_mol_base`
 
 ```
-# base substitution rate
 mu_mol_base ~ dnExp(10)
-mu_mol_sd <- 0.587405
+moves.append(mvScale(mu_mol_base, weight=5) )
+```
 
-# relative among branch rate variation
-# mu_mol_branch_rel ~ dnDirichlet(rep(2, num_branches))
+Then, we draw branch rates whose mean equals that base clock rate and the 2.5% and 97.5% quantiles of rate variation span one order of magnitude (determined by the magic number `0.587405`).
+
+```
+mu_mol_sd <- 0.587405
 for (i in 1:num_branches) {
     ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
     mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
+    moves.append(mvScale(mu_mol_branch[i], weight=1))
 }
 ```
 
-Our analysis has many loci. We will construct what's known as a partitioned analysis. In a partition analysis, each locus may have its own evolutionary rates. We will assign each locus its own rate scaling factor, rate matrix, and site-rate variation parameters. 
+In a partitioned analysis, each locus has its own evolutionary rates. We will assign each locus its own rate scaling factor, rate matrix, and site-rate variation parameters. 
 
-This code allows substitution rates to vary among loci, with the mean rate of 1. 
+To model among-locus rate variation, we fix the relative rate factor for the first locus to 1, while remaining loci have relative rate factors that follow a mean-1 Gamma distribution.
 
 ```
 for (i in 1:num_loci) {
-
-    if (i == 1) {
-        mu_mol_locus_rel[i] <- 1.0
-    } else {
+    mu_mol_locus_rel[i] <- 1.0
+    if (i > 1) {
         mu_mol_locus_rel[i] ~ dnGamma(2,2)
+        moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
     }
-    # relaxed clock across branch-locus rate combinations
     mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
 }
 ```
 
-Next, we specify the HKY rate matrix to define transition rates among nucleotides. The HKY rate matrix uses the `kappa` parameter to control relative rates of transitions (e.g. purine to purine, pyrimadine to pyrimadine) and transversions (purine to pyrimadine, pyrimadine to purine). The `pi` parameter controls the stationary frequencies across nucleotides for the model. Read more about the HKY matrix here {% cite Hasegawa85 %}.
+Next, we specify the HKY rate matrix, `Q_mol` to define transition rates among nucleotides. The HKY rate matrix uses the `kappa` parameter to control relative rates of transitions (e.g. purine to purine, pyrimadine to pyrimadine) and transversions (purine to pyrimadine, pyrimadine to purine). The `pi_mol` parameter controls the stationary frequencies across nucleotides for the model. The prior mean on `kappa` is 1 and the prior mean on `pi_mol` is a flat Dirichlet distribution. Read more about the HKY matrix here {% cite Hasegawa85 %}.
 
 ```
 for (i in 1:num_loci) {
     kappa[i] ~ dnGamma(2,2)
+    moves.append(mvScale(kappa[i], weight=3))
+    
     pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
+    moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
+    
     Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
 }
 ```
 
-We then allow molecular rates variation among sites to follow a Gamma distribution, approximated with four rate classes. Read more about the the +Gamma among site rate variation model here {% cite Yang1994 %}.
+Molecular rates variation among sites follow a Gamma distribution, approximated with four discrete rate classes. When `alpha` is large, all classes have relative rate factors of 1. When `alpha` is small, most rate classes are near 0 and one rate class is far greater than 1. Read more about the +Gamma among site rate variation model here {% cite Yang1994 %}.
 
 ```
 for (i in 1:num_loci) {
-    alpha[i] ~ dnExp(0.1) # expected value 1/0.1 == 10
-    site_rates[i] := fnDiscretizeGamma(shape=alpha[i], rate=alpha[i], numCats=4, median=true)
+    alpha[i] ~ dnExp(0.1)
+    moves.append(mvScale(alpha[i], weight=3))
+    
+    site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
+                                       rate=alpha[i],
+                                       numCats=4)
 }
 ```
 
-Now we have all the model components we need to define a molecular substitution model. This is called the phylogenetic continuous-time Markov chain (or phyloCTMC) in RevBayes. The `dnPhyloCTMC` models patterns of nucleotide variation under the evolutionary model for a given phylogenetic tree. 
+Now we have all the model components we need to define a partitioned molecular substitution model. This is called the phylogenetic continuous-time Markov chain (or phyloCTMC) in RevBayes. The `dnPhyloCTMC` models patterns of nucleotide variation under the evolutionary model for a given phylogenetic tree. 
 
 We create one `dnPhyloCTMC` model for each locus. Each locus evolves along the branches of `timetree`, the phylogeny whose divergence times we wish to estimate.
 
@@ -263,54 +245,18 @@ for (i in 1:num_loci) {
 }
 ```
 
+We clamp the observed sequence alignment for each locus to the corresponding partitioned model component.
 
-
-Clamp molecular data
 ```
-# load molecular model script
-source( mol_code_fn )
 for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
 ```
 
-{% subsection Analysis %}
-
-Set up tree moves
-```
-# create moves
-moves = VectorMoves()
-
-# tree variable moves
-moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
-moves.append( mvScale(root_age, weight=15) )
-```
-
-Set up molecular moves
+We also apply special joint moves for updating the tree and molecular rates simultaneously. These moves are designed to take advantage of the fact that rate and time are not separately identifiable. That is, the likelihood remains unchanged if you multiply rates by 2 and divide times by 2. In short, these moves improve the performance of MCMC mixing.
 
 ```
-# base rate of molecular substitutioni
-moves.append(mvScale(mu_mol_base, weight=5) )
-
-# branch rates of molecular substitution, centered on mu_mol_base
-for (i in 1:num_branches) {
-    moves.append(mvScale(mu_mol_branch[i], weight=1))
-}
-
-for (i in 1:num_loci) {
-    if (i >= 2) {
-        moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
-    }
-    moves.append(mvScale(kappa[i], weight=3))
-    moves.append(mvScale(alpha[i], weight=3))
-    moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
-}
-```
-
-We also apply joint moves for updating the tree and molecular rates simultaneously. These take advantage of the fact that rate and time are not separately identifiable. That is, the likelihood remains unchanged if you multiply rates by 2 and divide times by 2.
-
-```
-# joint moves
+# scales time (up) opposite of rate (down)
 up_down_scale_tree = mvUpDownScale(lambda=1.0, weight=20)
 up_down_scale_tree.addVariable(timetree,       up=true)
 up_down_scale_tree.addVariable(root_age,       up=true)
@@ -318,23 +264,21 @@ up_down_scale_tree.addVariable(mu_mol_branch,  up=false)
 up_down_scale_tree.addVariable(mu_mol_base,    up=false)
 moves.append(up_down_scale_tree)
 
+# scales base (up) and branch (up) rates
 up_down_mol_rate = mvUpDownScale(lambda=1.0, weight=20)
 up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
 up_down_mol_rate.addVariable(mu_mol_base,    up=true)
 moves.append(up_down_mol_rate)
 
+# redistributes rate and time to explain branch distance
 rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
 rate_age_proposal.addRates(mu_mol_branch)
 moves.append(rate_age_proposal)
 ```
 
-Next, we want to capture information from our MCMC. We define Monitors to do this.
-
+Next, we construct monitors to capture information from our MCMC as it searches parameter space.
 
 ```
-# create monitor vector
-monitors = VectorMonitors()
-
 # screen monitor, so you don't get bored
 monitors.append( mnScreen(root_age, printgen=print_gen) )
 
@@ -345,7 +289,7 @@ monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
 monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 ```
 
-Setting up model, chain, run it.
+Now that our model, moves, and monitors are properly configured, we can run MCMC.
 
 ```
 # create model object
@@ -353,14 +297,9 @@ mymodel = model(timetree)
 
 # create MCMC object
 mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.operatorSummary()
 
 # run MCMC
 mymcmc.run(n_iter)
-
-# done!
-quit()
-
 ```
 
 Notice that we cannot estimate node ages with any precision.
