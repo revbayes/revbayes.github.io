@@ -398,352 +398,206 @@ Look at the new results. Notice the hard upper bound on the maximum age of Hawai
 Now we do the full TimeFIG analysis for biogeographic dating. Because we already ran a TimeFIG analysis on a fixed tree in the previous tutorial, this tutorial will instead demonstrate how to convert the fixed-tree TimeFIG analysis to treat the tree as a random variable. Broadly speaking, we'll apply what we learned about molecular phylogenetics in the first part of this tutorial in combination with what we learned from the previous fixed-tree TimeFIG analysis. Let's get started!
 
 
-
+First, we load the
+```
+loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
 ```
 
-###########################
-# LOAD TENSORPHYLO PLUGIN #
-###########################
-
-tensorphylo_fp = "/Users/mlandis/.local/lib/tensorphylo"
-if (!exists("tensorphylo_fp")) {
-  tensorphylo_fp = "~/.plugins/"
-}
-loadPlugin("TensorPhylo", tensorphylo_fp)
-
-#######################
-# INITIALIZE SETTINGS #
-#######################
-
-# analysis string name
-analysis                                    = "timeFIG_dating"
-
-print("Analysis name: ", analysis)
-
-
-# analysis settings
-n_proc          = 6
-n_iter          = 10000
-print_gen       = 1
-stoch_print_gen = 20
-
-``` 
-
+We will use the same files as before
 
 ```
+analysis      = "kadua_divtime_timeFIG"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+out_fn        = "./output/" + analysis
+```
 
+Now we also load species range data and paleogeographical data for the TimeFIG analysis.
 
-# filesystem
-clade_name    = "kadua"
-fp            = "./"
-dat_fp        = fp + "data/clade/"
-geo_fp        = fp + "data/geo/"
-mol_fp        = dat_fp + "/genes/"
-code_fp       = fp + "scripts/timefig_dating/"
+```
+bg_fn         = dat_fp + "kadua_range_n7.nex"
+geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
-calib_fn      = dat_fp + clade_name + "_calib.csv"
-phy_fn        = dat_fp + clade_name + ".tre"
-bg_fn         = dat_fp + clade_name + "_range.nex"
-label_fn      = dat_fp + clade_name + "_range_label.csv"
-
-# model source code
-geo_code_fn   = code_fp + "geo_timeFIG.Rev"
-mol_code_fn   = code_fp + "mol_timeFIG.Rev"
-phylo_code_fn = code_fp + "phylo_timeFIG.Rev"
-clade_fn      = code_fp + "clade.Rev"
-
-``` 
-
+times_fn      = geo_fp + "age_summary.csv"
 ```
 
+We already know how to set up a TimeFIG analysis from the previous tutorial. Read that tutorial for details if you skipped ahead. We will simply import the TimeFIG model design from an existing Rev script.
 
-# get phylogenetic data
+```
+geo_code_fn   = "./scripts/timefig_dating/geo_timeFIG.Rev"
+phylo_code_fn = "./scripts/timefig_dating/phylo_timeFIG.Rev"
+mol_code_fn   = "./scripts/timefig_dating/mol_multilocus_CTMC.Rev"
+clade_code_fn = "./scripts/timefig_dating/kadua_clade.Rev"
+```
+
+Next, we create various MCMC analysis settings, to be used later.
+
+```
+num_proc = 6
+num_gen = 10000
+print_gen = 1 #0
+moves = VectorMoves()
+monitors = VectorMonitors()
+```
+
+Load the input datasets for the analysis. First, we load a tree variable for its taxon set and topology of species relationships.
+
+```
 phy          <- readTrees(phy_fn)[1]
-phy.rescale( 5./phy.rootAge() )
-tree_height  <- phy.rootAge()
 taxa         = phy.taxa()
 num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
-
-# dataset constraints
-
-if (!exists("max_subrange_split_size")) max_subrange_split_size = 7
-if (!exists("max_range_size"))    max_range_size = 4
-
-
 ```
 
-Range data
-
+Next, we load in our biogeographic character matrix of species presence (1) and absences (0) across regions. Recall that we convert these presence-absence vectors into an integer-based representation. We also use this matrix to determine the `num_regions` and `num_ranges`, which will be $2^N - 1$ when `max_range_size == num_regions` and smaller otherwise.
 
 ```
-# get biogeographic data
-dat_01       = readDiscreteCharacterData(bg_fn)
-num_regions  = dat_01.nchar()
-num_ranges   = 0
+# biogeography input
+dat_01         = readDiscreteCharacterData(bg_fn)
+num_regions    = dat_01.nchar()
+max_range_size = 4
+num_ranges     = 0
 for (k in 1:max_range_size) {
     num_ranges += choose(num_regions, k)
 }
-dat_nn       = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
-desc         = dat_nn.getStateDescriptions()
+dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
+desc           = dat_nn.getStateDescriptions()
 
-write("index,range\n", filename=label_fn)
-for (i in 1:desc.size()) {
-    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
-}
-
+#write("index,range\n", filename=label_fn)
+#for (i in 1:desc.size()) {
+#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+#}
 ```
 
-Same stuff as above for molecular model.
+We load in the molecular dataset and align the taxon labels with the tree, adding ambiguous states for missing taxa in each locus.
 
 ```
-# get molecular data
-
-num_loci = 10
+# molecular input
+mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
+num_loci = mol_idx.size()
 for (i in 1:num_loci) {
-    mol_fn[i] = mol_fp + "clean_" + mol_idx[i] + "_supercontig.nexus"
+    mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
     num_sites[i] = dat_mol[i].nchar()
 }
 
-```
-
-
-Load clade info
-```
-# load ingroup clade info
-source(clade_fn)
-# get calibration data
-if (use_root_calib) {
-    dat_calib = readDataDelimitedFile(file=calib_fn, header=true, separator=",", rownames=false)
+# taxon matching
+for (i in 1:num_taxa) {
+    taxa_names[i] = taxa[i].getName()
 }
-```
-
-Load geography stuff. This is identical to TimeFIG tutorial. Go back to that tutorial if you've forgotten what it does.
-
-```
-# load geography model script
-source( geo_code_fn )
-```
-
-Set up the phylogenetic model. Much of this is like the TimeFIG tutorial setup, but instead we treat aspects of the tree as a random variable.
+for (i in 1:num_loci) {
+    dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
+    dat_mol[i].includeTaxa( taxa_names )
+    dat_mol[i].addMissingTaxa( taxa_names )
+}
 
 ```
-# load phylogeny model script
-source( phylo_code_fn )
-# associate phylo/biogeo data with model
+
+Now we load the model that defines relationships between regional features and biogeographic rate factors.
+
+```
+source(geo_code_fn)
+```
+
+Then we load the script that specifies the TimeFIG model. 
+
+```
+source(phylo_code_fn)
+```
+
+Note, this script is identical to the script used in the previous TimeFIG tutorial that assumed a fixed phylogeny, with two exceptions. First, rather than assuming the `root_age` variable is fixed as a constant node, we assign it a uniform prior from 0 to 34 Ma, as we did in the uncalibrated analysis. The script also constructs MCMC moves to update all node ages, including the root node.
+
+```
+# NOTE: you do not need to enter these lines code to the console
+
+# estimate root node age
+root_age ~ dnUniform(0, 34)
+moves.append( mvScale(root_age, weight=15) )
+
+# estimate internal node ages
+moves.append( mvNNI(timetree, weight=2*num_taxa) )
+moves.append( mvFNPR(timetree, weight=1*num_taxa) )
+
+```
+
+Next, we load the molecular model, identical to that used earlier in this tutorial.
+
+```
+source("./scripts/timefig_dating/mol_multilocus_CTMC.Rev")
+```
+
+Previously, we initialized the `timetree` variable with the value of `phy` to set the tree topology. We also clamped the sequence data for each molecular locus to each CTMC in the multilocus analysis.
+
+```
 timetree.setValue(phy)
-timetree.clampCharData(dat_nn)
-```
-
-Load the original molecular model and clamp data.
-
-```
-# load molecular model script
-
-source( mol_code_fn )
 for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
 ```
 
-{% subsection Analysis %}
-
-Set up moves.
+Unlike before, we also need to clamp our biogeographic range data to the `timetree` variable.
 
 ```
-# create moves
-moves = VectorMoves()
-
-# node age updates
-moves.append( mvScale(root_age, weight=15) )
-moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
-
-``` 
-
-Set up moves on base rates for TimeFIG.
-
-```
-moves.append( mvScale(rho_d, weight=5) )
-moves.append( mvScale(rho_e, weight=5) )
-moves.append( mvScale(rho_w, weight=5) )
-moves.append( mvScale(rho_b, weight=5) )
-
+timetree.clampCharData(dat_nn)
 ```
 
-Set up moves to update model parameters. We'll explain the first one in detail, then provide blocks of code that do the same thing for different sets of feature effect parameters.
+Now our TimeFIG model is configured and associated with our molecular, biogeographic, and paleogeographic data. Next, we construct joint moves to help MCMC explore tree and rate space. 
 
 ```
-for (i in 1:sigma_e.size()) {
-  
-    moves.append( mvScale(sigma_e[i], weight=2) )
-    moves.append( mvSlide(sigma_e[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
-    use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
-    
-}
-```
-
-
-```
-for (i in 1:sigma_w.size()) {
-    moves.append( mvScale(sigma_w[i], weight=2) )
-    moves.append( mvSlide(sigma_w[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
-    use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
-}
-```
-
-```
-for (i in 1:sigma_d.size()) {
-    moves.append( mvScale(sigma_d[i], weight=2) )
-    moves.append( mvSlide(sigma_d[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
-    use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
-    
-}
-
-for (i in 1:sigma_b.size()) {
-    moves.append( mvScale(sigma_b[i], weight=2) )
-    moves.append( mvSlide(sigma_b[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
-    use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
-}
-
-for (i in 1:phi_e.size()) {
-    moves.append( mvScale(phi_e[i], weight=2) )
-    moves.append( mvScale(phi_w[i], weight=2) )
-    moves.append( mvSlide(phi_e[i], weight=2) )
-    moves.append( mvSlide(phi_w[i], weight=2) )
-    if (use_rj) {
-        moves.append( mvRJSwitch(phi_e[i], weight=3) )
-        moves.append( mvRJSwitch(phi_w[i], weight=3) )
-        use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
-        use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
-    }
-}
-for (i in 1:phi_d.size()) {
-    moves.append( mvScale(phi_d[i], weight=2) )
-    moves.append( mvScale(phi_b[i], weight=2) )
-    moves.append( mvSlide(phi_d[i], weight=2) )
-    moves.append( mvSlide(phi_b[i], weight=2) )
- if (use_rj) {
-        moves.append( mvRJSwitch(phi_d[i], weight=3) )
-        moves.append( mvRJSwitch(phi_b[i], weight=3) )
-        use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
-        use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
-    }
-}
-
-```
-
-```
-
-# base rate of molecular substitutioni
-moves.append(mvScale(mu_mol_base, weight=5) )
-
-# branch rates of molecular substitution, centered on mu_mol_base
-for (i in 1:num_branches) {
-    moves.append(mvScale(mu_mol_branch[i], weight=1))
-}
-
-for (i in 1:num_loci) {
-    if (i >= 2) {
-        moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
-    }
-    moves.append(mvScale(kappa[i], weight=3))
-    moves.append(mvScale(alpha[i], weight=3))
-    moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
-}
-
-# joint moves
+# scales time (up) opposite of rate (down)
 up_down_scale_tree = mvUpDownScale(lambda=1.0, weight=20)
-up_down_scale_tree.addVariable(timetree,      up=true)
-up_down_scale_tree.addVariable(root_age,      up=true)
-up_down_scale_tree.addVariable(mu_mol_branch, up=false)
-up_down_scale_tree.addVariable(mu_mol_base,   up=false)
+up_down_scale_tree.addVariable(timetree,       up=true)
+up_down_scale_tree.addVariable(root_age,       up=true)
+up_down_scale_tree.addVariable(mu_mol_branch,  up=false)
+up_down_scale_tree.addVariable(mu_mol_base,    up=false)
 moves.append(up_down_scale_tree)
 
+# scales base (up) and branch (up) rates
 up_down_mol_rate = mvUpDownScale(lambda=1.0, weight=20)
-up_down_mol_rate.addVariable(mu_mol_branch, up=true)
-up_down_mol_rate.addVariable(mu_mol_base,   up=true)
+up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
+up_down_mol_rate.addVariable(mu_mol_base,    up=true)
 moves.append(up_down_mol_rate)
 
-# MJL: this seems to cause a bug, working to fix w/ Mike May
+# rebalances rate and age parameters for a node
 rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
 rate_age_proposal.addRates(mu_mol_branch)
 moves.append(rate_age_proposal)
 ```
 
-
+We also create the same original set of monitors.
 
 ```
-############
-# Monitors #
-############
-
-print("Creating monitors...")
-# create monitor vector
-monitors = VectorMonitors()
 # screen monitor, so you don't get bored
 monitors.append( mnScreen(root_age, printgen=print_gen) )
+
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file="output/" + analysis + ".model.txt") )
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file="output/" + analysis + ".tre") )
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 
+# other stuff for anc states, FIG rates, etc.
 ```
 
-Get biogeographic rates across time slices
-
+We also create monitors to track the biogeographic rates per region per time interval.
+```
 ```
 
-# file monitor for biogeographic model
-for (k in 1:num_times) {
-    bg_mon_filename = "output/" + analysis + ".time" + k + ".bg.txt"
-    monitors.append( mnFile(filename = bg_mon_filename,printgen=print_gen,rho_e, rho_w, rho_d, rho_b, r_e[k], r_w[k], r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4], r_d[k][5], r_d[k][6], r_b[k][1], r_b[k][2], r_b[k][3], r_b[k][4], r_b[k][5], r_b[k][6], m_e[k][1], m_w[k][1], m_d[k][1], m_d[k][2], m_d[k][3], m_d[k][4], m_d[k][5], m_d[k][6], m_b[k][1], m_b[k][2], m_b[k][3], m_b[k][4], m_b[k][5], m_b[k][6]))
-}
+And we create a monitor to track ancestral states during MCMC sampling.
+```
 ```
 
-
-```
-monitors.append( mnFile(filename="output/"+analysis+".param.json", printgen=print_gen, format="json",
-                        rho_e, rho_w, rho_d, rho_b, r_e, r_w, r_d, r_b, m_e, m_w, m_d, m_b) )
-```
-
-
-Get ancestral states
-
-```
-# ancestral estimates
-monitors.append( mnJointConditionalAncestralState(tree=timetree, glhbdsp=timetree, printgen=print_gen*stoch_print_gen, filename="output/" + analysis + ".states.txt", withTips=true, withStartStates=true, type="NaturalNumbers") )
-```
-
-Stochastic mapping
-
-```
-# monitors.append( mnStochasticCharacterMap(glhbdsp=timetree, printgen=print_gen*10, filename="output/" + analysis + ".stoch.txt", use_simmap_default=false) )
-
-```
-
-Run model
+Finally, we construct and run our MCMC.
 
 ```
 # create model object
-print("Creating model...")
 mymodel = model(timetree)
 
 # create MCMC object
-print("Creating MCMC...")
-mymcmc = mcmc(mymodel, moves, monitors, moveschedule=move_schedule)
-mymcmc.operatorSummary()
+mymcmc = mcmc(mymodel, moves, monitors)
 
 # run MCMC
-print("Running MCMC...")
-mymcmc.run(n_iter, underPrior=under_prior)
-
-# done!
-quit()
+mymcmc.run(num_gen)
 ```
 
 Look at these figures. Let's compare across analyses.
