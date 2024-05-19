@@ -70,11 +70,15 @@ phylo_code_fn = "./scripts/timefig_dating/phylo_BDP.Rev"
 clade_fn      = "./scripts/timefig_dating/clade.Rev" 
 ```
 
-Set empty vectors for moves and monitors, to be populated later.
+These variables will later configure the MCMC analysis. The empty vectors for moves and monitors will be populated later.
 ```
+num_gen = 10000
+print_gen = 10
 moves = VectorMoves()
 monitors = VectorMonitors()
 ```
+
+
 
 Next, we read in a phylogenetic tree. To simplify this analysis, we assume the tree topology is known (fixed) while the divergence times are unknown (estimated). We will use the first (only!) tree stored in `phy_fn` to define the topology.
 
@@ -97,45 +101,52 @@ for (i in 1:num_loci) {
 }
 ```
 
+We did not have perfect coverage for all taxa across all loci, so we will add missing sequence data for each taxon present in the tree but absent for a locus.
 
 ```
+for (i in 1:num_taxa) {
+    taxa_names[i] = taxa[i].getName()
+}
 for (i in 1:num_loci) {
-    dat_mol[i].excludeTaxa(dat_mol[i].taxa())
-    dat_mol[i].includeTaxa(taxa[i].getName())
-    dat_mol[i].addMissingTaxa(taxa[i].getName())
+    dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
+    dat_mol[i].includeTaxa( taxa_names )
+    dat_mol[i].addMissingTaxa( taxa_names )
 }
 ```
 
 Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source( phylo_code_fn )`.
 
-We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Net diversification rate controls how rapidly species accumuluation, whereas turnover proportion controls the speed of extinction relative to speciation. This parameterization often behaves better for model fitting, and many biologists prefer to think in these terms. 
+We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Throughout the tutorial, we will pair new model parameters with moves that eventually instruct MCMC how to update parameter values during model fitting.
+
+Net diversification rate controls how rapidly species accumulation, whereas turnover proportion controls the speed of extinction relative to speciation. This parameterization often behaves better for model fitting, and many biologists prefer to think in these terms. 
 
 ```
-diversification ~ dnExp(1)
+diversification ~ dnExp(5)
 turnover ~ dnBeta(2,2)
 birth := diversification / abs(1.0 - turnover)
 death := birth * turnover
+
+moves.append( mvScale(diversification, weight=3) )
+moves.append( mvScale(turnover, weight=3) )
 ```
 
-We have most, but not all, taxa. Tell model about missing taxa.
+Based on ongoing taxonomic work led by the National Tropical Botanical Garden, there are 32 *Kadua* taxa in our clade of interest, but only 27 are represented in our analysis. We use the $\rho$ parameter to inform our birth-death process that some fraction are missing (unsampled) and not e.g. extinct. 
 
 ```
-# see ref Lorence 2010
-n_total <- 32
-n_sample <- 27
-rho <- n_sample / n_total
+rho <- taxa.size() / 32
 ```
 
+Next, we assign a prior on the root age of the clade. For now, we assume we know nothing about the age of Hawaiian *Kadua*, except that the clade is probably younger than the Eocene-Oligocene boundary at 34 Ma.
 Set up root age prior. Note, we will modify this in the next section.
 
 ```
-root_age ~ dnUniform(0.0, 32.0)
-root_age.setValue(tree_height)
+root_age ~ dnUniform(0.0, 34)
+root_age.setValue( phy.rootAge() )
 
 moves.append( mvScale(root_age, weight=15) )
 ```
 
-Set up tree model, constant rate birth death process.
+We now have what we need to construct a constant-rate birth process. In addition to the taxon set and various model parameters, the process conditions on a stopping condition (e.g. a time duration, producing some number of taxa, etc.) and a sampling strategy (how are sampled taxa selected). We use time as the stopping criterion and assume included taxa were sampled uniformly at random. 
 
 ```
 timetree ~ dnBDP(lambda=birth,
@@ -149,10 +160,20 @@ timetree ~ dnBDP(lambda=birth,
 moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
 ```
 
-We now initialize the `timetree` variable with the phylogeny we read from file, stored in `phy`.
+We now initialize the `timetree` variable with the phylogeny we read from file, stored in `phy`. This is primarily to set the topology, but it can also be used to initialize the model with reasonable starting values for divergence times. If you don't initialize the tree, you will want to create moves to infer the tree topology.
+
 ```
 timetree.setValue(phy)
 ```
+
+{% aside Inferring topology %}
+The analyses in this tutorial can be modified to also estimate tree topology. To do so, add these moves:
+``` 
+moves.append( mvNNI(timetree, weight=2*num_taxa) )
+moves.append( mvFNPR(timetree, weight=1*num_taxa) )
+```
+{% endaside %}
+
 
 We want the crown node ages of important clades in Hawaiian *Kadua* to appear in our MCMC trace file. Calling `source( clade_fn )` will construct six clades based on predefined *Kadua* taxon sets. We then create deterministic nodes to track the crown node ages of these clades using the `tmrca()` function, which will be monitored.
 
@@ -166,23 +187,23 @@ age_littoralis := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 ```
 
-Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. This can all be loaded by calling `source( mol_code_fn )`, but you should specify the model by hand to better understand its composition.
+Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source( mol_code_fn )`, but you should specify the model by hand to better understand its composition.
 
 First, we create the relaxed clock model. The following code creates a vector of clock rates that are lognormally distributed. Later, the rates in this vector will be used to define branch-varying clock rates. To do so, we first define a base clock rate, `mu_mol_base`
 
 ```
 mu_mol_base ~ dnExp(10)
-moves.append(mvScale(mu_mol_base, weight=5) )
+moves.append( mvScale(mu_mol_base, weight=5) )
 ```
 
-Then, we draw branch rates whose mean equals that base clock rate and the 2.5% and 97.5% quantiles of rate variation span one order of magnitude (determined by the magic number `0.587405`).
+Then, we draw branch rates whose mean equals that base clock rate and 95% of possible branchwise rate variation spans one order of magnitude (determined by the magic number `0.587405`).
 
 ```
 mu_mol_sd <- 0.587405
 for (i in 1:num_branches) {
     ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
     mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
-    moves.append(mvScale(mu_mol_branch[i], weight=1))
+    moves.append( mvScale(mu_mol_branch[i], weight=1) )
 }
 ```
 
@@ -270,7 +291,7 @@ up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
 up_down_mol_rate.addVariable(mu_mol_base,    up=true)
 moves.append(up_down_mol_rate)
 
-# redistributes rate and time to explain branch distance
+# rebalances rate and age parameters for a node
 rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
 rate_age_proposal.addRates(mu_mol_branch)
 moves.append(rate_age_proposal)
@@ -299,7 +320,7 @@ mymodel = model(timetree)
 mymcmc = mcmc(mymodel, moves, monitors)
 
 # run MCMC
-mymcmc.run(n_iter)
+mymcmc.run(num_gen)
 ```
 
 Notice that we cannot estimate node ages with any precision.
