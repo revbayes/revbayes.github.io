@@ -152,6 +152,8 @@ for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
 
+xx
+
 
 ####################
 # ADDITIONAL MOVES #
@@ -204,3 +206,7 @@ mymcmc = mcmc(mymodel, moves, monitors)
 
 # run MCMC
 mymcmc.run(num_gen)
+
+# make MCC tree
+tt = readTreeTrace (file=out_fn+".tre", treetype="clock", burnin=0.2)
+mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")

@@ -326,8 +326,6 @@ mymcmc.run(num_gen)
 Generate a maximum clade consensus tree after the job is complete.
 
 ```
-# note, readTreeTrace automatically appends ".tre" to filename
-out_fn = "./output/BDP_uncalibrated"
 tt = readTreeTrace (file=out_fn+".tre", treetype="clock", burnin=0.2)
 mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
 ```

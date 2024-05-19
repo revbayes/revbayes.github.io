@@ -96,8 +96,8 @@ moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
 
 timetree.setValue(phy)
 
-moves.append( mvNNI(timetree, weight=2*num_taxa) )
-moves.append( mvFNPR(timetree, weight=1*num_taxa) )
+# moves.append( mvNNI(timetree, weight=2*num_taxa) )
+# moves.append( mvFNPR(timetree, weight=1*num_taxa) )
 
 # clade age monitors
 source(clade_fn)
@@ -228,3 +228,7 @@ mymcmc = mcmc(mymodel, moves, monitors)
 
 # run MCMC
 mymcmc.run(num_gen)
+
+# make MCC tree
+tt = readTreeTrace (file=out_fn+".tre", treetype="clock", burnin=0.2)
+mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
