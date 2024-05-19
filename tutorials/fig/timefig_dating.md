@@ -323,16 +323,38 @@ mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(num_gen)
 ```
 
-Notice that do not estimate node ages with any precision.
+Generate a maximum clade consensus tree after the job is complete.
 
-Figures here.
+```
+# note, readTreeTrace automatically appends ".tre" to filename
+out_fn = "./output/BDP_uncalibrated"
+tt = readTreeTrace (file=out_fn+".tre", treetype="clock", burnin=0.2)
+mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
+```
 
+Let's view the MCC tree for the uncalibrated analysis in FigTree (Fig. {% ref phy_uncalibrated %}).
+
+{% figure phy_uncalibrated %}
+<img src="figures/timefig_dating/kadua_divtime_uncalibrated.mcc.png" width="500">
+{% figcaption %}
+Maximum clade credibility tree for *Kadua* without time-calibration.
+{% endfigcaption %}
+{% endfigure %}
+
+Notice that node ages vary wildly in the uncalibrated analysis, up to the maximum age of 34.0 Ma.
 
 {% section Biogeographic dating with node calibration %}
 
 We'll now repeat the previous exercise, but this time we will use calibration densities to constrain the ages of two nodes during inference.
 
-First, we'll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval). Although we could hard code this information into our script, we instead extract the information from the file `./data/kadua/kadua_calib.csv`
+For this example, we suggest that you make a new copy of `./scripts/timefig_dating/kadua_divtime_unconstrained.Rev` that is named `./scripts/timefig_dating/kadua_divtime_nodeprior.Rev`. Then, rather than typing all the commands, modify the content of the script as described below. After all modifications are in place, you can run the analysis by typing:
+```
+source("./scripts/timefig_dating/kadua_divtime_nodeprior.Rev")
+```
+
+If the script runs successfully, you should see MCMC diagnostics being printed to the screen. If the script fails to run, carefully read the error messages provided by RevBayes to correct the issue. RevBayes error messages generally report the location and the type of error.
+
+Once you have your new copy of the script, begin editing it. First, we'll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval). Although we could hard code this information into our script, we instead extract the information from the file `./data/kadua/kadua_calib.csv`
 
 ```
 calib_fn = "./data/kadua/kadua_calib.csv" 
@@ -390,7 +412,16 @@ clade_calib.clamp(0.0)
 ```
 You then fix the value of the calibration to `0.0`. This fixed point of `0.0` will always be greater than the lower bound of `0.0 - age_ingroup`. The fixed point `0.0` will be less than the upper bound of `6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed point `0.0 > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample.
 
-Look at the new results. Notice the hard upper bound on the maximum age of Hawaiian *Kadua*.
+Let's view the MCC tree for the prior-based time-calibration analysis in FigTree (Fig. {% ref phy_nodeprior %}).
+
+{% figure phy_nodeprior %}
+<img src="figures/timefig_dating/kadua_divtime_nodeprior.mcc.png" width="500">
+{% figcaption %}
+Maximum clade credibility tree for *Kadua* without node-based priors for time-calibration.
+{% endfigcaption %}
+{% endfigure %}
+
+Notice that the clade is now much younger. The upper bound of the HPD95 for the age of Hawaiian *Kadua* is always less than 6.3 Ma, as by design. 
 
 
 {% section Biogeographic dating with TimeFIG %}
@@ -575,19 +606,31 @@ monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
 monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
-
-# other stuff for anc states, FIG rates, etc.
 ```
 
 We also create monitors to track the biogeographic rates per region per time interval.
 ```
 ```
 
-And we create a monitor to track ancestral states during MCMC sampling.
+You can also create a ancestral state monitor to sample ancestral ranges that are reflect with the phylogenetic, biogeographic, and paleogeographic dynamics of the system. Note, that the ancestral states generated during a given MCMC iteration are consistent with the value of the (random) phylogeny and model parameters at that same iteration.
+
 ```
+monitors.append( mnJointConditionalAncestralState(
+    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    filename=out_fn+".states.txt",
+    withTips=true, withStartStates=true, type="NaturalNumbers") )
 ```
 
-Finally, we construct and run our MCMC.
+Similarly, you can construct a monitor to generate stochastic mappings that represent the timing and sequence of historical biogeographic events for a given MCMC iteration. That said, stochastic mapping under SSE models can be computationally intensive, so recommend leaving the option disabled or to generate stochastic mappings infrequently.
+
+```
+# monitors.append( mnStochasticCharacterMap(
+    glhbdsp=timetree, printgen=print_gen*10,
+    filename=out_fn+".stoch.txt",
+    use_simmap_default=false) )
+```
+
+With our model, moves, and monitors all in place, we can build and run our MCMC analysis.
 
 ```
 # create model object
@@ -600,4 +643,29 @@ mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(num_gen)
 ```
 
-Look at these figures. Let's compare across analyses.
+
+Now, let's inspect the MCC tree for the TimeFIG-based time-calibration analysis in FigTree (Fig. {% ref phy_timefig %}).
+
+{% figure phy_nodeprior %}
+<img src="figures/timefig_dating/kadua_divtime_timeFIG.mcc.png" width="500">
+{% figcaption %}
+Maximum clade credibility tree for *Kadua* using a process-based TimeFIG model for time-calibration.
+{% endfigcaption %}
+{% endfigure %}
+
+Notice how the clade is younger than the uncalibrated and prior-based node age calibration analyses.
+
+Reviewing the marginal posterior densities of the ingroup crown age help reveal why the prior-based BDP calibration and process-based TimeFIG calibration differ.
+
+{% figure ingroup_age %}
+<img src="figures/timefig_dating/kadua_ingroup_ages.png" width="500">
+{% figcaption %}
+Comparison of marginal posterior ingroup ages for Hawaiian *Kadua*.
+{% endfigcaption %}
+{% endfigure %}
+
+Notice that the posterior ingroup age for the prior-based calibration is never older than 6.3 Ma, the maximum age constraint we applied (green density in  Fig. {% ref ingroup_age %}). This constraint means the crown age of Hawaiian *Kadua* must be younger than the oldest High Islands (Kauai and Niihua).
+
+While the posterior-based TimeFIG calibration produces a young mean age for the Hawaiian ingroup's crown node, it also allows for the ingroup to be older than the oldest High Islands (red density in  Fig. {% ref ingroup_age %}). This upper tail in the ingroup age density captures scenarios in which Hawaiian *Kadua* colonized the now-High Islands from the now-Low Islands more than once.
+
+Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian *Kadua*.
