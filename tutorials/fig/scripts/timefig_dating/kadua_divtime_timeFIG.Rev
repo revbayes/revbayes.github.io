@@ -1,0 +1,205 @@
+#####
+
+
+loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+
+##################
+# ANALYSIS SETUP #
+##################
+
+# filesystem
+analysis      = "kadua_divtime_timeFIG"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+bg_fn         = dat_fp + "kadua_range_n7.nex"
+calib_fn      = dat_fp + "kadua_calib.csv"
+geo_fp        = "./data/hawaii/"
+feature_fn    = geo_fp + "feature_summary.csv"
+times_fn      = geo_fp + "age_summary.csv"
+out_fn        = "./output/" + analysis
+
+
+geo_code_fn   = "./scripts/timefig_dating/geo_timeFIG.Rev"
+phylo_code_fn = "./scripts/timefig_dating/phylo_timeFIG.Rev"
+mol_code_fn   = "./scripts/timefig_dating/mol_multilocus_CTMC.Rev"
+clade_code_fn = "./scripts/timefig_dating/kadua_clade.Rev" 
+
+
+# MCMC variables
+num_proc = 6
+num_gen = 10000
+print_gen = 1 #0
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+# tree input
+phy          <- readTrees(phy_fn)[1]
+taxa         = phy.taxa()
+num_taxa     = taxa.size()
+num_branches = 2 * num_taxa - 2
+
+# calibration input
+dat_calib = readDataDelimitedFile(file=calib_fn, header=true,
+                                  separator=",", rownames=false)
+
+# biogeography input
+dat_01         = readDiscreteCharacterData(bg_fn)
+num_regions    = dat_01.nchar()
+max_range_size = 4
+num_ranges     = 0
+for (k in 1:max_range_size) {
+    num_ranges += choose(num_regions, k)
+}
+dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
+desc           = dat_nn.getStateDescriptions()
+
+#write("index,range\n", filename=label_fn)
+#for (i in 1:desc.size()) {
+#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+#}
+
+# molecular input
+mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
+num_loci = mol_idx.size()
+for (i in 1:num_loci) {
+    mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
+    dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
+    num_sites[i] = dat_mol[i].nchar()
+}
+
+# taxon matching
+for (i in 1:num_taxa) {
+    taxa_names[i] = taxa[i].getName()
+}
+for (i in 1:num_loci) {
+    dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
+    dat_mol[i].includeTaxa( taxa_names )
+    dat_mol[i].addMissingTaxa( taxa_names )
+}
+
+###################
+# GEOGRAPHY MODEL #
+###################
+
+source(geo_code_fn)
+
+##############
+# TREE MODEL #
+##############
+
+source(phylo_code_fn)
+
+
+###################
+# MOLECULAR MODEL #
+###################
+
+if (false) {
+    source("./scripts/timefig_dating/mol_timeFIG.Rev")
+} else {
+    mu_mol_base ~ dnExp(10)
+    moves.append( mvScale(mu_mol_base, weight=5) )
+
+    mu_mol_sd <- 0.587405
+    for (i in 1:num_branches) {
+        ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
+        mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
+        moves.append( mvScale(mu_mol_branch[i], weight=1) )
+    }
+
+
+    for (i in 1:num_loci) {
+        mu_mol_locus_rel[i] <- 1.0
+        if (i > 1) {
+            mu_mol_locus_rel[i] ~ dnGamma(2,2)
+            moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
+        }
+        mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
+    }
+
+    for (i in 1:num_loci) {
+        kappa[i] ~ dnGamma(2,2)
+        moves.append(mvScale(kappa[i], weight=3))
+        
+        pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
+        moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
+        
+        Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+    }
+
+    for (i in 1:num_loci) {
+        alpha[i] ~ dnExp(0.1)
+        moves.append(mvScale(alpha[i], weight=3))
+        
+        site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
+                                           rate=alpha[i],
+                                           numCats=4)
+    }
+
+    for (i in 1:num_loci) {
+        x_mol[i] ~ dnPhyloCTMC(
+            Q=Q_mol[i],
+            tree=timetree,
+            branchRates=mu_mol[i],
+            siteRates=site_rates[i],
+            rootFrequencies=pi_mol[i],
+            nSites=num_sites[i],
+            type="DNA" )
+    }
+}
+
+for (i in 1:num_loci) {
+    x_mol[i].clamp(dat_mol[i])
+}
+
+
+####################
+# ADDITIONAL MOVES #
+####################
+
+# scales time (up) opposite of rate (down)
+up_down_scale_tree = mvUpDownScale(lambda=1.0, weight=20)
+up_down_scale_tree.addVariable(timetree,       up=true)
+up_down_scale_tree.addVariable(root_age,       up=true)
+up_down_scale_tree.addVariable(mu_mol_branch,  up=false)
+up_down_scale_tree.addVariable(mu_mol_base,    up=false)
+moves.append(up_down_scale_tree)
+
+# scales base (up) and branch (up) rates
+up_down_mol_rate = mvUpDownScale(lambda=1.0, weight=20)
+up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
+up_down_mol_rate.addVariable(mu_mol_base,    up=true)
+moves.append(up_down_mol_rate)
+
+# rebalances rate and age parameters for a node
+rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
+rate_age_proposal.addRates(mu_mol_branch)
+moves.append(rate_age_proposal)
+
+
+###################
+# CREATE MONITORS #
+###################
+
+# screen monitor, so you don't get bored
+monitors.append( mnScreen(root_age, printgen=print_gen) )
+
+# file monitor for all simple model variables
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
+# file monitor for tree
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+
+
+########
+# MCMC #
+########
+
+# create model object
+mymodel = model(timetree)
+
+# create MCMC object
+mymcmc = mcmc(mymodel, moves, monitors)
+
+# run MCMC
+mymcmc.run(num_gen)

@@ -1,0 +1,51 @@
+taxa_outgroup = v(
+	"Kadua_nukuhivensis___Nuku_Hiva_Wood_6337_ILM229",
+	"Kadua_lichtlei___Ua_Huku_Wood_10514_ILM230",
+	"Kadua_rapensis___Rapa_Perlman_17938_ILM228")
+
+taxa_affinis = v(
+	"Kadua_tryblium___Kauai_Wood_18128_ILM202",
+    "Kadua_affinis___Hawaii_Lorence_5897_ILM247",
+    "Kadua_axillaris___Maui_Perlman_15370_ILM221",
+    "Kadua_fosbergii___Maui_Oppenheimer_H21604_ILM209")
+
+taxa_centrantoides = v(
+	"Kadua_knudsenii___Kauai_Wood_17085_ILM186",
+	"Kadua_formosa___Maui_Wood_13483_ILM185",
+	"Kadua_foggiana___Kauai_Wood_15232_ILM187",
+	"Kadua_centranthoides___Maui_Wood_11309_ILM237")
+
+taxa_flynni = v(
+	"Kadua_flynni___Kauai_Wood_16560_ILM189",
+	"Kadua_cordata_ssp_cordata_Kauai_Wood_18404_ILM197",
+	"Kadua_elatior___Kauai_Wood_18126_ILM200",
+	"Kadua_cookiana___Kauai_Perlman_24732_ILM181",
+	"Kadua_haupuensis___Kauai_Trask_sn_ILM180",
+	"Kadua_cordata_ssp_waimeae_Kauai_Wood_16599_ILM198")
+
+taxa_littoralis = v(
+	"Kadua_cordata_ssp_remyi_Lanai_Oppenheimer_H100731_ILM213",
+	"Kadua_littoralis___Molokai_Perlman_17523_ILM239",
+	"Kadua_laxiflora___Maui_Oppenheimer_H71604_ILM238",
+	"Kadua_cordata_ssp_cordata_Oahu_NT_3119_ILM236",
+	"Kadua_degeneri___Oahu_Welton_556_ILM203",
+	"Kadua_parvula___Oahu_Wood_1933_ILM245")
+
+
+taxa_littoralis_flynni = taxa_littoralis
+taxa_littoralis_flynni.append(taxa_flynni)
+
+k = 1
+for (i in 1:taxa.size()) {
+    if (taxa_outgroup.contains(taxa[i].getSpeciesName()) == false) {
+        taxa_ingroup[k++] = taxa[i]
+    }
+}
+
+clade_ingroup = clade(taxa_ingroup)
+clade_affinis = clade(taxa_affinis)
+clade_flynni = clade(taxa_flynni)
+clade_littoralis = clade(taxa_littoralis)
+clade_littoralis_flynni = clade(taxa_littoralis_flynni)
+clade_centrantoides = clade(taxa_centrantoides)
+

@@ -1,0 +1,213 @@
+#####
+
+
+##################
+# ANALYSIS SETUP #
+##################
+
+# filesystem
+analysis      = "kadua_divtime_uncalibrated"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+calib_fn      = dat_fp + "kadua_calib.csv"
+out_fn        = "./output/" + analysis
+
+phylo_code_fn = "./scripts/timefig_dating/phylo_BDP.Rev"
+mol_code_fn   = "./scripts/timefig_dating/mol_multilocus_CTMC.Rev"
+clade_fn      = "./scripts/timefig_dating/kadua_clade.Rev" 
+
+# MCMC variables
+num_gen = 10000
+print_gen = 10
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+# tree input
+phy          <- readTrees(phy_fn)[1]
+taxa         = phy.taxa()
+num_taxa     = taxa.size()
+num_branches = 2 * num_taxa - 2
+
+# molecular input
+mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
+num_loci = mol_idx.size()
+for (i in 1:num_loci) {
+    mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
+    dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
+    num_sites[i] = dat_mol[i].nchar()
+}
+
+# taxon matching
+for (i in 1:num_taxa) {
+    taxa_names[i] = taxa[i].getName()
+}
+for (i in 1:num_loci) {
+    dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
+    dat_mol[i].includeTaxa( taxa_names )
+    dat_mol[i].addMissingTaxa( taxa_names )
+}
+i
+
+##############
+# TREE MODEL #
+##############
+
+# source("phylo_BDP.Rev")
+
+diversification ~ dnExp(5)
+turnover ~ dnBeta(2,2)
+birth := diversification / abs(1.0 - turnover)
+death := birth * turnover
+
+moves.append( mvScale(diversification, weight=3) )
+moves.append( mvScale(turnover, weight=3) )
+
+rho <- taxa.size() / 32
+
+root_age ~ dnUniform(0.0, 34)
+root_age.setValue( phy.rootAge() )
+
+# replace flat root_age prior with secondary calibration, here!
+# ...
+
+moves.append( mvScale(root_age, weight=15) )
+
+timetree ~ dnBDP(lambda=birth,
+                 mu=death,
+                 rho=rho,
+                 rootAge=root_age,
+                 samplingStrategy="uniform",
+                 condition="time",
+                 taxa=taxa)
+
+moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
+
+timetree.setValue(phy)
+
+moves.append( mvNNI(timetree, weight=2*num_taxa) )
+moves.append( mvFNPR(timetree, weight=1*num_taxa) )
+
+# clade age monitors
+source(clade_fn)
+age_ingroup := tmrca(timetree, clade_ingroup)
+age_affinis := tmrca(timetree, clade_affinis)
+age_centrantoides := tmrca(timetree, clade_centrantoides)
+age_flynni := tmrca(timetree, clade_flynni)
+age_littoralis := tmrca(timetree, clade_littoralis)
+age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
+
+# add biogeographic calibration to ingroup node here!
+# ...
+
+
+###################
+# MOLECULAR MODEL #
+###################
+
+# source("mol_timeFIG.Rev")
+
+mu_mol_base ~ dnExp(10)
+moves.append( mvScale(mu_mol_base, weight=5) )
+
+mu_mol_sd <- 0.587405
+for (i in 1:num_branches) {
+    ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
+    mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
+    moves.append( mvScale(mu_mol_branch[i], weight=1) )
+}
+
+
+for (i in 1:num_loci) {
+    mu_mol_locus_rel[i] <- 1.0
+    if (i > 1) {
+        mu_mol_locus_rel[i] ~ dnGamma(2,2)
+        moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
+    }
+    mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
+}
+
+for (i in 1:num_loci) {
+    kappa[i] ~ dnGamma(2,2)
+    moves.append(mvScale(kappa[i], weight=3))
+    
+    pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
+    moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
+    
+    Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+}
+
+for (i in 1:num_loci) {
+    alpha[i] ~ dnExp(0.1)
+    moves.append(mvScale(alpha[i], weight=3))
+    
+    site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
+                                       rate=alpha[i],
+                                       numCats=4)
+}
+
+for (i in 1:num_loci) {
+    x_mol[i] ~ dnPhyloCTMC(
+        Q=Q_mol[i],
+        tree=timetree,
+        branchRates=mu_mol[i],
+        siteRates=site_rates[i],
+        rootFrequencies=pi_mol[i],
+        nSites=num_sites[i],
+        type="DNA" )
+}
+
+for (i in 1:num_loci) {
+    x_mol[i].clamp(dat_mol[i])
+}
+
+
+####################
+# ADDITIONAL MOVES #
+####################
+
+# scales time (up) opposite of rate (down)
+up_down_scale_tree = mvUpDownScale(lambda=1.0, weight=20)
+up_down_scale_tree.addVariable(timetree,       up=true)
+up_down_scale_tree.addVariable(root_age,       up=true)
+up_down_scale_tree.addVariable(mu_mol_branch,  up=false)
+up_down_scale_tree.addVariable(mu_mol_base,    up=false)
+moves.append(up_down_scale_tree)
+
+# scales base (up) and branch (up) rates
+up_down_mol_rate = mvUpDownScale(lambda=1.0, weight=20)
+up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
+up_down_mol_rate.addVariable(mu_mol_base,    up=true)
+moves.append(up_down_mol_rate)
+
+# rebalances rate and age parameters for a node
+rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
+rate_age_proposal.addRates(mu_mol_branch)
+moves.append(rate_age_proposal)
+
+
+###################
+# CREATE MONITORS #
+###################
+
+# screen monitor, so you don't get bored
+monitors.append( mnScreen(root_age, printgen=print_gen) )
+
+# file monitor for all simple model variables
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
+# file monitor for tree
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+
+
+########
+# MCMC #
+########
+
+# create model object
+mymodel = model(timetree)
+
+# create MCMC object
+mymcmc = mcmc(mymodel, moves, monitors)
+
+# run MCMC
+mymcmc.run(num_gen)
