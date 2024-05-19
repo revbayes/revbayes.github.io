@@ -323,53 +323,74 @@ mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(num_gen)
 ```
 
-Notice that we cannot estimate node ages with any precision.
+Notice that do not estimate node ages with any precision.
 
-
+Figures here.
 
 
 {% section Biogeographic dating with node calibration %}
 
+We'll now repeat the previous exercise, but this time we will use calibration densities to constrain the ages of two nodes during inference.
 
-Repeat as earlier. Add a root age calibration. This is known as a secondary node age calibration, derived from a previous analysis. In this case, an earlier fossil-based node age estimate for the divergence of Hawaiian from non-Hawaiian Kadua lineages is used to constrain the `root_age` variable in our analysis.
-
-We stored this information in a csv file called dat_calib. This the 95% highest posterior density age estimate for the most recent common ancestor of XX and XX. We define a truncated normal distribution with min and max ages following the 95 HPD, centered on the previous mean age estimate. Standard deviation is selected to induce a prior root age estimate that is wider than the original prior.
+First, we'll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval). Although we could hard code this information into our script, we instead extract the information from the file `./data/kadua/kadua_calib.csv`
 
 ```
-# get calibration data
-dat_calib = readDataDelimitedFile(file=calib_fn, header=true, separator=",", rownames=false)
+calib_fn = "./data/kadua/kadua_calib.csv" 
+dat_calib = readDataDelimitedFile(file=calib_fn, header=true,
+                                  separator=",", rownames=false)
 ```
 
-Go to phylo_BDP.Rev. Change root age.
+Previously, the `root_age` variable followed the distribution `dnUniform(0,34)`. We replace that flat (uninformative) prior for `root_age` with a secondary node age calibration, shaped by the information above. We choose to apply a truncated normal distribution with mean, min, and max ages matching the posterior mean, lower, and upper bounds of the 95% credible interval above. The standard deviation of the prior is similarly design so the width of the interval $\pm 2\sigma$ matches the width of the credible interval, then further doubled to be conservative (less informative).
+
+The new `root_age` prior density is easily replaced
 
 ```
 # comment out the uniform prior on root age!
 # root_age ~ dnUniform(0.0, 32.0)
     
-# apply a secondary calibration to root age
+# Calibration density #1: MRCA of sampled Kadua
+# secondary calibration corresponding
+# to MRCA of Hawaiian and non-Hawaiian Kadua
 mean_age <- dat_calib[1][2]
 min_age <- dat_calib[1][3]
 max_age <- dat_calib[1][4]
-sd_age <- abs(max_age - min_age) / 4    # convert from 4 sd -> 1 sd
+sd_age <- abs(max_age - min_age) / 4  # convert from 4 sd -> 1 sd
 root_age ~ dnNormal(mean=mean_age,
                     sd=2*sd_age,
                     min=min_age,
                     max=max_age)
 
+root_age.setValue( phy.rootAge() )
+moves.append( mvScale(root_age, weight=15) )
 ```
 
 
-Scroll down, add this internal node age calibration.
+The second calibration restricts the maximum age of the Hawiian *Kadua* crown age. The code stored in `./scripts/timefig_dating/kadua_clade.Rev` names relevant clades, including `clade_ingroup`.
 
 ```
-# add ingroup calibration here!
+source(clade_code_fn)
+age_ingroup := tmrca(timetree, clade_ingroup)
+age_affinis := tmrca(timetree, clade_affinis)
+age_centrantoides := tmrca(timetree, clade_centrantoides)
+age_flynni := tmrca(timetree, clade_flynni)
+age_littoralis := tmrca(timetree, clade_littoralis)
+age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
+```
+
+To construct node age calibration densities in RevBayes, you define an interval with constraints that depend on the difference between the calibration time (i.e. the maximum age for the formation of Kadua) and the age of the node begin time-calibrated (i.e. Hawaiian *Kadua*). In our case, the lower bound is the minimum allowable age for the node, 0.0 Ma (the present), and the upper bound is the maximum age of the High Islands, 6.3 Ma. Enter the following commands, then we will work through the logic.
+
+```
+# Calibration density #2: MRCA of Hawaiian Kadua
+# MRCA of extant and sampled Hawaiian Kadua is assumed to be less than the
+# maximum (very conservative) age of the oldest High Island (Kauai, <6.3 Ma)
 age_bg_min <- 0.0
 age_bg_max <- 6.3
 clade_calib ~ dnUniform(age_bg_min-age_ingroup, age_bg_max-age_ingroup)
 clade_calib.clamp(0.0)
 ```
+You then fix the value of the calibration to `0.0`. This fixed point of `0.0` will always be greater than the lower bound of `0.0 - age_ingroup`. The fixed point `0.0` will be less than the upper bound of `6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed point `0.0 > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample.
 
-Run again. Notice the difference in node age estimates. The prior imposes a hard bound on the maximum age of Hawaiian Kadua.
+Look at the new results. Notice the hard upper bound on the maximum age of Hawaiian *Kadua*.
 
 
 {% section Biogeographic dating with TimeFIG %}

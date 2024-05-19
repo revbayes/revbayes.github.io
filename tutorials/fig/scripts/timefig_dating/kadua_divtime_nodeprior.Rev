@@ -9,6 +9,7 @@
 analysis      = "kadua_divtime_nodeprior"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
+calib_fn      = dat_fp + "kadua_calib.csv"
 out_fn        = "./output/" + analysis
 
 phylo_code_fn = "./scripts/timefig_dating/phylo_BDP.Rev"
@@ -67,6 +68,9 @@ moves.append( mvScale(turnover, weight=3) )
 
 rho <- taxa.size() / 32
 
+# Calibration density #1: MRCA of sampled Kadua
+# secondary calibration corresponding
+# to MRCA of Hawaiian and non-Hawaiian Kadua
 mean_age <- dat_calib[1][2]
 min_age <- dat_calib[1][3]
 max_age <- dat_calib[1][4]
@@ -104,7 +108,9 @@ age_flynni := tmrca(timetree, clade_flynni)
 age_littoralis := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 
-# add biogeographic calibration to ingroup node here!
+# Calibration density #2: MRCA of Hawaiian Kadua
+# MRCA of extant and sampled Hawaiian Kadua is assumed to be less than the
+# maximum (very conservative) age of the oldest High Island (Kauai, <6.3 Ma)
 age_bg_min <- 0.0
 age_bg_max <- 6.3
 clade_calib ~ dnUniform(age_bg_min-age_ingroup, age_bg_max-age_ingroup)
@@ -115,7 +121,7 @@ clade_calib.clamp(0.0)
 # MOLECULAR MODEL #
 ###################
 
-# source("mol_timeFIG.Rev")
+# source("mol_multilocus_CTMC.Rev")
 
 mu_mol_base ~ dnExp(10)
 moves.append( mvScale(mu_mol_base, weight=5) )
