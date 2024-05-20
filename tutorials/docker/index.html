@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Using RevBayes with Docker</h1>
 	<h3 class="subtitle">Using a platform-independent container to run RevBayes on your computer or a computing cluster</h3>
 	<h4 class="authors">Sarah Swiston</h4>
-  <h5>Last modified on June 19, 2023</h5>
+  <h5>Last modified on May 20, 2024</h5>
 </div>
 
 
@@ -100,7 +100,9 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>Docker is a way to share pre-build, pre-configured, and platform-independent sets of programs and files. On the development side, a <strong>Dockerfile</strong> (a list of commands for building and configuring programs/files) is used to build an <strong>image</strong>, which can then be shared with others. On the user side, the image can be downloaded and run to create a <strong>container</strong>. Inside the container, you have access to all of the programs contained in the image, as well as any files you <strong>mount</strong> to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. A Docker image containing RevBayes, TensorPhylo, Python, R, Julia, and several other programs can be found on <a href="https://hub.docker.com/r/sswiston/rb_tp">Docker Hub</a>.</p>
+<p>Getting RevBayes to run on different operating systems and hardware is not always easy. <a href="https://www.docker.com/">Docker</a> is a way to share pre-build, pre-configured, and platform-independent sets of programs and files. The <a href="https://hub.docker.com/r/sswiston/phylo_docker/tags">PhyloDocker</a> image can be used to run Docker containers that are pre-installed with a recent version of <a href="https://github.com/revbayes/revbayes">RevBayes</a> and the <a href="https://bitbucket.org/mrmay/tensorphylo">TensorPhylo</a> plugin.</p>
+
+<p>On the development side, a <strong>Dockerfile</strong> (a list of commands for building and configuring programs/files) is used to build an <strong>image</strong>, which can then be shared with others. On the user side, the image can be downloaded and run to create a <strong>container</strong>. Inside the container, you have access to all of the programs contained in the image, as well as any files you <strong>mount</strong> to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. The current PhyloDocker image contains RevBayes, TensorPhylo, Python, R, and other necessary libraries. The image is hosted on <a href="https://hub.docker.com/r/sswiston/phylo_docker">Docker Hub</a>.</p>
 
 <p>This tutorial explains how to install Docker on your computer, how to obtain a RevBayes Docker image, and how to use the image to run scripts on your computer or a computing cluster. This will require a basic familiarity with command line (navigating directories and entering basic commands), but does not require much programming.</p>
 
@@ -128,27 +130,122 @@
 <h3 class="subsection" id="downloading-the-image">Downloading the image</h3>
 <hr class="subsection" />
 
-<p>A Docker image containing RevBayes, TensorPhylo, Python, R, Julia, and several other programs can be found at <a href="https://hub.docker.com/r/sswiston/rb_tp">hub.docker.com/r/sswiston/rb_tp</a>. The easiest way to obtain this image is with a <code class="language-plaintext highlighter-rouge">docker pull</code> command.</p>
+<p>A Docker image containing RevBayes, TensorPhylo, Python, R, and other dependencies can be found at <a href="https://hub.docker.com/r/sswiston/phylo_docker">hub.docker.com/r/sswiston/phylo_docker</a>. The easiest way to obtain this image is with a <code class="language-plaintext highlighter-rouge">docker pull</code> command.</p>
 
 <p>First, open Docker Desktop. This starts the Docker daemon so that you can run <code class="language-plaintext highlighter-rouge">docker</code> commands. If you do not open Docker Desktop first, you will receive an error when you try to run a <code class="language-plaintext highlighter-rouge">docker</code> command. Then, in the desktop app, sign into your Docker Hub account.</p>
 
-<p>Next, open your command line and enter the following pull command:</p>
+<p>Next, you will need to pull a <code class="language-plaintext highlighter-rouge">phylo_docker</code> image with a tag that matches your computer’s hardware architecture. The two tagged versions currently supported are <code class="language-plaintext highlighter-rouge">phylo_docker:slim_amd64</code> and <code class="language-plaintext highlighter-rouge">phylo_docker:slim_arm64</code>. Consult the table below if you are unsure which tagged image to use.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull sswiston/rb_tp:4
+<table>
+  <thead>
+    <tr>
+      <th>OS</th>
+      <th>CPU</th>
+      <th>Manufacture date</th>
+      <th>Tagged image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Windows or Linux</td>
+      <td>Intel or AMD</td>
+      <td>–</td>
+      <td><code class="language-plaintext highlighter-rouge">phylo_docker:slim_amd64</code></td>
+    </tr>
+    <tr>
+      <td>Mac OS X</td>
+      <td>Intel</td>
+      <td>2019 or earlier</td>
+      <td><code class="language-plaintext highlighter-rouge">phylo_docker:slim_amd64</code></td>
+    </tr>
+    <tr>
+      <td>Mac OS X</td>
+      <td>Silicon M1, M2, etc.</td>
+      <td>after 2019</td>
+      <td><code class="language-plaintext highlighter-rouge">phylo_docker:slim_arm64</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Next, open your command line and enter the appropriate pull command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># For Intel/AMD computers
+docker pull sswiston/phylo_docker:slim_amd64
+
+# For Apple Silicon (M1, M2, etc.) computers
+docker pull sswiston/phylo_docker:slim_arm64
 </code></pre></div></div>
 
 <p>Docker will automatically store the image on your computer in a directory reserved for Docker images. You will not have to manually locate this image; Docker will be able to find it.</p>
 
-<blockquote class="aside"><h2>Image tags</h2><p>If you go to the repository <a href="https://hub.docker.com/r/sswiston/rb_tp">hub.docker.com/r/sswiston/rb_tp</a>, you will see that there are several available images with different tags. These are built using different versions of programs, which are listed in the <code class="language-plaintext highlighter-rouge">README</code>. For this tutorial, we will use the image tagged <code class="language-plaintext highlighter-rouge">:4</code>.</p>
-</blockquote>
-
 <h2 class="section" id="using-revbayes-via-docker">Using RevBayes via Docker</h2>
 <hr class="section" />
+
+<h3 class="subsection" id="running-revbayes-image-via-command-line">Running RevBayes image via command line</h3>
+<hr class="subsection" />
+
+<p>You can also run the RevBayes Docker image directly from command line. This will still require opening Docker Desktop to start the Docker daemon.</p>
+
+<ol>
+  <li>
+    <p>Open Docker Desktop. You cannot run a Docker container from the command line unless the daemon is running. If you are not already signed in to your Docker Hub account, sign in now (there will be an option in the upper right corner of screen).</p>
+  </li>
+  <li>
+    <p>Open command prompt.</p>
+  </li>
+  <li>
+    <p>Run the command for opening the RevBayes Docker image:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # For Intel/AMD computers
+ docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_amd64
+   
+ # For Apple Silicon (M1, M2, etc.) computers
+ docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_arm64
+</code></pre></div>    </div>
+
+    <p>Some parts of this command are directly analogous to the optional settings from the RevBayes GUI.</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--name</code> adds a name to your container. This is not strictly necessary, but it’s very helpful if you plan to have multiple containers opened at a time. Otherwise, Docker will give the container a randomized name.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--volume [local_directory]:</code> is how you tell Docker where to find your scripts on the host machine (your computer). To run the test script for this tutorial, you will have to tell Docker what directory to look in. You will need to use the absolute filepath to the directory. For example, if I put the test script in a directory called <code class="language-plaintext highlighter-rouge">docker_tutorial</code> on my desktop, I would put the filepath <code class="language-plaintext highlighter-rouge">/Users/Sarah/Desktop/docker_tutorial</code>. You can mount multiple directories from your host machine by adding multiple <code class="language-plaintext highlighter-rouge">--volume</code> arguments.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">[container_directory]</code> is how you will access your files while inside the Docker container. Mounting a directory in this way essentially creates a “connection” between the directory on the outside of the container (on your host machine) and inside the container. While inside the container, you will be able to see all of the contents of a mounted directory, including other sub-directories. For example, if you run RevBayes and want it to read a file from your host machine, you will use this filepath while inside the container. If you want to save files to your host machine from inside the Docker container, you will also use this filepath. There isn’t a specific place inside the Docker container where you have to mount the directory, and it doesn’t have to have the same name as the directory on your host machine. For example, you could call it <code class="language-plaintext highlighter-rouge">/tutorial</code>, which would put a directory called <code class="language-plaintext highlighter-rouge">tutorial</code> in the container’s home directory with your test script in it.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-it</code> is for opening an interactive container. Docker containers can also be used to automatically run scripts and terminate when they are completed, but you will need an interactive container for this tutorial.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">sswiston/phylo_docker:slim_amd64</code> or <code class="language-plaintext highlighter-rouge">sswiston/phylo_docker:slim_arm64</code> (hardware-dependent, see above) is the name of the Docker image you want to use.</p>
+      </li>
+    </ul>
+
+    <p>Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.</p>
+  </li>
+  <li>
+    <p>Navigate to the location of your test script with <code class="language-plaintext highlighter-rouge">cd [filepath]</code>, using the filepath that you mounted your directory to in Step 3.</p>
+  </li>
+  <li>
+    <p>Now you can use RevBayes to run the test script with the command <code class="language-plaintext highlighter-rouge">rb test.Rev</code>. This should open RevBayes and run the script, which will give a message indicating that it has been run correctly:</p>
+  </li>
+</ol>
+
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "test.Rev"
+   Congrats! RevBayes is working!
+</code></pre></div></div>
 
 <h3 class="subsection" id="running-revbayes-image-via-docker-desktop">Running RevBayes image via Docker Desktop</h3>
 <hr class="subsection" />
 
-<p>You can use the Docker Desktop GUI to run the RevBayes Docker image. Once you have run the image, you will be able to use RevBayes inside the Docker container, and run scripts. Here are the steps you will need to get RevBayes running:</p>
+<blockquote class="info">
+  <h2 id="docker-desktop-behaves-differently-across-versions">Docker Desktop behaves differently across versions</h2>
+  <p>Some versions of Docker Desktop provide full support to run and interact with containers through the GUI. Unfortunately, its functionality changes across versions. To interact with a container through Docker Desktop v4.30.0 (current version as of writing this tutorial) you must first launch an interactive container using the commands above. Afterwards, you can interact with the running container through Docker Desktop. Previous versions of Docker Desktop allowed interactive sessions to be created from scratch, so this functionality will probably be restored in the future.</p>
+</blockquote>
+
+<p>You can use the Docker Desktop GUI to run the RevBayes Docker image (but see caveats in info box above). Once you have run the image, you will be able to use RevBayes inside the Docker container, and run scripts. Here are the steps you will need to get RevBayes running:</p>
 
 <ol>
   <li>
@@ -179,65 +276,10 @@
     <p>Another tab on the lefthand side of the screen should be called <code class="language-plaintext highlighter-rouge">containers</code>. Clicking this option should bring you to a screen showing all of the containers you currently have running.</p>
   </li>
   <li>
-    <p>To access the container as it is running, hovering over your container should give a <code class="language-plaintext highlighter-rouge">&gt;_</code> option to open its command prompt. Clicking this option will open a command prompt window. Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.</p>
+    <p>There are two ways to access the container as it is running. The first way is to click on the running container inside the Containers panel, and then click on the Exec tab from the list of tabs at the top of the container menu. The second way is to find the running container inside the Containers panel, and then click on the icon with three vertical dots to the right of the container name. This will open a menu of options. Click on the “Open in terminal” menu item. Clicking this option will take you to the Exec tab, as in the first option. Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.</p>
   </li>
   <li>
     <p>Navigate to the location of your test script with <code class="language-plaintext highlighter-rouge">cd [filepath]</code>, using the filepath that you mounted your directory to in Step 7.</p>
-  </li>
-  <li>
-    <p>Now you can use RevBayes to run the test script with the command <code class="language-plaintext highlighter-rouge">rb test.Rev</code>. This should open RevBayes and run the script, which will give a message indicating that it has been run correctly:</p>
-  </li>
-</ol>
-
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "test.Rev"
-   Congrats! RevBayes is working!
-</code></pre></div></div>
-
-<h3 class="subsection" id="running-revbayes-image-via-command-line">Running RevBayes image via command line</h3>
-<hr class="subsection" />
-
-<p>You can also run the RevBayes Docker image directly from command line. This will still require opening Docker Desktop to start the Docker daemon.</p>
-
-<ol>
-  <li>
-    <p>Open Docker Desktop. If you are not already signed in to your Docker Hub account, sign in now (there will be an option in the upper right corner of screen).</p>
-  </li>
-  <li>
-    <p>Open command prompt.</p>
-  </li>
-  <li>
-    <p>Run the command for opening the RevBayes Docker image:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> docker run --name [my_container] --volume [local_directory]:[container_directory] -i sswiston/rb_tp:4 /bin/bash
-</code></pre></div>    </div>
-
-    <p>Some parts of this command are directly analogous to the optional settings from the RevBayes GUI.</p>
-
-    <ul>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">--name</code> adds a name to your container. This is not strictly necessary, but it’s very helpful if you plan to have multiple containers opened at a time. Otherwise, Docker will give the container a randomized name.</p>
-      </li>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">--volume [local_directory]:</code> is how you tell Docker where to find your scripts on the host machine (your computer). To run the test script for this tutorial, you will have to tell Docker what directory to look in. You will need to use the absolute filepath to the directory. For example, if I put the test script in a directory called <code class="language-plaintext highlighter-rouge">docker_tutorial</code> on my desktop, I would put the filepath <code class="language-plaintext highlighter-rouge">/Users/Sarah/Desktop/docker_tutorial</code>. You can mount multiple directories from your host machine by adding multiple <code class="language-plaintext highlighter-rouge">--volume</code> arguments.</p>
-      </li>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">[container_directory]</code> is how you will access your files while inside the Docker container. Mounting a directory in this way essentially creates a “connection” between the directory on the outside of the container (on your host machine) and inside the container. While inside the container, you will be able to see all of the contents of a mounted directory, including other sub-directories. For example, if you run RevBayes and want it to read a file from your host machine, you will use this filepath while inside the container. If you want to save files to your host machine from inside the Docker container, you will also use this filepath. There isn’t a specific place inside the Docker container where you have to mount the directory, and it doesn’t have to have the same name as the directory on your host machine. For example, you could call it <code class="language-plaintext highlighter-rouge">/tutorial</code>, which would put a directory called <code class="language-plaintext highlighter-rouge">tutorial</code> in the container’s home directory with your test script in it.</p>
-      </li>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">-it</code> is for opening an interactive container. Docker containers can also be used to automatically run scripts and terminate when they are completed, but you will need an interactive container for this tutorial.</p>
-      </li>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">sswiston/rb_tp:4</code> is the name of the Docker image you want to use.</p>
-      </li>
-      <li>
-        <p><code class="language-plaintext highlighter-rouge">/bin/bash</code> opens up a Bash shell so that you can enter commands. This will allow you to launch RevBayes and run scripts.</p>
-      </li>
-    </ul>
-
-    <p>Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.</p>
-  </li>
-  <li>
-    <p>Navigate to the location of your test script with <code class="language-plaintext highlighter-rouge">cd [filepath]</code>, using the filepath that you mounted your directory to in Step 3.</p>
   </li>
   <li>
     <p>Now you can use RevBayes to run the test script with the command <code class="language-plaintext highlighter-rouge">rb test.Rev</code>. This should open RevBayes and run the script, which will give a message indicating that it has been run correctly:</p>
@@ -272,7 +314,7 @@ bsub \
 -cwd $PROJECTDIR \
 -J $NAME \
 -o $OUTDIR$NAME.stdout.txt \
--a 'docker(sswiston/rb_tp:4)' /bin/bash /project/rev_shell.sh
+-a 'docker(sswiston/phylo_docker:slim_amd64)' /bin/bash /project/rev_shell.sh
 </code></pre></div></div>
 
 <p>Let’s pick apart the elements of this script. There is a section at the top for defining variables, and then a <code class="language-plaintext highlighter-rouge">bsub</code> command using those variables.</p>
@@ -321,7 +363,7 @@ bsub \
 
     <ul>
       <li>
-        <p><code class="language-plaintext highlighter-rouge">'docker(sswiston/rb_tp:4)'</code> is the Docker image being used. The image will be pulled from Docker Hub.</p>
+        <p><code class="language-plaintext highlighter-rouge">'docker(sswiston/phylo_docker:slim_amd64)'</code> is the Docker image being used. The image will be pulled from Docker Hub.</p>
       </li>
       <li>
         <p><code class="language-plaintext highlighter-rouge">/bin/bash</code> is the initial command that will run once the container is open.</p>
