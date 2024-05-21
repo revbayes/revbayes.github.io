@@ -1,14 +1,19 @@
 #####
 
 
-loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+loadPlugin("TensorPhylo", "/home/mlandis/.local/lib/tensorphylo")
 
 ##################
 # ANALYSIS SETUP #
 ##################
 
+# set random seed
+my_seed = rUniformInteger(1,0,999999)[1]
+seed(my_seed)
+
 # filesystem
 analysis      = "kadua_divtime_timeFIG"
+analysis      += ".seed_" + my_seed
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -152,7 +157,6 @@ for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
 
-xx
 
 
 ####################
@@ -202,7 +206,7 @@ monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")
 
 # run MCMC
 mymcmc.run(num_gen)
