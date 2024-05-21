@@ -94,65 +94,19 @@ source(phylo_code_fn)
 # MOLECULAR MODEL #
 ###################
 
-if (false) {
-    source("./scripts/timefig_dating/mol_timeFIG.Rev")
-} else {
-    mu_mol_base ~ dnExp(10)
-    moves.append( mvScale(mu_mol_base, weight=5) )
-
-    mu_mol_sd <- 0.587405
-    for (i in 1:num_branches) {
-        ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
-        mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
-        moves.append( mvScale(mu_mol_branch[i], weight=1) )
-    }
+source("./scripts/timefig_dating/mol_multilocus_CTMC.Rev")
 
 
-    for (i in 1:num_loci) {
-        mu_mol_locus_rel[i] <- 1.0
-        if (i > 1) {
-            mu_mol_locus_rel[i] ~ dnGamma(2,2)
-            moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
-        }
-        mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
-    }
+##########################
+# ASSIGN VALUES TO MODEL #
+##########################
 
-    for (i in 1:num_loci) {
-        kappa[i] ~ dnGamma(2,2)
-        moves.append(mvScale(kappa[i], weight=3))
-        
-        pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
-        moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
-        
-        Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
-    }
-
-    for (i in 1:num_loci) {
-        alpha[i] ~ dnExp(0.1)
-        moves.append(mvScale(alpha[i], weight=3))
-        
-        site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
-                                           rate=alpha[i],
-                                           numCats=4)
-    }
-
-    for (i in 1:num_loci) {
-        x_mol[i] ~ dnPhyloCTMC(
-            Q=Q_mol[i],
-            tree=timetree,
-            branchRates=mu_mol[i],
-            siteRates=site_rates[i],
-            rootFrequencies=pi_mol[i],
-            nSites=num_sites[i],
-            type="DNA" )
-    }
-}
+timetree.setValue(phy)
+timetree.clampCharData(dat_nn)
 
 for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
-
-xx
 
 
 ####################
@@ -202,7 +156,9 @@ monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")
+
+mymcmc.operatorSummary()
 
 # run MCMC
 mymcmc.run(num_gen)
