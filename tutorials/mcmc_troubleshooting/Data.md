@@ -1,20 +1,14 @@
-Data Quality Issues
-========
-{:.section}
+{% section Data Quality Issues %}
 
 While increasing the amount of data you use to generate a phylogenetic tree is generally a good thing, it can also make convergence more difficult. Increasing the amount of data increases the computational cost of estimating a phylogenetic tree, and therefore, can negatively impact inference performance. This is especially true in situations where the data are highly uncertain, have lots of missing data, or are in conflict with other sources of data. Below, we will examine a few common sources of MCMC difficulties that relate to data quality issues. 
 
 
-Conflict 
-========
-{:.subsection}
+{% subsection Conflict %}
 
 Conflict occurs when multiple sources of data disagree with one another about the topology, branch lengths or other parameters. Examples of this can include if two genes favor different topologies, or if morphological data and molecular data favor different trees. It is advisable to run different data sources independently to assess if this issue is at play in your dataset. 
 
 
-Sparsity 
-========
-{:.subsection}
+{% subsection Sparsity %}
 
 In general, assembling more data leads to more precise and more accurate inferences. Previous research has shown that total-evidence studies require $\sim$300 morphological characters to obtain reliable estimates of tree topology and divergence times in extinct clades {% cite Barido-Sottani2020 %}. 
 

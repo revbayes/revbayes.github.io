@@ -1,15 +1,11 @@
 {% assign models_script = "models.Rev" %}
 
-Models
-======
-{:.section}
+{% subsection Models %}
 
 If there are still convergence problems after the inference setup, priors, and starting values have been checked, we have to consider whether the model is appropriate for our data. There are steps to ensure this that can be taken during setup already, but also tests and modifications that can be used afterwards, as detailed below.
 
 
-Helpful Tools
-=============
-{:.subsection}
+{% subsection Helpful Tools %}
 
 It can seem hard at first to decide on appropriate models or model components, especially if it seems unclear what to base such decisions on. Luckily there exist a number of tools that can be used to make more informed decisions.
 
@@ -20,17 +16,13 @@ It can seem hard at first to decide on appropriate models or model components, e
 - **PBDB tools**: Lists various [resources](https://paleobiodb.org/#/resources) to help with assembling and processing fossil data, calculating diversification and sampling parameters, and other useful functions.
 
 
-Separating Joint Inferences
-===========================
-{:.subsection}
+{% subsection Separating Joint Inferences %}
 
 When running inferences of different parameters jointly, e.g., when using different data types in the same analysis, or inferring topologies jointly with node ages, convergence issues can arise if those different inference parts are supporting different solutions. For example, if molecular and morphological data suggests different tree topologies. If the supported topologies differe too much, the joint model will be torn between them, being unable to converge (as each data source lowers the likelihood of the result the other one supports and vice versa). Similar issues can be cuased if e.g., different partitions strongly support different topologies.
 {{ models_script | snippet:"block#","1" }}
 
 
-Model Assumptions and Adequacy
-==============================
-{:.subsection}
+{% subsection Model Assumptions and Adequacy %}
 
 Besides aforementioned conflicts, the model may also be much more fundamentally unsuitable for the data. It mighth thus be necessary to revisit the assumptions of the model and check whether the data meets those assumptions. Are sample sizes sufficient? Is variation distributed as expected? Are numbers of trait states/nucleotides severely skewed?
 
@@ -41,9 +33,7 @@ The concept of that approach is rather straightforward, and any model or analysi
 PPS approaches have been developed for various kinds of phylogenetic models already, many of which could be used in RevBayes. The tutorial [Introduction to Posterior Prediction](https://revbayes.github.io/tutorials/intro_posterior_prediction/) demonstrates the concept and neccessary Rev code in more detail, while three associated tutorials exemplify the use of posterior prediction to test tree inference models using the P^3 approach.
 
 
-Reducing Complexity
-===================
-{:.subsection}
+{% subsection Reducing Complexity %}
 
 At last, we might have to consider reducing the complexity of our model. While modern approaches allow us to incorporate all kinds of processes and interactions, and to consider all kinds of patterns, such complex models will only work well if the data contains enough signal to inform this complexity. Similar to any statistical test requiring sufficient sample size to produce meaningful results, these models require certain structure and heterogeneity in the data to be able to infer parameters without too much uncertainty.
 

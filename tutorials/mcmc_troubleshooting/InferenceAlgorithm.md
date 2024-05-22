@@ -1,15 +1,11 @@
 {% assign inference_script = "inference.Rev" %}
 
-Inference algorithm
-==================
-{:.section}
+{% section Inference algorithm %}
 
-An MCMC can get stuck on a local optiumum, and if that happens for long enough, it could give the impression of converge, because the sampled parameter values would seem to have stabilised. There can be various causes for this to happen, but it seems particularly common when the likelihood surface is complex and many parameters are correlated. A way how this can manifest is the presence of 'plateaus' in the trace -- parameters being stuck around the same value for a long time and then suddenly jumping to other values further away.
+An MCMC can get stuck on a local optimum, and if that happens for long enough, it could give the impression of converge, because the sampled parameter values would seem to have stabilised. There can be various causes for this to happen, but it seems particularly common when the likelihood surface is complex and many parameters are correlated. A way how this can manifest is the presence of 'plateaus' in the trace -- parameters being stuck around the same value for a long time and then suddenly jumping to other values further away.
 
 
-Independent Runs
-================
-{:.subsection}
+{% subsection Independent Runs %}
 
 A simple way to notice problems with local optima is to run several independent chains. If the resulting MCMC samples are different, this would indicate that the runs got stuck on different local optima.
 {{ inference_script | snippet: "block#", "1" }}
@@ -17,9 +13,7 @@ A simple way to notice problems with local optima is to run several independent 
 Note that the independent chains should be initialised at different (if possible random) starting values, to make it more likely that they would end up on different local optima.
 
 
-MCMCMC
-======
-{:.subsection}
+{% subsection MCMCMC %}
 
 A more elaborate way of running the analysis on a complex likelihood surface is to use Metropolis-coupled MCMC (MCMCMC or MC^3). Instead of several independent (but with regards to their setup equivalent) chains, we make use of so-called 'heated' chains.
 

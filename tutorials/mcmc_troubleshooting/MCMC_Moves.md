@@ -1,8 +1,6 @@
 {% assign moves_script = "moves.Rev" %}
 
-Moves/Operators
-===============
-{:.section}
+{% section Moves/Operators %}
 
 In order for the MCMC to work properly, every parameter that is supposed to be optimized (i.e., for which we are searching for the best estimate) has to be associated with a move or operator.
 The type of move and its settings determine how the parameter can be changed between MCMC steps, how much it can be changed by, and how often a change is attempted.
@@ -22,9 +20,7 @@ The whole set of moves in an analysis are collected in a moves vector (which can
 {{ moves_script | snippet: "block#", "3" }}
 
 
-Weights
-==========
-{:.subsection}
+{% subsection Weights %}
 
 As mentioned, the weight of a move determines how often that move is attempted, meaning that parameters with higher weights are updated more often, which can be helpful for parameters that are harder to optimize or for which a larger parameter space needs to be covered to find the optima.
 For simpler parameters, lower weights are sufficient, to not make the MCMC inefficient by enforcing unnecessary move-attempts.
@@ -36,9 +32,7 @@ The weights of slower converging parameters can be increased to speed up the sea
 {{ moves_script | snippet: "block#", "4" }}
 
 
-Step Sizes
-==========
-{:.subsection}
+{% subsection Step Sizes %}
 
 When a proposal is made to move a parameter to a new value, this proposal dose not only depend on the nature of the move (e.g., slide, scale, ...) but also the current settings of how far from the current value the new proposed one can be.
 This is called the step-size of the move, and is usually determined by some parameters of the move function (e.g., the window size `delta` of the slide move).
@@ -47,9 +41,7 @@ If the step size is too small, this can mean the chain is only approaching the o
 If the step size is too large, its sampling may be too coarse to properly explore the likelihood, and/or it may overshoot the optimal values.
 {{ moves_script | snippet: "block#", "5" }}
 
-Multiple Operators vs. Autotuning
-=================================
-{:.subsection}
+{% subsection Multiple Operators vs. Autotuning %}
 
 The efficiency of moves is often measured in acceptance proportion -- how many times when a move was proposed during the MCMC has it actually been accepted?
 When a move is only accepted very rarely, this may imply that it is not exploring the space in a sensible way (e.g., perhaps the step size is too large), and since the parameter is only updated rarely, it does not contribute much to the analysis.
@@ -73,9 +65,7 @@ That value can be changed for each move individually using the argument `tuneTar
 {{ moves_script | snippet: "block#", "7" }}
 
 
-Diagnostics
-===========
-{:.subsection}
+{% subsection Diagnostics %}
 
 As suggested above, acceptance proportion is a common way to assess whether the MCMC is well tuned.
 In RevBayes, this can be checked by applying `.operatorSummary()` to the `mcmc` object once it is run.

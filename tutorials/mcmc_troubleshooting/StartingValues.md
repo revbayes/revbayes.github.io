@@ -1,8 +1,6 @@
 {% assign startingvals_script = "startingvals.Rev" %}
 
-Starting Values
-===============
-{:.section}
+{% section Starting Values %}
 
 The MCMC chain has to have a starting point from which to begin proposing new parameter values.
 Thus, it is 'initialized' with some random values (usually drawn from the priors).
