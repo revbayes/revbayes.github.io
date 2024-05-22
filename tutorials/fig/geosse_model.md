@@ -14,9 +14,11 @@ prerequisites:
 
 {% section GeoSSE model with two regions %}
 
-In the previous examples, we used a Cladogenetic State change Speciation and Extinction (ClaSSE) model {% cite Goldberg2012 %} to investigate the evolution of primates. ClaSSE jointly models character evolution and the birth-death process, incorporating both anagenetic and cladogenetic state changes. The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the South American lizard genus *Liolaemus* using two regions: Andean, and non-Andean {% cite Esquerré2019 %}.
+The GeoSSE model is a member of a broader class of methods that include state-dependent diversification -- that is, the discrete character state of a lineage may impact its rates of speciation, extinction, and state transition. These models are known as [SSE](https://revbayes.github.io/tutorials/sse/bisse-intro.html) models. Other examples of SSE models include [BiSSE](https://revbayes.github.io/tutorials/sse/bisse.html) (binary state speciation and extinction model) and [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) (cladogenetic state change speciation and extinction model). For more information about how these methods jointly model character evolution and the birth-death process, see the associated tutorials.
 
-NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations.
+The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian *Kadua* using two regions: old islands, and young islands.
+
+NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations. However, for the purposes of this tutorial, we group the Hawaiian islands into two categories so that we can easily enumerate all of the model rates.
 
 {% subsection The GeoSSE model %}
 
@@ -45,45 +47,42 @@ Transition diagram for the GeoSSE model with two regions, based on Figure 1 from
 {% subsection Setup %}
 
 > ## Important version info!!
-> This tutorial is the first in a series of lessons explaining how to build increasingly powerful but computationally demanding GeoSSE-type models for biogeographic analyses. Inference under these models is powered by the Tensorphylo plugin for RevBayes, located here: [bitbucket.org/mrmay/tensorphylo/src/master](https://bitbucket.org/mrmay/tensorphylo/src/master/) {% cite May2022 %}.
-> This tutorial, and following tutorials for GeoSSE-type models, will also require a development version of RevBayes built from the `hawaii_fix` branch (this message will be removed when the branch is merged).
-> As an alternative to building the development version of RevBayes and installing Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: [revbayes.github.io/tutorials/docker](https://revbayes.github.io/tutorials/docker.html).
+> This tutorial is the first of a series of lessons explaining how to build increasingly powerful but computationally demanding GeoSSE-type models for biogeographic analyses. Inference under these models is powered Tensorphylo plugin for RevBayes, located here: [bitbucket.org/mrmay/tensorphylo/src/master](https://bitbucket.org/mrmay/tensorphylo/src/master/) {% cite May2022 %}.
+> This tutorial, and following tutorials for GeoSSE-type models, will require development versions of RevBayes and TensorPhylo. Revbayes must be built from the `tp_stochmap_dirty_merge` branch, and TensorPhylo from the `tree-inference` branch (this message will be removed when the branch is merged).
+> As an alternative to building the development versions of RevBayes and Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: [revbayes.github.io/tutorials/docker](https://revbayes.github.io/tutorials/docker.html).
 {:.info}
 
-Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, `tree.mcc.tre` is a time-calibrated phylogeny of *Liolaemus*. `ranges.nex` assigns ranges to each species for a two-region system: an Andean region and a non-Andean region in South America. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.
+Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, `kadua.tre` is a time-calibrated phylogeny of *Kadua*. `kadua_range_n2.nex` assigns ranges to each species for a two-region system: an "old islands" region and a "young islands" region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.
 
-If you prefer to run a single script instead of entering each command manually, the RevBayes script called `geosse.Rev` contains all of the commands that are used in the tutorial. There is also an R script for plotting the analysis results. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you will run RevBayes commands, or where you will put the `geosse.Rev` and `geosse.R` scripts. Then, you should create a `data` directory inside the tutorial directory, and download the two datafiles to this directory.
+If you prefer to run a single script instead of entering each command manually, the RevBayes script called `kadua_geosse.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you put the `geosse.Rev` script. Then, you should create a `data` directory inside the tutorial directory. Here, create another directory called `kadua`, and download the two datafiles to this directory.
 
 {% section GeoSSE in RevBayes %}
 
 {% subsection Getting started %}
 
-After starting up RevBayes from within your local `scripts` directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at `~/tensorphylo`, you would use the following command to load the plugin:
+After starting up RevBayes from within your main tutorial directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at `~/tensorphylo`, you would use the following command to load the plugin:
 
 ```
 loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
 ```
 
-Note that if you're using the RevBayes Docker image, then the Tensorphylo plugin is installed in the `/` (root) directory:
+Note that if you're using the PhyloDocker image, then the Tensorphylo plugin is installed in the `/` (root) directory:
 
 ```
 loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
 ```
 
-It is also a good idea to set a seed. If you want to exactly replicate the results of the tutorial, you should use the seed `1`.
-
-```
-seed(1)
-```
-
 We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.
 
 ```
-fp          = "../"
-dat_fp      = fp + "data/"
+# FILESYSTEM
+analysis    = "geosse"
+fp          = "./"
+dat_fp      = fp + "data/kadua/"
 out_fp      = fp + "output/"
-bg_fn       = dat_fp + "ranges.nex"
-phy_fn      = dat_fp + "tree.mcc.tre"
+bg_fn       = dat_fp + "kadua_range.n2.nex"
+phy_fn      = dat_fp + "kadua.tre"
+out_fn      = out_fp + analysis
 ```
 
 {% subsection Data %}
@@ -278,9 +277,9 @@ We also want MCMC to keep track of certain things while it runs. We want it to p
 ```
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fn+".model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fn+".states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fn+.stoch.log")
 ```
 
 Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use `m_w`. RevBayes will find all the other parameters that are connected to `m_w` and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
@@ -296,34 +295,35 @@ After the MCMC analysis has concluded, we can summarize the ancestral states we 
 
 ```
 f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
-x_states = readAncestralStateTrace(file=out_fp+"states.log")
-summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
+x_stoch = readAncestralStateTrace(file=out_fn+".stoch.log")
+x_states = readAncestralStateTrace(file=out_fn+".states.log")
+summarizeCharacterMaps(x_stoch,timetree,file=out_fn+".events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
                    include_start_states=true,
-                   file=out_fp+"ase.tre",
+                   file=out_fn+".ase.tre",
                    summary_statistic="MAP",
                    reconstruction="marginal",
                    burnin=f_burn,
                    nStates=3,
                    site=1)
-writeNexus(state_tree,filename=out_fp+"ase.tre")
+writeNexus(state_tree,filename=out_fn+".ase.tre")
 ```
 
 {% subsection Output %}
 
-One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using [RevGadgets](https://github.com/revbayes/RevGadgets), an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the `geosse.R` script, or by executing the following code in R. You can also examine the output files, like `model.log`, to assess the relative rates of different processes occurring in different regions.
+One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using [RevGadgets](https://github.com/revbayes/RevGadgets), an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by executing the following code in R. You can also examine the output files, like `model.log`, to assess the relative rates of different processes occurring in different regions.
+
+NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
 
 ```
 library(RevGadgets)
 library(ggplot2)
-tree_file = "../output/ase.tre"
-output_file = "../output/states.png"
-states <- processAncStates(tree_file, state_labels=c("0"="Andean", "1"="Non-Andean", "2"="Both"))
+tree_file = "./output/geosse.ase.tre"
+output_file = "./output/geosse.states.png"
+states <- processAncStates(tree_file, state_labels=c("0"="Old", "1"="Young", "2"="Both"))
 plotAncStatesMAP(t=states,
-                 tree_layout="circular",
-                 node_size=1.5,
+                 node_size=2,
                  node_size_as=NULL) +
                  ggplot2::theme(legend.position="bottom",
                                 legend.title=element_blank())
@@ -331,13 +331,11 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/geosse_model/states.png" width="95%">
+<img src="output/geosse.states.png" width="95%">
 {% figcaption %}
-Ancestral state reconstruction of *Liolaemus*.
+Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
 {% endfigure %}
-
-
 
 {% section GeoSSE model with more regions %}
 
