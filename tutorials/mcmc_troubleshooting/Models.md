@@ -1,6 +1,6 @@
 {% assign models_script = "models.Rev" %}
 
-{% subsection Models %}
+{% section Models %}
 
 If there are still convergence problems after the inference setup, priors, and starting values have been checked, we have to consider whether the model is appropriate for our data. There are steps to ensure this that can be taken during setup already, but also tests and modifications that can be used afterwards, as detailed below.
 
