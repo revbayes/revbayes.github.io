@@ -33,10 +33,9 @@ dat_calib = readDataDelimitedFile(file=calib_fn, header=true,
                                   separator=",", rownames=false)
 
 # molecular input
-mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
-num_loci = mol_idx.size()
+num_loci = 10
 for (i in 1:num_loci) {
-    mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
+    mol_fn[i] = dat_fp + "kadua_gene_" + i + ".nex"
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
     num_sites[i] = dat_mol[i].nchar()
 }
