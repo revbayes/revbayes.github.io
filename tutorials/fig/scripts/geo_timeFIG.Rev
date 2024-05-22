@@ -1,14 +1,6 @@
-#
-if (!exists("fp"))             fp = "./"
-if (!exists("geo_fp"))         geo_fp = fp + "hawaii_data_v2/"
-if (!exists("feature_fn"))     feature_fn = geo_fp + "feature_summary.csv"
-if (!exists("times_fn"))       times_fn = geo_fp + "age_summary.csv"
-if (!exists("max_range_size")) max_range_size = -1
-if (!exists("use_rj"))         use_rj = false
-
-###########################
-# geofeature_test.Rev     #
-###########################
+#######################
+# geo_timeFIG.Rev     #
+#######################
 
 # read in basic paleogeo system files
 times_table = readDataDelimitedFile(times_fn, delimiter=",", header=true)
@@ -52,7 +44,6 @@ bound <- 2
 rj_base_sym_dist = dnUniform(-bound, bound)
 rj_base_neg_dist = dnUniform(-bound, 0)     # negative only (e.g. distance on dispersal)
 rj_base_pos_dist = dnUniform(0, bound)      # positive only (e.g. distance on betw.-reg. speciation)
-
 rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
 rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
 rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
@@ -70,6 +61,7 @@ for (i in 1:feature_QB[1].size()) phi_d[i] ~ rj_sym_dist
 for (i in 1:feature_QB[1].size()) phi_b[i] ~ rj_sym_dist
 
 # force signed relationships between region features and rates
+# (overrides existing distribution assignments)
 phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
 phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
 sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
@@ -79,33 +71,71 @@ phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
 sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
 sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
 
-# categorical feature effects
-for (i in 1:feature_CW[1].size()) sigma_w[i].setValue(sigma_w_init)
-for (i in 1:feature_CW[1].size()) sigma_e[i].setValue(sigma_e_init)
-for (i in 1:feature_CB[1].size()) sigma_d[i].setValue(sigma_d_init)
-for (i in 1:feature_CB[1].size()) sigma_b[i].setValue(sigma_b_init)
-
-# quantitative feature effects
-for (i in 1:feature_QW[1].size()) phi_w[i].setValue(phi_w_init)
-for (i in 1:feature_QW[1].size()) phi_e[i].setValue(phi_e_init)
-for (i in 1:feature_QB[1].size()) phi_d[i].setValue(phi_d_init)
-for (i in 1:feature_QB[1].size()) phi_b[i].setValue(phi_b_init)
-
-# TODO
+# regional rate factors
 for (t in 1:num_times) {
-    # do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+    # NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
 	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
 	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
 	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
 	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
 }
 
-# define number of regions, etc.
-# n_regions = m_b[1].size()
-# n_region_pairs = n_regions * (n_regions-1)
-# if (max_range_size == -1) max_range_size = n_regions
+# initialize categorical feature effects, create moves, add monitor variables
+for (i in 1:feature_CW[1].size()) {
+    sigma_w[i].setValue(0)
+    moves.append( mvScale(sigma_w[i], weight=2) )
+    moves.append( mvSlide(sigma_w[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CW[1].size()) {
+    sigma_e[i].setValue(0)
+    moves.append( mvScale(sigma_e[i], weight=2) )
+    moves.append( mvSlide(sigma_e[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_d[i].setValue(0)
+    moves.append( mvScale(sigma_d[i], weight=2) )
+    moves.append( mvSlide(sigma_d[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_b[i].setValue(0)
+    moves.append( mvScale(sigma_b[i], weight=2) )
+    moves.append( mvSlide(sigma_b[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
+}
 
-# get number of states
-# n_states = 0
-# for (i in 1:max_range_size) n_states += choose(n_regions, i)
-
+# initialize quantitative feature effects, create moves, add monitor variables
+for (i in 1:feature_QW[1].size()) {
+    phi_w[i].setValue(0)
+    moves.append( mvScale(phi_w[i], weight=2) )
+    moves.append( mvSlide(phi_w[i], weight=2) )
+    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QW[1].size()) {
+    phi_e[i].setValue(0)
+    moves.append( mvScale(phi_e[i], weight=2) )
+    moves.append( mvSlide(phi_e[i], weight=2) )
+    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_d[i].setValue(0)
+    moves.append( mvScale(phi_d[i], weight=2) )
+    moves.append( mvSlide(phi_d[i], weight=2) )
+    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_b[i].setValue(0)
+    moves.append( mvScale(phi_b[i], weight=2) )
+    moves.append( mvSlide(phi_b[i], weight=2) )
+    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
+}

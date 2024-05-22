@@ -9,16 +9,11 @@
 analysis      = "kadua_divtime_uncalibrated"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
-calib_fn      = dat_fp + "kadua_calib.csv"
 out_fn        = "./output/" + analysis
-
-phylo_code_fn = "./scripts/timefig_dating/phylo_BDP.Rev"
-mol_code_fn   = "./scripts/timefig_dating/mol_multilocus_CTMC.Rev"
-clade_fn      = "./scripts/timefig_dating/kadua_clade.Rev" 
 
 # MCMC variables
 num_gen = 10000
-print_gen = 10
+print_gen = 50
 moves = VectorMoves()
 monitors = VectorMonitors()
 
@@ -29,10 +24,9 @@ num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 
 # molecular input
-mol_idx = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500 ]
-num_loci = mol_idx.size()
+num_loci = 10
 for (i in 1:num_loci) {
-    mol_fn[i] = dat_fp + "genes/kadua_" + mol_idx[i] + "_supercontig.nex"
+    mol_fn[i] = dat_fp + "kadua_gene_" + i + ".nex"
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
     num_sites[i] = dat_mol[i].nchar()
 }
@@ -46,13 +40,12 @@ for (i in 1:num_loci) {
     dat_mol[i].includeTaxa( taxa_names )
     dat_mol[i].addMissingTaxa( taxa_names )
 }
-i
 
 ##############
 # TREE MODEL #
 ##############
 
-# source("phylo_BDP.Rev")
+# source("./scripts/phylo_BDP.Rev")
 
 diversification ~ dnExp(5)
 turnover ~ dnBeta(2,2)
@@ -84,17 +77,19 @@ moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
 
 timetree.setValue(phy)
 
+
 # moves.append( mvNNI(timetree, weight=2*num_taxa) )
 # moves.append( mvFNPR(timetree, weight=1*num_taxa) )
 
 # clade age monitors
-source(clade_fn)
-age_ingroup := tmrca(timetree, clade_ingroup)
-age_affinis := tmrca(timetree, clade_affinis)
-age_centrantoides := tmrca(timetree, clade_centrantoides)
-age_flynni := tmrca(timetree, clade_flynni)
-age_littoralis := tmrca(timetree, clade_littoralis)
+source("./scripts/kadua_clade.Rev")
+age_ingroup           := tmrca(timetree, clade_ingroup)
+age_affinis           := tmrca(timetree, clade_affinis)
+age_centrantoides     := tmrca(timetree, clade_centrantoides)
+age_flynni            := tmrca(timetree, clade_flynni)
+age_littoralis        := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
+diff_age_root_ingroup := root_age - age_ingroup
 
 # add biogeographic calibration to ingroup node here!
 # ...
@@ -104,7 +99,7 @@ age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 # MOLECULAR MODEL #
 ###################
 
-# source("mol_timeFIG.Rev")
+# source("./scripts/mol_multilocus_CTMC.Rev")
 
 mu_mol_base ~ dnExp(10)
 moves.append( mvScale(mu_mol_base, weight=5) )

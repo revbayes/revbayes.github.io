@@ -1,6 +1,9 @@
 
 # base substitution rate
 mu_mol_base ~ dnExp(10)
+moves.append(mvScale(mu_mol_base, weight=5) )
+
+# standard deviation on substitution rate (fixed)
 mu_mol_sd <- 0.587405
 
 # relative among branch rate variation
@@ -8,6 +11,7 @@ mu_mol_sd <- 0.587405
 for (i in 1:num_branches) {
     ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
     mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
+    moves.append(mvScale(mu_mol_branch[i], weight=1))
 }
 
 # relative among loci rate variation
@@ -20,17 +24,22 @@ for (i in 1:num_loci) {
         mu_mol_locus_rel[i] <- 1.0
     } else {
         mu_mol_locus_rel[i] ~ dnGamma(2,2)
+        moves.append(mvScale(mu_mol_locus_rel[i], weight=3))
     }
     # relaxed clock across branch-locus rate combinations
     mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
 
     # molecular substitution rate matrix
-    kappa[i] ~ dnGamma(2,2)
+    kappa_mol[i] ~ dnGamma(2,2)
+    moves.append(mvScale(kappa_mol[i], weight=3))
+
     pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
-    Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+    moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
+    Q_mol[i] := fnHKY(kappa=kappa_mol[i], baseFrequencies=pi_mol[i])
 
     # among site rate variation, +Gamma4 model
-    alpha[i] ~ dnExp(0.1) # expected value 1/0.1 == 10
+    alpha[i] ~ dnExp(0.1)   # expected value 1/0.1 == 10A
+    moves.append(mvScale(alpha[i], weight=3))
     site_rates[i] := fnDiscretizeGamma(shape=alpha[i], rate=alpha[i], numCats=4, median=true)
     
     # phylogenetic CTMC for substitution process that generates variation in locus i
