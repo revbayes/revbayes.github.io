@@ -71,5 +71,5 @@ As suggested above, acceptance proportion is a common way to assess whether the 
 In RevBayes, this can be checked by applying `.operatorSummary()` to the `mcmc` object once it is run.
 {{ moves_script | snippet: "block#", "8" }}
 
-We can see here that [...]
+**To be continued...**
 

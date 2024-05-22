@@ -30,7 +30,7 @@ Especially for models with many parts, the assumptions and their interactiosn ca
 
 The concept of that approach is rather straightforward, and any model or analysis combining multiple models can be tested this way, as long as both inference and simulation are possible with the same model. However, the main difficulties lie in having sets of summary statistics which capture the relevant characteristics in which the model and the data need to match, and to interpret what particular data-model-mismatches the discrepant summary statistics translate into. Also, it should be noted that this approach can only be used if an MCMC chain can be run (to have a posterior to sample from to simulate new data sets), and not if it fails to run to begin with.
 
-PPS approaches have been developed for various kinds of phylogenetic models already, many of which could be used in RevBayes. The tutorial [Introduction to Posterior Prediction](https://revbayes.github.io/tutorials/intro_posterior_prediction/) demonstrates the concept and neccessary Rev code in more detail, while three associated tutorials exemplify the use of posterior prediction to test tree inference models using the P^3 approach.
+PPS approaches have been developed for various kinds of phylogenetic models already, many of which could be used in RevBayes. The tutorial [Introduction to Posterior Prediction](https://revbayes.github.io/tutorials/intro_posterior_prediction/) demonstrates the concept and neccessary Rev code in more detail, while three associated tutorials exemplify the use of posterior prediction to test tree inference models using the P$^3$ approach.
 
 
 {% subsection Reducing Complexity %}

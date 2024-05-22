@@ -15,7 +15,7 @@ Note that the independent chains should be initialised at different (if possible
 
 {% subsection MCMCMC %}
 
-A more elaborate way of running the analysis on a complex likelihood surface is to use Metropolis-coupled MCMC (MCMCMC or MC^3). Instead of several independent (but with regards to their setup equivalent) chains, we make use of so-called 'heated' chains.
+A more elaborate way of running the analysis on a complex likelihood surface is to use Metropolis-coupled MCMC (MCMCMC or MC$^3$). Instead of several independent (but with regards to their setup equivalent) chains, we make use of so-called 'heated' chains.
 
 For these additional chains, the posterior probability is raised to a power, which flattens the likelihood surface and thus lets them move faster and easier across it. This means they can explore areas in parameter space that the regular chain might not have gotten to.
 

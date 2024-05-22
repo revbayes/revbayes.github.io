@@ -14,6 +14,7 @@ In the trickier cases, this can mean that our starting point is at a combination
 When an analysis is likely to crash upon starting or to take a long time to get going, strategically setting some starting values to reasonable positions may be a simple way to fix it.
 In RevBayes, starting values can be set for any parameter after their prior distribution is specified, using the function `.setValue()`.
 {{ startingvals_script | snippet: "block#", "1" }}
+{{ startingvals_script | snippet: "block#", "2" }}
 
 It may not be immediately clear what a 'reasonable' starting value for a parameter should be, and in more complex analyses it may be challenging to find out which of the many moving parts of the analysis are in conflict with one another.
 But revisiting what the parameters stand for, and how they relate to one another -- perhaps by visualizing the chosen prior distributions and the model's DAG -- is usually a good way of getting a better sense for what might be a good way forward.
