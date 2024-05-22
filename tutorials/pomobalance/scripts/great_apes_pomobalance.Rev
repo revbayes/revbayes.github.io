@@ -6,7 +6,7 @@
 
 N <- 10
 
-data <- readPoMoCountFile(countFile="data/great_apes_BS_10000.cf", virtualPopulationSize=N, format="PoMo")
+data <- readCharacterDataDelimited("../data/great_apes_BS_10000.txt", stateLabels=58, type="NaturalNumbers", delimiter=" ", header=FALSE)
 
 taxa       <- data.taxa()
 
@@ -55,7 +55,7 @@ moves.append(mvAVMVN(sigma) )
 
 phi := [1.0,1.0+sigma,1.0+sigma,1.0]
 
-# Strenths of the balancing selection
+# Strength of the balancing selection
 
 for (i in 1:6){
 
@@ -110,7 +110,7 @@ psi := treeAssembly(topology, branch_lengths)
 
 # Create the substitution model and clamp with our observed data
 
-sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
+sequences ~ dnPhyloCTMC(psi,Q=Q,type="NaturalNumbers")
 
 sequences.clamp(data)
 
