@@ -48,6 +48,10 @@ Biogeographic dating with a process-based approach uses paleogeographically-info
 
 This tutorial builds up to a process-based biogeographic dating analysis using the TimeFIG model. It begins with a simple molecular phylogenetic analysis that has *no* capability for time calibration. Then, we'll repeat the analysis using a prior-based biogeographic node age calibration. Lastly, we'll perform a process-based TimeFIG analyses to estimate divergence times.
 
+- [Part 1: Molecular phylogenetics](timefig_dating.html#molecular-phylogenetics) (Day 1 of workshop)
+- [Part 2: Biogeographic dating with node calibrations](biogeographic-dating-with-node-calibration) (Day 2 of workshop)
+- [Part 3: Biogeographic dating with TimeFIG](timefig_dating.html#biogeographic-dating-with-timefig) (Day 2 of workshop)
+
 As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 new homologous genetic markers obtained from the Angiosperms353 protocol.
 
 Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
@@ -472,7 +476,7 @@ source("./scripts/timefig_dating/kadua_divtime_nodeprior.Rev")
 
 If the script runs successfully, you should see MCMC diagnostics being printed to the screen. If the script fails to run, carefully read the error messages provided by RevBayes to correct the issue. RevBayes error messages generally report the location and the type of error.
 
-{% subsection Assigning node age calibration densities %}
+{% subsubsection Assigning node age calibration densities %}
 
 Once you have your new copy of the script, begin editing it. First, we'll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval).
 
