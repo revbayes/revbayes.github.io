@@ -1,0 +1,39 @@
+#### Conflicting priors - initial and adjusted
+
+# Read the full list of taxa (including all fossils and extant species #
+taxa <- readTaxonData("data/bears_taxa.tsv")
+
+# Specify a uniform prior on the origin #
+origin_time ~ dnUnif(37.0, 55.0)
+
+# Specify a prior on the speciation rate #
+speciation_rate ~ dnLognormal(2.0, 1.0)
+
+# Specify a prior on the extinction rate #
+extinction_rate ~ dnExponential(100)
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+fbd_tree ~ dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=0.01, rho=1.0, taxa=taxa)
+
+### Moves
+
+moves = VectorMoves()
+moves.append( mvSlide(origin_time, weight=1.0) )
+moves.append( mvScale(speciation_rate, weight=1) )
+moves.append( mvScale(extinction_rate, weight=1) )
+
+# These moves update the tree topology 
+moves.append( mvFNPR(fbd_tree, weight=15.0) )
+moves.append( mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0) )
+
+# These moves update the node ages #
+moves.append( mvNodeTimeSlideUniform(fbd_tree, weight=40.0) )
+moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
+
+### MCMC 
+mymodel = model(fbd_tree)
+monitors = VectorMonitors()
+monitors.append( mnModel(filename="output/prior_conflict.log", printgen=1000) )
+mymcmc = mcmc(mymodel, monitors, moves)
+
+mymcmc.run(generations=1000000)
