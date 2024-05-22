@@ -114,6 +114,8 @@ for (i in 1:num_loci) {
 }
 ```
 
+{% subsubsection Birth-death process %}
+
 Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source( phylo_code_fn )`.
 
 We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Throughout the tutorial, we will pair new model parameters with moves that eventually instruct MCMC how to update parameter values during model fitting.
@@ -186,6 +188,8 @@ age_flynni := tmrca(timetree, clade_flynni)
 age_littoralis := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 ```
+
+{% subsubsection Molecular substitution model %}
 
 Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source( mol_code_fn )`, but you should specify the model by hand to better understand its composition.
 
@@ -273,6 +277,8 @@ for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
 }
 ```
+
+{% subsubsection MCMC %}
 
 We also apply special joint moves for updating the tree and molecular rates simultaneously. These moves are designed to take advantage of the fact that rate and time are not separately identifiable. That is, the likelihood remains unchanged if you multiply rates by 2 and divide times by 2. In short, these moves improve the performance of MCMC mixing.
 
