@@ -37,11 +37,13 @@ Researchers can run pre-installed versions of RevBayes and TensorPhylo using the
 
 *Note:* as of 2024-05-21, the current FIG tutorials require specialized versions of RevBayes (branch stochmap_tp_dirty_merge, commit 55c8174) and TensorPhylo (branch tree-inference, commit daa0aed) that are not yet integrated into the main RevBayes codebase. We expect this will happen by the end of 2024.
 
-{% subsection Empirical system %}
+{% subsection Empirical system: Hawaiian *Kadua* %}
 
-Hawaiian *Kadua* is XYZ.
+The Hawaiian Archipelago is a Pacific volcanic island chain with many remarkable properties that fascinate biogeographers.
 
-The Hawaiian Archipelago is XYZ.
+Hawaiian *Kadua* (Rubiaceae) is a clade of X flowering plant taxa.
+
+*Isaac plans to write this section.*
 
 {% subsection Acknowledgements %}
 

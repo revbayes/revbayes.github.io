@@ -11,15 +11,11 @@ prerequisites:
   - fig/geosse_model
   - fig/fig_model
   - fig/timefig_model
-include_example_output: false
-include_all: true
-exclude_files:
-  - scripts/geo_multiFIG.Rev``
-  - scripts/phylo_multiFIG.Rev
-  - scripts/kadua_geosse.Rev
-  - scripts/kadua_multiFIG.Rev
-  - scripts/kadua_timeFIG.Rev
-  - scripts/geo_multiFIG.Rev
+include_example_output: true
+include_all: false
+include_files:
+  - fig/data.zip
+  - fig/scripts_timefig_dating.zip
 index: true
 redirect: false
 ---
@@ -55,6 +51,12 @@ This tutorial builds up to a process-based biogeographic dating analysis using t
 As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 new homologous genetic markers obtained from the Angiosperms353 protocol.
 
 Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
+
+> ## Tutorial files
+> This tutorial requires numerous input files and scripts to run properly. Download and unzip the [data.zip](fig/data.zip) and [scripts.zip](fig/scripts_timefig_dating.zip) archives into your project directory to complete the tutorial exercises.
+{:.info}
+
+
 
 
 {% section Molecular phylogenetics %}
