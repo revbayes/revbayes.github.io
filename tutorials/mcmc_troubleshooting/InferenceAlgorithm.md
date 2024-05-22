@@ -1,6 +1,6 @@
 {% assign inference_script = "inference.Rev" %}
 
-Inference algoritm
+Inference algorithm
 ==================
 {:.section}
 
