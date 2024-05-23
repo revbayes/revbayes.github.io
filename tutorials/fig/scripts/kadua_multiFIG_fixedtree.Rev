@@ -9,11 +9,13 @@
 # LOAD TENSORPHYLO PLUGIN #
 ###########################
 
-tensorphylo_fp = "/Users/mlandis/.local/lib/tensorphylo"
-if (!exists("tensorphylo_fp")) {
-  tensorphylo_fp = "~/.plugins/"
-}
-loadPlugin("TensorPhylo", tensorphylo_fp)
+#tensorphylo_fp = "/Users/mlandis/.local/lib/tensorphylo"
+#if (!exists("tensorphylo_fp")) {
+#  tensorphylo_fp = "~/.plugins/"
+#}
+#loadPlugin("TensorPhylo", tensorphylo_fp)
+
+loadPlugin("TensorPhylo")
 
 #######################
 # INITIALIZE SETTINGS # 
@@ -219,6 +221,7 @@ monitors.append( mnFile(filename="output/"+analysis+".param.json", printgen=prin
 
 # ancestral estimates
 monitors.append( mnJointConditionalAncestralState(tree=timetree, glhbdsp=timetree, printgen=print_gen*stoch_print_gen, filename="output/" + analysis + ".states.txt", withTips=true, withStartStates=true, type="NaturalNumbers") ) 
+monitors.append( mnStochasticCharacterMap(glhbdsp=timetree, printgen=print_gen*stoch_print_gen, filename="output/" + analysis + ".stoch.txt",use_simmap_default=false) )
 
 # create model object
 print("Creating model...")
@@ -232,6 +235,23 @@ mymcmc.operatorSummary()
 # run MCMC
 print("Running MCMC...")
 mymcmc.run(n_iter, underPrior=under_prior)
+
+# ancestral state tree
+f_burn = 0.2
+x_stoch = readAncestralStateTrace(file="output/" + analysis + ".stoch.txt")
+x_states = readAncestralStateTrace(file="output/" + analysis + ".states.txt")
+summarizeCharacterMaps(x_stoch,timetree,file="output/" + analysis + ".events.txt",burnin=f_burn)
+state_tree = ancestralStateTree(
+    tree=timetree,
+    ancestral_state_trace_vector=x_states,
+    include_start_states=true,
+    file="output/" + analysis + ".ase.tre",
+    summary_statistic="MAP",
+    reconstruction="marginal",
+    burnin=f_burn,
+    nStates=num_ranges,
+    site=1)
+writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 
 # done!
 quit()

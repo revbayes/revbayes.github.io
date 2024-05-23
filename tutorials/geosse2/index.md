@@ -14,7 +14,7 @@ prerequisites:
 
 The GeoSSE model is a member of a broader class of methods that include state-dependent diversification -- that is, the discrete character state of a lineage may impact its rates of speciation, extinction, and state transition. These models are known as [SSE](https://revbayes.github.io/tutorials/sse/bisse-intro.html) models. Other examples of SSE models include [BiSSE](https://revbayes.github.io/tutorials/sse/bisse.html) (binary state speciation and extinction model) and [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) (cladogenetic state change speciation and extinction model). For more information about how these methods jointly model character evolution and the birth-death process, see the associated tutorials.
 
-The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian *Kadua* using two regions: old islands, and young islands.
+The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian *Kadua* using two regions: old islands, and young islands. For more information on *Kadua* and the Hawaiian islands, you can visit the [intro tutorial](https://revbayes.github.io/tutorials/fig_intro/fig_intro.html) for the *Kadua* series.
 
 NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations. However, for the purposes of this tutorial, we group the Hawaiian islands into two categories so that we can easily enumerate all of the model rates.
 
@@ -52,7 +52,7 @@ Transition diagram for the GeoSSE model with two regions, based on Figure 1 from
 
 Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, `kadua.tre` is a time-calibrated phylogeny of *Kadua*. `kadua_range_n2.nex` assigns ranges to each species for a two-region system: an "old islands" region and a "young islands" region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.
 
-If you prefer to run a single script instead of entering each command manually, the RevBayes script called `kadua_geosse.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you put the `geosse.Rev` script. Then, you should create a `data` directory inside the tutorial directory. Here, create another directory called `kadua`, and download the two datafiles to this directory.
+If you prefer to run a single script instead of entering each command manually, the RevBayes script called `kadua_geoSSE_fixedtree.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you put the `kadua_geoSSE_fixedtree.Rev` script. Then, you should create a `data` directory inside the tutorial directory, and download the two datafiles to this directory.
 
 {% section GeoSSE in RevBayes %}
 
@@ -64,23 +64,21 @@ After starting up RevBayes from within your main tutorial directory, you can loa
 loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
 ```
 
-Note that if you're using the PhyloDocker image, then the Tensorphylo plugin is installed in the `/` (root) directory:
+Note that if you're using the PhyloDocker image, then the Tensorphylo plugin is installed in `/.plugins`, where RevBayes is able to find it without including a filepath:
 
 ```
-loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
+loadPlugin("TensorPhylo")
 ```
 
 We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.
 
 ```
 # FILESYSTEM
-analysis    = "geosse"
 fp          = "./"
-dat_fp      = fp + "data/kadua/"
+dat_fp      = fp + "data/"
 out_fp      = fp + "output/"
 bg_fn       = dat_fp + "kadua_range.n2.nex"
 phy_fn      = dat_fp + "kadua.tre"
-out_fn      = out_fp + analysis
 ```
 
 {% subsection Data %}
@@ -275,9 +273,9 @@ We also want MCMC to keep track of certain things while it runs. We want it to p
 ```
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fn+".model.log")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fn+".states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fn+.stoch.log")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.log")
 ```
 
 Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use `m_w`. RevBayes will find all the other parameters that are connected to `m_w` and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
@@ -293,19 +291,19 @@ After the MCMC analysis has concluded, we can summarize the ancestral states we 
 
 ```
 f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fn+".stoch.log")
-x_states = readAncestralStateTrace(file=out_fn+".states.log")
-summarizeCharacterMaps(x_stoch,timetree,file=out_fn+".events.tsv",burnin=f_burn)
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+x_states = readAncestralStateTrace(file=out_fp+"states.log")
+summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
                    include_start_states=true,
-                   file=out_fn+".ase.tre",
+                   file=out_fp+"ase.tre",
                    summary_statistic="MAP",
                    reconstruction="marginal",
                    burnin=f_burn,
                    nStates=3,
                    site=1)
-writeNexus(state_tree,filename=out_fn+".ase.tre")
+writeNexus(state_tree,filename=out_fp+"ase.tre")
 ```
 
 {% subsection Output %}
@@ -317,8 +315,8 @@ NOTE: Your output may look slightly different than the output shown below. If yo
 ```
 library(RevGadgets)
 library(ggplot2)
-tree_file = "./output/geosse.ase.tre"
-output_file = "./output/geosse.states.png"
+tree_file = "./output/ase.tre"
+output_file = "./output/states.png"
 states <- processAncStates(tree_file, state_labels=c("0"="Old", "1"="Young", "2"="Both"))
 plotAncStatesMAP(t=states,
                  node_size=2,
@@ -329,7 +327,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="output/geosse.states.png" width="65%">
+<img src="figures/states.png" width="65%">
 {% figcaption %}
 Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}

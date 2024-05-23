@@ -1,14 +1,11 @@
-loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
-#loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+loadPlugin("TensorPhylo")
 
 # FILESYSTEM
-analysis    = "geosse"
 fp          = "./"
-dat_fp      = fp + "data/kadua/"
+dat_fp      = fp + "data/"
 out_fp      = fp + "output/"
 bg_fn       = dat_fp + "kadua_range_n2.nex"
 phy_fn      = dat_fp + "kadua.tre"
-out_fn      = out_fp + analysis
 
 # PHYLOGENETIC DATA
 phy         <- readTrees(phy_fn)[1]
@@ -131,11 +128,11 @@ mv[mvi++] = mvSimplex(m_d_simplex, weight=m_d_simplex.size())
 # MCMC MONITORS
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fn + ".model.log")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp + "model.log")
 mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree,
                                              printgen=printgen, withTips=true, withStartStates=true,
-                                             type="NaturalNumbers", filename=out_fn + ".states.log")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fn + ".stoch.log")
+                                             type="NaturalNumbers", filename=out_fp + "states.log")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp + "stoch.log")
 
 # MCMC START
 mdl = model(m_w)
@@ -145,19 +142,19 @@ ch.run(n_gen)
 
 # ANCESTRAL STATES
 f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fn + ".stoch.log")
-x_states = readAncestralStateTrace(file=out_fn + ".states.log")
-summarizeCharacterMaps(x_stoch,timetree,file=out_fn + ".events.tsv",burnin=f_burn)
+x_stoch = readAncestralStateTrace(file=out_fp + "stoch.log")
+x_states = readAncestralStateTrace(file=out_fp + "states.log")
+summarizeCharacterMaps(x_stoch,timetree,file=out_fp + "events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
                    include_start_states=true,
-                   file=out_fn + ".ase.tre",
+                   file=out_fp + "ase.tre",
                    summary_statistic="MAP",
                    reconstruction="marginal",
                    burnin=f_burn,
                    nStates=3,
                    site=1)
-writeNexus(state_tree,filename=out_fn + ".ase.tre")
+writeNexus(state_tree,filename=out_fp + "ase.tre")
 
 print("DONE")
 q()
