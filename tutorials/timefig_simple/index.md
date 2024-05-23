@@ -5,12 +5,17 @@ authors:  Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Feli
 level: 8
 order: 10
 index: true
-include_all: false
+include_all: true
+include_example_output: true
+include_files:
+  - timefig_simple_project.zip
 prerequisites:
   - fig
 ---
 
 {% section WARNING: INCOMPLETE %}
+
+{% section Overview %}
 
 In the previous tutorial, we saw how the MultiFIG model {% cite Swiston2023 %} allows us to test hypotheses about the relationships between certain environmental features and evolutionary processes using feature effect rates, as well as infer biogeographic event parameters and ancestral areas. We used MultiFIG to investigate the Hawaiian radiation of the plant genus *Kadua* based on species ranges, present-day features of islands, and a time-calibrated phylogeny.
 
@@ -429,7 +434,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/timefig/states.png" width="80%">
+<img src="figures/states.png" width="80%">
 {% figcaption %}
 Ancestral state reconstruction of Hawaiian Silverswords. Nodes are colored based on the range with the highest probability. Range labels represents sets of regions (R = northwest islands, K = Kauai, O = Oahu, M = Maui Nui, H = Hawaii, Z = outgroup region).
 {% endfigcaption %}

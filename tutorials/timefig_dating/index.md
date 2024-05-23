@@ -4,14 +4,16 @@ subtitle: Using the TimeFIG model to jointly infer divergence times and biogeogr
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
 order: 11
+index: true
+redirect: false
 prerequisites:
   - ctmc
   - clocks
   - timefig_simple
+include_all: true
 include_example_output: true
-include_all: false
-index: true
-redirect: false
+include_files:
+  - timefig_dating_project.zip
 ---
 
 {% section Overview %}
@@ -47,7 +49,7 @@ As with previous tutorials in this series, we will analyze a dataset for Hawaiia
 Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
 
 > ## Tutorial files
-> This tutorial requires numerous input files and scripts to run properly. Download and unzip the [data.zip](fig/data.zip) and [scripts.zip](fig/scripts_timefig_dating.zip) archives into your project directory to complete the tutorial exercises.
+> This tutorial requires numerous input files and scripts to run properly. Download and unzip the [scripts.zip](scripts.zip) [data.zip](data.zip) and archive into your project directory to complete the tutorial exercises.
 {:.info}
 
 
