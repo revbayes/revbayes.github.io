@@ -8,7 +8,7 @@ index: true
 include_all: true
 include_example_output: true
 include_files:
-  - timefig_simple_project.zip
+  - timefig_simple/timefig_simple_project.zip
 prerequisites:
   - fig
 ---

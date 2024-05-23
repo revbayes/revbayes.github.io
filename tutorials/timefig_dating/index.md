@@ -13,7 +13,7 @@ prerequisites:
 include_all: true
 include_example_output: true
 include_files:
-  - timefig_dating_project.zip
+  - timefig_dating/timefig_dating_project.zip
 ---
 
 {% section Overview %}
