@@ -73,12 +73,12 @@ stoch_print_gen = 20
 # filesystem
 clade_name    = "kadua"
 fp            = "./"
-dat_fp        = fp + "data/clade/"
-geo_fp        = fp + "data/geo/"
-code_fp       = fp + "scripts/fig_model/"
+dat_fp        = fp + "data/kadua/"
+geo_fp        = fp + "data/hawaii/"
+code_fp       = fp + "scripts/"
 feature_fn    = geo_fp + "feature_summary.csv"
 phy_fn        = dat_fp + clade_name + ".tre"
-bg_fn         = dat_fp + clade_name + "_range.nex"
+bg_fn         = dat_fp + clade_name + "_range_n7.nex"
 label_fn      = dat_fp + clade_name + "_range_label.csv"
 
 # model source files
@@ -211,7 +211,7 @@ monitors.append( mnScreen(root_age, printgen=print_gen) )
 # file monitor for all simple model variables
 monitors.append( mnModel(printgen=print_gen, file="output/" + analysis + ".model.txt") )
 # file monitor for biogeographic model
-bg_mon_filename = "output/" + analysis + ".time" + k + ".bg.txt"
+bg_mon_filename = "output/" + analysis + ".bg.txt"
 monitors.append( mnFile(filename = bg_mon_filename, printgen=print_gen,
                         rho_e, rho_w, rho_d, rho_b, r_e[1], r_w[1], r_d[1][1], r_d[1][2], r_d[1][3], r_d[1][4], r_d[1][5], r_d[1][6], r_b[1][1], r_b[1][2], r_b[1][3], r_b[1][4], r_b[1][5], r_b[1][6], m_e[1][1], m_w[1][1], m_d[1][1], m_d[1][2], m_d[1][3], m_d[1][4], m_d[1][5], m_d[1][6], m_b[1][1], m_b[1][2], m_b[1][3], m_b[1][4], m_b[1][5], m_b[1][6]))
 monitors.append( mnFile(filename="output/"+analysis+".param.json", printgen=print_gen, format="json",
