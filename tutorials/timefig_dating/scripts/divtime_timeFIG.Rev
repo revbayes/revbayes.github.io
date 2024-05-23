@@ -1,19 +1,13 @@
-#####
-
-
+# load Tensorphylo plugin
 loadPlugin("TensorPhylo", "/home/mlandis/.local/lib/tensorphylo")
 
 ##################
 # ANALYSIS SETUP #
 ##################
 
-# set random seed
-my_seed = rUniformInteger(1,0,999999)[1]
-seed(my_seed)
 
 # filesystem
-analysis      = "kadua_divtime_timeFIG"
-analysis      += ".seed_" + my_seed
+analysis      = "divtime_timeFIG" # + ".job_1"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -22,19 +16,12 @@ feature_fn    = geo_fp + "feature_summary.csv"
 times_fn      = geo_fp + "age_summary.csv"
 out_fn        = "./output/" + analysis
 
-
-# geo_code_fn   = "./scripts/geo_timeFIG.Rev"
-# phylo_code_fn = "./scripts/phylo_timeFIG.Rev"
-# mol_code_fn   = "./scripts/mol_multilocus_CTMC.Rev"
-# clade_code_fn = "./scripts/kadua_clade.Rev" 
-
-
 # MCMC variables
-num_proc = 6
-num_gen = 10000
-print_gen = 1
-moves = VectorMoves()
-monitors = VectorMonitors()
+num_proc  = 6
+num_gen   = 10000
+print_gen = 10
+moves     = VectorMoves()
+monitors  = VectorMonitors()
 
 # tree input
 phy          <- readTrees(phy_fn)[1]
@@ -92,7 +79,7 @@ source("./scripts/phylo_timeFIG.Rev")
 # MOLECULAR MODEL #
 ###################
 
-source("./scripts/mol_multilocus_CTMC.Rev")
+source("./scripts/mol_CTMC.Rev")
 
 
 ##########################
@@ -101,7 +88,6 @@ source("./scripts/mol_multilocus_CTMC.Rev")
 
 timetree.setValue(phy)
 timetree.clampCharData(dat_nn)
-timetree.lnProbability()
 
 for (i in 1:num_loci) {
     x_mol[i].clamp(dat_mol[i])
@@ -145,7 +131,35 @@ monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
 # file monitor for tree
 monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 
-# other stuff for anc states, FIG rates, etc.
+# monitor ancestral ranges at internal nodes
+monitors.append( mnJointConditionalAncestralState(
+    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    filename=out_fn+".states.txt",
+    withTips=true, withStartStates=true, type="NaturalNumbers") )
+
+# file monitor for biogeographic rates
+for (k in 1:num_times) {
+    bg_mon_fn = out_fn + ".time" + k + ".bg.txt"
+    monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+                             rho_e, rho_w, rho_d, rho_b,
+                             r_e[k], r_w[k],
+                             r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4],
+                             r_d[k][5], r_d[k][6], r_d[k][7],
+                             r_b[k][1], r_b[k][2], r_b[k][3], r_b[k][4],
+                             r_b[k][5], r_b[k][6], r_b[k][7],
+                             m_e[k][1], m_w[k][1],
+                             m_d[k][1], m_d[k][2], m_d[k][3], m_d[k][4],
+                             m_d[k][5], m_d[k][6], m_d[k][7],
+                             m_b[k][1], m_b[k][2], m_b[k][3], m_b[k][4],
+                             m_b[k][5], m_b[k][6], m_b[k][7] ) )
+}
+
+# monitor stochastic mappings along branches of tree
+# NOTE: uncomment if needed, but can cause performance issues
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 
 ########
 # MCMC #
@@ -155,7 +169,7 @@ monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors) #, moveschedule="single")
+mymcmc = mcmc(mymodel, moves, monitors)
 
 # run MCMC
 mymcmc.run(num_gen)
