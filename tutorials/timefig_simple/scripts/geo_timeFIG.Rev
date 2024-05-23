@@ -1,0 +1,141 @@
+#######################
+# geo_timeFIG.Rev     #
+#######################
+
+# read in basic paleogeo system files
+times_table = readDataDelimitedFile(times_fn, delimiter=",", header=true)
+num_times <- times_table.size() + 1
+for (i in 1:(num_times-1)) { times[i] <- times_table[i][2] }
+
+# read files stored in feature_fn, store into RevBayes data structures,
+# normalize/re-center values, then provide methods to get feature-sets
+# for CW/QW/CB/QB associated with D/E/W/B
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",", nonexistent_region_token="nan")
+geo_features.normalize("within")
+geo_features.normalize("between")
+
+# get feature-sets for each measurement-type, process-type, and timeslice
+for (i in 1:num_times) {
+	feature_CW[i] <- geo_features.get("within","categorical",i)
+	feature_QW[i] <- geo_features.get("within","quantitative",i)
+	feature_CB[i] <- geo_features.get("between","categorical",i)
+	feature_QB[i] <- geo_features.get("between","quantitative",i)
+
+    for (j in 1:feature_CW[i].size()) {
+        layer_CW[i][j] <- feature_CW[i][j].get()
+    }
+    for (j in 1:feature_QW[i].size()) {
+        layer_QW[i][j] <- feature_QW[i][j].get()
+    }
+    for (j in 1:feature_CB[i].size()) {
+        layer_CB[i][j] <- feature_CB[i][j].get()
+    }
+    for (j in 1:feature_QB[i].size()) {
+        layer_QB[i][j] <- feature_QB[i][j].get()
+    }
+}
+
+# set up priors for feature effects
+rj_null_value <- 0.0          # fixed "off-value" for RJMCMC
+rj_prob       <- 0.5          # prob. of RJMCMC taking "off-value"
+
+# prior of "on-value" for RJMCMC
+bound <- 2
+rj_base_sym_dist = dnUniform(-bound, bound)
+rj_base_neg_dist = dnUniform(-bound, 0)     # negative only (e.g. distance on dispersal)
+rj_base_pos_dist = dnUniform(0, bound)      # positive only (e.g. distance on betw.-reg. speciation)
+rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
+rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
+rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
+
+# categorical feature effects
+for (i in 1:feature_CW[1].size()) sigma_w[i] ~ rj_sym_dist
+for (i in 1:feature_CW[1].size()) sigma_e[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_d[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_b[i] ~ rj_sym_dist
+
+# quantitative feature effects
+for (i in 1:feature_QW[1].size()) phi_w[i] ~ rj_sym_dist
+for (i in 1:feature_QW[1].size()) phi_e[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_d[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_b[i] ~ rj_sym_dist
+
+# force signed relationships between region features and rates
+# (overrides existing distribution assignments)
+phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
+phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
+sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
+sigma_w[1] ~ rj_pos_dist   # High Islands (1) drives faster speciation 
+phi_d[1]   ~ rj_neg_dist   # Distance (km) results in slower dispersal
+phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
+sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
+sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
+
+# regional rate factors
+for (t in 1:num_times) {
+    # NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
+	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
+	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
+	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
+}
+
+# initialize categorical feature effects, create moves, add monitor variables
+for (i in 1:feature_CW[1].size()) {
+    sigma_w[i].setValue(0)
+    moves.append( mvScale(sigma_w[i], weight=2) )
+    moves.append( mvSlide(sigma_w[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CW[1].size()) {
+    sigma_e[i].setValue(0)
+    moves.append( mvScale(sigma_e[i], weight=2) )
+    moves.append( mvSlide(sigma_e[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_d[i].setValue(0)
+    moves.append( mvScale(sigma_d[i], weight=2) )
+    moves.append( mvSlide(sigma_d[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_b[i].setValue(0)
+    moves.append( mvScale(sigma_b[i], weight=2) )
+    moves.append( mvSlide(sigma_b[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
+}
+
+# initialize quantitative feature effects, create moves, add monitor variables
+for (i in 1:feature_QW[1].size()) {
+    phi_w[i].setValue(0)
+    moves.append( mvScale(phi_w[i], weight=2) )
+    moves.append( mvSlide(phi_w[i], weight=2) )
+    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QW[1].size()) {
+    phi_e[i].setValue(0)
+    moves.append( mvScale(phi_e[i], weight=2) )
+    moves.append( mvSlide(phi_e[i], weight=2) )
+    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_d[i].setValue(0)
+    moves.append( mvScale(phi_d[i], weight=2) )
+    moves.append( mvSlide(phi_d[i], weight=2) )
+    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_b[i].setValue(0)
+    moves.append( mvScale(phi_b[i], weight=2) )
+    moves.append( mvSlide(phi_b[i], weight=2) )
+    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
+}
