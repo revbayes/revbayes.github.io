@@ -18,48 +18,33 @@ include_files:
 
 {% section Overview %}
 
-This tutorial explores how to perform a biogeographic dating analysis using the TimeFIG model. In its simplest form, this procedure jointly estimates phylogenetic divergence times, molecular substitution rates, biogeographic rates, and ancestral species ranges. The tutorial provides a conceptual background on challenges related to dating molecular phylogenies, alternative techniques for dating, and a framework to assess the sensitivity of divergence time estimates to methodological assumptions. 
+This tutorial demonstrates how to perform a biogeographic dating analysis using the TimeFIG model. Dating with TimeFIG jointly estimates phylogenetic divergence times, molecular substitution rates, biogeographic rates, and ancestral species ranges. The tutorial provides a conceptual background on challenges related to dating molecular phylogenies, alternative techniques for dating, and a framework to assess the sensitivity of divergence time estimates to methodological assumptions.
 
-{% subsection Background on biogeographic dating %}
-
-Genetic data are critical to estimate phylogenetic relationships among living species. In general, genetic content is more similar among closely related species, and less similar among more highly divergent species. As mutations accumulate within a genome that is inherited across generations over time, the distances in genetic similarity will increase as phylogenetic lineages increasingly diverge over time.
-
-Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of *expected substitutions per site*. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the *molecular clock* {% cite Zuckerkandl1967 %}. An accurate estimate of such a clock rate would enable *molecular dating*, because a research would only need to convert molecular distances into clock "ticks" to estimate the ages of species in units of geological time.
-
-Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $d$. For example, the products of $r=10, t=1$ and $r=2, t=5$ both yield $d=10$. Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same amount of evolutionary change, and are not statistically identifiable from one another.  
-
-In practice, biologists use extrinsic evidence to "calibrate" the molecular clock to a geological timescale. Fossil evidence can be used to constrain the minimum age of a phylogenetic divergence event (e.g. a child species cannot be older than its parent species), which effectively constrains time and, indirectly, rate estimates. Two main approaches have been used to deploy fossil-based calibrations. Prior-based calibrations assign a node age distribution to internal nodes on a phylogeny, selected and specified using expert knowledge. Process-based calibrations explicitly incorporate fossil morphology and ages as data during phylogenetic inference to assign ages to clades. Read these excellent papers to read more about fossil-based dating. 
-
-Paleogeography provides a complementary source of information to estimate divergence times through *biogeographic dating*. Biogeographic dating is often used for studying clades that possess no useful fossils (e.g. clades of island plants, like *Kadua*). The logic for biogeographic dating is as follows: imagine a clade of ten species that are endemic to a volcanic island that is less than one million years old. If it is assumed a single lineage colonized the island after it emerged, then the maximum age of the clade must be younger than the island, allowing the biologist to calibrate the molecular clock.
-
-Biogeographic dating has typically relied on prior-based constraints, requiring that the biologist makes strong assumptions about many unknowable factors: the timing and effect of paleogeographic events the dispersal abilities of species, relationships among species, and more. In addition, using a biogeographic hypothesis to date a clade (e.g. "we assume the islands were colonized after they originate") means that dated phylogeny cannot be safely used to test downstream biogeography hypotheses ("when were the islands first colonized by the clade?"). Doing so would be circular.
-
-Biogeographic dating with a process-based approach uses paleogeographically-informed biogeographic rates to extract information about divergence times through a dataset (Landis 2020). Previous approaches for process-based biogeographic dating relied on simpler models that did not consider how speciation and extinction rates vary among regions over time {% cite Landis2017 Landis2018 %}. TimeFIG models this important relationship between paleogeographically-varying features, species ranges, biogeographic rates, and divergence times.
-
-{% subsection Tutorial structure %}
-
-This tutorial builds up to a process-based biogeographic dating analysis using the TimeFIG model. It begins with a simple molecular phylogenetic analysis that has *no* capability for time calibration. Then, we'll repeat the analysis using a prior-based biogeographic node age calibration. Lastly, we'll perform a process-based TimeFIG analyses to estimate divergence times.
+This tutorial has three parts: 
 
 - [Part 1: Molecular phylogenetics](molecular-phylogenetics) (Day 1 of workshop)
 - [Part 2: Biogeographic dating with node calibrations](biogeographic-dating-with-node-calibration) (Day 2 of workshop)
 - [Part 3: Biogeographic dating with TimeFIG](biogeographic-dating-with-timefig) (Day 2 of workshop)
 
-As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 new homologous genetic markers obtained from the Angiosperms353 protocol.
+As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 molecular loci obtained from the Angiosperms353 protocol.
 
 Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
 
-> ## Tutorial files
-> This tutorial requires numerous input files and scripts to run properly. Download and unzip the [scripts.zip](scripts.zip) [data.zip](data.zip) and archive into your project directory to complete the tutorial exercises.
-{:.info}
+**Tutorial files:** This tutorial requires numerous input files and scripts to run properly. Download and unzip the [timefig_dating_project.zip](timefig_dating_project.zip) archive to create a project directory named `timefig_dating_project`. Enter the new directory to run the tutorial exercises. Analysis scripts are available on the sidebar for easy access.
 
-
+**PhyloDocker image required:** This tutorial currently assumes you are using pre-configured versions of RevBayes and TensorPhylo using the PhyloDocker image. Installation instructions are here: [link](htt
+ps://revbayes.github.io/tutorials/docker.html).
 
 
 {% section Molecular phylogenetics %}
 
-First, we'll run a simple molecular phylogenetic analysis *without* any information to time-calibrate the tree. The tutorial reviews several important concepts for phylogenetic tree estimation, such as the relaxed molecular clock. It also demonstrates that extrinsic (non-molecular) evidence is needed to time-calibrate divergence times using standard phylogenetic approaches.
+Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of *expected substitutions per site*. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the *molecular clock* {% cite Zuckerkandl1967 %}. An accurate estimate of such a clock rate would enable *molecular dating*, because a research would only need to convert molecular distances into clock "ticks" to estimate the ages of species in units of geological time.
 
-For this example, we'll compose a model where the phylogeny was generated by a constant-rate birth-death process and genes evolve under a relaxed molecular clock. We'll refer to this as the `BDP_uncalibrated` analysis.
+Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $d$. For example, the products of $r=10, t=1$ and $r=2, t=5$ both yield $d=10$. Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same amount of evolutionary change. This is known as rate-time non-identifiability. The phylogenetic model assigns equal likelihood to both of these alternative scenarios, so the true rate and time values cannot be learned directly from molecular data without extrinsic evidence
+
+This tutorial demonstrates what happens when you run a simple molecular phylogenetic analysis *without* any information to time-calibrate the tree. The tutorial reviews several important concepts for phylogenetic tree estimation, such as the relaxed molecular clock. It also demonstrates that extrinsic (non-molecular) evidence is needed to time-calibrate divergence times using standard phylogenetic approaches.
+
+For this example, we'll compose a model where the phylogeny was generated by a constant-rate birth-death process and genes evolve under a relaxed molecular clock. We'll refer to this as the `divtime_uncalibrated` analysis. Although the analysis can be run by calling `source("./scripts/divtime_uncalibrated.Rev")`, we'll execute all code by hand to better understand how the model works.
 
 {% subsubsection Analysis setup %}
 
@@ -67,7 +52,7 @@ Now to get started! First, we create variables to locate input datasets.
 
 ```
 # set up filesystem variables
-analysis      = "kadua_divtime_uncalibrated"
+analysis      = "divtime_uncalibrated"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 calib_fn      = dat_fp + "kadua_calib.csv"
@@ -148,7 +133,7 @@ for (i in 1:num_loci) {
 
 {% subsubsection Birth-death process %}
 
-Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source( phylo_code_fn )`.
+Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source("./scripts/phylo_constBDP.Rev")`.
 
 We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Throughout the tutorial, we will pair new model parameters with moves that eventually instruct MCMC how to update parameter values during model fitting.
 
@@ -223,7 +208,7 @@ moves.append( mvFNPR(timetree, weight=1*num_taxa) )
 {% endaside %}
 
 
-We want the crown node ages of important clades in Hawaiian *Kadua* to appear in our MCMC trace file. Calling `source( clade_fn )` will construct six clades based on predefined *Kadua* taxon sets. We then create deterministic nodes to track the crown node ages of these clades using the `tmrca()` function, which will be monitored.
+We want the crown node ages of important clades in Hawaiian *Kadua* to appear in our MCMC trace file. Calling `source("./scripts/kadua_clade.Rev")` will construct six clades based on predefined *Kadua* taxon sets. We then create deterministic nodes to track the crown node ages of these clades using the `tmrca()` function, which will be monitored.
 
 ```
 # load Kadua clade statements
@@ -241,7 +226,7 @@ diff_age_root_ingroup := root_age - age_ingroup
 
 {% subsubsection Multilocus substitution model %}
 
-Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source( mol_code_fn )`, but you should specify the model by hand to better understand its composition.
+Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source("./scripts/mol_CTMC.Rev")`, but you should specify the model by hand to better understand its composition.
 
 First, we create the relaxed clock model. The following code creates a vector of clock rates that are lognormally distributed. Later, the rates in this vector will be used to define branch-varying clock rates. To do so, we first define a base clock rate, `mu_mol_base`
 
@@ -325,17 +310,17 @@ Next, we specify the HKY rate matrix, `Q_mol` to define transition rates among n
 for (i in 1:num_loci) {
 
     # transition transversion rate-ratio (expected value of 1)
-    kappa[i] ~ dnLognormal(-1/2, 1)
+    kappa_mol[i] ~ dnLognormal(-1/2, 1)
     
     # base frequencies
     pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
     
     # HKY85 substitution matrix
-    Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+    Q_mol[i] := fnHKY(kappa=kappa_mol[i], baseFrequencies=pi_mol[i])
     
     # add moves to updat TiTv ratio and base frequencies
     moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
-    moves.append(mvScale(kappa[i], weight=3))
+    moves.append(mvScale(kappa_mol[i], weight=3))
     
 }
 ```
@@ -347,15 +332,15 @@ Molecular rates variation among sites follow a Gamma distribution, approximated 
 for (i in 1:num_loci) {
 
     # alpha controls whether all sites have the same or different rates
-    alpha[i] ~ dnExp(0.1)
+    alpha_mol[i] ~ dnExp(0.1)
     
     # among site rate variation model, +Gamma4
-    site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
-                                       rate=alpha[i],
-                                       numCats=4)
+    site_rates_mol[i] := fnDiscretizeGamma(shape=alpha_mol[i],
+                                           rate=alpha_mol[i],
+                                           numCats=4)
                                        
     # add move to update alpha
-    moves.append(mvScale(alpha[i], weight=3))
+    moves.append(mvScale(alpha_mol[i], weight=3))
     
 }
 ```
@@ -375,7 +360,7 @@ for (i in 1:num_loci) {
         branchRates=mu_mol[i],
         siteRates=site_rates[i],
         rootFrequencies=pi_mol[i],
-        nSites=num_sites[i],
+        nSites=num_sites_mol[i],
         type="DNA" )
 }
 ```
@@ -465,11 +450,15 @@ Notice that node ages vary wildly in the uncalibrated analysis, up to the maximu
 
 {% section Biogeographic dating with node calibration %}
 
+In practice, biologists use extrinsic evidence to "calibrate" the molecular clock to a geological timescale. Fossil evidence can be used to constrain the minimum age of a phylogenetic divergence event (e.g. a child species cannot be older than its parent species), which effectively constrains time and, indirectly, rate estimates. Two main approaches have been used to deploy fossil-based calibrations. Prior-based calibrations assign a node age distribution to internal nodes on a phylogeny, selected and specified using expert knowledge. Process-based calibrations explicitly incorporate fossil morphology and ages as data during phylogenetic inference to assign ages to clades. Read these excellent papers to read more about fossil-based dating.
+
+Paleogeography provides a complementary source of information to estimate divergence times through *biogeographic dating*. Biogeographic dating is often used for studying clades that possess no useful fossils (e.g. clades of island plants, like *Kadua*). The logic for biogeographic dating is as follows: imagine a clade of ten species that are endemic to a volcanic island that is less than one million years old. If it is assumed a single lineage colonized the island after it emerged, then the maximum age of the clade must be younger than the island, allowing the biologist to calibrate the molecular clock.
+
 We'll now repeat the previous exercise, but this time we will use calibration densities to constrain the ages of two nodes during inference. The root node age will be constrained by a secondary node age calibration, derived from a previous fossil-calibrated analysis on a family-level phylogeny that happened to include the most recent common ancestor of Hawaiian and non-Hawaiian *Kadua* (i.e., our root node). In addition, the maximum age of the Hawaiian *Kadua* radiation (the "ingroup" of our analysis) will be constrained to be equal to or less than the oldest High Islands (<6.3 Ma). 
 
-To proceed, we suggest that you make a new copy of `./scripts/timefig_dating/kadua_divtime_unconstrained.Rev` that is named `./scripts/timefig_dating/kadua_divtime_nodeprior.Rev`. Then, rather than typing all the commands, modify the content of the script as described below. After all modifications are in place, you can run the analysis by typing:
+To proceed, we suggest that you make a new copy of `./scripts/divtime_unconstrained.Rev` that is named `./scripts/divtime_nodeprior.Rev`. Then, rather than typing all the commands, modify the content of the script as described below. After all modifications are in place, you can run the analysis by typing:
 ```
-source("./scripts/timefig_dating/kadua_divtime_nodeprior.Rev")
+source("./scripts/divtime_nodeprior.Rev")
 ```
 
 If the script runs successfully, you should see MCMC diagnostics being printed to the screen. If the script fails to run, carefully read the error messages provided by RevBayes to correct the issue. RevBayes error messages generally report the location and the type of error.
@@ -533,9 +522,9 @@ moves.append( mvScale(root_age, weight=15) )
 
 {% endaside %}
 
-The second calibration restricts the maximum age of the Hawaiian *Kadua* crown age. The code stored in `./scripts/timefig_dating/kadua_clade.Rev` names relevant clades, including `clade_ingroup`. We then use the `tmrca` function to track the time to the most recent common ancestor for members of each clade. These variables *do not* influence the model probability or model fitting in any way. They are only monitored during MCMC sampling.
+The second calibration restricts the maximum age of the Hawaiian *Kadua* crown age. The code stored in `./scripts/kadua_clade.Rev` names relevant clades, including `clade_ingroup`. We then use the `tmrca` function to track the time to the most recent common ancestor for members of each clade. These variables *do not* influence the model probability or model fitting in any way. They are only monitored during MCMC sampling.
 
-To construct node age calibration densities in RevBayes, you define an interval with constraints that depend on the difference between the calibration time (i.e. the maximum age for the formation of Kadua) and the age of the time-calibrated node (i.e. Hawaiian *Kadua*, the ingroup clade). Recall from the previous tutorial on molecular phylogenetics that we created the `ingroup_age` variable to monitor crown node age of the Hawaiian ingroup. We want this age to be restricted, where the lower bound is the minimum allowable age for the node, 0.0 Ma (the present), and the upper bound is the maximum age of the High Islands, 6.3 Ma. Enter the following commands, then we will work through the logic.
+Recall from the previous tutorial on molecular phylogenetics that we created the `ingroup_age` variable to monitor crown node age of the Hawaiian ingroup. We want this age to be restricted, where the lower bound is the minimum allowable age for the node, 0.0 Ma (the present), and the upper bound is the maximum age of the High Islands, 6.3 Ma (the past). Enter the following commands, then we will work through the logic with the help of Figure {% ref phy_calib %}.
 
 ```
 # Calibration density #2: MRCA of Hawaiian Kadua
@@ -556,7 +545,7 @@ calib_clade.clamp(0.0)
 ```
 
 
-Calibration in RevBayes works by creating a calibration variable and fixing its value to `0.0`. You can then imagine the calibration density as a "sliding window" that assigns a probability to the fixed point of zero. The position of the sliding calibration density depends on the age of the targetted clade. In our case, the fixed point of `0.0` will always be greater than the lower bound of `0.0 - age_ingroup`, because clades always have positive ages. The fixed point `0.0` will be less than the upper bound of `6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed point `0.0 > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample.
+Calibration in RevBayes works by setting the calibration variable to fixed value of `0.0`. You can then imagine the calibration density as a "sliding window" that assigns a probability to the fixed point of zero. The position of this sliding window depends on the difference between the clade's age and relative to the window. In our case, the fixed point of `0.0` will always be greater than the lower bound of `calib_lower := 0.0 - age_ingroup`, because clades always have positive ages. The fixed point `0.0` will be less than the upper bound of `calib_upper := 6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed value of `calib_clade > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample. Learn more about divergence time estimation using node age calibrations in RevBayes through this tutorial: [link](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf).
 
 {% figure phy_calib %}
 <img src="figures/kadua_calibration.png" width="700">
@@ -579,20 +568,32 @@ Notice that the clade is now much younger. The upper bound of the HPD95 for the 
 
 {% section Biogeographic dating with TimeFIG %}
 
-Now we do the full TimeFIG analysis for biogeographic dating. Because we already ran a TimeFIG analysis on a fixed tree in the previous tutorial, this tutorial will instead demonstrate how to convert the fixed-tree TimeFIG analysis to treat the tree as a random variable. Broadly speaking, we'll apply what we learned about molecular phylogenetics in the first part of this tutorial in combination with what we learned from the previous fixed-tree TimeFIG analysis. 
+Biogeographic dating has typically relied on prior-based constraints. On the positive side, prior-based constraints are extremely easy to apply and are computationally inexpensive. Constraining node ages also has downsides. For one, it requires that the biologist makes strong assumptions about many unknowable factors. For Hawaiian *Kadua*, the ideal node calibration prior would account for how long it takes for a progenitor species to colonize into and radiate upon a newly formed island. However, that is precisely what historical biogeographers want to infer from data. What factors would you use to constrain the maximum age of *Kadua*? How would you justify their use? How would you encode them into a prior calibration density?
+
+In addition to this conceptual challenge, there is also a methodological concern. Using a biogeographic hypothesis to date a clade (e.g. "we assume the islands were colonized after they originate") means that the resulting dated phylogeny cannot be safely used to test downstream biogeography hypotheses ("when were the islands first colonized by the clade?"). Doing so is circular. For example, a prior that restricts all *Kadua* to be younger than Kauai eliminates the possibility that ancestral species colonized the older Northwestern Islands before the emergence of the High Islands.
+
+Biogeographic dating with a process-based approach uses paleogeographically-informed biogeographic rates to extract information about divergence times through a dataset (Landis 2020). Previous approaches for process-based biogeographic dating relied on simpler models that did not consider how speciation and extinction rates vary among regions over time {% cite Landis2017 Landis2018 %}. TimeFIG models this important relationship between paleogeographically-varying features, species ranges, biogeographic rates, and divergence times.
+
+We now proceed with a full TimeFIG analysis for biogeographic dating. Because we already ran a TimeFIG analysis on a fixed tree in the previous tutorial, this tutorial will instead demonstrate how to convert the fixed-tree TimeFIG analysis to treat the tree as a random variable. Broadly speaking, we'll apply what we learned about molecular phylogenetics in the first part of this tutorial in combination with what we learned from the previous fixed-tree TimeFIG analysis. 
 
 Note, we already know how to set up a molecular phylogenetic analysis and a TimeFIG analysis from previous exercises. Read those tutorials for details if you skipped ahead. Rather than re-implementing the complete model by hand a second time, we'll simply import Rev scripts that instantiate molecular phylogenetic and TimeFIG model components to design our model.
 
+This analysis can be run by calling `source("./scripts/divtime_timeFIG.Rev")`, however you should build the model through the console when using it for the first time.
+
 Let's get started! First, we load the TensorPhylo plugin.
 ```
-loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+# location of your TensorPhylo library
+plugin_fp = "/Users/mlandis/.local/lib/tensorphylo"
+
+# load TensorPhylo plugin
+loadPlugin("TensorPhylo", plugin_fp)
 ```
 
 We will use the same basic fileset as the molecular phylogenetics exercise.
 
 ```
 # filesystem variables
-analysis      = "kadua_divtime_timeFIG"
+analysis      = "divtime_timeFIG"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 out_fn        = "./output/" + analysis
@@ -726,7 +727,7 @@ Then we load the script that specifies the TimeFIG model.
 
 ```
 # load model components for GeoSSE using TensorPhylo
-source(phylo_code_fn)
+source("./scripts/phylo_timeFIG.Rev")
 ```
 
 Note, this script is identical to the script used in the previous TimeFIG tutorial that assumed a fixed phylogeny, with two exceptions. First, rather than assuming the `root_age` variable is fixed as a constant node, we assign it a uniform prior from 0 to 34 Ma, as we did in the uncalibrated analysis. The script also constructs MCMC moves to update all node ages, including the root node.
@@ -747,7 +748,7 @@ Next, we load the molecular model, identical to that used earlier in this tutori
 
 ```
 # load model components for multilocus molecular substitution process
-source("./scripts/timefig_dating/mol_multilocus_CTMC.Rev")
+source("./scripts/mol_CTMC.Rev")
 ```
 
 Previously, we initialized the `timetree` variable with the value of `phy` to set the tree topology. We also clamped the sequence data for each molecular locus to each CTMC, `x_mol[i]`, in the multilocus analysis. Unlike before, we also need to clamp our biogeographic range data to the `timetree` variable.
@@ -836,12 +837,12 @@ Similarly, you can construct a monitor to generate stochastic mappings that repr
 ```
 # monitor stochastic mappings along branches of tree
 
-# NOTE: not used for tutorial, but uncomment as needed
+# NOTE: uncomment if needed, but can cause performance issues
 
 # monitors.append( mnStochasticCharacterMap(
-    glhbdsp=timetree, printgen=print_gen*10,
-    filename=out_fn+".stoch.txt",
-    use_simmap_default=false) )
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 ```
 
 With our model, moves, and monitors all in place, we can build and run our MCMC analysis.
