@@ -1,5 +1,5 @@
 ---
-title: The geographic state-dependent speciation-extinction (GeoSSE) model
+title: Geographic state-dependent speciation-extinction (GeoSSE) model
 subtitle: A phylogenetic model of biogeographic dispersal, extinction, and speciation
 authors:  Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
