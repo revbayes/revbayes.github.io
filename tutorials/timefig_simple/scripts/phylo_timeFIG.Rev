@@ -168,9 +168,8 @@ rho_times <- [ 0.0 ]
 # root age #
 ############
 
-root_age ~ dnUniform(0.0, 32.0)
-root_age.setValue( phy.rootAge() )
-moves.append( mvScale(root_age, weight=15) )
+# fixed root age
+root_age <- phy.rootAge()
 
 
 #############
@@ -198,21 +197,4 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       maxDenseSteps = 5000,
                       nProc        = num_proc)
 
-moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
 
-# uncomment to enable topology estimation
-# moves.append( mvNNI(timetree, weight=num_taxa) )
-# moves.append( mvFNPR(timetree, weight=num_taxa/4) )
-
-#####################
-# Node age monitors #
-#####################
-
-source("./scripts/kadua_clade.Rev")
-age_ingroup           := tmrca(timetree, clade_ingroup)
-age_affinis           := tmrca(timetree, clade_affinis)
-age_centrantoides     := tmrca(timetree, clade_centrantoides)
-age_flynni            := tmrca(timetree, clade_flynni)
-age_littoralis        := tmrca(timetree, clade_littoralis)
-age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
-diff_age_root_ingroup := root_age - age_ingroup
