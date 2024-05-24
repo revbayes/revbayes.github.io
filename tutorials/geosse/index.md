@@ -52,7 +52,7 @@ Transition diagram for the GeoSSE model with two regions, based on Figure 1 from
 
 Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, `kadua.tre` is a time-calibrated phylogeny of *Kadua*. `kadua_range_n2.nex` assigns ranges to each species for a two-region system: an "old islands" region and a "young islands" region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.
 
-If you prefer to run a single script instead of entering each command manually, the RevBayes script called `kadua_geoSSE_fixedtree.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you put the `kadua_geoSSE_fixedtree.Rev` script. Then, you should create a `data` directory inside the tutorial directory, and download the two datafiles to this directory.
+If you prefer to run a single script instead of entering each command manually, the RevBayes script called `geosse.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you put the `geosse.Rev` script. Then, you should create a `data` directory inside the tutorial directory, and download the two datafiles to this directory.
 
 {% section GeoSSE in RevBayes %}
 
@@ -116,6 +116,8 @@ Finally, we want to format the range data to be used in a GeoSSE analysis. This 
 ```
 bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
 ```
+
+If you are interested in learning how to set up the GeoSSE rates manually without using the `formatDiscreteCharacterData` function, or if you want to further customize the model (ie. GeoHiSSE), the [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) tutorial gives an example of hand-coded rates.
 
 {% subsection Model setup %}
 
@@ -273,9 +275,9 @@ We also want MCMC to keep track of certain things while it runs. We want it to p
 ```
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.log")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.txt")
 ```
 
 Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use `m_w`. RevBayes will find all the other parameters that are connected to `m_w` and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
@@ -291,8 +293,8 @@ After the MCMC analysis has concluded, we can summarize the ancestral states we 
 
 ```
 f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
-x_states = readAncestralStateTrace(file=out_fp+"states.log")
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.txt")
+x_states = readAncestralStateTrace(file=out_fp+"states.txt")
 summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
@@ -308,9 +310,9 @@ writeNexus(state_tree,filename=out_fp+"ase.tre")
 
 {% subsection Output %}
 
-One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using [RevGadgets](https://github.com/revbayes/RevGadgets), an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by executing the following code in R. You can also examine the output files, like `model.log`, to assess the relative rates of different processes occurring in different regions.
+One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using [RevGadgets](https://github.com/revbayes/RevGadgets), an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by executing the following code in R. You can also examine the output files, like `model.txt`, to assess the relative rates of different processes occurring in different regions.
 
-NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
+NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `geosse.Rev` script by adding the RevBayes command `seed(1)`.
 
 ```
 library(RevGadgets)
