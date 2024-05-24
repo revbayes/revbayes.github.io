@@ -1,5 +1,5 @@
 ---
-title: Simple Phylogenetic Analysis of Historical Biogeography
+title: Simple phylogenetic analysis using the DEC model
 subtitle: Estimating ancestral ranges using the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
 level: 8

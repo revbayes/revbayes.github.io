@@ -8,11 +8,11 @@ prerequisites:
 - intro
 - sse/bisse-intro
 - sse/classe
-- geosse
-- multifig
+- geosse_orig
+- multifig_orig
 exclude_files:
 - history.txt
-index: true
+index: false
 ---
 
 {% section Introduction %}

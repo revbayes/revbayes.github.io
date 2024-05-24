@@ -10,7 +10,7 @@ prerequisites:
 - sse/classe
 exclude_files:
 - scripts/history.txt
-index: true
+index: false
 ---
 
 {% section Introduction %}

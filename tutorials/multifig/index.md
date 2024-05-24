@@ -8,7 +8,7 @@ index: true
 include_all: true
 include_example_output: true
 prerequisites:
-  - geosse2
+  - geosse
 ---
 
 {% section WARNING: INCOMPLETE %}

@@ -43,7 +43,7 @@ for (i in 1:num_loci) {
 # TREE MODEL #
 ##############
 
-# source("scripts/phylo_BDP.Rev")
+# source("scripts/phylo_bdp.Rev")
 
 diversification ~ dnExp(5)
 turnover ~ dnBeta(2,2)
@@ -117,7 +117,7 @@ clade_calib.clamp(0.0)
 # MOLECULAR MODEL #
 ###################
 
-# source("scripts/mol_CTMC.Rev")
+# source("scripts/mol_ctmc.Rev")
 
 mu_mol_base ~ dnExp(10)
 moves.append( mvScale(mu_mol_base, weight=5) )

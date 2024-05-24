@@ -10,7 +10,7 @@ include_example_output: true
 include_files:
   - timefig_simple/timefig_simple_project.zip
 prerequisites:
-  - fig
+  - multifig
 ---
 
 {% section WARNING: INCOMPLETE %}

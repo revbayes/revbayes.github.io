@@ -1,6 +1,6 @@
 ---
-title: Advanced Phylogenetic Analysis of Historical Biogeography
-subtitle: Ancestral range estimates using the Dispersal-Extirpation-Cladogenesis (DEC) model while incorporating time-dependent and region-dependent effects on dispersal rates
+title: Advanced phylogenetic analysis using the DEC model
+subtitle: Ancestral range estimates using DEC with time- and region-dependent effects on dispersal rates
 authors:  Michael J. Landis
 level: 8
 order: 2

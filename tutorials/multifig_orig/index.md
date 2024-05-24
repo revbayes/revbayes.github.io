@@ -8,10 +8,10 @@ prerequisites:
 - intro
 - sse/bisse-intro
 - sse/classe
-- geosse
+- geosse_orig
 exclude_files:
 - scripts/history.txt
-index: true
+index: false
 ---
 
 {% section Introduction %}

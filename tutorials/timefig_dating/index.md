@@ -133,7 +133,7 @@ for (i in 1:num_loci) {
 
 {% subsubsection Birth-death process %}
 
-Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source("./scripts/phylo_constBDP.Rev")`.
+Next, we will manually configure the birth-death model by entering commands. In the future, you can instead load the birth-death phylogenetic model setup definition using `source("./scripts/phylo_bdp.Rev")`.
 
 We first assign priors to the net diversification rate (birth - death) and turnover proportion (ratio of death to birth events). Throughout the tutorial, we will pair new model parameters with moves that eventually instruct MCMC how to update parameter values during model fitting.
 
@@ -226,7 +226,7 @@ diff_age_root_ingroup := root_age - age_ingroup
 
 {% subsubsection Multilocus substitution model %}
 
-Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source("./scripts/mol_CTMC.Rev")`, but you should specify the model by hand to better understand its composition.
+Now we have a variable representing our phylogeny. Next, we'll model how molecular variation accumulates over time. For this, we will construct a partitioned substitution model with a relaxed molecular clock. This means rates of molecular evolution can vary among branches, among loci, and among sites. The following code can be executed by calling `source("./scripts/mol_ctmc.Rev")`, but you should specify the model by hand to better understand its composition.
 
 First, we create the relaxed clock model. The following code creates a vector of clock rates that are lognormally distributed. Later, the rates in this vector will be used to define branch-varying clock rates. To do so, we first define a base clock rate, `mu_mol_base`
 
@@ -578,7 +578,7 @@ We now proceed with a full TimeFIG analysis for biogeographic dating. Because we
 
 Note, we already know how to set up a molecular phylogenetic analysis and a TimeFIG analysis from previous exercises. Read those tutorials for details if you skipped ahead. Rather than re-implementing the complete model by hand a second time, we'll simply import Rev scripts that instantiate molecular phylogenetic and TimeFIG model components to design our model.
 
-This analysis can be run by calling `source("./scripts/divtime_timeFIG.Rev")`, however you should build the model through the console when using it for the first time.
+This analysis can be run by calling `source("./scripts/divtime_timefig.Rev")`, however you should build the model through the console when using it for the first time.
 
 Let's get started! First, we load the TensorPhylo plugin.
 ```
@@ -720,14 +720,14 @@ Now we load the model that defines relationships between regional features and b
 
 ```
 # load model components for feature informed GeoSSE rates
-source("./scripts/geo_timeFIG.Rev")
+source("./scripts/geo_timefig.Rev")
 ```
 
 Then we load the script that specifies the TimeFIG model. 
 
 ```
 # load model components for GeoSSE using TensorPhylo
-source("./scripts/phylo_timeFIG.Rev")
+source("./scripts/phylo_timefig.Rev")
 ```
 
 Note, this script is identical to the script used in the previous TimeFIG tutorial that assumed a fixed phylogeny, with two exceptions. First, rather than assuming the `root_age` variable is fixed as a constant node, we assign it a uniform prior from 0 to 34 Ma, as we did in the uncalibrated analysis. The script also constructs MCMC moves to update all node ages, including the root node.
@@ -748,7 +748,7 @@ Next, we load the molecular model, identical to that used earlier in this tutori
 
 ```
 # load model components for multilocus molecular substitution process
-source("./scripts/mol_CTMC.Rev")
+source("./scripts/mol_ctmc.Rev")
 ```
 
 Previously, we initialized the `timetree` variable with the value of `phy` to set the tree topology. We also clamped the sequence data for each molecular locus to each CTMC, `x_mol[i]`, in the multilocus analysis. Unlike before, we also need to clamp our biogeographic range data to the `timetree` variable.

@@ -1,5 +1,5 @@
 ---
-title: Tutorial series for phylogenetic biogeography using the FIG model
+title: Introduction to phylogenetic biogeography with the FIG model
 subtitle: Using the feature-informed geographic state-dependent speciation-extinction (FIG) model for phylogenetic biogeography
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata
 level: 8
@@ -19,8 +19,8 @@ The FIG tutorial series targets biologists who are familiar with phylogenetic mo
 
 Tutorials in this series are:
 - [Molecular phylogenetics](../timefig_dating/#molecular-phylogenetics)
-- [GeoSSE model](geosse2.html)
-- [FIG model](fig.html)
+- [GeoSSE model](geosse.html)
+- [MultiFIG model](multifig.html)
 - [TimeFIG model](timefig_simple.html)
 - [Biogeographic dating with node age priors](../timefig_dating/#biogeographic-dating-with-node-calibration)
 - [Biogeographic dating with TimeFIG](../timefig_dating/#biogeographic-dating-with-timefig)
