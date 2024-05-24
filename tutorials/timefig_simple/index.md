@@ -51,44 +51,49 @@ The analysis utilizes 7 different time slices, numbered starting from the presen
 > As an alternative to building the development versions of RevBayes and Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: [revbayes.github.io/tutorials/docker](https://revbayes.github.io/tutorials/docker.html).
 {:.info}
 
-Running a TimeFIG analysis in RevBayes requires several important data files, including a file representing a phylogeny and a biogeographic data matrix describing the ranges for each species. `silversword.mcc.tre` is a phylogeny of the Hawaiian Silverswords. It is a dated tree (and we will use it to initialize our MCMC), but we will estimate new divergence times in this analysis using the molecular data in `silversword.mol.nex`. `silversword.range.nex` assigns ranges to each species for a six-region system: Kauai, Oahu, Maui Nui, Hawaii, and an outgroup region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region. There are also feature files that contain regional feature data, a `feature_summary.csv` file that describes all the regional feature files (where they are found and what kind of data they contain), and an `age_summary.csv` file that gives prior distributions for the times that delimit our discrete time slices.
+Running a TimeFIG analysis in RevBayes requires several important data files, including a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. `kadua.tre` is a time-calibrated phylogeny of *Kadua*. `kadua_range_n7.nex` assigns ranges to each species for a seven-region system: G (Gardner), N (Necker), K (Kauaii), O (Oahu), M (Maui Nui Complex), H (Hawaii), and Z (mainland). For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region. There are also feature files that contain regional feature data, a `feature_summary.csv` file that describes all the regional feature files (where they are found and what kind of data they contain), and an `age_summary.csv` file that tells us what ages delimit the time slices for our analysis.
 
-If you prefer to run a single script instead of entering each command manually, the RevBayes script called `timefig.Rev` contains all of the commands that are used in the tutorial. There is also an R script for plotting the analysis results. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. Inside the tutorial directory, you should create a `scripts` directory. This is the directory where you will run RevBayes commands, or where you will put the `timefig.Rev` and `timefig.R` scripts. Then, you should create a `data` directory inside the tutorial directory. The scripts/commands for the tutorial expect that the primary data files (`silversword.mcc.tre`, `silversword.mol.nex`, `silversword.ranges.nex`, `feature_summary.csv`, and `age_summary.csv`) will be in this directory, while the feature files (the data, not the summary file) will be in a subdirectory called `features`. However, you can always modify the filepaths to locate the data wherever you choose to download it.
+If you prefer to run a single script instead of entering each command manually, the RevBayes script called `timefig.Rev` contains all of the commands that are used in the tutorial. The data and script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Note that for this tutorial, the data files are not individually visible (there are a LOT of them). Instead, a `.zip` file is provided. Downloading and unzipping this file will give you a directory containing all of the scripts and data files for the tutorial, set up the way the tutorial expects. This main directory is where you will run RevBayes commands. Inside the tutorial directory, there will be a `scripts` directory. This is the directory where the `timefig.Rev` script lives. There is also a `data` directory inside the tutorial directory. Within `data`, there will be two more directories: `hawaii`, and `kadua`. The data files related to *Kadua* (`kadua.tre` and `kadua_range_n7.nex`) are in the `kadua` directory. The data related to Hawaii, including the `feature_summary.csv` file, the `age_summary.csv` file, the `feature_description.csv` file, and all feature-related `*_feature*.csv` files are in the `hawaii` directory. However, you can always modify the filepaths to locate the data wherever you choose to download it.
 
 {% section TimeFIG in RevBayes %}
 
 {% subsection Getting started %}
 
-After starting up RevBayes from within your local `scripts` directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at `~/tensorphylo`, you would use the following command to load the plugin:
+After starting up RevBayes from within your main tutorial directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at `~/tensorphylo`, you would use the following command to load the plugin:
 
 ```
 loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
 ```
 
-Note that if you're using the RevBayes Docker image, then the Tensorphylo plugin is installed in the `/` (root) directory:
+Note that if you're using the PhyloDocker image, then the Tensorphylo plugin is installed in `/.plugins`, where RevBayes is able to find it without including a filepath:
 
 ```
-loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
+loadPlugin("TensorPhylo")
 ```
 
-It is also a good idea to set a seed. If you want to exactly replicate the results of the tutorial, you should use the seed `1`.
+Next, we want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.
 
 ```
-seed(1)
+# filesystem
+analysis      = "simple_timeFIG" # + ".job_1"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+bg_fn         = dat_fp + "kadua_range_n7.nex"
+geo_fp        = "./data/hawaii/"
+feature_fn    = geo_fp + "feature_summary.csv"
+times_fn      = geo_fp + "age_summary.csv"
+out_fn        = "./output/" + analysis
 ```
 
-We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.
+Similar to the MultiFIG analysis, we will set up containers `moves` and `monitors` at the beginning of the script, and choose some MCMC settings for later: the number of computer processors to use, the number of generations we want to run the analysis for, and how often we want RevBayes to record output.
 
 ```
-fp         = "../"
-dat_fp     = fp + "data/"
-out_fp     = fp + "output/"
-mol_fn     = dat_fp + "silversword.mol.nex"
-bg_fn      = dat_fp + "silversword.range.nex"
-phy_fn     = dat_fp + "silversword.mcc.tre"
-feature_fn = dat_fp + "feature_summary.csv"
-age_fn     = dat_fp + "age_summary.csv"
-```
+# MCMC variables
+num_proc  = 6
+num_gen   = 10000
+print_gen = 1
+moves     = VectorMoves()
+monitors  = VectorMonitors()
 
 {% subsection Data %}
 
@@ -98,54 +103,55 @@ Now, we will start reading in data and constructing the TimeFIG model. Let's sta
 phy <- readTrees(phy_fn)[1]
 ```
 
-In order to set up our analysis, we will want to know some information about this tree: the root age, the taxa, the number of taxa, and the number of branches.
+In order to set up our analysis, we will want to know some information about this tree: the taxa, the number of taxa, and the number of branches.
 
 ```
-tree_height  <- phy.rootAge()
 taxa         = phy.taxa()
 num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 ```
 
-Next, we will read in the molecular data, and calculate the number of sites. For this analysis, we are only using a single locus, but it can be performed with multiple loci.
+We also want to read in the range data. This is the same data from the MultiFIG example.
 
 ```
-dat_mol   = readDiscreteCharacterData(mol_fn)
-num_sites = dat_mol.nchar()
+dat_01 = readDiscreteCharacterData(bg_fn)
 ```
 
-We also want to read in the biogeographic data. First, we'll read the age file that tells us how many time slices to include (5) and what times delimit those slices (1.20 MYA, 2.55 MYA, 4.135 MYA, and 6.15 MYA). Note that for $n$ times, there will be $n+1$ time slices. The `age_summary.csv` file also includes information that would help establish a uniform prior on each of these times (`start_age` and `end_age`), but we will be using the `mean_age` without setting a prior (no uncertainty).
+Once again, we want to get some information about this range data: how many regions there are, and how many ranges can be constructed from these regions. We will still set our maximum range size to 4.
 
 ```
-times_dat   = readDataDelimitedFile(age_fn, delimiter=",", header=true)
-num_times   = times_dat.size() + 1
-for (i in 1:(num_times-1)) times[i] <- times_dat[i][2]
+num_regions    = dat_01.nchar()
+max_range_size = 4
+num_ranges     = 0
+for (k in 1:max_range_size) {
+    num_ranges += choose(num_regions, k)
+}
 ```
 
-Next, we will read in the region data.
+Again, we want to format the range data to be used in a GeoSSE-type analysis. This will take the binary range data and output integer states.
 
 ```
-bg_01 = readDiscreteCharacterData(bg_fn)
+dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
+desc           = dat_nn.getStateDescriptions()
+
+write("index,range\n", filename=label_fn)
+for (i in 1:desc.size()) {
+    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+}
 ```
 
-We want to get some information about this range data: how many regions there are, how many ranges can be constructed from these regions, and how many region pairs there are.
+We also want to read in the biogeographic data. First, we'll read the age file that tells us how many time slices to include and what times delimit those slices. Note that for $n$ times, there will be $n+1$ time slices. The `age_summary.csv` file also includes information that would help establish a uniform prior on each of these times (`start_age` and `end_age`), but we will be using the `mean_age` without setting a prior (no uncertainty).
 
 ```
-num_regions = bg_01.nchar()
-num_ranges  = abs(2^num_regions - 1)
-num_pairs   = num_regions^2 - num_regions
-```
-
-We want to format the range data to be used in a GeoSSE-type analysis. This will take the binary range data and output integer states.
-
-```
-bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
+times_table = readDataDelimitedFile(times_fn, delimiter=",", header=true)
+num_times <- times_table.size() + 1
+for (i in 1:(num_times-1)) { times[i] <- times_table[i][2] }
 ```
 
 We also want to get our feature data. Using the RevBayes function `readRegionalFeatures`, we can look at the `feature_summary.csv` file and automatically look for feature data. The `feature_summary.csv` file is specially formated to be read by RevBayes, consisting of 5 columns. The first column is `time_index`, telling us which time slice the feature data corresponds to. Time slices are numbered from the present starting with 1. The second column is `feature_index`. Each feature type (within-region categorical, within-region quantitative, between-region categorical, and between-region quantitative) has a container that can contain several features, so we want to index the features within those containers. In this analysis, we will only have one feature of each type, so the index will always be 1. The third column is `feature_relationship`. This column is for indicating whether the feature is a within-region feature or a between-region feature, with options 'within' or 'between'. The fourth column is `feature_type`, for indicating whether the feature is quantitative of categorical. Finally, the fifth column is `feature_path`, which gives a filepath for the actual file containing the data for that feature.
 
 ```
-geo_features <- readRegionalFeatures(feature_fn, delimiter=",",nonexistent_region_token="nan")
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",", nonexistent_region_token="nan")
 ```
 
 Next, we transform the feature data into feature layers, a RevBayes object that we will use later for informing our biogeographic rates. First, we normalize the features (important for scaling reasons). Then, for each time slice `[i]`, we pull each feature type out of our `geo_features` object and create the layers.
@@ -153,255 +159,408 @@ Next, we transform the feature data into feature layers, a RevBayes object that 
 ```
 geo_features.normalize("within")
 geo_features.normalize("between")
+
+# get feature-sets for each measurement-type, process-type, and timeslice
 for (i in 1:num_times) {
-    feature_CW[i] <- geo_features.get("within","categorical",i)
-    feature_QW[i] <- geo_features.get("within","quantitative",i)
-    feature_CB[i] <- geo_features.get("between","categorical",i)
-    feature_QB[i] <- geo_features.get("between","quantitative",i)
-    for (j in 1:feature_CW[i].size()) {layer_CW[i][j] <- feature_CW[i][j].get()}
-    for (j in 1:feature_QW[i].size()) {layer_QW[i][j] <- feature_QW[i][j].get()}
-    for (j in 1:feature_CB[i].size()) {layer_CB[i][j] <- feature_CB[i][j].get()}
-    for (j in 1:feature_QB[i].size()) {layer_QB[i][j] <- feature_QB[i][j].get()}}
+	feature_CW[i] <- geo_features.get("within","categorical",i)
+	feature_QW[i] <- geo_features.get("within","quantitative",i)
+	feature_CB[i] <- geo_features.get("between","categorical",i)
+	feature_QB[i] <- geo_features.get("between","quantitative",i)
+
+    for (j in 1:feature_CW[i].size()) {
+        layer_CW[i][j] <- feature_CW[i][j].get()
+    }
+    for (j in 1:feature_QW[i].size()) {
+        layer_QW[i][j] <- feature_QW[i][j].get()
+    }
+    for (j in 1:feature_CB[i].size()) {
+        layer_CB[i][j] <- feature_CB[i][j].get()
+    }
+    for (j in 1:feature_QB[i].size()) {
+        layer_QB[i][j] <- feature_QB[i][j].get()
+    }
+}
 ```
 
 {% subsection Model setup %}
 
-In the TimeFIG model, there are four processes: within-region speciation, extinction, between-region speciation, and dispersal. Rates per region or region pair for each time slice are calculated using feature data, feature effect parameters, and base rate parameters. We will set the prior on base rate parameters to the exponential distribution `dnExp(1)`. We will set the prior on feature effect parameters to the normal distribution `dnNormal(0,1)`. Then we will use the RevBayes function `fnFeatureInformedRates` to combine the feature data and feature effect parameters to create $m$ vectors/matrices for each time slice, representing relative rates per region or region pair. Finally, we will multiply $m$ by the base rate parameter to get model rates $r_w$, $r_e$, $r_b$, and $r_d$ for each time slice.
+In the TimeFIG model, we use the same four processes as earlier models: within-region speciation, extinction, between-region speciation, and dispersal. Rates per region or region pair are calculated the same way as in the MultiFIG model using feature data, feature effect parameters, and base rate parameters. However, unlike the MultiFIG model, our feature values change from epoch to epoch! Therefore, while we will use the same set of base rates and feature effect parameters for each time slice, our relative rates will end up being different between time slices.
 
-Let's start by creating distributions that we will use for all $\rho$, $\phi$, and $\sigma$ parameters.
+First, we will set priors for the feature effect parameters. Then we will use the RevBayes function `fnFeatureInformedRates` to combine the feature data and feature effect parameters for each time slice to create $m$ vectors/matrices that are specific to the time slices, representing relative rates of a particular process per region or region pair during that time slice. Finally, we will multiply the $m$ for each process in each time slice by base rate parameters to get model rates $r_w$, $r_e$, $r_b$, and $r_d$ for each time slice.
 
-```
-sigma_dist  = dnNormal(0,1)
-phi_dist    = dnNormal(0,1)
-rho_dist    = dnExp(1)
-```
+Let's start by creating distributions that we will use for all $\phi$ and $\sigma$ parameters. We will use **reversible jump** distributions again. We also have to assign an `rj_prob` to the reversible jump distribution, which is the prior probability of RJMCMC using the fixed value 0 instead of the continuous distribution.
 
-Now we will set up our rates for the four core processes. We will set up within-region speciation rates first. We won't worry about multiplying $m_w$ by the base rate yet, because the `fnBiogeographyCladoEventsBD` function will do this later. Note that while `m_w` has different values for each time slice, the `rho_w`, `sigma_w`, and `phi_w` parameters associated with each feature are the same for all time slices; only the feature data changes.
+We will use the same bounds on our continuous distributions that we did for the MultiFIG model.
 
 ```
-rho_w ~ rho_dist
-for (i in 1:feature_CW[1].size()) sigma_w[i] ~ sigma_dist
-for (i in 1:feature_QW[1].size()) phi_w[i] ~ phi_dist
-for (i in 1:num_times) m_w[i] := fnFeatureInformedRates(layer_CW[i], layer_QW[i], sigma_w, phi_w, null_rate=0)
+# set up priors for feature effects
+rj_null_value <- 0.0          # fixed "off-value" for RJMCMC
+rj_prob       <- 0.5          # prob. of RJMCMC taking "off-value"
+
+# prior of "on-value" for RJMCMC
+bound <- 2
+rj_base_sym_dist = dnUniform(-bound, bound)
+rj_base_neg_dist = dnUniform(-bound, 0)     # negative only (e.g. distance on dispersal)
+rj_base_pos_dist = dnUniform(0, bound)      # positive only (e.g. distance on betw.-reg. speciation)
+rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
+rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
+rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
+
+# categorical feature effects
+for (i in 1:feature_CW[1].size()) sigma_w[i] ~ rj_sym_dist
+for (i in 1:feature_CW[1].size()) sigma_e[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_d[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_b[i] ~ rj_sym_dist
+
+# quantitative feature effects
+for (i in 1:feature_QW[1].size()) phi_w[i] ~ rj_sym_dist
+for (i in 1:feature_QW[1].size()) phi_e[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_d[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_b[i] ~ rj_sym_dist
+
+# force signed relationships between region features and rates
+# (overrides existing distribution assignments)
+phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
+phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
+sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
+sigma_w[1] ~ rj_pos_dist   # High Islands (1) drives faster speciation 
+phi_d[1]   ~ rj_neg_dist   # Distance (km) results in slower dispersal
+phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
+sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
+sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
 ```
 
-Extinction rates are set up similarly, and we will incorporate $\rho$ this time. From these extinction rates (which are actually single-region extinction rates), we will set up global extinction rates for each possible range in the state space. In the TimeFIG model, lineage-level extincion events occur when a species goes globally extinct (i.e. it loses the last region from its range). Therefore, we will assign all multi-region ranges an extinction rate of 0, and we will assign all single-region ranges an extinction rate equal to the local extirpation rate. Note, ranges are numbered such that indices `1`, `2`, through `num_regions` correspond to ranges that respectively contain only region 1, region 2, up through the last region in the system. Similar to within-region speciation rates, we will construct a different `m_e` and `r_e` vector for each time slice, but the `rho_e`, `simga_e`, and `phi_e` parameters are shared among time slices.
+Now we can create the relative rates of each process. These $m$ containers hold the per-region or per-region-pair relative rates for each time slice. We will turn these into actual rates (incorporating a base rate parameter) later. Each of these relative rate containers also has a `null_rate` argument, which tells RevBayes what to do with missing regions. This is important because some regions did not exist during some times!
 
 ```
-rho_e ~ rho_dist
-for (i in 1:feature_CW[1].size()) sigma_e[i] ~ sigma_dist
-for (i in 1:feature_QW[1].size()) phi_e[i] ~ phi_dist
-for (i in 1:num_times) m_e[i] := fnFeatureInformedRates(layer_CW[i], layer_QW[i], sigma_e, phi_e, null_rate=1e3)
-for (i in 1:num_times) r_e[i] := rho_e * m_e[i][1]
-for (i in 1:num_times) {
-    for (j in 1:num_ranges) {
-        mu[i][j] <- abs(0)
-        if (j <= num_regions) mu[i][j] := r_e[i][j]}}
+# regional rate factors
+for (t in 1:num_times) {
+    # NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
+	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
+	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
+	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
+}
 ```
 
-Between-region speciation rates are set up similarly. Again, we do not need to incorporate $\rho$ yet. We also don't have to worry about incorporating range split score; RevBayes will do this automatically when we create the cladogenetic probability matrix.
+Because we are going to do an MCMC analysis later in the tutorial, we want MCMC to update all of the $\sigma$ and $\phi$ parameters. Once again, we will add MCMC moves on these parameters. We may also want to initialize the MCMC to reasonable values for these feature effect parameters. We will set the values of our distributions to be (temporarily) equal to those initial values to start the MCMC.
+
+First, we will address the categorical feature effects for each process (w, e, d, and b). These are our $\sigma$ parameters. The logic is the same for each process. First, we find the container of features which impact that process (within-region features for within-region speciation and extinction, between-region features for between-region speciation and dispersal). Then we loop over the different features inside that container. For each feature, we initialize the value of the parameter, and add appropriate moves for the MCMC. We also include a `use_` line that allows us to turn off certain features if we want to perform analyses without them. Note that we do not loop over the time slices here, because the feature effects are shared across times!
 
 ```
-rho_b ~ rho_dist
-for (i in 1:feature_CB[1].size()) sigma_b[i] ~ sigma_dist
-for (i in 1:feature_QB[1].size()) phi_b[i] ~ phi_dist
-for (i in 1:num_times) m_b[i] := fnFeatureInformedRates(layer_CB[i], layer_QB[i], sigma_b, phi_b, null_rate=1)
+# initialize categorical feature effects, create moves, add monitor variables
+for (i in 1:feature_CW[1].size()) {
+    sigma_w[i].setValue(0)
+    moves.append( mvScale(sigma_w[i], weight=2) )
+    moves.append( mvSlide(sigma_w[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CW[1].size()) {
+    sigma_e[i].setValue(0)
+    moves.append( mvScale(sigma_e[i], weight=2) )
+    moves.append( mvSlide(sigma_e[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_d[i].setValue(0)
+    moves.append( mvScale(sigma_d[i], weight=2) )
+    moves.append( mvSlide(sigma_d[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB[1].size()) {
+    sigma_b[i].setValue(0)
+    moves.append( mvScale(sigma_b[i], weight=2) )
+    moves.append( mvSlide(sigma_b[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
+}
 ```
 
-Finally, for dispersal rates, we will set up dispersal rates.
+Similarly, we will address the quantitative features for each process. These are our `\phi` parameters.
 
 ```
-rho_d ~ rho_dist
-for (i in 1:feature_CB[1].size()) sigma_d[i] ~ sigma_dist
-for (i in 1:feature_QB[1].size()) phi_d[i] ~ phi_dist
-for (i in 1:num_times) m_d[i] := fnFeatureInformedRates(layer_CB[i], layer_QB[i], sigma_d, phi_d, null_rate=0)
-for (i in 1:num_times) {
-    for (j in 1:num_regions) {r_d[i][j] := rho_d * m_d[i][j]}}
+# initialize quantitative feature effects, create moves, add monitor variables
+for (i in 1:feature_QW[1].size()) {
+    phi_w[i].setValue(0)
+    moves.append( mvScale(phi_w[i], weight=2) )
+    moves.append( mvSlide(phi_w[i], weight=2) )
+    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QW[1].size()) {
+    phi_e[i].setValue(0)
+    moves.append( mvScale(phi_e[i], weight=2) )
+    moves.append( mvSlide(phi_e[i], weight=2) )
+    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_d[i].setValue(0)
+    moves.append( mvScale(phi_d[i], weight=2) )
+    moves.append( mvSlide(phi_d[i], weight=2) )
+    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB[1].size()) {
+    phi_b[i].setValue(0)
+    moves.append( mvScale(phi_b[i], weight=2) )
+    moves.append( mvSlide(phi_b[i], weight=2) )
+    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
+}
 ```
 
-From these rates, we can use RevBayes functions to construct the rate matrices used by the analysis. Importantly, these rate matrices are different for each time slice, and this is how RevBayes knows to use different rates during different discrete periods of time. First are the anagenetic rate matrices, which give rates of anagenetic processes. We are not restricting the number of regions that a species can live in at any given time, so we set the `maxRangeSize` equal to the number of regions. Settings `maxRangeSize` may be used to reduce the number of range patterns in the model, particularly when `num_regions` is large.
+Now we will set up our rates for the four core processes, and put together our tree object. First, we will assign distributions to our base process rates, $\rho$. These rates are shared amongst all regions and all time slices, and are combined with relative rates $m$ to get true process rates in each region or pair for each time slice, $r$. We will use exponential distributions with rate 30 for each base rate parameter. Once again, we will initialize these values so MCMC will start in a reasonable place, and append the appropriate moves. We can also calculate the total speciation rate from the base rates of each type of speciation event.
 
 ```
-for (i in 1:num_times) {
-    Q_bg[i] := fnBiogeographyRateMatrix(
-        dispersalRates=r_d[i],
-        extirpationRates=r_e[i],
-        maxRangeSize=num_regions)}
+# base rate parameters
+rho_d ~ dnExp(40)
+rho_e ~ dnExp(40)
+rho_w ~ dnExp(40)
+rho_b ~ dnExp(40)
+
+rho_d.setValue(0.1)
+rho_e.setValue(0.1)
+rho_w.setValue(0.1)
+rho_b.setValue(0.1)
+
+moves.append( mvScale(rho_d, weight=5) )
+moves.append( mvScale(rho_e, weight=5) )
+moves.append( mvScale(rho_w, weight=5) )
+moves.append( mvScale(rho_b, weight=5) )
+
+# summarize base rates
+speciation_rates := [ rho_w, rho_b ]
+total_speciation := sum( speciation_rates )
 ```
 
-We also construct cladogenetic event matrices, describing the absolute rates of different cladogenetic events. We are not restricting the sizes of 'split' subranges following between-region speciation, so we set the `max_subrange_split_size` equal to the number of regions. From these matrices, we can obtain the total speciation rates per state during each time slice, as well as a cladogenetic probability matrices for each time slice.
+Next, we will construct the total rates for each anagenetic process. Note how we loop over each time slice here; this is because total model rates, and the rate matrices obtained from them, are different during each time slice. Otherwise, this part is identical to the MultiFIG model.
 
 ```
-for (i in 1:num_times) {
-    clado_map[i] := fnBiogeographyCladoEventsBD(
-        speciation_rates=[ rho_w, rho_b ],
-        within_region_features=m_w[i][1],
-        between_region_features=m_b[i],
-        max_range_size=num_regions,
-        max_subrange_split_size=num_regions)
-    lambda[i] := clado_map[i].getSpeciationRateSumPerState()
-    omega[i]  := clado_map[i].getCladogeneticProbabilityMatrix()}
+for (k in 1:num_times) {
+    
+    # dispersal rate (region gain)
+    for (i in 1:num_regions) {
+        r_d[k][i] := rho_d * m_d[k][i]
+    }
+
+    # extirpation rate (region loss)
+    r_e[k] := rho_e * m_e[k][1]
+
+    # dispersal-extirpation rate matrix
+    # - states are discrete ranges
+    # - elements are rates of range expansion/contraction
+    Q_bg[k] := fnBiogeographyRateMatrix(dispersalRates=r_d[k],
+                                  extirpationRates=r_e[k],
+                                  maxRangeSize=max_range_size)
+}
 ```
 
-Lastly, we need to assign a probability distribution to range of the most recent common ancestor of all species, prior to the first speciation event. In this analysis, we will assume all ranges were equally likely for that ancestor.
+We also construct a cladogenetic event matrix, describing the absolute rates of different cladogenetic events. From this matrix, we can obtain the total speciation rates per state, as well as a cladogenetic probability matrix. Once again, we loop over each time slice, because the total model rates and rate matrices obtained from them are different during each time slice. Otherwise, this part is identical to the MultiFIG model.
 
 ```
-pi_bg_prior <- rep(1,num_ranges)
-pi_bg       <- simplex(pi_bg_prior)
+# speciation rate matrix
+for (k in 1:num_times) {
+    clado_map[k] := fnBiogeographyCladoEventsBD(speciation_rates=speciation_rates,
+                                             within_region_features=m_w[k][1],
+                                             between_region_features=m_b[k],
+                                             max_range_size=max_range_size,
+                                             normalize_split_score=false)
+    # clado_map
+
+    # speciation rates for each range
+    lambda[k] := clado_map[k].getSpeciationRateSumPerState()
+
+    # probabilities of speciation outcomes for each range
+    omega[k] := clado_map[k].getCladogeneticProbabilityMatrix()
+
+    # monitor variables for absolute speciation rates
+    r_w[k] := rho_w * m_w[k][1]
+
+    # NOTE: this rate only represents species with range size 2
+    #       i.e., the inverse sum of inverse edge weights
+    #       (relative rates in m_b[i][j]) is equal to the edge weight
+    #       of a 2-region range
+    for (i in 1:num_regions) {
+        r_b[k][i] := rho_b * m_b[k][i]
+    }
+}
 ```
 
-With all of the rates constructed, we can create a stochastic variable drawn from this TimeFIG model with state-dependent birth, death, and speciation processes. This establishes how the various processes interact to generate a tree with a topology, divergence times, and terminal taxon states (ranges). Then we can clamp the variable with the present-day range states, allowing us to infer model parameters based on our observed data. Since we plan to jointly estimate divergence times, we will set a prior on the root age of the tree. The tree that we are using to initialize the analysis (and fix the topology) already has suggested dates, so we will assign a uniform prior centered on the suggested root age.
+We may also want to monitor the absolute extinction rates. Because only lineages with a range of size 1 can go extinct, we will assign larger ranges an absolute extinction rate of 0. Again, we loop over the time slices.
 
 ```
-root_age ~ dnUniform(tree_height-10, tree_height+10)
-timetree ~ dnGLHBDSP(
-    rootAge     = tree_height,
-    lambda      = lambda,
-    mu          = mu,
-    eta         = Q_bg,
-    omega       = omega,
-    lambdaTimes = times,
-    muTimes     = times,
-    etaTimes    = times,
-    omegaTimes  = times,
-    pi          = pi_bg,
-    rho         = 1,
-    condition   = "time",
-    taxa        = taxa,
-    nStates     = num_ranges,
-    nProc       = 4)
+for (k in 1:num_times) {
+    # extinction rates (lineage death)
+    for (i in 1:num_ranges) {
+        if (i <= num_regions) {
+            # species with range-size 1 can go extinct
+            mu[k][i] := r_e[k][i]
+        } else {
+            # widespread species cannot
+            mu[k][i] <- abs(0)
+        }
+    }
+}
+```
+
+Next, we need to assign a probability distribution to range of the most recent common ancestor of all species, prior to the first speciation event. This will be a distribution (simplex) of possible range states that the ancestor might have had. Because some of the ranges are not possible (not all regions exist) when the lineage begins, we will assume that the ancestor started in the mainland.
+
+```
+# base frequencies
+pi_bg_base <- rep(0, num_ranges)
+
+# assume that the integer equal to "num_regions" is the
+# range-integer for a species that occurs only in the
+# mainland region, for base-indexing of 1 (Rev script).
+# For example, region 7 is the non-Hawaiian region,
+# set the range-integer for the range {7} to 1.
+pi_allowed_ranges <- [ num_regions ]
+for (i in 1:pi_allowed_ranges.size()) {
+    j = pi_allowed_ranges[i]
+    pi_bg_base[j] <- 1
+}
+pi_bg <- simplex(pi_bg_base)
+```
+
+We also need to set up the tip sampling probabilities based on state. In this analysis, the Hawaiian (ingroup) *Kadua* have been thoroughly sampled. However, we have only included 3 mainland (outgroup) samples, so we have to account for the low sampling here. Also, we will assign `rho_times` the value of 0, because we only sampled at the present (age =0)
+
+```
+n_total           <- 29 + 2 + 1
+n_total_ingroup   <- 22 + 2
+n_total_outgroup  <- n_total - n_total_ingroup
+n_sample_ingroup  <- 24
+n_sample_outgroup <- 3
+rho_ingroup       <- Probability(n_sample_ingroup/n_total_ingroup) 
+rho_outgroup      <- Probability(n_sample_outgroup/n_total_outgroup)
+rho_poorly_sampled_ranges <- [ 7 ]
+for (i in 1:num_ranges) {
+    rho_sample[1][i] <- rho_ingroup
+}
+for (i in rho_poorly_sampled_ranges) {
+    rho_sample[1][i] <- rho_outgroup
+}
+rho_times <- [ 0.0 ]
+```
+
+Before getting to the tree object, we want to make the root age of the tree object equal to the height of the input phylogeny. When we run future analyses that do not use a fixed tree, we can actually estimate this instead.
+
+```
+# fixed root age
+root_age <- phy.rootAge()
+```
+
+With all of the rates constructed, we can create a stochastic variable drawn from this MultiFIG model with state-dependent birth, death, and speciation processes. This establishes how the various processes interact to generate a tree with a topology, divergence times, and terminal taxon states (ranges). Note how this model differs from the MultiFIG model. Here, we provide containers with different time slices inside of them (like lambda, mu, eta, omega). Therefore, we also have to tell the model what times delimit those slices using specific arguments (lambdaTimes, muTimes, etaTimes, omegaTimes). Fortunately, we already constructed a vector of times for this purpose earlier in the tutorial.
+
+```
+# use Time/Multi FIG setup
+timetree ~ dnGLHBDSP( rootAge      = root_age,
+                      lambda       = lambda,
+                      mu           = mu,
+                      eta          = Q_bg,
+                      omega        = omega,
+                      lambdaTimes  = times,
+                      muTimes      = times,
+                      etaTimes     = times,
+                      omegaTimes   = times,
+                      rhoTimes     = rho_times,
+                      pi           = pi_bg,
+                      rho          = rho_sample,
+                      condition    = "time",
+                      taxa         = taxa,
+                      nStates      = num_ranges,
+                      absTol       = 1e-7,
+                      relTol       = 1e-7,
+                      maxDenseSteps = 5000,
+                      nProc        = num_proc)
+```
+
+Then we can clamp the variable with the fixed tree and present-day range states, allowing us to infer model parameters based on our observed data.
+
+```
+timetree.clamp(phy)
 timetree.clampCharData(bg_dat)
-```
-
-We also want to set up a molecular model that describes how the molecular sequences evolve over our timetree. This will allow for divergence time estimation. There are many possible models of molecular evolution that you could define here (see [this tutorial](https://revbayes.github.io/tutorials/ctmc/) for some options), but we will use HKY+Gamma.
-
-```
-mu_mol_base ~ dnExp(10)
-mu_mol_branch_rel ~ dnDirichlet(rep(2, num_branches))
-mu_mol := mu_mol_base * mu_mol_branch_rel
-kappa ~ dnGamma(2,2)
-pi_mol ~ dnDirichlet( [1,1,1,1] )
-Q_mol := fnHKY(kappa=kappa, baseFrequencies=pi_mol)
-alpha ~ dnExp(0.1)
-site_rates := fnDiscretizeGamma(shape=alpha, rate=alpha, numCats=4, median=true)
-```
-
-We can put these molecular model parameters together into one object using the RevBayes function `dnPhyloCTMC()`, which will associate this molecular model with our timetree.
-
-```
-x_mol ~ dnPhyloCTMC(
-    Q=Q_mol,
-    tree=timetree,
-    branchRates=mu_mol,
-    siteRates=site_rates,
-    rootFrequencies=pi_mol,
-    nSites=num_sites,
-    type="DNA" )
 ```
 
 {% subsection MCMC %}
 
-To aid the initial likelihood computation, we will initialize some parameters before starting MCMC. This will not fix the parameter values, but will give the MCMC chain a "reasonable" place to start.
+For this analysis, we will perform an MCMC of 10000 generations. This may seem like a low number of generations (compared to other programs), but this is because RevBayes performs multiple moves per iteration under the `random` move scheduler (a setting from the start of the tutorial). You can alter this MCMC by changing the number of iterations, the move schedule, or how frequently the MCMC prints output. You can even add a period of burnin that tunes hyperparameters for moves. We have already created all of our moves for this MCMC, so we can move on to monitors. Note that there are separate file monitors for each time slice, which will make the output much easier to read.
 
 ```
-rho_w.setValue(0.1)
-rho_e.setValue(0.1)
-rho_b.setValue(0.1)
-rho_d.setValue(0.1)
-for (i in 1:sigma_w.size()) sigma_w[i].setValue(0.01)
-for (i in 1:sigma_e.size()) sigma_e[i].setValue(0.01)
-for (i in 1:sigma_b.size()) sigma_b[i].setValue(0.01)
-for (i in 1:sigma_d.size()) sigma_d[i].setValue(0.01)
-for (i in 1:phi_w.size()) phi_w[i].setValue(0.01)
-for (i in 1:phi_e.size()) phi_e[i].setValue(0.01)
-for (i in 1:phi_b.size()) phi_b[i].setValue(0.01)
-for (i in 1:phi_d.size()) phi_d[i].setValue(0.01)
-timetree.setValue(phy)
-root_age.setValue(tree_height)
+# screen monitor, so you don't get bored
+monitors.append( mnScreen(rho_d, rho_e, rho_w, rho_b, printgen=print_gen) )
+
+# file monitor for all simple model variables
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
+# file monitor for tree
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+
+# monitor ancestral ranges at internal nodes
+monitors.append( mnJointConditionalAncestralState(
+    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    filename=out_fn+".states.txt",
+    withTips=true, withStartStates=true, type="NaturalNumbers") )
+
+# file monitor for biogeographic rates
+for (k in 1:num_times) {
+    bg_mon_fn = out_fn + ".time" + k + ".bg.txt"
+    monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+                             rho_e, rho_w, rho_d, rho_b,
+                             r_e[k], r_w[k],
+                             r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4],
+                             r_d[k][5], r_d[k][6], r_d[k][7],
+                             r_b[k][1], r_b[k][2], r_b[k][3], r_b[k][4],
+                             r_b[k][5], r_b[k][6], r_b[k][7],
+                             m_e[k][1], m_w[k][1],
+                             m_d[k][1], m_d[k][2], m_d[k][3], m_d[k][4],
+                             m_d[k][5], m_d[k][6], m_d[k][7],
+                             m_b[k][1], m_b[k][2], m_b[k][3], m_b[k][4],
+                             m_b[k][5], m_b[k][6], m_b[k][7] ) )
+}
+
+# monitor stochastic mappings along branches of tree
+# NOTE: uncomment if needed, but can cause performance issues
+monitors.append( mnStochasticCharacterMap(
+    glhbdsp=timetree, printgen=print_gen*10,
+    filename=out_fn+".stoch.txt",
+    use_simmap_default=false) )
 ```
 
-For this analysis, we will perform an MCMC of 1000 generations, with 100 generations of hyperparameter-tuning burnin. Despite being relatively short compared to a full analysis, **THIS WILL STILL TAKE A LONG TIME.** An analysis of this length may not achieve convergence, so these settings should only be used for testing purposes. You can alter this MCMC by changing the number of iterations, the length of the burnin period, or the move schedule. We will also set up the MCMC to record every 10 iterations.
+Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC!
 
 ```
-n_gen    = 1000
-n_burn   = n_gen/10
-printgen = 10
+# create model object
+mymodel = model(timetree)
+
+# create MCMC object
+mymcmc = mcmc(mymodel, moves, monitors)
+
+# run MCMC
+mymcmc.run(num_gen)
 ```
 
-We want MCMC to update our molecular branch rates and parameters. We will add simple scaling moves to many of the values, but we will use special moves for our simplexes. Some of these moves are given a higher `weight`, which indicates that they will be performed several times per iteration.
+After the MCMC analysis has concluded, we can summarize the ancestral states we obtained, creating an ancestral state tree. This tree will be written to the file `ase.tre `. It may take a little while.
 
 ```
-mvi = 1
-mv[mvi++] = mvScale(mu_mol_base, weight=5)
-mv[mvi++] = mvSimplex(mu_mol_branch_rel, numCats=1, alpha=3, kappa=1, weight=num_branches)
-mv[mvi++] = mvSimplex(mu_mol_branch_rel, numCats=5, alpha=3, kappa=1, weight=num_branches)
-mv[mvi++] = mvScale(kappa)
-mv[mvi++] = mvScale(alpha)
-mv[mvi++] = mvSimplex(pi_mol, alpha=3)
-```
-
-We also want MCMC to update all of the base rate $\rho$ parameters, as well as the $\sigma$ and $\phi$ parameters. We will use a scaling move for the base rates, since they should always have positive values. We will use a sliding move for the feature effect parameters, since they can have positive or negative values.
-
-```
-mv[mvi++] = mvScale(rho_w)
-mv[mvi++] = mvScale(rho_e)
-mv[mvi++] = mvScale(rho_b)
-mv[mvi++] = mvScale(rho_d)
-for (i in 1:sigma_d.size()) {mv[mvi++] = mvSlide(sigma_d[i])}
-for (i in 1:sigma_b.size()) {mv[mvi++] = mvSlide(sigma_b[i])}
-for (i in 1:sigma_e.size()) {mv[mvi++] = mvSlide(sigma_e[i])}
-for (i in 1:sigma_w.size()) {mv[mvi++] = mvSlide(sigma_w[i])}
-for (i in 1:phi_d.size()) {mv[mvi++] = mvSlide(phi_d[i])}
-for (i in 1:phi_b.size()) {mv[mvi++] = mvSlide(phi_b[i])}
-for (i in 1:phi_e.size()) {mv[mvi++] = mvSlide(phi_e[i])}
-for (i in 1:phi_w.size()) {mv[mvi++] = mvSlide(phi_w[i])}
-```
-
-Finally, we will add a couple of tree moves to update the root age and node ages.
-
-```
-mv[mvi++] = mvScale(root_age, weight=5)
-mv[mvi++] = mvNodeTimeSlideUniform(timetree, weight=5)
-```
-
-We also want MCMC to keep track of certain things while it runs. We want it to print some output to the screen so we can see how it is running (`mnScreen`). We also want it to save model parameters to a file (`mnModel`). Finally, if we want to use the output for ancestral state reconstruction, we want to save states and stochastic character mappings (`mnJointConditionalAncestralStates` and `mnStochasticCharacterMap`). All of the output files will be saved in the `output` directory so that it can be accessed later.
-
-```
-mni = 1
-mn[mni++] = mnScreen(printgen=1)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
-mn[mni++] = mnFile(timetree, printgen=printgen, filename=out_fp+"trace.tre")
-```
-
-Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use m_w. RevBayes will find all the other parameters that are connected to m_w and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
-
-```
-mdl = model(m_w)
-ch = mcmc(mv, mn, mdl)
-ch.burnin(n_burn, tuningInterval=10)
-ch.run(n_gen)
-```
-
-After the MCMC analysis has concluded, we can create a maximum clade credibility (MCC) tree based on our posterior set of trees (the tree trace). We can then summarize the ancestral states we obtained and map them onto the MCC tree, creating an ancestral state tree. This tree will be written to the file `ase.tre `. It may take a little while. We can also summarize our stochastic mapping, creating the `events.log` file.
-
-```
-tree_trace = readTreeTrace(file=out_fp+"trace.tre", treetype="clock", burnin=0.1)
-mcc_tree = mccTree(tree_trace, file=out_fp+"mcc.tre")
-state_trace = readAncestralStateTrace(file=out_fp+"states.log")
-state_tree_trace = readAncestralStateTreeTrace(file=out_fp+"trace.tre", treetype="clock")
-
-state_tree = ancestralStateTree(tree=mcc_tree,
-                                tree_trace=state_tree_trace,
-                                ancestral_state_trace_vector=state_trace,
-                                include_start_states=true,
-                                file=out_fp+"ase.tre",
-                                summary_statistic="MAP",
-                                burnin=0.1)
-
-stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
-summarizeCharacterMaps(stoch,mcc_tree,file=out_fp+"events.tsv",burnin=0.1)
+f_burn = 0.2
+x_stoch = readAncestralStateTrace(file="output/" + analysis + ".stoch.txt")
+x_states = readAncestralStateTrace(file="output/" + analysis + ".states.txt")
+summarizeCharacterMaps(x_stoch,timetree,file="output/" + analysis + ".events.txt",burnin=f_burn)
+state_tree = ancestralStateTree(
+    tree=timetree,
+    ancestral_state_trace_vector=x_states,
+    include_start_states=true,
+    file="output/" + analysis + ".ase.tre",
+    summary_statistic="MAP",
+    reconstruction="marginal",
+    burnin=f_burn,
+    nStates=num_ranges,
+    site=1)
+writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 ```
 
 {% subsection Output %}
