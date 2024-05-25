@@ -10,15 +10,9 @@ prerequisites:
   - fig_intro
 ---
 
-{% section GeoSSE model with two regions %}
+{% section GeoSSE model %}
 
-The GeoSSE model is a member of a broader class of methods that include state-dependent diversification -- that is, the discrete character state of a lineage may impact its rates of speciation, extinction, and state transition. These models are known as [SSE](https://revbayes.github.io/tutorials/sse/bisse-intro.html) models. Other examples of SSE models include [BiSSE](https://revbayes.github.io/tutorials/sse/bisse.html) (binary state speciation and extinction model) and [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) (cladogenetic state change speciation and extinction model). For more information about how these methods jointly model character evolution and the birth-death process, see the associated tutorials.
-
-The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian *Kadua* using two regions: old islands, and young islands. For more information on *Kadua* and the Hawaiian islands, you can visit the [intro tutorial](https://revbayes.github.io/tutorials/fig_intro/fig_intro.html) for the *Kadua* series.
-
-NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations. However, for the purposes of this tutorial, we group the Hawaiian islands into two categories so that we can easily enumerate all of the model rates.
-
-{% subsection The GeoSSE model %}
+The geographic state-dependent speciation-extinction (or GeoSSE) model is phylogenetic model of biogeographic change {% cite Goldberg2011 %}. GeoSSE allows species to diversify through four main event classes: dispersal, extinction, within-region speciation, and between-region speciation. GeoSSE models are frequently used to test biogeographic hypotheses that concern relationships between these event rates and different regions. For example, is speciation faster on an island than on a mainland for a clade of ferns? Or, is dispersal faster into or out of the Andes for a clade of lizards?
 
 {% figure geosse %}
 <img src="figures/exampletree.png" width="40%">
@@ -27,11 +21,28 @@ An example tree showing GeoSSE event types: within-region speciation (w), extinc
 {% endfigcaption %}
 {% endfigure %}
 
-In the GeoSSE model, lineage "states" represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. The model is constrained such that a lineage can only experience a single event at any instant in time.
+In the GeoSSE model, lineage "states" represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Within-region speciation and extinction happen inside a single region, whereas between-region and dispersal involve two or more regions (Table {% ref geosseevents %}).
 
-Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. In a within-region speciation event, one daughter lineage inherits the entire ancestral range (which might consist of one or more regions), and the other daughter inherits a single region from the ancestral range. In a between-region speciation event, the widespread ancestral range (of two or more regions) is subdivided and inherited by two new daughter lineages. Between-region speciation rates are always symmetric (separation between A and B is the same as separation between B and A). The standard GeoSSE model does not allow for other kinds of speciation events. For example, an ancestor with a widespread range (of two or more regions) cannot produce daughters that both possess the entire ancestral range (a widespread sympatry scenario).
+{% table geosseevents %}
 
-Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Extinction occurs locally within a single region; there is no separate parameter for global extinction, and lineages can only experience one local extirpation event at a time. Therefore, a widespread lineage can only go extinct by losing each of its regions individually until one remains, then losing that last region. Lineages also disperse by adding individual regions to their ranges, and dispersal rates into a new region are the sum of pairwise dispersal rates from each starting region into the new region.
+|------|-------|-----------|
+|      | Within region | Between region |
+| Anagenetic | Extinction | Dispersal |
+| Cladogenetic | Within-region speciation | Between-region speciation |
+
+{% tabcaption %}
+List of the four GeoSSE event classes.
+{% endtabcaption %}
+{% endtable %}
+
+Here is a summary of the four event types:
+
+- **Extinction** causes a species to lose one region from its range. Only when a species loses the final region from its range, does the entire species go entirely extinct as a lineage. A widespread lineage can only go extinct by losing each of its regions individually until one remains, then losing that last region. For example, a species with range AB might go extinct in region B, leaving it with range A. If it experiences no dispersal events (below) and suffers extinction in its last region A, the species is completely extinct.
+- **Dispersal** causes a species to expand its range into a new region. The rate of range expansion is the sum of pairwise dispersal rates from each starting region into the new region. For example, a species with range A that disperses into region B afterwards has range AB.
+- **Within-region speciation**: One daughter lineage inherits the entire ancestral range (which may be one or more regions), while the other daughter inherits a single region from the ancestral range. For example, the ancestral species has range AB and its two daughter species have ranges AB and A.
+- **Between-region speciation**: The range of a widespread ancestral species in two or more regions is subdivided and inherited by two new daughter lineages. Between-region speciation rates are always symmetric (separation between A and B is the same as separation between B and A). For example, the widespread ancestor with range AB splits and give rise to daughters with ranges A and B.
+
+The standard GeoSSE model does not allow for other kinds of evolutionary events. For example, an ancestor with a widespread range (of two or more regions) cannot produce daughters that both possess the entire ancestral range (a widespread sympatry scenario). In addition, GeoSSE only allows for a single event to occur within an instant of time.
 
 The GeoSSE model allows each region or region pair to possess its own rate for each process. For example, the within-region speciation rate for region A may not necessary equal the within-region speciation rate for region B. Similarly, the dispersal rate from A to B does not necessarily equal the dispersal rate from B to A. When constructing the GeoSSE model, each rate will be represented with its own parameter. We will represent these rates with the following vectors and matrices: $r_w$ for the vector of within-region speciation rates, $r_e$ for  the vector of extinction rates, $r_b$ for the matrix of between-region speciation rates, and $r_d$ for the matrix of dispersal rates.
 
@@ -42,6 +53,11 @@ Transition diagram for the GeoSSE model with two regions, based on Figure 1 from
 {% endfigcaption %}
 {% endfigure %}
 
+As the name suggests, GeoSSE is a member of a broader class of methods that include state-dependent diversification -- that is, the discrete character state of a lineage may impact its rates of speciation, extinction, and state transition. These models are known as [SSE](https://revbayes.github.io/tutorials/sse/bisse-intro.html) models. Other examples of SSE models include [BiSSE](https://revbayes.github.io/tutorials/sse/bisse.html) (binary state speciation and extinction model) and [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) (cladogenetic state change speciation and extinction model). For more information about how these methods jointly model character evolution and the birth-death process, see the associated tutorials. The GeoSSE model is a special case of the ClaSSE model that is structured and parameterized for biogeographical scenarios.
+
+This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian *Kadua* using two regions: old islands, and young islands. For more information on *Kadua* and the Hawaiian islands, you can visit the [intro tutorial](https://revbayes.github.io/tutorials/fig_intro/fig_intro.html) for the *Kadua* series.
+
+NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations. However, for the purposes of this tutorial, we group the Hawaiian islands into two categories so that we can easily enumerate all of the model rates.
 {% subsection Setup %}
 
 > ## Important version info!!
@@ -335,7 +351,14 @@ Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
 {% endfigure %}
 
-{% section GeoSSE model with more regions %}
 
-As a follow-up exercise, consider an example with all 7 regions and all free parameters. Show that this model is hopelessly overparameterized.
+{% aside GeoSSE with more regions %}
+
+As noted above, the script is written generally, so it can be applied to biogeographic systems with more than two regions. Consider re-running the script, but instead using the seven-region dataset from the [FIG](https://revbayes.github.io/tutorials/multifig.html) tutorial: [link to `kadua_range_n7.nex`](http://revbayes.github.io/tutorials/multifig/data/kadua/kadua_range_n7.nex).
+
+How many species ranges are there in a three-region versus a seven-region system? How many parameters are there in a three-region versus a seven-region system? Which processes require the most new parameters as the number of regions increases? What problems do you expect to encounter running this GeoSSE script for an analysis with more regions?
+
+{% endaside %}
+
+
 
