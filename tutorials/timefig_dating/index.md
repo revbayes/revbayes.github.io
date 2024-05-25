@@ -32,8 +32,11 @@ Because these analyses build on each other, the tutorial focuses on what changes
 
 **Tutorial files:** This tutorial requires numerous input files and scripts to run properly. Download and unzip the [timefig_dating_project.zip](timefig_dating_project.zip) archive to create a project directory named `timefig_dating_project`. Enter the new directory to run the tutorial exercises. Analysis scripts are available on the sidebar for easy access.
 
-**PhyloDocker image required:** This tutorial currently assumes you are using pre-configured versions of RevBayes and TensorPhylo using the PhyloDocker image. Installation instructions are here: [link](htt
-ps://revbayes.github.io/tutorials/docker.html).
+> ## Important version info!
+> **Note:** This tutorial currently requires specific versions of [RevBayes](https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43) and [TensorPhylo](https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301) to run properly (see linked branches and commits).
+>
+> We recommend that you complete the tutorial using a [PhyloDocker](https://hub.docker.com/r/sswiston/phylo_docker) container, which is pre-configured with the above versions of RevBayes and TensorPhylo. Instructions to install and use PhyloDocker are here: [link](https://revbayes.github.io/tutorials/docker.html).
+{:.info}
 
 
 {% section Molecular phylogenetics %}
