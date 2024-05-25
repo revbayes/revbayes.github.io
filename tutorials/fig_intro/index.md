@@ -35,7 +35,11 @@ Researchers can run pre-installed versions of RevBayes and TensorPhylo using the
 
 {% subsection Empirical system: Hawaiian *Kadua* %}
 
-The Hawaiian Archipelago is a Pacific volcanic island chain with many remarkable properties that fascinate biogeographers.
+*Isaac plans to write this section.*
+
+Island archipelagos are ideal microcosms for studying biogeographic patterns of dispersal, speciation, and extinction. Among islands, the Hawaiian archipelago holds particular value for biogeographers in part because of its unique paleogeography.  Each island in the Hawaiian "chain" is produced through volcanic eruption from a hotspot in the mid pacific and then moves northwest along a tectonic assembly line during which subsidence and erosion cause gradual decay. Thus, the Hawaiian chain acts as a geological time-capsule, with hundreds of progressively older, more eroded islands stretching northwest towards the arctic. The vast majority of Hawaiian biodiversity is concentrated within four larger, younger high island systems of varying age, Kauai (~ 6.15 MYA), Oahu (~ 4.135 MYA), Maui Nui(~ 2.55 MYA), and Hawaii(~ 1.20 MYA).
+
+The age and origin of the many independent radiation of plants, animals, and fungi that have occurred in Hawaii has been a perennial topic of evolutionary studies. One hypothesis that has been difficult to test concerns the age of onset of endemic hawaiian evolutionary radiations. The extreme isolation of the Hawaiian islands makes colonization from distant sources highly improbably, but various biogeographers have hypothesized that the now eroded northwest islands could have provided a landing pad for such lineages that is much older, making dispersal more likely, followed by dispersal to and subsequent radiation in the modern high islands.
 
 Hawaiian *Kadua* (Rubiaceae) is a clade of X flowering plant taxa.
 
@@ -46,8 +50,6 @@ Hawaiian *Kadua* (Rubiaceae) is a clade of X flowering plant taxa.
 {% endfigcaption %}
 {% endfigure %}
 
-
-*Isaac plans to write this section.*
 
 {% subsection Acknowledgements %}
 

@@ -19,13 +19,11 @@ prerequisites:
 
 In the previous tutorial, we saw how the MultiFIG model {% cite Swiston2023 %} allows us to test hypotheses about the relationships between certain environmental features and evolutionary processes using feature effect rates, as well as infer biogeographic event parameters and ancestral areas. We used MultiFIG to investigate the Hawaiian radiation of the plant genus *Kadua* based on species ranges, present-day features of islands, and a time-calibrated phylogeny.
 
-However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. The TimeFIG model (CITATION TBD) addresses the time-heterogeneity of regional features using "time slices" (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions, eight regional features, and seven time slices.
+However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. The TimeFIG model addresses the time-heterogeneity of regional features using "time slices" (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant.
+
+In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions, eight regional features, and seven time slices.
 
 {% subsection The Hawaiian Hot Spot Archipelago %}
-
-Island archipelagos are ideal microcosms for studying biogeographic patterns of dispersal, speciation, and extinction. Among islands, the Hawaiian archipelago holds particular value for biogeographers in part because of its unique paleogeography.  Each  island in the Hawaiian "chain" is produced through volcanic eruption from a hotspot in the mid pacific and then moves northwest along a tectonic assembly line during which  subsidence and erosion case gradual decay. Thus, the hawaiian chain acts as a geological time-capsule, with hundreds of progressively older, more eroded islands stretching northwest towards the arctic. The vast majority of Hawaiian biodiversity is concentrated within four larger, younger high island systems of varying age, Kauai (~ 6.15 MYA), Oahu (~ 4.135 MYA), Maui Nui(~ 2.55 MYA), and Hawaii(~ 1.20 MYA).
-
-The age and origin of the many independent radiation of plants, animals, and fungi that have occurred in hawaii has been a perennial topic of evolutionary studies. One hypothesis that has been difficult to test concerns the age of onset of endemic hawaiian evolutionary radiations. The extreme isolation of the Hawaiian islands makes colonization from distant sources highly improbably, but various biogeographers have hypothesized that the now eroded northwest islands could have provided a landing pad for such lineages that is much older, making dispersal more likely, followed by dispersal to and subsequent radiation in the modern high islands.
 
 The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of *Kadua* (26 spp. including mainland outgoups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.
 
@@ -75,7 +73,7 @@ Next, we want to tell RevBayes where to find our data (and where to save our out
 
 ```
 # filesystem
-analysis      = "simple_timeFIG" # + ".job_1"
+analysis      = "simple_timeFIG"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -94,6 +92,7 @@ num_gen   = 10000
 print_gen = 1
 moves     = VectorMoves()
 monitors  = VectorMonitors()
+```
 
 {% subsection Data %}
 
