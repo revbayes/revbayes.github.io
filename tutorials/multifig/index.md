@@ -11,8 +11,6 @@ prerequisites:
   - geosse
 ---
 
-{% section WARNING: INCOMPLETE %}
-
 {% section Overview %}
 
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the Hawaiian *Kadua*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant islands, or go extinct at a higher rate on smaller islands.
