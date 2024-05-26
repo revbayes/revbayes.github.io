@@ -1,0 +1,179 @@
+# load Tensorphylo plugin
+loadPlugin("TensorPhylo", "/home/mlandis/.local/lib/tensorphylo")
+
+##################
+# ANALYSIS SETUP #
+##################
+
+
+# filesystem
+analysis      = "divtime_timeFIG" # + ".job_1"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+bg_fn         = dat_fp + "kadua_range_n7.nex"
+geo_fp        = "./data/hawaii/"
+feature_fn    = geo_fp + "feature_summary.csv"
+times_fn      = geo_fp + "age_summary.csv"
+out_fn        = "./output/" + analysis
+
+# MCMC variables
+num_proc  = 6
+num_gen   = 10000
+print_gen = 10
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+# tree input
+phy          <- readTrees(phy_fn)[1]
+taxa         = phy.taxa()
+num_taxa     = taxa.size()
+num_branches = 2 * num_taxa - 2
+
+# biogeography input
+dat_01         = readDiscreteCharacterData(bg_fn)
+num_regions    = dat_01.nchar()
+max_range_size = 4
+num_ranges     = 0
+for (k in 1:max_range_size) {
+    num_ranges += choose(num_regions, k)
+}
+dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
+desc           = dat_nn.getStateDescriptions()
+
+#write("index,range\n", filename=label_fn)
+#for (i in 1:desc.size()) {
+#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+#}
+
+# molecular input
+num_loci = 10
+for (i in 1:num_loci) {
+    mol_fn[i] = dat_fp + "kadua_gene_" + i + ".nex"
+    dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
+    num_sites[i] = dat_mol[i].nchar()
+}
+
+for (i in 1:num_taxa) {
+    taxa_names[i] = taxa[i].getSpeciesName()
+}
+for (i in 1:num_loci) {
+    dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
+    dat_mol[i].includeTaxa( taxa_names )
+    dat_mol[i].addMissingTaxa( taxa_names )
+}
+
+###################
+# GEOGRAPHY MODEL #
+###################
+
+source("./scripts/geo_timefig.Rev")
+
+##############
+# TREE MODEL #
+##############
+
+source("./scripts/phylo_timefig.Rev")
+
+
+###################
+# MOLECULAR MODEL #
+###################
+
+source("./scripts/mol_ctmc.Rev")
+
+
+##########################
+# ASSIGN VALUES TO MODEL #
+##########################
+
+timetree.setValue(phy)
+timetree.clampCharData(dat_nn)
+
+for (i in 1:num_loci) {
+    x_mol[i].clamp(dat_mol[i])
+}
+
+
+####################
+# ADDITIONAL MOVES #
+####################
+
+# scales time (up) opposite of rate (down)
+up_down_scale_tree = mvUpDownScale(lambda=1.0, weight=20)
+up_down_scale_tree.addVariable(timetree,       up=true)
+up_down_scale_tree.addVariable(root_age,       up=true)
+up_down_scale_tree.addVariable(mu_mol_branch,  up=false)
+up_down_scale_tree.addVariable(mu_mol_base,    up=false)
+moves.append(up_down_scale_tree)
+
+# scales base (up) and branch (up) rates
+up_down_mol_rate = mvUpDownScale(lambda=1.0, weight=20)
+up_down_mol_rate.addVariable(mu_mol_branch,  up=true)
+up_down_mol_rate.addVariable(mu_mol_base,    up=true)
+moves.append(up_down_mol_rate)
+
+# rebalances rate and age parameters for a node
+rate_age_proposal = mvRateAgeProposal(timetree, weight=20, alpha=5)
+rate_age_proposal.addRates(mu_mol_branch)
+moves.append(rate_age_proposal)
+
+
+###################
+# CREATE MONITORS #
+###################
+
+# screen monitor, so you don't get bored
+monitors.append( mnScreen(root_age, printgen=print_gen) )
+
+# file monitor for all simple model variables
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
+# file monitor for tree
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+
+# monitor ancestral ranges at internal nodes
+monitors.append( mnJointConditionalAncestralState(
+    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    filename=out_fn+".states.txt",
+    withTips=true, withStartStates=true, type="NaturalNumbers") )
+
+# file monitor for biogeographic rates
+for (k in 1:num_times) {
+    bg_mon_fn = out_fn + ".time" + k + ".bg.txt"
+    monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+                             rho_e, rho_w, rho_d, rho_b,
+                             r_e[k], r_w[k],
+                             r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4],
+                             r_d[k][5], r_d[k][6], r_d[k][7],
+                             r_b[k][1], r_b[k][2], r_b[k][3], r_b[k][4],
+                             r_b[k][5], r_b[k][6], r_b[k][7],
+                             m_e[k][1], m_w[k][1],
+                             m_d[k][1], m_d[k][2], m_d[k][3], m_d[k][4],
+                             m_d[k][5], m_d[k][6], m_d[k][7],
+                             m_b[k][1], m_b[k][2], m_b[k][3], m_b[k][4],
+                             m_b[k][5], m_b[k][6], m_b[k][7] ) )
+}
+
+# monitor stochastic mappings along branches of tree
+# NOTE: uncomment if needed, but can cause performance issues
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
+
+########
+# MCMC #
+########
+
+# create model object
+mymodel = model(timetree)
+
+# create MCMC object
+mymcmc = mcmc(mymodel, moves, monitors)
+
+# run MCMC
+mymcmc.run(num_gen)
+
+# make MCC tree
+tt = readTreeTrace (file=out_fn+".tre", treetype="clock", burnin=0.2)
+mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")

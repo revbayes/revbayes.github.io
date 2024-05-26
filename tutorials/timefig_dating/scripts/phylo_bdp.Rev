@@ -1,0 +1,108 @@
+
+# FILENAME: model_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     model_FIG.Rev defines SSE rates for dispersal, extinction
+#     within-region speciation, and between-region speciation using the 
+#     the m_d, m_e, m_w, and m_b functions created in geo_FIG.Rev,
+#     then passes those rates to the SSE model object defined in TensorPhylo.
+#
+# NOTES:
+#     The default RevBayes SSE model can be used for simulation and inference,
+#     and the TensorPhylo SSE model can only be used for inference (currently).
+#     Although RevBayes and the TensorPhylo plugin produce identical likelihoods
+#     given the same data and parameter values, TensorPhylo is generally faster.
+#     We strongly recommend using TensorPhylo for FIG analyses with more than
+#     five regions (e.g. >> 31 states).
+#
+# CALLED BY:
+#     mcmc_FIG.Rev
+#
+# CALLS:
+#     (none)
+#
+#
+
+
+#######################################
+# define model base rates             #
+#######################################
+
+# base rate parameters
+diversification ~ dnExp(1)
+turnover ~ dnBeta(2,2)
+birth := diversification / abs(1.0 - turnover)
+death := birth * turnover
+
+
+# tip state sampling probabilities
+# assume that ranges with ingroup regions (RKOMH) are perfectly
+# sampled, while the outgroup region (Z) has very low sampling
+
+# see ref Lorence 2010
+n_total <- 32
+n_sample <- 27
+rho <- n_sample / n_total
+
+# tree settings
+condition <- "time"
+
+############
+# root age #
+############
+
+if (use_root_calib) {
+    mean_age <- dat_calib[1][2]
+    min_age <- dat_calib[1][3]
+    max_age <- dat_calib[1][4]
+    sd_age <- abs(max_age - min_age) / 4    # convert from 4 sd -> 1 sd
+    root_age ~ dnNormal(mean=mean_age,
+                        sd=2*sd_age,
+                        min=min_age,
+                        max=max_age)
+} else {
+    root_age ~ dnUniform(0.0, 32.0)
+}
+
+root_age.setValue(tree_height)
+
+
+#############
+# BDP model #
+#############
+
+timetree ~ dnBDP(lambda=birth,
+                 mu=death,
+                 rho=rho,
+                 rootAge=root_age,
+                 samplingStrategy="uniform",
+                 condition="time",
+                 taxa=taxa)
+
+
+#####################
+# Node age monitors #
+#####################
+
+source(clade_fn)
+age_ingroup := tmrca(timetree, clade_ingroup)
+age_affinis := tmrca(timetree, clade_affinis)
+age_centrantoides := tmrca(timetree, clade_centrantoides)
+age_flynni := tmrca(timetree, clade_flynni)
+age_littoralis := tmrca(timetree, clade_littoralis)
+age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
+
+#########################
+# Node age calibrations #
+#########################
+
+if (use_bg_calib) {
+    age_bg_min <- 0.0
+    age_bg_max <- 6.3
+    clade_calib ~ dnUniform(age_bg_min-age_ingroup, age_bg_max-age_ingroup)
+    clade_calib.clamp(0.0)
+}
+
+
