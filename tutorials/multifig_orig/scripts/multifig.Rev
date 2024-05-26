@@ -1,0 +1,166 @@
+loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
+
+seed(1)
+
+# FILESYSTEM
+fp          = "../"
+dat_fp      = fp + "data/"
+out_fp      = fp + "output/"
+bg_fn       = dat_fp + "full_ranges.nex"
+phy_fn      = dat_fp + "tree.mcc.tre"
+feature_fn  = dat_fp + "feature_summary.csv"
+
+# PHYLOGENETIC DATA
+phy         <- readTrees(phy_fn)[1]
+tree_height <- phy.rootAge()
+taxa        = phy.taxa()
+num_taxa    = taxa.size()
+
+# BIOGEOGRAPHIC DATA
+bg_01       = readDiscreteCharacterData(bg_fn)
+num_regions = bg_01.nchar()
+num_ranges  = abs(2^num_regions - 1)
+num_pairs   = num_regions^2 - num_regions
+bg_dat      = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
+
+## GETTING FEATURE DATA
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",",nonexistent_region_token="nan")
+
+## TRANSFORMING FEATURE DATA
+geo_features.normalize("within")
+geo_features.normalize("between")
+feature_CW <- geo_features.get("within","categorical",1)
+feature_QW <- geo_features.get("within","quantitative",1)
+feature_CB <- geo_features.get("between","categorical",1)
+feature_QB <- geo_features.get("between","quantitative",1)
+for (i in 1:feature_CW.size()) {layer_CW[i] <- feature_CW[i].get()}
+for (i in 1:feature_QW.size()) {layer_QW[i] <- feature_QW[i].get()}
+for (i in 1:feature_CB.size()) {layer_CB[i] <- feature_CB[i].get()}
+for (i in 1:feature_QB.size()) {layer_QB[i] <- feature_QB[i].get()}
+
+# MODEL RATES
+## MODEL PARAMETER DISTRIBUTIONS
+sigma_dist  = dnNormal(0,1)
+phi_dist    = dnNormal(0,1)
+rho_dist    = dnExp(1)
+
+## WITHIN-REGION speciation_rates
+rho_w ~ rho_dist
+for (i in 1:feature_CW.size()) sigma_w[i] ~ sigma_dist
+for (i in 1:feature_QW.size()) phi_w[i] ~ phi_dist
+m_w := fnFeatureInformedRates(layer_CW, layer_QW, sigma_w, phi_w, null_rate=0)
+
+## EXTINCTION
+rho_e ~ rho_dist
+for (i in 1:feature_CW.size()) sigma_e[i] ~ sigma_dist
+for (i in 1:feature_QW.size()) phi_e[i] ~ phi_dist
+m_e := fnFeatureInformedRates(layer_CW, layer_QW, sigma_e, phi_e, null_rate=1e3)
+r_e := rho_e * m_e[1]
+for (i in 1:num_ranges) {
+    mu[i] <- abs(0)
+    if (i <= num_regions) {
+        mu[i] := r_e[i]
+    }
+}
+
+## BETWEEN-REGION SPECIATION RATES
+rho_b ~ rho_dist
+for (i in 1:feature_CB.size()) sigma_b[i] ~ sigma_dist
+for (i in 1:feature_QB.size()) phi_b[i] ~ phi_dist
+m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
+
+## DISPERSAL
+rho_d ~ rho_dist
+for (i in 1:feature_CB.size()) sigma_d[i] ~ sigma_dist
+for (i in 1:feature_QB.size()) phi_d[i] ~ phi_dist
+m_d := fnFeatureInformedRates(layer_CB, layer_QB, sigma_d, phi_d, null_rate=0)
+for (i in 1:num_regions) {r_d[i] := rho_d * m_d[i]}
+
+## ANAGENETIC EVENTS
+Q_bg := fnBiogeographyRateMatrix(
+    dispersalRates=r_d,
+    extirpationRates=r_e,
+    maxRangeSize=num_regions)
+
+## CLADOGENETIC EVENTS
+clado_map := fnBiogeographyCladoEventsBD(
+    speciation_rates=[ rho_w, rho_b ],
+    within_region_features=m_w[1],
+    between_region_features=m_b,
+    max_range_size=num_regions,
+    max_subrange_split_size=num_regions)
+lambda := clado_map.getSpeciationRateSumPerState()
+omega  := clado_map.getCladogeneticProbabilityMatrix()
+
+## PI
+pi_base <- rep(1,num_ranges)
+pi <- simplex(pi_base)
+
+# TREE
+timetree ~ dnGLHBDSP(
+    rootAge     = tree_height,
+    lambda      = lambda,
+    mu          = mu,
+    eta         = Q_bg,
+    omega       = omega,
+    pi          = pi,
+    rho         = 1,
+    condition   = "time",
+    taxa        = taxa,
+    nStates     = num_ranges,
+    nProc       = 4)
+timetree.clamp(phy)
+timetree.clampCharData(bg_dat)
+
+# MCMC SETUP
+n_gen = 1000
+n_burn = n_gen/10
+printgen = 10
+
+# MCMC MOVES
+mvi = 1
+mv[mvi++] = mvScale(rho_w, weight=1)
+mv[mvi++] = mvScale(rho_e, weight=1)
+mv[mvi++] = mvScale(rho_b, weight=1)
+mv[mvi++] = mvScale(rho_d, weight=1)
+for (i in 1:sigma_d.size()) {mv[mvi++] = mvSlide(sigma_d[i])}
+for (i in 1:sigma_b.size()) {mv[mvi++] = mvSlide(sigma_b[i])}
+for (i in 1:sigma_e.size()) {mv[mvi++] = mvSlide(sigma_e[i])}
+for (i in 1:sigma_w.size()) {mv[mvi++] = mvSlide(sigma_w[i])}
+for (i in 1:phi_d.size()) {mv[mvi++] = mvSlide(phi_d[i])}
+for (i in 1:phi_b.size()) {mv[mvi++] = mvSlide(phi_b[i])}
+for (i in 1:phi_e.size()) {mv[mvi++] = mvSlide(phi_e[i])}
+for (i in 1:phi_w.size()) {mv[mvi++] = mvSlide(phi_w[i])}
+
+# MCMC MONITORS
+mni = 1
+mn[mni++] = mnScreen(printgen=printgen)
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
+
+# MCMC START
+mdl = model(m_w)
+ch = mcmc(mv, mn, mdl)
+ch.burnin(n_burn, tuningInterval=10)
+ch.run(n_gen)
+
+# ANCESTRAL STATES
+f_burn = 0.2
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+x_states = readAncestralStateTrace(file=out_fp+"states.log")
+summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
+state_tree = ancestralStateTree(
+    tree=timetree,
+    ancestral_state_trace_vector=x_states,
+    include_start_states=true,
+    file=out_fp+"ase.tre",
+    summary_statistic="MAP",
+    reconstruction="marginal",
+    burnin=f_burn,
+    nStates=3,
+    site=1)
+writeNexus(state_tree,filename=out_fp+"ase.tre")
+
+print("DONE")
+q()

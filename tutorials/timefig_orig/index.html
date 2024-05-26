@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: The Time-heterogeneous Feature-informed Geographic State Speciation and Extinction (TimeFIG) model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">The Time-heterogeneous Feature-informed Geographic State Speciation and Extinction (TimeFIG) model</h1>
+	<h3 class="subtitle">Using change over time in regional features to inform rates of dispersal, extinction, within-region speciation, and between-region speciation</h3>
+	<h4 class="authors">Sarah Swiston and Isaac Lichter Marck</h4>
+  <h5>Last modified on May 24, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+            <li><a href="/tutorials/sse/classe.html">State-dependent diversification with the ClaSSE model</a></li>
+          
+            <li><a href="/tutorials/geosse_orig/">State-dependent diversification with GeoSSE</a></li>
+          
+            <li><a href="/tutorials/multifig_orig/">Feature-informed diversification with the MultiFIG model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/timefig_orig/data/features/1_cb_feature1.csv">1_cb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/1_cw_feature1.csv">1_cw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/1_qb_feature1.csv">1_qb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/1_qw_feature1.csv">1_qw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/2_cb_feature1.csv">2_cb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/2_cw_feature1.csv">2_cw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/2_qb_feature1.csv">2_qb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/2_qw_feature1.csv">2_qw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/3_cb_feature1.csv">3_cb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/3_cw_feature1.csv">3_cw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/3_qb_feature1.csv">3_qb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/3_qw_feature1.csv">3_qw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/4_cb_feature1.csv">4_cb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/4_cw_feature1.csv">4_cw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/4_qb_feature1.csv">4_qb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/4_qw_feature1.csv">4_qw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/5_cb_feature1.csv">5_cb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/5_cw_feature1.csv">5_cw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/5_qb_feature1.csv">5_qb_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/features/5_qw_feature1.csv">5_qw_feature1.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/age_summary.csv">age_summary.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/feature_summary.csv">feature_summary.csv</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/silversword.mcc.tre">silversword.mcc.tre</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/silversword.mol.nex">silversword.mol.nex</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/data/silversword.range.nex">silversword.range.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/timefig_orig/scripts/timefig.R">timefig.R</a></li>
+        
+          <li><a href="/tutorials/timefig_orig/scripts/timefig.Rev">timefig.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>In the previous example, we saw how the MultiFIG model <a class="citation" href="#Swiston2023">(Swiston and Landis 2023)</a> allows us to test hypotheses about the relationships between certain environmental features and evolutionary processes using feature effect rates, as well as infer biogeographic event parameters and ancestral areas using GeoSSE. We used MultiFIG to investigate the evolution of the South American lizard genus <em>Liolaemus</em> based on species ranges, present-day regional features, and a time-calibrated phylogeny. However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. For example, consider an island system where regions form and subside. Knowing whether regions exist during a particular time period should impact which states are possible during this time period (ranges including absent regions should be disallowed). This should have an effect on our ancestral state reconstructions. As another example, consider a region that was very small for most of its history, with high extinction rates because of its small size (a negative area/extinction relationship). If the region recently became large, and we don’t include any information about the region’s history, we might infer the opposite relationship between size and extinction! The TimeFIG model (CITATION TBD) addresses the time-heterogeneity of regional features using “time slices” (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant.</p>
+
+<p>In this tutorial, we will model the evolution and biogeography of Hawaiian Silverswords using six regions, four regional features, and five time slices. We will also jointly estimate divergence times (using molecular data), which will allow information about the geological history of the Hawaiian archipelago to inform the dates of cladogenetic events.</p>
+
+<h3 class="subsection" id="the-hawaiian-hot-spot-archipelago">The Hawaiian Hot Spot Archipelago</h3>
+<hr class="subsection" />
+
+<p>Island archipelagos are ideal microcosms for studying biogeographic patterns of dispersal, speciation, and extinction. Among islands, the Hawaiian archipelago holds particular value for biogeographers in part because of its unique paleogeography.  Each  island in the Hawaiian “chain” is produced through volcanic eruption from a hotspot in the mid pacific and then moves northwest along a tectonic assembly line during which  subsidence and erosion case gradual decay. Thus, the hawaiian chain acts as a geological time-capsule, with hundreds of progressively older, more eroded islands stretching northwest towards the arctic. The vast majority of Hawaiian biodiversity is concentrated within four larger, younger high island systems of varying age, Kauai (~ 6.15 MYA), Oahu (~ 4.135 MYA), Maui Nui(~ 2.55 MYA), and Hawaii(~ 1.20 MYA). 
+The age and origin of the many independent radiation of plants, animals, and fungi that have occurred in hawaii has been a perennial topic of evolutionary studies. One hypothesis that has been difficult to test concerns the age of onset of endemic hawaiian evolutionary radiations. The extreme isolation of the Hawaiian islands makes colonization from distant sources highly improbably, but various biogeographers have hypothesized that the now eroded northwest islands could have provided a landing pad for such lineages that is much older, making dispersal more likely, followed by dispersal to and subsequent radiation in the modern high islands.
+The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to an endemic hawaiian plant lineage, the silversword alliance (~34 spp.) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas. We also relax the assumption that our input phylogeny is a fully time-calibrated phylogeny, and use “a relaxed rock” approach to update divergence time estimates among silversword taxa. This last bit allows us to test the hypothesis that silverswords colonized older northwest islands before dispersing into, and radiating in the modern high island chain.</p>
+
+<figure id="features"><p><img src="figures/features.png" width="95%" /></p>
+<figcaption>The 4 regional features investigated in this analysis and the 8 associated parameters relating these features to core biogeographic processes.</figcaption>
+</figure>
+
+<figure id="times"><p><img src="figures/times.png" width="95%" /></p>
+<figcaption>The analysis utilizes 5 different time slices, numbered starting from the present. These time slices are delimited by 4 historical time points: T1, T2, T3, and T4. Distributions may be assigned to these time points to account for uncertainty.</figcaption>
+</figure>
+
+<h3 class="subsection" id="setup">Setup</h3>
+<hr class="subsection" />
+
+<blockquote class="info">
+  <h2 id="important-version-info">Important version info!!</h2>
+  <p>This tutorial is the one of a series of lessons explaining how to build increasingly powerful but computationally demanding GeoSSE-type models for biogeographic analyses. Inference under these models is powered by the Tensorphylo plugin for RevBayes, located here: <a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">bitbucket.org/mrmay/tensorphylo/src/master</a> <a class="citation" href="#May2022">(May and Meyer)</a>.
+This tutorial, and following tutorials for GeoSSE-type models, will also require a development version of RevBayes built from the <code class="language-plaintext highlighter-rouge">hawaii_fix</code> branch (this message will be removed when the branch is merged).
+As an alternative to building the development version of RevBayes and installing Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: <a href="https://revbayes.github.io/tutorials/docker.html">revbayes.github.io/tutorials/docker</a>.</p>
+</blockquote>
+
+<p>Running a TimeFIG analysis in RevBayes requires several important data files, including a file representing a phylogeny and a biogeographic data matrix describing the ranges for each species. <code class="language-plaintext highlighter-rouge">silversword.mcc.tre</code> is a phylogeny of the Hawaiian Silverswords. It is a dated tree (and we will use it to initialize our MCMC), but we will estimate new divergence times in this analysis using the molecular data in <code class="language-plaintext highlighter-rouge">silversword.mol.nex</code>. <code class="language-plaintext highlighter-rouge">silversword.range.nex</code> assigns ranges to each species for a six-region system: Kauai, Oahu, Maui Nui, Hawaii, and an outgroup region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region. There are also feature files that contain regional feature data, a <code class="language-plaintext highlighter-rouge">feature_summary.csv</code> file that describes all the regional feature files (where they are found and what kind of data they contain), and an <code class="language-plaintext highlighter-rouge">age_summary.csv</code> file that gives prior distributions for the times that delimit our discrete time slices.</p>
+
+<p>If you prefer to run a single script instead of entering each command manually, the RevBayes script called <code class="language-plaintext highlighter-rouge">timefig.Rev</code> contains all of the commands that are used in the tutorial. There is also an R script for plotting the analysis results. The data and script can be found in the <code class="language-plaintext highlighter-rouge">Data files and scripts</code> box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. Inside the tutorial directory, you should create a <code class="language-plaintext highlighter-rouge">scripts</code> directory. This is the directory where you will run RevBayes commands, or where you will put the <code class="language-plaintext highlighter-rouge">timefig.Rev</code> and <code class="language-plaintext highlighter-rouge">timefig.R</code> scripts. Then, you should create a <code class="language-plaintext highlighter-rouge">data</code> directory inside the tutorial directory. The scripts/commands for the tutorial expect that the primary data files (<code class="language-plaintext highlighter-rouge">silversword.mcc.tre</code>, <code class="language-plaintext highlighter-rouge">silversword.mol.nex</code>, <code class="language-plaintext highlighter-rouge">silversword.ranges.nex</code>, <code class="language-plaintext highlighter-rouge">feature_summary.csv</code>, and <code class="language-plaintext highlighter-rouge">age_summary.csv</code>) will be in this directory, while the feature files (the data, not the summary file) will be in a subdirectory called <code class="language-plaintext highlighter-rouge">features</code>. However, you can always modify the filepaths to locate the data wherever you choose to download it.</p>
+
+<h2 class="section" id="timefig-in-revbayes">TimeFIG in RevBayes</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="getting-started">Getting started</h3>
+<hr class="subsection" />
+
+<p>After starting up RevBayes from within your local <code class="language-plaintext highlighter-rouge">scripts</code> directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at <code class="language-plaintext highlighter-rouge">~/tensorphylo</code>, you would use the following command to load the plugin:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
+</code></pre></div></div>
+
+<p>Note that if you’re using the RevBayes Docker image, then the Tensorphylo plugin is installed in the <code class="language-plaintext highlighter-rouge">/</code> (root) directory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
+</code></pre></div></div>
+
+<p>It is also a good idea to set a seed. If you want to exactly replicate the results of the tutorial, you should use the seed <code class="language-plaintext highlighter-rouge">1</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seed(1)
+</code></pre></div></div>
+
+<p>We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fp         = "../"
+dat_fp     = fp + "data/"
+out_fp     = fp + "output/"
+mol_fn     = dat_fp + "silversword.mol.nex"
+bg_fn      = dat_fp + "silversword.range.nex"
+phy_fn     = dat_fp + "silversword.mcc.tre"
+feature_fn = dat_fp + "feature_summary.csv"
+age_fn     = dat_fp + "age_summary.csv"
+</code></pre></div></div>
+
+<h3 class="subsection" id="data">Data</h3>
+<hr class="subsection" />
+
+<p>Now, we will start reading in data and constructing the TimeFIG model. Let’s start by loading the phylogenetic tree.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy &lt;- readTrees(phy_fn)[1]
+</code></pre></div></div>
+
+<p>In order to set up our analysis, we will want to know some information about this tree: the root age, the taxa, the number of taxa, and the number of branches.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_height  &lt;- phy.rootAge()
+taxa         = phy.taxa()
+num_taxa     = taxa.size()
+num_branches = 2 * num_taxa - 2
+</code></pre></div></div>
+
+<p>Next, we will read in the molecular data, and calculate the number of sites. For this analysis, we are only using a single locus, but it can be performed with multiple loci.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_mol   = readDiscreteCharacterData(mol_fn)
+num_sites = dat_mol.nchar()
+</code></pre></div></div>
+
+<p>We also want to read in the biogeographic data. First, we’ll read the age file that tells us how many time slices to include (5) and what times delimit those slices (1.20 MYA, 2.55 MYA, 4.135 MYA, and 6.15 MYA). Note that for $n$ times, there will be $n+1$ time slices. The <code class="language-plaintext highlighter-rouge">age_summary.csv</code> file also includes information that would help establish a uniform prior on each of these times (<code class="language-plaintext highlighter-rouge">start_age</code> and <code class="language-plaintext highlighter-rouge">end_age</code>), but we will be using the <code class="language-plaintext highlighter-rouge">mean_age</code> without setting a prior (no uncertainty).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>times_dat   = readDataDelimitedFile(age_fn, delimiter=",", header=true)
+num_times   = times_dat.size() + 1
+for (i in 1:(num_times-1)) times[i] &lt;- times_dat[i][2]
+</code></pre></div></div>
+
+<p>Next, we will read in the region data.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bg_01 = readDiscreteCharacterData(bg_fn)
+</code></pre></div></div>
+
+<p>We want to get some information about this range data: how many regions there are, how many ranges can be constructed from these regions, and how many region pairs there are.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_regions = bg_01.nchar()
+num_ranges  = abs(2^num_regions - 1)
+num_pairs   = num_regions^2 - num_regions
+</code></pre></div></div>
+
+<p>We want to format the range data to be used in a GeoSSE-type analysis. This will take the binary range data and output integer states.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
+</code></pre></div></div>
+
+<p>We also want to get our feature data. Using the RevBayes function <code class="language-plaintext highlighter-rouge">readRegionalFeatures</code>, we can look at the <code class="language-plaintext highlighter-rouge">feature_summary.csv</code> file and automatically look for feature data. The <code class="language-plaintext highlighter-rouge">feature_summary.csv</code> file is specially formated to be read by RevBayes, consisting of 5 columns. The first column is <code class="language-plaintext highlighter-rouge">time_index</code>, telling us which time slice the feature data corresponds to. Time slices are numbered from the present starting with 1. The second column is <code class="language-plaintext highlighter-rouge">feature_index</code>. Each feature type (within-region categorical, within-region quantitative, between-region categorical, and between-region quantitative) has a container that can contain several features, so we want to index the features within those containers. In this analysis, we will only have one feature of each type, so the index will always be 1. The third column is <code class="language-plaintext highlighter-rouge">feature_relationship</code>. This column is for indicating whether the feature is a within-region feature or a between-region feature, with options ‘within’ or ‘between’. The fourth column is <code class="language-plaintext highlighter-rouge">feature_type</code>, for indicating whether the feature is quantitative of categorical. Finally, the fifth column is <code class="language-plaintext highlighter-rouge">feature_path</code>, which gives a filepath for the actual file containing the data for that feature.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>geo_features &lt;- readRegionalFeatures(feature_fn, delimiter=",",nonexistent_region_token="nan")
+</code></pre></div></div>
+
+<p>Next, we transform the feature data into feature layers, a RevBayes object that we will use later for informing our biogeographic rates. First, we normalize the features (important for scaling reasons). Then, for each time slice <code class="language-plaintext highlighter-rouge">[i]</code>, we pull each feature type out of our <code class="language-plaintext highlighter-rouge">geo_features</code> object and create the layers.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>geo_features.normalize("within")
+geo_features.normalize("between")
+for (i in 1:num_times) {
+    feature_CW[i] &lt;- geo_features.get("within","categorical",i)
+    feature_QW[i] &lt;- geo_features.get("within","quantitative",i)
+    feature_CB[i] &lt;- geo_features.get("between","categorical",i)
+    feature_QB[i] &lt;- geo_features.get("between","quantitative",i)
+    for (j in 1:feature_CW[i].size()) {layer_CW[i][j] &lt;- feature_CW[i][j].get()}
+    for (j in 1:feature_QW[i].size()) {layer_QW[i][j] &lt;- feature_QW[i][j].get()}
+    for (j in 1:feature_CB[i].size()) {layer_CB[i][j] &lt;- feature_CB[i][j].get()}
+    for (j in 1:feature_QB[i].size()) {layer_QB[i][j] &lt;- feature_QB[i][j].get()}}
+</code></pre></div></div>
+
+<h3 class="subsection" id="model-setup">Model setup</h3>
+<hr class="subsection" />
+
+<p>In the TimeFIG model, there are four processes: within-region speciation, extinction, between-region speciation, and dispersal. Rates per region or region pair for each time slice are calculated using feature data, feature effect parameters, and base rate parameters. We will set the prior on base rate parameters to the exponential distribution <code class="language-plaintext highlighter-rouge">dnExp(1)</code>. We will set the prior on feature effect parameters to the normal distribution <code class="language-plaintext highlighter-rouge">dnNormal(0,1)</code>. Then we will use the RevBayes function <code class="language-plaintext highlighter-rouge">fnFeatureInformedRates</code> to combine the feature data and feature effect parameters to create $m$ vectors/matrices for each time slice, representing relative rates per region or region pair. Finally, we will multiply $m$ by the base rate parameter to get model rates $r_w$, $r_e$, $r_b$, and $r_d$ for each time slice.</p>
+
+<p>Let’s start by creating distributions that we will use for all $\rho$, $\phi$, and $\sigma$ parameters.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma_dist  = dnNormal(0,1)
+phi_dist    = dnNormal(0,1)
+rho_dist    = dnExp(1)
+</code></pre></div></div>
+
+<p>Now we will set up our rates for the four core processes. We will set up within-region speciation rates first. We won’t worry about multiplying $m_w$ by the base rate yet, because the <code class="language-plaintext highlighter-rouge">fnBiogeographyCladoEventsBD</code> function will do this later. Note that while <code class="language-plaintext highlighter-rouge">m_w</code> has different values for each time slice, the <code class="language-plaintext highlighter-rouge">rho_w</code>, <code class="language-plaintext highlighter-rouge">sigma_w</code>, and <code class="language-plaintext highlighter-rouge">phi_w</code> parameters associated with each feature are the same for all time slices; only the feature data changes.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_w ~ rho_dist
+for (i in 1:feature_CW[1].size()) sigma_w[i] ~ sigma_dist
+for (i in 1:feature_QW[1].size()) phi_w[i] ~ phi_dist
+for (i in 1:num_times) m_w[i] := fnFeatureInformedRates(layer_CW[i], layer_QW[i], sigma_w, phi_w, null_rate=0)
+</code></pre></div></div>
+
+<p>Extinction rates are set up similarly, and we will incorporate $\rho$ this time. From these extinction rates (which are actually single-region extinction rates), we will set up global extinction rates for each possible range in the state space. In the TimeFIG model, lineage-level extincion events occur when a species goes globally extinct (i.e. it loses the last region from its range). Therefore, we will assign all multi-region ranges an extinction rate of 0, and we will assign all single-region ranges an extinction rate equal to the local extirpation rate. Note, ranges are numbered such that indices <code class="language-plaintext highlighter-rouge">1</code>, <code class="language-plaintext highlighter-rouge">2</code>, through <code class="language-plaintext highlighter-rouge">num_regions</code> correspond to ranges that respectively contain only region 1, region 2, up through the last region in the system. Similar to within-region speciation rates, we will construct a different <code class="language-plaintext highlighter-rouge">m_e</code> and <code class="language-plaintext highlighter-rouge">r_e</code> vector for each time slice, but the <code class="language-plaintext highlighter-rouge">rho_e</code>, <code class="language-plaintext highlighter-rouge">simga_e</code>, and <code class="language-plaintext highlighter-rouge">phi_e</code> parameters are shared among time slices.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_e ~ rho_dist
+for (i in 1:feature_CW[1].size()) sigma_e[i] ~ sigma_dist
+for (i in 1:feature_QW[1].size()) phi_e[i] ~ phi_dist
+for (i in 1:num_times) m_e[i] := fnFeatureInformedRates(layer_CW[i], layer_QW[i], sigma_e, phi_e, null_rate=1e3)
+for (i in 1:num_times) r_e[i] := rho_e * m_e[i][1]
+for (i in 1:num_times) {
+    for (j in 1:num_ranges) {
+        mu[i][j] &lt;- abs(0)
+        if (j &lt;= num_regions) mu[i][j] := r_e[i][j]}}
+</code></pre></div></div>
+
+<p>Between-region speciation rates are set up similarly. Again, we do not need to incorporate $\rho$ yet. We also don’t have to worry about incorporating range split score; RevBayes will do this automatically when we create the cladogenetic probability matrix.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_b ~ rho_dist
+for (i in 1:feature_CB[1].size()) sigma_b[i] ~ sigma_dist
+for (i in 1:feature_QB[1].size()) phi_b[i] ~ phi_dist
+for (i in 1:num_times) m_b[i] := fnFeatureInformedRates(layer_CB[i], layer_QB[i], sigma_b, phi_b, null_rate=1)
+</code></pre></div></div>
+
+<p>Finally, for dispersal rates, we will set up dispersal rates.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_d ~ rho_dist
+for (i in 1:feature_CB[1].size()) sigma_d[i] ~ sigma_dist
+for (i in 1:feature_QB[1].size()) phi_d[i] ~ phi_dist
+for (i in 1:num_times) m_d[i] := fnFeatureInformedRates(layer_CB[i], layer_QB[i], sigma_d, phi_d, null_rate=0)
+for (i in 1:num_times) {
+    for (j in 1:num_regions) {r_d[i][j] := rho_d * m_d[i][j]}}
+</code></pre></div></div>
+
+<p>From these rates, we can use RevBayes functions to construct the rate matrices used by the analysis. Importantly, these rate matrices are different for each time slice, and this is how RevBayes knows to use different rates during different discrete periods of time. First are the anagenetic rate matrices, which give rates of anagenetic processes. We are not restricting the number of regions that a species can live in at any given time, so we set the <code class="language-plaintext highlighter-rouge">maxRangeSize</code> equal to the number of regions. Settings <code class="language-plaintext highlighter-rouge">maxRangeSize</code> may be used to reduce the number of range patterns in the model, particularly when <code class="language-plaintext highlighter-rouge">num_regions</code> is large.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_times) {
+    Q_bg[i] := fnBiogeographyRateMatrix(
+        dispersalRates=r_d[i],
+        extirpationRates=r_e[i],
+        maxRangeSize=num_regions)}
+</code></pre></div></div>
+
+<p>We also construct cladogenetic event matrices, describing the absolute rates of different cladogenetic events. We are not restricting the sizes of ‘split’ subranges following between-region speciation, so we set the <code class="language-plaintext highlighter-rouge">max_subrange_split_size</code> equal to the number of regions. From these matrices, we can obtain the total speciation rates per state during each time slice, as well as a cladogenetic probability matrices for each time slice.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_times) {
+    clado_map[i] := fnBiogeographyCladoEventsBD(
+        speciation_rates=[ rho_w, rho_b ],
+        within_region_features=m_w[i][1],
+        between_region_features=m_b[i],
+        max_range_size=num_regions,
+        max_subrange_split_size=num_regions)
+    lambda[i] := clado_map[i].getSpeciationRateSumPerState()
+    omega[i]  := clado_map[i].getCladogeneticProbabilityMatrix()}
+</code></pre></div></div>
+
+<p>Lastly, we need to assign a probability distribution to range of the most recent common ancestor of all species, prior to the first speciation event. In this analysis, we will assume all ranges were equally likely for that ancestor.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_bg_prior &lt;- rep(1,num_ranges)
+pi_bg       &lt;- simplex(pi_bg_prior)
+</code></pre></div></div>
+
+<p>With all of the rates constructed, we can create a stochastic variable drawn from this TimeFIG model with state-dependent birth, death, and speciation processes. This establishes how the various processes interact to generate a tree with a topology, divergence times, and terminal taxon states (ranges). Then we can clamp the variable with the present-day range states, allowing us to infer model parameters based on our observed data. Since we plan to jointly estimate divergence times, we will set a prior on the root age of the tree. The tree that we are using to initialize the analysis (and fix the topology) already has suggested dates, so we will assign a uniform prior centered on the suggested root age.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age ~ dnUniform(tree_height-10, tree_height+10)
+timetree ~ dnGLHBDSP(
+    rootAge     = tree_height,
+    lambda      = lambda,
+    mu          = mu,
+    eta         = Q_bg,
+    omega       = omega,
+    lambdaTimes = times,
+    muTimes     = times,
+    etaTimes    = times,
+    omegaTimes  = times,
+    pi          = pi_bg,
+    rho         = 1,
+    condition   = "time",
+    taxa        = taxa,
+    nStates     = num_ranges,
+    nProc       = 4)
+timetree.clampCharData(bg_dat)
+</code></pre></div></div>
+
+<p>We also want to set up a molecular model that describes how the molecular sequences evolve over our timetree. This will allow for divergence time estimation. There are many possible models of molecular evolution that you could define here (see <a href="https://revbayes.github.io/tutorials/ctmc/">this tutorial</a> for some options), but we will use HKY+Gamma.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu_mol_base ~ dnExp(10)
+mu_mol_branch_rel ~ dnDirichlet(rep(2, num_branches))
+mu_mol := mu_mol_base * mu_mol_branch_rel
+kappa ~ dnGamma(2,2)
+pi_mol ~ dnDirichlet( [1,1,1,1] )
+Q_mol := fnHKY(kappa=kappa, baseFrequencies=pi_mol)
+alpha ~ dnExp(0.1)
+site_rates := fnDiscretizeGamma(shape=alpha, rate=alpha, numCats=4, median=true)
+</code></pre></div></div>
+
+<p>We can put these molecular model parameters together into one object using the RevBayes function <code class="language-plaintext highlighter-rouge">dnPhyloCTMC()</code>, which will associate this molecular model with our timetree.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_mol ~ dnPhyloCTMC(
+    Q=Q_mol,
+    tree=timetree,
+    branchRates=mu_mol,
+    siteRates=site_rates,
+    rootFrequencies=pi_mol,
+    nSites=num_sites,
+    type="DNA" )
+</code></pre></div></div>
+
+<h3 class="subsection" id="mcmc">MCMC</h3>
+<hr class="subsection" />
+
+<p>To aid the initial likelihood computation, we will initialize some parameters before starting MCMC. This will not fix the parameter values, but will give the MCMC chain a “reasonable” place to start.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_w.setValue(0.1)
+rho_e.setValue(0.1)
+rho_b.setValue(0.1)
+rho_d.setValue(0.1)
+for (i in 1:sigma_w.size()) sigma_w[i].setValue(0.01)
+for (i in 1:sigma_e.size()) sigma_e[i].setValue(0.01)
+for (i in 1:sigma_b.size()) sigma_b[i].setValue(0.01)
+for (i in 1:sigma_d.size()) sigma_d[i].setValue(0.01)
+for (i in 1:phi_w.size()) phi_w[i].setValue(0.01)
+for (i in 1:phi_e.size()) phi_e[i].setValue(0.01)
+for (i in 1:phi_b.size()) phi_b[i].setValue(0.01)
+for (i in 1:phi_d.size()) phi_d[i].setValue(0.01)
+timetree.setValue(phy)
+root_age.setValue(tree_height)
+</code></pre></div></div>
+
+<p>For this analysis, we will perform an MCMC of 1000 generations, with 100 generations of hyperparameter-tuning burnin. Despite being relatively short compared to a full analysis, <strong>THIS WILL STILL TAKE A LONG TIME.</strong> An analysis of this length may not achieve convergence, so these settings should only be used for testing purposes. You can alter this MCMC by changing the number of iterations, the length of the burnin period, or the move schedule. We will also set up the MCMC to record every 10 iterations.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen    = 1000
+n_burn   = n_gen/10
+printgen = 10
+</code></pre></div></div>
+
+<p>We want MCMC to update our molecular branch rates and parameters. We will add simple scaling moves to many of the values, but we will use special moves for our simplexes. Some of these moves are given a higher <code class="language-plaintext highlighter-rouge">weight</code>, which indicates that they will be performed several times per iteration.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+mv[mvi++] = mvScale(mu_mol_base, weight=5)
+mv[mvi++] = mvSimplex(mu_mol_branch_rel, numCats=1, alpha=3, kappa=1, weight=num_branches)
+mv[mvi++] = mvSimplex(mu_mol_branch_rel, numCats=5, alpha=3, kappa=1, weight=num_branches)
+mv[mvi++] = mvScale(kappa)
+mv[mvi++] = mvScale(alpha)
+mv[mvi++] = mvSimplex(pi_mol, alpha=3)
+</code></pre></div></div>
+
+<p>We also want MCMC to update all of the base rate $\rho$ parameters, as well as the $\sigma$ and $\phi$ parameters. We will use a scaling move for the base rates, since they should always have positive values. We will use a sliding move for the feature effect parameters, since they can have positive or negative values.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv[mvi++] = mvScale(rho_w)
+mv[mvi++] = mvScale(rho_e)
+mv[mvi++] = mvScale(rho_b)
+mv[mvi++] = mvScale(rho_d)
+for (i in 1:sigma_d.size()) {mv[mvi++] = mvSlide(sigma_d[i])}
+for (i in 1:sigma_b.size()) {mv[mvi++] = mvSlide(sigma_b[i])}
+for (i in 1:sigma_e.size()) {mv[mvi++] = mvSlide(sigma_e[i])}
+for (i in 1:sigma_w.size()) {mv[mvi++] = mvSlide(sigma_w[i])}
+for (i in 1:phi_d.size()) {mv[mvi++] = mvSlide(phi_d[i])}
+for (i in 1:phi_b.size()) {mv[mvi++] = mvSlide(phi_b[i])}
+for (i in 1:phi_e.size()) {mv[mvi++] = mvSlide(phi_e[i])}
+for (i in 1:phi_w.size()) {mv[mvi++] = mvSlide(phi_w[i])}
+</code></pre></div></div>
+
+<p>Finally, we will add a couple of tree moves to update the root age and node ages.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv[mvi++] = mvScale(root_age, weight=5)
+mv[mvi++] = mvNodeTimeSlideUniform(timetree, weight=5)
+</code></pre></div></div>
+
+<p>We also want MCMC to keep track of certain things while it runs. We want it to print some output to the screen so we can see how it is running (<code class="language-plaintext highlighter-rouge">mnScreen</code>). We also want it to save model parameters to a file (<code class="language-plaintext highlighter-rouge">mnModel</code>). Finally, if we want to use the output for ancestral state reconstruction, we want to save states and stochastic character mappings (<code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralStates</code> and <code class="language-plaintext highlighter-rouge">mnStochasticCharacterMap</code>). All of the output files will be saved in the <code class="language-plaintext highlighter-rouge">output</code> directory so that it can be accessed later.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
+mn[mni++] = mnScreen(printgen=1)
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
+mn[mni++] = mnFile(timetree, printgen=printgen, filename=out_fp+"trace.tre")
+</code></pre></div></div>
+
+<p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use m_w. RevBayes will find all the other parameters that are connected to m_w and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mdl = model(m_w)
+ch = mcmc(mv, mn, mdl)
+ch.burnin(n_burn, tuningInterval=10)
+ch.run(n_gen)
+</code></pre></div></div>
+
+<p>After the MCMC analysis has concluded, we can create a maximum clade credibility (MCC) tree based on our posterior set of trees (the tree trace). We can then summarize the ancestral states we obtained and map them onto the MCC tree, creating an ancestral state tree. This tree will be written to the file <code class="language-plaintext highlighter-rouge">ase.tre </code>. It may take a little while. We can also summarize our stochastic mapping, creating the <code class="language-plaintext highlighter-rouge">events.log</code> file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readTreeTrace(file=out_fp+"trace.tre", treetype="clock", burnin=0.1)
+mcc_tree = mccTree(tree_trace, file=out_fp+"mcc.tre")
+state_trace = readAncestralStateTrace(file=out_fp+"states.log")
+state_tree_trace = readAncestralStateTreeTrace(file=out_fp+"trace.tre", treetype="clock")
+
+state_tree = ancestralStateTree(tree=mcc_tree,
+                                tree_trace=state_tree_trace,
+                                ancestral_state_trace_vector=state_trace,
+                                include_start_states=true,
+                                file=out_fp+"ase.tre",
+                                summary_statistic="MAP",
+                                burnin=0.1)
+
+stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+summarizeCharacterMaps(stoch,mcc_tree,file=out_fp+"events.tsv",burnin=0.1)
+</code></pre></div></div>
+
+<h3 class="subsection" id="output">Output</h3>
+<hr class="subsection" />
+
+<p>One interesting thing we can do with the output of the TimeFIG analysis is plot the time-calibrated tree with ancestral states. This can be done using RevGadgets, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the <code class="language-plaintext highlighter-rouge">timefig.R</code> script, or by executing the following code in R. Before plotting the ancestral state tree, we create two vectors. The vector <code class="language-plaintext highlighter-rouge">labels</code> is useful because it maps actual region labels onto state numbers, so the legend can be easily interpreted. If you used your own data, you would have to provide your own state labels.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+library(ggplot2)
+
+tree_file = "../output/ase.tre"
+states_file = "../figures/states.png"
+
+labels &lt;- c("0" = "R","1" = "K","2" = "O","3" = "M","4" = "H","5" = "Z","6" = "RK","7" = "RO","8" = "KO","9" = "RM","10" = "KM","11" = "OM","12" = "RH","13" = "KH","14" = "OH","15" = "MH","16" = "RZ","17" = "KZ","18" = "OZ","19" = "MZ","20" = "HZ","21" = "RKO","22" = "RKM","23" = "ROM","24" = "KOM","25" = "RKH","26" = "ROH","27" = "KOH","28" = "RMH","29" = "KMH","30" = "OMH","31" = "RKZ","32" = "ROZ","33" = "KOZ","34" = "RMZ","35" = "KMZ","36" = "OMZ","37" = "RHZ","38" = "KHZ","39" = "OHZ","40" = "MHZ","41" = "RKOM","42" = "RKOH","43" = "RKMH","44" = "ROMH","45" = "KOMH","46" = "RKOZ","47" = "RKMZ","48" = "ROMZ","49" = "KOMZ","50" = "RKHZ","51" = "ROHZ","52" = "KOHZ","53" = "RMHZ","54" = "KMHZ","55" = "OMHZ","56" = "RKOMH","57" = "RKOMZ","58" = "RKOHZ","59" = "RKMHZ","60" = "ROMHZ","61" = "KOMHZ","62" = "RKOMHZ")
+
+states &lt;- processAncStates(tree_file, state_labels=labels)
+plotAncStatesMAP(t=states,
+                 timeline=T,
+                 geo=F,
+                 time_bars=F,
+                 node_size=2,
+                 node_color_as="state",
+                 node_size_as=NULL,
+                 tip_labels_offset=0.1) +
+                 ggplot2::theme(legend.position="bottom",
+                                legend.title=element_blank())
+ggsave(output_file, width = 9, height = 9)
+</code></pre></div></div>
+
+<figure id="states"><p><img src="figures/states.png" width="95%" /></p>
+<figcaption>Ancestral state reconstruction of Hawaiian Silverswords. Nodes are colored based on the range with the highest probability. Range labels represents sets of regions (R = northwest islands, K = Kauai, O = Oahu, M = Maui Nui, H = Hawaii, Z = outgroup region).</figcaption>
+</figure>
+
+<p>As we can see from the figure above, we do not find evidence that the silverswords dipsersed first to now eroded northwest island before colonizing and radiating in Kauai.</p>
+
+
+<ol class="bibliography"><li><span id="May2022">May M.R., Meyer X. TensorPhylo. .</span>
+
+
+<a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">https://bitbucket.org/mrmay/tensorphylo/src/master/</a>
+</li>
+<li><span id="Swiston2023">Swiston S.K., Landis M.J. 2023. Testing relationships between multiple regional features and
+             biogeographic processes of speciation, extinction, and dispersal. BioRxiv.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

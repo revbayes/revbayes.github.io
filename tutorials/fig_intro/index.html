@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Introduction to phylogenetic biogeography with the FIG model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Introduction to phylogenetic biogeography with the FIG model</h1>
+	<h3 class="subtitle">Using the feature-informed geographic state-dependent speciation-extinction (FIG) model for phylogenetic biogeography</h3>
+	<h4 class="authors">Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata</h4>
+  <h5>Last modified on May 26, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h3 class="subsection" id="introduction">Introduction</h3>
+<hr class="subsection" />
+
+<p>Models of phylogenetic biogeography are used to estimate how historical processes have shaped the distribution of species in space over time. This page provides an overview for using the FIG model to study phylogenetic biogeography in RevBayes. Briefly, the FIG model builds upon the geographic state-dependent speciation-extinction (GeoSSE) model <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a>, a member of the larger SSE model family <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>. The FIG model extends the GeoSSE model by allowing regional features to shape biogeographic rates <a class="citation" href="#Landis2022">(Landis et al. 2022; Swiston and Landis 2023)</a>. The purpose of FIG is to allow biologists to test new hypotheses that involve the timing and location of phylogenetic, biogeographic, and paleogeographic events.</p>
+
+<h3 class="subsection" id="tutorials">Tutorials</h3>
+<hr class="subsection" />
+
+<p>The FIG tutorial series targets biologists who are familiar with phylogenetic models and are interested in the following topics in phylogenetic biogeography: phylogenetic and biogeographic model design, ancestral range estimation, testing associations between regional features with biogeographic rates, estimating regional biogeographic rates through time, and biogeographic dating of speciation times.</p>
+
+<p>Tutorials in this series are:</p>
+<ul>
+  <li><a href="../timefig_dating/#molecular-phylogenetics">Molecular phylogenetics</a></li>
+  <li><a href="../geosse/">GeoSSE model</a></li>
+  <li><a href="../multifig/">MultiFIG model</a></li>
+  <li><a href="../timefig_simple/">TimeFIG model</a></li>
+  <li><a href="../timefig_dating/#biogeographic-dating-with-node-calibration">Biogeographic dating with node age priors</a></li>
+  <li><a href="../timefig_dating/#biogeographic-dating-with-timefig">Biogeographic dating with TimeFIG</a></li>
+</ul>
+
+<h3 class="subsection" id="software-setup">Software setup</h3>
+<hr class="subsection" />
+
+<p>The FIG tutorials are designed to be run with <a href="https://github.com/revbayes/revbayes">RevBayes</a> using the TensorPhylo plugin. Developed by Mike May and Xavier Meyer, TensorPhylo is a high-performance library for rapidly computing state-dependent diversification model likelihoods.</p>
+
+<blockquote class="info">
+  <h2 id="important-version-info">Important version info!</h2>
+  <p><strong>Note:</strong> Tutorials in this series currently require specific versions of <a href="https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43">RevBayes</a> and <a href="https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301">TensorPhylo</a> to run properly (see linked branches and commits).</p>
+
+  <p>We recommend that you complete the tutorials using a <a href="https://hub.docker.com/r/sswiston/phylo_docker">PhyloDocker</a> container, which is pre-configured with the above versions of RevBayes and TensorPhylo. Instructions to install and use PhyloDocker are here: <a href="https://revbayes.github.io/tutorials/docker.html">link</a>.</p>
+</blockquote>
+
+<h3 class="subsection" id="empirical-system-hawaiian-kadua">Empirical system: Hawaiian <em>Kadua</em></h3>
+<hr class="subsection" />
+
+<p><em>Isaac plans to write this section.</em></p>
+
+<p>Island archipelagos are ideal microcosms for studying biogeographic patterns of dispersal, speciation, and extinction. Among islands, the Hawaiian archipelago holds particular value for biogeographers in part because of its unique paleogeography. Each island in the Hawaiian “chain” is produced through volcanic eruption from a hotspot in the mid pacific and then moves northwest along a tectonic assembly line during which subsidence and erosion cause gradual decay. Thus, the Hawaiian chain acts as a geological time-capsule, with hundreds of progressively older, more eroded islands stretching northwest towards the arctic. The vast majority of Hawaiian biodiversity is concentrated within four larger, younger high island systems of varying age, Kauai (~6.1 Ma), Oahu (~4.1 Ma), Maui Nui(~2.5 Ma), and Hawaii(~1.2 Ma).</p>
+
+<p>The age and origin of the many independent radiation of plants, animals, and fungi that have occurred in Hawaii has been a perennial topic of evolutionary studies. One hypothesis that has been difficult to test concerns the age of onset of endemic hawaiian evolutionary radiations. The extreme isolation of the Hawaiian islands makes colonization from distant sources highly improbably, but various biogeographers have hypothesized that the now eroded northwest islands could have provided a landing pad for such lineages that is much older, making dispersal more likely, followed by dispersal to and subsequent radiation in the modern high islands.</p>
+
+<p>Hawaiian <em>Kadua</em> (Rubiaceae) is a clade of 29 flowering plant taxa. They inhabit all the major High Island complexes, from Kauai to Hawaii, across a variety of habitat types, including forests, bogs, coastal regions, near waterfalls, and on basaltic remnants of lava flows. Previous work has shown Hawaiian <em>Kadua</em> forms a clade, possibly as the sister lineage to another clade of <em>Kadua</em> found in Polynesian islands in the South Pacific (Rapa Iti, Ua Huku, and Nuku Hiva).</p>
+
+<figure id="example"><p><img src="figures/kadua_cookiana_ken_wood.jpg" width="250" /></p>
+<figcaption><em>Kadua cookiana</em> basking by a waterfall. Photo by Ken Wood (NTBG).</figcaption>
+</figure>
+
+<p>Based in initial phylogenetic studies of <em>Kadua</em>, it is likely the island was colonized once by a progenitor lineage with multiple dispersal events between Hawaiian islands. However, there are no known fossils that could be used to date the age of Hawaiian <em>Kadua</em> lineages, making it difficult to estimate when, where, and how the clade dispersed, speciated, and went extinct as different Hawaiian islands formed, rose, eroded, and subsided.</p>
+
+<p>These tutorials will analyze an unpublished <em>Kadua</em> dataset that contains 26 Hawaiian taxa and 3 non-Hawaiian taxa. The geographic dataset includes 8 quantitative and 8 categorical paleogeographical features for 7 regions across 7 timeslices. The biogeographic dataset presence-absence data that records species ranges against the taxon set. In addition, we include a 2-region dataset to illustrate how GeoSSE models behave before moving to the 7-region dataset. Lastly, the molecular dataset includes 10 loci from a larger Angiosperms353 analysis.</p>
+
+<h3 class="subsection" id="acknowledgements">Acknowledgements</h3>
+<hr class="subsection" />
+
+<p>This tutorial series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis. The workshop was made possible through an NSF-funded project entitled <em>Modeling the Origin and Evolution of Hawaiian Plants</em>. The botanical and biogeographical context of these tutorials was enriched through ongoing interactions with our project collaborators, Warren Wagner, Nina Rønsted, Bruce Baldwin, and Ken Wood. We also thank Mike May for his indispensable help adapting TensorPhylo for use with TimeFIG analyses for biogeographic dating.</p>
+
+<ol class="bibliography"><li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
+
+</li>
+<li><span id="Landis2022">Landis M.J., Quintero I., Muñoz M.M., Zapata F., Donoghue M.J. 2022. Phylogenetic inference of where species spread or split across barriers. Proceedings of the National Academy of Sciences. 119.</span>
+
+</li>
+<li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
+
+<a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
+
+</li>
+<li><span id="Swiston2023">Swiston S.K., Landis M.J. 2023. Testing relationships between multiple regional features and
+             biogeographic processes of speciation, extinction, and dispersal. BioRxiv.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

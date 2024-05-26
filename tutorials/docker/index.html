@@ -54,8 +54,8 @@
       <div class="titlebar">
 	<h1 class="maintitle">Using RevBayes with Docker</h1>
 	<h3 class="subtitle">Using a platform-independent container to run RevBayes on your computer or a computing cluster</h3>
-	<h4 class="authors">Sarah Swiston</h4>
-  <h5>Last modified on May 20, 2024</h5>
+	<h4 class="authors">Sarah Swiston and Michael Landis</h4>
+  <h5>Last modified on May 26, 2024</h5>
 </div>
 
 
@@ -100,9 +100,49 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>Getting RevBayes to run on different operating systems and hardware is not always easy. <a href="https://www.docker.com/">Docker</a> is a way to share pre-build, pre-configured, and platform-independent sets of programs and files. The <a href="https://hub.docker.com/r/sswiston/phylo_docker/tags">PhyloDocker</a> image can be used to run Docker containers that are pre-installed with a recent version of <a href="https://github.com/revbayes/revbayes">RevBayes</a> and the <a href="https://bitbucket.org/mrmay/tensorphylo">TensorPhylo</a> plugin.</p>
+<p>Docker is a way to share pre-built, pre-configured, and platform-independent sets of programs and files. The PhyloDocker image described below comes pre-configured with RevBayes, the TensorPhylo library, and other useful software.</p>
 
-<p>On the development side, a <strong>Dockerfile</strong> (a list of commands for building and configuring programs/files) is used to build an <strong>image</strong>, which can then be shared with others. On the user side, the image can be downloaded and run to create a <strong>container</strong>. Inside the container, you have access to all of the programs contained in the image, as well as any files you <strong>mount</strong> to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. The current PhyloDocker image contains RevBayes, TensorPhylo, Python, R, and other necessary libraries. The image is hosted on <a href="https://hub.docker.com/r/sswiston/phylo_docker">Docker Hub</a>.</p>
+<p>As a user, you download and a build a Docker image. Once built, you can create a Docker container from that image. Each Docker image lives on your computer and uses its resources for work. In this way, you can think of Docker as a program that runs a miniature “virtual” computer through your actual computer. A container built from PhyloDocker can be used to run RevBayes, just like you would through the terminal, but without needing to install and configure RevBayes yourself. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~ $ ### from terminal on my laptop (host)
+~ $ docker run --name phylodocker_demo --volume /Users/mlandis/projects/docker_test:/docker_test -it sswiston/phylo_docker:slim_amd64
+
+~ # ### from terminal inside Docker container
+~ # cd docker_test/
+/docker_test # ls
+history.txt  test.Rev
+/docker_test # rb test.Rev
+
+RevBayes version (1.2.2)
+Build from remotes/origin/stochmap_tp_dirty_merge (rapture-2396-g55c817) on Mon May 20 16:11:27 UTC 2024
+
+Visit the website www.RevBayes.com for more information about RevBayes.
+
+RevBayes is free software released under the GPL license, version 3. Type 'license()' for details.
+
+To quit RevBayes type 'quit()' or 'q()'.
+
+
+&gt; source("test.Rev")
+   Processing file "test.Rev"
+Congrats! RevBayes is working!
+
+/docker_test # ### new file in container will be visible to laptop
+/docker_test # touch new_file.txt
+/docker_test # ls
+new_file.txt  test.Rev
+/docker_test # exit
+
+~ $ ### back on my laptop (host)
+~ $ ls /Users/mlandis/projects/docker_test
+new_file.txt  test.Rev
+
+~ $ ### reconnect to Docker container
+~ $ docker exec -it phylodocker_demo /bin/sh
+~ # 
+</code></pre></div></div>
+
+<p>On the development side, a <strong>Dockerfile</strong> (a list of commands for building and configuring programs/files) is used to build an <strong>image</strong>, which can then be shared with others. On the user side, the image can be downloaded and run to create a <strong>container</strong>. Inside the container, you have access to all of the programs contained in the image, as well as any files you <strong>mount</strong> to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. A Docker image containing RevBayes, TensorPhylo, Python, R, Julia, and several other programs can be found on <a href="https://hub.docker.com/r/sswiston/phylo_docker">Docker Hub</a>.</p>
 
 <p>This tutorial explains how to install Docker on your computer, how to obtain a RevBayes Docker image, and how to use the image to run scripts on your computer or a computing cluster. This will require a basic familiarity with command line (navigating directories and entering basic commands), but does not require much programming.</p>
 
@@ -126,6 +166,12 @@
 <hr class="subsection" />
 
 <p>In order to use Docker on your computer, you will have to download and install <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>. The desktop app allows your computer to run Docker images, and also provides a GUI for interacting with images and containers. Whenever you want to use a Docker image, you will need to start the Docker daemon first, and opening Docker Desktop is the simplest way to do this (although there are a few <a href="https://docs.docker.com/config/daemon/start/">other ways</a> to start the Docker daemon). Docker has versions for Mac, Windows, and Linux. The RevBayes Docker image should work on any of these platforms.</p>
+
+<figure id="example"><p><img src="figures/docker_desktop.png" width="60%" /></p>
+<figcaption>Example view of containers in Docker Desktop.</figcaption>
+</figure>
+
+<p>This is a reference to <a href="#example"></a></p>
 
 <h3 class="subsection" id="downloading-the-image">Downloading the image</h3>
 <hr class="subsection" />
@@ -295,12 +341,12 @@ docker pull sswiston/phylo_docker:slim_arm64
 
 <p>Some high-performance computing clusters allow (or require) users to implement Docker images. For the most part, using a Docker image on a computing cluster is like using the image via command line on your own machine. You can mount directories, start a container, and use the programs inside to run scripts. However, there can be some additional considerations, depending on how the particular cluster is organized.</p>
 
-<h3 class="subsection" id="example-wustl-ris">Example: Wustl RIS</h3>
+<h3 class="subsection" id="example-wustl-ris">Example: WUSTL RIS</h3>
 <hr class="subsection" />
 
-<p>Washington University in Saint Louis Research Infrastructure Services (Wustl RIS) has a scientific compute platform that requires Docker to run jobs. Each job opens a separate Docker container. Interactive jobs allow users to access an interactive container where they can enter commands, start programs, and run scripts. Non-interactive jobs open a non-interactive container that automatically runs certain scripts, and then both the container and job terminate. In this example, we will show a non-interactive job.</p>
+<p>Washington University in Saint Louis Research Infrastructure Services (WUSTL RIS) has a scientific compute platform that requires Docker to run jobs. Each job opens a separate Docker container. Interactive jobs allow users to access an interactive container where they can enter commands, start programs, and run scripts. Non-interactive jobs open a non-interactive container that automatically runs certain scripts, and then both the container and job terminate. In this example, we will show a non-interactive job.</p>
 
-<p>Wustl RIS uses <code class="language-plaintext highlighter-rouge">bsub</code> commands to submit jobs. These commands can be written in one line, but they often have many arguments, so it can be helpful to put together a Bash script that constructs the <code class="language-plaintext highlighter-rouge">bsub</code> command. Here is an example:</p>
+<p>WUSTL RIS uses <code class="language-plaintext highlighter-rouge">bsub</code> commands to submit jobs. These commands can be written in one line, but they often have many arguments, so it can be helpful to put together a Bash script that constructs the <code class="language-plaintext highlighter-rouge">bsub</code> command. Here is an example:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LSF_DOCKER_VOLUMES="[Storage Directory]:/project"
 PROJECTDIR="/project/"
@@ -375,7 +421,7 @@ bsub \
   </li>
 </ul>
 
-<p>You may wonder why we don’t immediately call RevBayes and run a <code class="language-plaintext highlighter-rouge">.Rev</code> script. This is possible to do. However, the Wustl RIS cluster overwrites the <code class="language-plaintext highlighter-rouge">PATH</code> variable inside the Docker container, which means that RevBayes can’t be found with a simple <code class="language-plaintext highlighter-rouge">rb</code> command. Instead, you would have to specify the full filepath to the RevBayes binary inside the container, which is <code class="language-plaintext highlighter-rouge">/revbayes/projects/installer/rb</code>. You may also want to add extra information to the <code class="language-plaintext highlighter-rouge">rb</code> command (like defining variables for your analyses). It can be easier to use a shell script to call RevBayes while inside the container. Here is an example:</p>
+<p>You may wonder why we don’t immediately call RevBayes and run a <code class="language-plaintext highlighter-rouge">.Rev</code> script. This is possible to do. However, the WUSTL RIS cluster overwrites the <code class="language-plaintext highlighter-rouge">PATH</code> variable inside the Docker container, which means that RevBayes can’t be found with a simple <code class="language-plaintext highlighter-rouge">rb</code> command. Instead, you would have to specify the full filepath to the RevBayes binary inside the container, which is <code class="language-plaintext highlighter-rouge">/revbayes/projects/installer/rb</code>. You may also want to add extra information to the <code class="language-plaintext highlighter-rouge">rb</code> command (like defining variables for your analyses). It can be easier to use a shell script to call RevBayes while inside the container. Here is an example:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PATH=$PATH:/revbayes/projects/installer:/revbayes/projects/installer/rb
 
@@ -385,7 +431,7 @@ echo $rb_command | rb
 
 <p>In this short script, RevBayes is added to the <code class="language-plaintext highlighter-rouge">PATH</code> variable inside the container. Then a RevBayes command is constructed. It has two parts: setting <code class="language-plaintext highlighter-rouge">variable_1</code> to have a value of <code class="language-plaintext highlighter-rouge">test</code>, and sourcing the script <code class="language-plaintext highlighter-rouge">rev_script.Rev</code>. The final line pipes this command into RevBayes, which sets <code class="language-plaintext highlighter-rouge">variable_1</code> equal to <code class="language-plaintext highlighter-rouge">test</code> and runs <code class="language-plaintext highlighter-rouge">rev_script.Rev</code>.</p>
 
-<p>This example highlights two main differences between using the RevBayes Docker image on your local machine and using it on the Wustl RIS computing cluster. First, the analyses must be submitted as jobs (common amongst computing clusters). Second, the job submission process overwrites the <code class="language-plaintext highlighter-rouge">PATH</code> variable inside the Docker container, so you will have to know where to find the programs you want to use. Other computing clusters may have similar challenges. Before running lengthy jobs or batches of jobs, it is recommended that you try out a test job or two and make sure they work as expected. Generally, the Docker image will function the same on any platform, and all of the programs should run correctly with appropriate input scripts.</p>
+<p>This example highlights two main differences between using the RevBayes Docker image on your local machine and using it on the WUSTL RIS computing cluster. First, the analyses must be submitted as jobs (common amongst computing clusters). Second, the job submission process overwrites the <code class="language-plaintext highlighter-rouge">PATH</code> variable inside the Docker container, so you will have to know where to find the programs you want to use. Other computing clusters may have similar challenges. Before running lengthy jobs or batches of jobs, it is recommended that you try out a test job or two and make sure they work as expected. Generally, the Docker image will function the same on any platform, and all of the programs should run correctly with appropriate input scripts.</p>
 
 <ol class="bibliography"></ol>
 

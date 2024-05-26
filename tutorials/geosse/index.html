@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: State-dependent diversification with GeoSSE</title>
+    <title>RevBayes: Geographic state-dependent speciation-extinction (GeoSSE) model</title>
   </head>
   <body>
     <div class="container">
@@ -52,10 +52,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">State-dependent diversification with GeoSSE</h1>
-	<h3 class="subtitle">Using geographic ranges as lineage states in a state-dependent speciation and extinction model</h3>
-	<h4 class="authors">Sarah Swiston</h4>
-  <h5>Last modified on June 21, 2023</h5>
+	<h1 class="maintitle">Geographic state-dependent speciation-extinction (GeoSSE) model</h1>
+	<h3 class="subtitle">A phylogenetic model of biogeographic dispersal, extinction, and speciation</h3>
+	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
+  <h5>Last modified on May 25, 2024</h5>
 </div>
 
 
@@ -69,11 +69,7 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
-          
-            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
-          
-            <li><a href="/tutorials/sse/classe.html">State-dependent diversification with the ClaSSE model</a></li>
+            <li><a href="/tutorials/fig_intro/">Introduction to phylogenetic biogeography with the FIG model</a></li>
           
           </ul>
         
@@ -95,9 +91,29 @@
         
         
         
-          <li><a href="/tutorials/geosse/data/ranges.nex">ranges.nex</a></li>
+          <li><a href="/tutorials/geosse/data/kadua.tre">kadua.tre</a></li>
         
-          <li><a href="/tutorials/geosse/data/tree.mcc.tre">tree.mcc.tre</a></li>
+          <li><a href="/tutorials/geosse/data/kadua_range_n2.nex">kadua_range_n2.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Example output</strong>
+        <ul id="example_output">
+        
+        
+        
+          <li><a href="/tutorials/geosse/example_output/ase.tre">ase.tre</a></li>
+        
+          <li><a href="/tutorials/geosse/example_output/events.tsv">events.tsv</a></li>
+        
+          <li><a href="/tutorials/geosse/example_output/model.log">model.log</a></li>
+        
+          <li><a href="/tutorials/geosse/example_output/states.log">states.log</a></li>
+        
+          <li><a href="/tutorials/geosse/example_output/states.png">states.png</a></li>
+        
+          <li><a href="/tutorials/geosse/example_output/stoch.log">stoch.log</a></li>
         
         </ul>
     
@@ -107,8 +123,6 @@
         
         
         
-          <li><a href="/tutorials/geosse/scripts/geosse.R">geosse.R</a></li>
-        
           <li><a href="/tutorials/geosse/scripts/geosse.Rev">geosse.Rev</a></li>
         
         </ul>
@@ -117,25 +131,55 @@
 
 
 </div>
-<h2 class="section" id="introduction">Introduction</h2>
+<h2 class="section" id="geosse-model">GeoSSE model</h2>
 <hr class="section" />
 
-<p>In the previous examples, we used a Cladogenetic State change Speciation and Extinction (ClaSSE) model <a class="citation" href="#Goldberg2012">(Goldberg and Igić 2012)</a> to investigate the evolution of primates. ClaSSE jointly models character evolution and the birth-death process, incorporating both anagenetic and cladogenetic state changes. The GeoSSE model <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a> is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the South American lizard genus <em>Liolaemus</em> using two regions: Andean, and non-Andean <a class="citation" href="#Esquerré2019">(Esquerré et al. 2019)</a>.</p>
+<p>The geographic state-dependent speciation-extinction (or GeoSSE) model is phylogenetic model of biogeographic change <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a>. GeoSSE allows species to diversify through four main event classes: dispersal, extinction, within-region speciation, and between-region speciation. GeoSSE models are frequently used to test biogeographic hypotheses that concern relationships between these event rates and different regions. For example, is speciation faster on an island than on a mainland for a clade of ferns? Or, is dispersal faster into or out of the Andes for a clade of lizards?</p>
 
-<p>NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations.</p>
-
-<h3 class="subsection" id="the-geosse-model">The GeoSSE model</h3>
+<h3 class="subsection" id="model-overview">Model overview</h3>
 <hr class="subsection" />
+
+<p>In the GeoSSE model, lineage “states” represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Within-region speciation and extinction happen inside a single region, whereas between-region and dispersal involve two or more regions (<a href="#geosseevents"></a>).</p>
 
 <figure id="geosse"><p><img src="figures/exampletree.png" width="40%" /></p>
 <figcaption>An example tree showing GeoSSE event types: within-region speciation (w), extinction (e), between-region speciation (b), and dispersal (d).</figcaption>
 </figure>
 
-<p>In the GeoSSE model, lineage “states” represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. The model is constrained such that a lineage can only experience a single event at any instant in time.</p>
+<p>Here is a summary of the four event types:</p>
 
-<p>Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. In a within-region speciation event, one daughter lineage inherits the entire ancestral range (which might consist of one or more regions), and the other daughter inherits a single region from the ancestral range. In a between-region speciation event, the widespread ancestral range (of two or more regions) is subdivided and inherited by two new daughter lineages. Between-region speciation rates are always symmetric (separation between A and B is the same as separation between B and A). The standard GeoSSE model does not allow for other kinds of speciation events. For example, an ancestor with a widespread range (of two or more regions) cannot produce daughters that both possess the entire ancestral range (a widespread sympatry scenario).</p>
+<ul>
+  <li><strong>Extinction</strong> causes a species to lose one region from its range. Only when a species loses the final region from its range, does the entire species go entirely extinct as a lineage. A widespread lineage can only go extinct by losing each of its regions individually until one remains, then losing that last region. For example, a species with range AB might go extinct in region A, leaving it with range B. If it experiences no dispersal events (below) and suffers extinction in its last region B, the species is completely extinct.</li>
+  <li><strong>Dispersal</strong> causes a species to expand its range into a new region. The rate of range expansion is the sum of pairwise dispersal rates from each starting region into the new region. For example, a species with range A that disperses into region B afterwards has range AB.</li>
+  <li><strong>Within-region speciation</strong>: One daughter lineage inherits the entire ancestral range (which may be one or more regions), while the other daughter inherits a single region from the ancestral range. For example, the ancestral species has range AB and its two daughter species have ranges AB and A.</li>
+  <li><strong>Between-region speciation</strong>: The range of a widespread ancestral species in two or more regions is subdivided and inherited by two new daughter lineages. Between-region speciation rates are always symmetric (separation between A and B is the same as separation between B and A). For example, the widespread ancestor with range AB splits and give rise to daughters with ranges A and B.</li>
+</ul>
 
-<p>Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Extinction occurs locally within a single region; there is no separate parameter for global extinction, and lineages can only experience one local extirpation event at a time. Therefore, a widespread lineage can only go extinct by losing each of its regions individually until one remains, then losing that last region. Lineages also disperse by adding individual regions to their ranges, and dispersal rates into a new region are the sum of pairwise dispersal rates from each starting region into the new region.</p>
+<p>The standard GeoSSE model does not allow for other kinds of evolutionary events. For example, an ancestor with a widespread range (of two or more regions) cannot produce daughters that both possess the entire ancestral range (a widespread sympatry scenario). In addition, GeoSSE only allows for a single event to occur within an instant of time.</p>
+
+<figure id="geosseevents" class="table"><table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><strong>Within region</strong></th>
+      <th><strong>Between region</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Anagenetic</strong></td>
+      <td>Extinction (e)</td>
+      <td>Dispersal (d)</td>
+    </tr>
+    <tr>
+      <td><strong>Cladogenetic</strong></td>
+      <td>Within-region speciation (w)</td>
+      <td>Between-region speciation (b)</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">The four GeoSSE event classes.</figcaption>
+</figure>
 
 <p>The GeoSSE model allows each region or region pair to possess its own rate for each process. For example, the within-region speciation rate for region A may not necessary equal the within-region speciation rate for region B. Similarly, the dispersal rate from A to B does not necessarily equal the dispersal rate from B to A. When constructing the GeoSSE model, each rate will be represented with its own parameter. We will represent these rates with the following vectors and matrices: $r_w$ for the vector of within-region speciation rates, $r_e$ for  the vector of extinction rates, $r_b$ for the matrix of between-region speciation rates, and $r_d$ for the matrix of dispersal rates.</p>
 
@@ -143,19 +187,24 @@
 <figcaption>Transition diagram for the GeoSSE model with two regions, based on Figure 1 from <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a>. Anagenetic processes are represented with dashed arrows, while cladogenetic processes are represented with solid arrows.</figcaption>
 </figure>
 
+<p>As the name suggests, GeoSSE is a member of a broader class of methods that include state-dependent diversification – that is, the discrete character state of a lineage may impact its rates of speciation, extinction, and state transition. These models are known as <a href="https://revbayes.github.io/tutorials/sse/bisse-intro.html">SSE</a> models. Other examples of SSE models include <a href="https://revbayes.github.io/tutorials/sse/bisse.html">BiSSE</a> (binary state speciation and extinction model) and <a href="https://revbayes.github.io/tutorials/sse/classe.html">ClaSSE</a> (cladogenetic state change speciation and extinction model). For more information about how these methods jointly model character evolution and the birth-death process, see the associated tutorials. The GeoSSE model is a special case of the ClaSSE model that is structured and parameterized for biogeographical scenarios.</p>
+
+<p>This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the Hawaiian <em>Kadua</em> using two regions: old islands, and young islands. For more information on <em>Kadua</em> and the Hawaiian islands, you can visit the <a href="https://revbayes.github.io/tutorials/fig_intro/fig_intro.html">intro tutorial</a> for the <em>Kadua</em> series.</p>
+
+<p>NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations. However, for the purposes of this tutorial, we group the Hawaiian islands into two categories so that we can easily enumerate all of the model rates.</p>
 <h3 class="subsection" id="setup">Setup</h3>
 <hr class="subsection" />
 
 <blockquote class="info">
-  <h2 id="important-version-info">Important version info!!</h2>
-  <p>This tutorial is the first in a series of lessons explaining how to build increasingly powerful but computationally demanding GeoSSE-type models for biogeographic analyses. Inference under these models is powered by the Tensorphylo plugin for RevBayes, located here: <a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">bitbucket.org/mrmay/tensorphylo/src/master</a> <a class="citation" href="#May2022">(May and Meyer)</a>.
-This tutorial, and following tutorials for GeoSSE-type models, will also require a development version of RevBayes built from the <code class="language-plaintext highlighter-rouge">hawaii_fix</code> branch (this message will be removed when the branch is merged).
-As an alternative to building the development version of RevBayes and installing Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: <a href="https://revbayes.github.io/tutorials/docker.html">revbayes.github.io/tutorials/docker</a>.</p>
+  <h2 id="important-version-info">Important version info!</h2>
+  <p><strong>Note:</strong> This tutorial currently requires specific versions of <a href="https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43">RevBayes</a> and <a href="https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301">TensorPhylo</a> to run properly (see linked branches and commits).</p>
+
+  <p>We recommend that you complete the tutorial using a <a href="https://hub.docker.com/r/sswiston/phylo_docker">PhyloDocker</a> container, which is pre-configured with the above versions of RevBayes and TensorPhylo. Instructions to install and use PhyloDocker are here: <a href="https://revbayes.github.io/tutorials/docker.html">link</a>.</p>
 </blockquote>
 
-<p>Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, <code class="language-plaintext highlighter-rouge">tree.mcc.tre</code> is a time-calibrated phylogeny of <em>Liolaemus</em>. <code class="language-plaintext highlighter-rouge">ranges.nex</code> assigns ranges to each species for a two-region system: an Andean region and a non-Andean region in South America. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.</p>
+<p>Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, <code class="language-plaintext highlighter-rouge">kadua.tre</code> is a time-calibrated phylogeny of <em>Kadua</em>. <code class="language-plaintext highlighter-rouge">kadua_range_n2.nex</code> assigns ranges to each species for a two-region system: an “old islands” region and a “young islands” region. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.</p>
 
-<p>If you prefer to run a single script instead of entering each command manually, the RevBayes script called <code class="language-plaintext highlighter-rouge">geosse.Rev</code> contains all of the commands that are used in the tutorial. There is also an R script for plotting the analysis results. The data and script can be found in the <code class="language-plaintext highlighter-rouge">Data files and scripts</code> box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. Inside the tutorial directory, you should create a <code class="language-plaintext highlighter-rouge">scripts</code> directory. This is the directory where you will run RevBayes commands, or where you will put the <code class="language-plaintext highlighter-rouge">geosse.Rev</code> and <code class="language-plaintext highlighter-rouge">geosse.R</code> scripts. Then, you should create a <code class="language-plaintext highlighter-rouge">data</code> directory inside the tutorial directory, and download the two datafiles to this directory.</p>
+<p>If you prefer to run a single script instead of entering each command manually, the RevBayes script called <code class="language-plaintext highlighter-rouge">geosse.Rev</code> contains all of the commands that are used in the tutorial. The data and script can be found in the <code class="language-plaintext highlighter-rouge">Data files and scripts</code> box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. This is the main directory for the tutorial, and you will run all of your commands from here. Inside the tutorial directory, you should create a <code class="language-plaintext highlighter-rouge">scripts</code> directory. This is the directory where you put the <code class="language-plaintext highlighter-rouge">geosse.Rev</code> script. Then, you should create a <code class="language-plaintext highlighter-rouge">data</code> directory inside the tutorial directory, and download the two datafiles to this directory.</p>
 
 <h2 class="section" id="geosse-in-revbayes">GeoSSE in RevBayes</h2>
 <hr class="section" />
@@ -163,28 +212,24 @@ As an alternative to building the development version of RevBayes and installing
 <h3 class="subsection" id="getting-started">Getting started</h3>
 <hr class="subsection" />
 
-<p>After starting up RevBayes from within your local <code class="language-plaintext highlighter-rouge">scripts</code> directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at <code class="language-plaintext highlighter-rouge">~/tensorphylo</code>, you would use the following command to load the plugin:</p>
+<p>After starting up RevBayes from within your main tutorial directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at <code class="language-plaintext highlighter-rouge">~/tensorphylo</code>, you would use the following command to load the plugin:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
 </code></pre></div></div>
 
-<p>Note that if you’re using the RevBayes Docker image, then the Tensorphylo plugin is installed in the <code class="language-plaintext highlighter-rouge">/</code> (root) directory:</p>
+<p>Note that if you’re using the PhyloDocker image, then the Tensorphylo plugin is installed in <code class="language-plaintext highlighter-rouge">/.plugins</code>, where RevBayes is able to find it without including a filepath:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
-</code></pre></div></div>
-
-<p>It is also a good idea to set a seed. If you want to exactly replicate the results of the tutorial, you should use the seed <code class="language-plaintext highlighter-rouge">1</code>.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seed(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo")
 </code></pre></div></div>
 
 <p>We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fp          = "../"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># FILESYSTEM
+fp          = "./"
 dat_fp      = fp + "data/"
 out_fp      = fp + "output/"
-bg_fn       = dat_fp + "ranges.nex"
-phy_fn      = dat_fp + "tree.mcc.tre"
+bg_fn       = dat_fp + "kadua_range.n2.nex"
+phy_fn      = dat_fp + "kadua.tre"
 </code></pre></div></div>
 
 <h3 class="subsection" id="data">Data</h3>
@@ -218,6 +263,8 @@ num_pairs = num_regions^2 - num_regions
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
 </code></pre></div></div>
+
+<p>If you are interested in learning how to set up the GeoSSE rates manually without using the <code class="language-plaintext highlighter-rouge">formatDiscreteCharacterData</code> function, or if you want to further customize the model (ie. GeoHiSSE), the <a href="https://revbayes.github.io/tutorials/sse/classe.html">ClaSSE</a> tutorial gives an example of hand-coded rates.</p>
 
 <h3 class="subsection" id="model-setup">Model setup</h3>
 <hr class="subsection" />
@@ -365,9 +412,9 @@ mv[mvi++] = mvSimplex(m_d_simplex, weight=m_d_simplex.size())
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.txt")
 </code></pre></div></div>
 
 <p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use <code class="language-plaintext highlighter-rouge">m_w</code>. RevBayes will find all the other parameters that are connected to <code class="language-plaintext highlighter-rouge">m_w</code> and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.</p>
@@ -381,8 +428,8 @@ ch.run(n_gen)
 <p>After the MCMC analysis has concluded, we can summarize the ancestral states we obtained, creating an ancestral state tree. This tree will be written to the file <code class="language-plaintext highlighter-rouge">ase.tre</code>. It may take a little while.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
-x_states = readAncestralStateTrace(file=out_fp+"states.log")
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.txt")
+x_states = readAncestralStateTrace(file=out_fp+"states.txt")
 summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
@@ -399,48 +446,40 @@ writeNexus(state_tree,filename=out_fp+"ase.tre")
 <h3 class="subsection" id="output">Output</h3>
 <hr class="subsection" />
 
-<p>One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the <code class="language-plaintext highlighter-rouge">geosse.R</code> script, or by executing the following code in R. You can also examine the output files, like <code class="language-plaintext highlighter-rouge">model.log</code>, to assess the relative rates of different processes occurring in different regions.</p>
+<p>One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by executing the following code in R. You can also examine the output files, like <code class="language-plaintext highlighter-rouge">model.txt</code>, to assess the relative rates of different processes occurring in different regions.</p>
+
+<p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
 library(ggplot2)
-tree_file = "../output/ase.tre"
-output_file = "../output/states.png"
-states &lt;- processAncStates(tree_file, state_labels=c("0"="Andean", "1"="Non-Andean", "2"="Both"))
+tree_file = "./output/ase.tre"
+output_file = "./output/states.png"
+states &lt;- processAncStates(tree_file, state_labels=c("0"="Old", "1"="Young", "2"="Both"))
 plotAncStatesMAP(t=states,
-                 tree_layout="circular",
-                 node_size=1.5,
+                 node_size=2,
                  node_size_as=NULL) +
                  ggplot2::theme(legend.position="bottom",
                                 legend.title=element_blank())
 ggsave(output_file, width = 9, height = 9)
 </code></pre></div></div>
 
-<figure id="states"><p><img src="figures/states.png" width="95%" /></p>
-<figcaption>Ancestral state reconstruction of <em>Liolaemus</em>.</figcaption>
+<figure id="states"><p><img src="figures/states.png" width="65%" /></p>
+<figcaption>Ancestral state reconstruction of <em>Kadua</em>.</figcaption>
 </figure>
 
-<ol class="bibliography"><li><span id="Esquerré2019">Esquerré D., Brennan I.G., Catullo R.A., Torres-Pérez F., Keogh J.S. 2019. How mountains shape biodiversity: The role of the Andes in biogeography, diversification, and reproductive biology in South America’s most species-rich lizard radiation (Squamata: Liolaemidae). Evolution. 73:214–230.</span>
+<blockquote class="aside"><h2>GeoSSE with more regions</h2><p>As noted above, the script is written generally, so it can be applied to biogeographic systems with more than two regions. Consider re-running the script, but instead using the seven-region dataset from the <a href="https://revbayes.github.io/tutorials/multifig.html">FIG</a> tutorial: <a href="http://revbayes.github.io/tutorials/multifig/data/kadua/kadua_range_n7.nex">link to <code class="language-plaintext highlighter-rouge">kadua_range_n7.nex</code></a>.</p>
 
-<a href="https://doi.org/10.1111/evo.13657">10.1111/evo.13657</a>
+<p>How many species ranges are there in a three-region versus a seven-region system? How many parameters are there in a three-region versus a seven-region system? Which processes require the most new parameters as the number of regions increases? What problems do you expect to encounter running this GeoSSE script for an analysis with more regions?</p>
+</blockquote>
 
-</li>
-<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<ol class="bibliography"><li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
 
 </li>
-<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
-
-<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
-
-</li>
 <li><span id="Landis2022">Landis M.J., Quintero I., Muñoz M.M., Zapata F., Donoghue M.J. 2022. Phylogenetic inference of where species spread or split across barriers. Proceedings of the National Academy of Sciences. 119.</span>
 
-</li>
-<li><span id="May2022">May M.R., Meyer X. TensorPhylo. .</span>
-
-
-<a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">https://bitbucket.org/mrmay/tensorphylo/src/master/</a>
 </li></ol>
 
 <script type="text/javascript">
