@@ -16,7 +16,7 @@ Docker is a way to share pre-built, pre-configured, and platform-independent set
 As a user, you download and a build a Docker image. Once built, you can create a Docker container from that image. Each Docker image lives on your computer and uses its resources for work. In this way, you can think of Docker as a program that runs a miniature "virtual" computer through your actual computer. A container built from PhyloDocker can be used to run RevBayes, just like you would through the terminal, but without needing to install and configure RevBayes yourself. For example:
 
 ```
-~ $ ### from terminal on my laptop (host)
+~ $ ### from terminal on my Mac laptop (host)
 ~ $ docker run --name phylodocker_demo --volume /Users/mlandis/projects/docker_test:/docker_test -it sswiston/phylo_docker:slim_amd64
 
 ~ # ### from terminal inside Docker container
@@ -50,7 +50,7 @@ new_file.txt  test.Rev
 new_file.txt  test.Rev
 
 ~ $ ### reconnect to Docker container
-~ $ docker exec -it phylodocker_demo /bin/sh
+~ $ docker start -ai phylodocker_demo
 ~ # 
 ```
 
@@ -110,6 +110,13 @@ docker pull sswiston/phylo_docker:slim_arm64
 ```
 
 Docker will automatically store the image on your computer in a directory reserved for Docker images. You will not have to manually locate this image; Docker will be able to find it.
+
+{% subsection Special instructions for Windows users %}
+
+Your Windows operating system uses Docker to run a PhyloDocker container. The container itself runs a virtual computing environment using the Linux operating system, Alpine.
+
+- If you are not familiar with Linux, find a short list of important commands here: [link](https://mally.stanford.edu/~sr/computing/basic-unix.html).
+- Docker expects Unix-style directory names, even if you are running Windows.  Converting from Windows to Unix-style directories is easy. The Windows-style directory path `C:\\Users\charles_darwin\my_project` becomes the Unix-style directory path `/c/Users/mlandis/charles_darwin/my_project`. Use Unix-style directory paths when mounting directories from your computer (the host) on a new container (see below).
 
 
 {% section Using RevBayes via Docker%}

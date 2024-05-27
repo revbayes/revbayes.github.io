@@ -32,7 +32,7 @@ The FIG tutorials are designed to be run with [RevBayes](https://github.com/revb
 > ## Important version info!
 > **Note:** Tutorials in this series currently require specific versions of [RevBayes](https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43) and [TensorPhylo](https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301) to run properly (see linked branches and commits).
 >
-> We recommend that you complete the tutorials using a [PhyloDocker](https://hub.docker.com/r/sswiston/phylo_docker) container, which is pre-configured with the above versions of RevBayes and TensorPhylo. Instructions to install and use PhyloDocker are here: [link](https://revbayes.github.io/tutorials/docker.html).
+> We recommend that you complete the tutorials using a [PhyloDocker](https://hub.docker.com/r/sswiston/phylo_docker) container, which is pre-configured with the above versions of RevBayes and TensorPhylo. Instructions to install and use PhyloDocker are here: [link](https://revbayes.github.io/tutorials/docker).
 {:.info}
 
 {% subsection Empirical system: Hawaiian *Kadua* %}
