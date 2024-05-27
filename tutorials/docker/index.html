@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Using RevBayes with Docker</h1>
 	<h3 class="subtitle">Using a platform-independent container to run RevBayes on your computer or a computing cluster</h3>
 	<h4 class="authors">Sarah Swiston and Michael Landis</h4>
-  <h5>Last modified on May 26, 2024</h5>
+  <h5>Last modified on May 27, 2024</h5>
 </div>
 
 
@@ -104,7 +104,7 @@
 
 <p>As a user, you download and a build a Docker image. Once built, you can create a Docker container from that image. Each Docker image lives on your computer and uses its resources for work. In this way, you can think of Docker as a program that runs a miniature “virtual” computer through your actual computer. A container built from PhyloDocker can be used to run RevBayes, just like you would through the terminal, but without needing to install and configure RevBayes yourself. For example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~ $ ### from terminal on my laptop (host)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~ $ ### from terminal on my Mac laptop (host)
 ~ $ docker run --name phylodocker_demo --volume /Users/mlandis/projects/docker_test:/docker_test -it sswiston/phylo_docker:slim_amd64
 
 ~ # ### from terminal inside Docker container
@@ -138,7 +138,7 @@ new_file.txt  test.Rev
 new_file.txt  test.Rev
 
 ~ $ ### reconnect to Docker container
-~ $ docker exec -it phylodocker_demo /bin/sh
+~ $ docker start -ai phylodocker_demo
 ~ # 
 </code></pre></div></div>
 
@@ -223,6 +223,16 @@ docker pull sswiston/phylo_docker:slim_arm64
 </code></pre></div></div>
 
 <p>Docker will automatically store the image on your computer in a directory reserved for Docker images. You will not have to manually locate this image; Docker will be able to find it.</p>
+
+<h3 class="subsection" id="special-instructions-for-windows-users">Special instructions for Windows users</h3>
+<hr class="subsection" />
+
+<p>Your Windows operating system uses Docker to run a PhyloDocker container. The container itself runs a virtual computing environment using the Linux operating system, Alpine.</p>
+
+<ul>
+  <li>If you are not familiar with Linux, find a short list of important commands here: <a href="https://mally.stanford.edu/~sr/computing/basic-unix.html">link</a>.</li>
+  <li>Docker expects Unix-style directory names, even if you are running Windows.  Converting from Windows to Unix-style directories is easy. The Windows-style directory path <code class="language-plaintext highlighter-rouge">C:\\Users\charles_darwin\my_project</code> becomes the Unix-style directory path <code class="language-plaintext highlighter-rouge">/c/Users/mlandis/charles_darwin/my_project</code>. Use Unix-style directory paths when mounting directories from your computer (the host) on a new container (see below).</li>
+</ul>
 
 <h2 class="section" id="using-revbayes-via-docker">Using RevBayes via Docker</h2>
 <hr class="section" />
