@@ -45,6 +45,16 @@ The 8 regional features investigated in this analysis and the 16 associated para
 {% endfigcaption %}
 {% endfigure %}
 
+
+
+{% figure states %}
+<img src="figures/plot_features_vs_time.feat_qb1.png" width="40%"><br>
+<img src="figures/plot_features_vs_time.feat_cb2.png" width="40%">
+{% figcaption %}
+Examples of between-region regional features for a quantitative feature (distance) and a categorical feature (relative island age). These features (and others) influence dispersal and between-region speciation rates.
+{% endfigcaption %}
+{% endfigure %}
+
 {% subsection Setup %}
 
 > ## Important version info!
@@ -91,8 +101,8 @@ Eventually, we will be running an MCMC analysis at the end of the tutorial. This
 ```
 # MCMC variables
 num_proc  = 6
-num_gen   = 10000
-print_gen = 1
+num_gen   = 5000
+print_gen = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 ```
@@ -444,9 +454,6 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       condition    = "time",
                       taxa         = taxa,
                       nStates      = num_ranges,
-                      absTol       = 1e-7,
-                      relTol       = 1e-7,
-                      maxDenseSteps = 5000,
                       nProc        = num_proc)
 ```
 
@@ -561,7 +568,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/states.png" width="95%">
+<img src="figures/plot_states_map.png" width="80%">
 {% figcaption %}
 Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
@@ -575,9 +582,21 @@ plotTrace(trace, vars=c("phi_d[1]"))
 ggsave(posterior_file, width = 9, height = 9)
 ```
 
-{% figure states %}
-<img src="figures/posterior.png" width="40%">
+{% figure param_d %}
+<img src="figures/plot_param.process_d.png" width="60%">
 {% figcaption %}
-Posterior for the parameter $\phi_d^{Distance}$, which relates quantitative distances between regions to the process of dispersal. The 95% Highest Posterior Density (HPD) interval is shaded in dark blue. Note that 0 (a null effect) falls outside this interval. Therefore, distance is likely related to dispersal. A negative value indicates a negative relationship; more distance between regions reduces dispersal.
+Posterior estimates for parameters related to the dispersal process.
+
 {% endfigcaption %}
 {% endfigure %}
+
+From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates *decrease* with distance. The third figure shows that models using distance as an explanatory to shape dispersal rates have reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.
+
+{% figure rate_d %}
+<img src="figures/plot_rate_vs_time.process_d.png" width="50%">
+{% figcaption %}
+Mean posterior estimates for dispersal rates, $r_d(i,j).
+{% endfigcaption %}
+{% endfigure %}
+
+A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$.

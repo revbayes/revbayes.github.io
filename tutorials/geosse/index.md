@@ -98,8 +98,9 @@ We also want to tell RevBayes where to find our data (and where to save our outp
 fp          = "./"
 dat_fp      = fp + "data/"
 out_fp      = fp + "output/"
-bg_fn       = dat_fp + "kadua_range.n2.nex"
+bg_fn       = dat_fp + "kadua_range_n2.nex"
 phy_fn      = dat_fp + "kadua.tre"
+lbl_fn      = dat_fp + "kadua_range_label_n2.nex"
 ```
 
 {% subsection Data %}
@@ -301,7 +302,18 @@ mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, pr
 mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.txt")
 ```
 
-Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use `m_w`. RevBayes will find all the other parameters that are connected to `m_w` and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
+Let's also store information for how the integer-valued ranges (0, 1, 2) relate to the regional presence-absence representation of ranges (A=10, B=01, AB=11).
+
+```
+write("index,range\n", file=lbl_fn)
+state_labels = Q_bg.getStateDescriptions()
+for (i in 1:state_labels.size()) {
+    write( (i-1), ",", state_labels[i], "\n", file=lbl_fn, append=true, separator="")
+}
+```
+
+
+Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use `m_w`. RevBayes will find all the other parameters that are directly or indirectly connected to `m_w` and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.
 
 ```
 mdl = model(m_w)

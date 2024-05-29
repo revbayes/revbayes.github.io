@@ -8,6 +8,7 @@ dat_fp      = fp + "data/"
 out_fp      = fp + "output/"
 bg_fn       = dat_fp + "kadua_range_n2.nex"
 phy_fn      = dat_fp + "kadua.tre"
+lbl_fn      = dat_fp + "kadua_range_label.txt"
 
 # PHYLOGENETIC DATA
 phy         <- readTrees(phy_fn)[1]
@@ -185,6 +186,13 @@ mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree,
                                              printgen=printgen, withTips=true, withStartStates=true,
                                              type="NaturalNumbers", filename=out_fp + "states.txt")
 mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp + "stoch.txt")
+
+# STATE LABELS
+write("index,range\n", file=lbl_fn)
+state_labels = Q_bg.getStateDescriptions()
+for (i in 1:state_labels.size()) {
+    write( (i-1), ",", state_labels[i], "\n", file=lbl_fn, append=true, separator="")
+}
 
 # MCMC START
 mdl = model(m_w)
