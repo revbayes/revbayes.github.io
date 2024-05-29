@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Biogeographic dating using the TimeFIG model</h1>
 	<h3 class="subtitle">Using the TimeFIG model to jointly infer divergence times and biogeographic history</h3>
 	<h4 class="authors">Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 27, 2024</h5>
+  <h5>Last modified on May 29, 2024</h5>
 </div>
 
 
@@ -95,23 +95,43 @@
         
         
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_nodeprior.model.txt">kadua_divtime_nodeprior.model.txt</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/README.md">README.md</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_nodeprior.tre">kadua_divtime_nodeprior.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_nodeprior.mcc.tre">divtime_nodeprior.mcc.tre</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_nodeprior.tre.mcc.tre">kadua_divtime_nodeprior.tre.mcc.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_nodeprior.model.txt">divtime_nodeprior.model.txt</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_timeFIG.mcc.tre">kadua_divtime_timeFIG.mcc.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_nodeprior.tre">divtime_nodeprior.tre</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_timeFIG.model.txt">kadua_divtime_timeFIG.model.txt</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.model.txt">divtime_timefig.model.txt</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_timeFIG.tre">kadua_divtime_timeFIG.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.mol.txt">divtime_timefig.mol.txt</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_uncalibrated.mcc.tre">kadua_divtime_uncalibrated.mcc.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.states.txt">divtime_timefig.states.txt</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_uncalibrated.model.txt">kadua_divtime_uncalibrated.model.txt</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time1.bg.txt">divtime_timefig.time1.bg.txt</a></li>
         
-          <li><a href="/tutorials/timefig_dating/example_output/kadua_divtime_uncalibrated.tre">kadua_divtime_uncalibrated.tre</a></li>
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time2.bg.txt">divtime_timefig.time2.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time3.bg.txt">divtime_timefig.time3.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time4.bg.txt">divtime_timefig.time4.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time5.bg.txt">divtime_timefig.time5.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time6.bg.txt">divtime_timefig.time6.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.time7.bg.txt">divtime_timefig.time7.bg.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.tre">divtime_timefig.tre</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_timefig.unthinned.tre">divtime_timefig.unthinned.tre</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_uncalibrated.mcc.tre">divtime_uncalibrated.mcc.tre</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_uncalibrated.model.txt">divtime_uncalibrated.model.txt</a></li>
+        
+          <li><a href="/tutorials/timefig_dating/example_output/divtime_uncalibrated.tre">divtime_uncalibrated.tre</a></li>
         
         </ul>
     
@@ -559,7 +579,7 @@ mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
 
 <p>Let’s view the MCC tree for the uncalibrated analysis in FigTree (Fig. <a href="#phy_uncalibrated"></a>).</p>
 
-<figure id="phy_uncalibrated"><p><img src="figures/kadua_divtime_uncalibrated.mcc.png" width="500" /></p>
+<figure id="phy_uncalibrated"><p><img src="figures/kadua_divtime_uncalibrated.mcc.png" width="60%" /></p>
 <figcaption>Maximum clade credibility tree for <em>Kadua</em> without time-calibration.</figcaption>
 </figure>
 
@@ -657,13 +677,13 @@ calib_clade.clamp(0.0)
 
 <p>Calibration in RevBayes works by setting the calibration variable to fixed value of <code class="language-plaintext highlighter-rouge">0.0</code>. You can then imagine the calibration density as a “sliding window” that assigns a probability to the fixed point of zero. The position of this sliding window depends on the difference between the clade’s age and relative to the window. In our case, the fixed point of <code class="language-plaintext highlighter-rouge">0.0</code> will always be greater than the lower bound of <code class="language-plaintext highlighter-rouge">calib_lower := 0.0 - age_ingroup</code>, because clades always have positive ages. The fixed point <code class="language-plaintext highlighter-rouge">0.0</code> will be less than the upper bound of <code class="language-plaintext highlighter-rouge">calib_upper := 6.3 - age_ingroup</code> only when <code class="language-plaintext highlighter-rouge">age_ingroup &lt; 6.3</code>. When <code class="language-plaintext highlighter-rouge">age_ingroup &gt; 6.3</code>, then the fixed value of <code class="language-plaintext highlighter-rouge">calib_clade &gt; 6.3 - age_ingroup</code> and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample. Learn more about divergence time estimation using node age calibrations in RevBayes through this tutorial: <a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf">link</a>.</p>
 
-<figure id="phy_calib"><p><img src="figures/kadua_calibration.png" width="700" /></p>
+<figure id="phy_calib"><p><img src="figures/kadua_calibration.png" width="60%" /></p>
 <figcaption>Cartoon for how RevBayes node age calibration densities behave. This example assumes the maximum clade age is 6.3 Ma and the minimum clade age is 0.0 Ma (present, i.e effectively no lower bound) under a uniform calibration density. When the clade age increases, the density “slides” to the left. When the clade age decreases, the density “slides” to the right. MCMC will reject a clade ages that have low (or zero) probability, as marked in red.</figcaption>
 </figure>
 
 <p>Let’s view the MCC tree for the prior-based time-calibration analysis in FigTree (Fig. <a href="#phy_nodeprior"></a>).</p>
 
-<figure id="phy_nodeprior"><p><img src="figures/kadua_divtime_nodeprior.mcc.png" width="500" /></p>
+<figure id="phy_nodeprior"><p><img src="figures/kadua_divtime_nodeprior.mcc.png" width="60%" /></p>
 <figcaption>Maximum clade credibility tree for <em>Kadua</em> without node-based priors for time-calibration.</figcaption>
 </figure>
 
@@ -945,7 +965,7 @@ mymcmc.run(num_gen)
 
 <p>Now, let’s inspect the MCC tree for the TimeFIG-based time-calibration analysis in FigTree (Fig. <a href="#phy_timefig"></a>).</p>
 
-<figure id="phy_nodeprior"><p><img src="figures/kadua_divtime_timeFIG.mcc.png" width="500" /></p>
+<figure id="phy_nodeprior"><p><img src="figures/kadua_divtime_timeFIG.mcc.png" width="60%" /></p>
 <figcaption>Maximum clade credibility tree for <em>Kadua</em> using a process-based TimeFIG model for time-calibration.</figcaption>
 </figure>
 
@@ -953,7 +973,7 @@ mymcmc.run(num_gen)
 
 <p>Reviewing the marginal posterior densities of the ingroup crown age help reveal why the prior-based BDP calibration and process-based TimeFIG calibration differ.</p>
 
-<figure id="ingroup_age"><p><img src="figures/kadua_ingroup_ages.png" width="500" /></p>
+<figure id="ingroup_age"><p><img src="figures/kadua_ingroup_ages.png" width="60%" /></p>
 <figcaption>Comparison of marginal posterior ingroup ages for Hawaiian <em>Kadua</em>.</figcaption>
 </figure>
 
@@ -962,6 +982,20 @@ mymcmc.run(num_gen)
 <p>While the posterior-based TimeFIG calibration produces a young mean age for the Hawaiian ingroup’s crown node, it also allows for the ingroup to be older than the oldest High Islands (red density in  Fig. <a href="#ingroup_age"></a>). This upper tail in the ingroup age density captures scenarios in which Hawaiian <em>Kadua</em> colonized the now-High Islands from the now-Low Islands more than once.</p>
 
 <p>Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian <em>Kadua</em>.</p>
+
+<p>For instance, these ancestral range estimates are a byproduct of our analysis:</p>
+
+<figure id="states"><p><img src="figures/plot_states_prob.png" width="60%" /></p>
+<figcaption>Ancestral ranges for Hawaiian <em>Kadua</em>.</figcaption>
+</figure>
+
+<p>These regional rate estimates also emerge naturally from the analysis:</p>
+
+<figure id="states"><p><img src="figures/plot_rate_vs_time.process_w.png" width="60%" /></p>
+<figcaption>Within-region speciation rates for Hawaiian <em>Kadua</em> across regions and time slices.</figcaption>
+</figure>
+
+<p>Notice the differences in ancestral range and rate estimates when comparing these results to those from the simpler TimeFIG analysis in the previous tutorial.</p>
 
 <ol class="bibliography"></ol>
 
