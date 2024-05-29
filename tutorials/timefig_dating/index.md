@@ -443,7 +443,7 @@ mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
 Let's view the MCC tree for the uncalibrated analysis in FigTree (Fig. {% ref phy_uncalibrated %}).
 
 {% figure phy_uncalibrated %}
-<img src="figures/kadua_divtime_uncalibrated.mcc.png" width="500">
+<img src="figures/kadua_divtime_uncalibrated.mcc.png" width="60%">
 {% figcaption %}
 Maximum clade credibility tree for *Kadua* without time-calibration.
 {% endfigcaption %}
@@ -551,7 +551,7 @@ calib_clade.clamp(0.0)
 Calibration in RevBayes works by setting the calibration variable to fixed value of `0.0`. You can then imagine the calibration density as a "sliding window" that assigns a probability to the fixed point of zero. The position of this sliding window depends on the difference between the clade's age and relative to the window. In our case, the fixed point of `0.0` will always be greater than the lower bound of `calib_lower := 0.0 - age_ingroup`, because clades always have positive ages. The fixed point `0.0` will be less than the upper bound of `calib_upper := 6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed value of `calib_clade > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample. Learn more about divergence time estimation using node age calibrations in RevBayes through this tutorial: [link](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf).
 
 {% figure phy_calib %}
-<img src="figures/kadua_calibration.png" width="700">
+<img src="figures/kadua_calibration.png" width="60%">
 {% figcaption %}
 Cartoon for how RevBayes node age calibration densities behave. This example assumes the maximum clade age is 6.3 Ma and the minimum clade age is 0.0 Ma (present, i.e effectively no lower bound) under a uniform calibration density. When the clade age increases, the density "slides" to the left. When the clade age decreases, the density "slides" to the right. MCMC will reject a clade ages that have low (or zero) probability, as marked in red.
 {% endfigcaption %}
@@ -560,7 +560,7 @@ Cartoon for how RevBayes node age calibration densities behave. This example ass
 Let's view the MCC tree for the prior-based time-calibration analysis in FigTree (Fig. {% ref phy_nodeprior %}).
 
 {% figure phy_nodeprior %}
-<img src="figures/kadua_divtime_nodeprior.mcc.png" width="500">
+<img src="figures/kadua_divtime_nodeprior.mcc.png" width="60%">
 {% figcaption %}
 Maximum clade credibility tree for *Kadua* without node-based priors for time-calibration.
 {% endfigcaption %}
@@ -865,7 +865,7 @@ mymcmc.run(num_gen)
 Now, let's inspect the MCC tree for the TimeFIG-based time-calibration analysis in FigTree (Fig. {% ref phy_timefig %}).
 
 {% figure phy_nodeprior %}
-<img src="figures/kadua_divtime_timeFIG.mcc.png" width="500">
+<img src="figures/kadua_divtime_timeFIG.mcc.png" width="60%">
 {% figcaption %}
 Maximum clade credibility tree for *Kadua* using a process-based TimeFIG model for time-calibration.
 {% endfigcaption %}
@@ -876,7 +876,7 @@ Notice how the clade is younger than the uncalibrated and prior-based node age c
 Reviewing the marginal posterior densities of the ingroup crown age help reveal why the prior-based BDP calibration and process-based TimeFIG calibration differ.
 
 {% figure ingroup_age %}
-<img src="figures/kadua_ingroup_ages.png" width="500">
+<img src="figures/kadua_ingroup_ages.png" width="60%">
 {% figcaption %}
 Comparison of marginal posterior ingroup ages for Hawaiian *Kadua*.
 {% endfigcaption %}
@@ -887,3 +887,23 @@ Notice that the posterior ingroup age for the prior-based calibration is never o
 While the posterior-based TimeFIG calibration produces a young mean age for the Hawaiian ingroup's crown node, it also allows for the ingroup to be older than the oldest High Islands (red density in  Fig. {% ref ingroup_age %}). This upper tail in the ingroup age density captures scenarios in which Hawaiian *Kadua* colonized the now-High Islands from the now-Low Islands more than once.
 
 Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian *Kadua*.
+
+For instance, these ancestral range estimates are a byproduct of our analysis:
+
+{% figure states %}
+<img src="figures/plot_states_prob.png" width="60%">
+{% figcaption %}
+Ancestral ranges for Hawaiian *Kadua*.
+{% endfigcaption %}
+{% endfigure %}
+
+These regional rate estimates also emerge naturally from the analysis:
+
+{% figure states %}
+<img src="figures/plot_rate_vs_time.process_w.png" width="60%">
+{% figcaption %}
+Within-region speciation rates for Hawaiian *Kadua* across regions and time slices.
+{% endfigcaption %}
+{% endfigure %}
+
+Notice the differences in ancestral range and rate estimates when comparing these results to those from the simpler TimeFIG analysis in the previous tutorial.

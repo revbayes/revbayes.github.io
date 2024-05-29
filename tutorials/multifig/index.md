@@ -570,7 +570,7 @@ ggsave(output_file, width = 9, height = 9)
 Here, we show an ancestral tree built using RevGadgets, with a few other stylistic changes.
 
 {% figure states %}
-<img src="figures/plot_states_map.png" width="80%">
+<img src="figures/plot_states_prob.png" width="60%">
 {% figcaption %}
 Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
@@ -598,7 +598,7 @@ Posterior estimates for parameters related to the dispersal process.
 From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates *decrease* with distance. The third figure shows that models using distance as an explanatory to shape dispersal rates have reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.
 
 {% figure rate_d %}
-<img src="figures/plot_rate_vs_time.process_d.png" width="50%">
+<img src="figures/plot_rate_vs_time.process_d.png" width="60%">
 {% figcaption %}
 Mean posterior estimates for dispersal rates, $r_d(i,j)$.
 {% endfigcaption %}

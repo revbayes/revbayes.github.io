@@ -39,6 +39,36 @@ The analysis utilizes 7 different time slices, numbered starting from the presen
 {% endfigcaption %}
 {% endfigure %}
 
+The paleogeographic information is organized in `./data/hawaii`. To view the different time slices within a command line prompt:
+```
+$ # from command line
+$ cat ./data/hawaii/age_summary.csv
+index,mean_age,start_age,end_age,feature_dir
+1,1.20,1.30,1.10,time1
+2,2.55,3.00,2.10,time2
+3,4.135,4.34,3.93,time3
+4,6.15,6.30,6.00,time4
+5,8,8.15,7.75,time5
+6,18,18.15,17.75,time6
+```
+
+Paleogeographic features are further organized into subdirectories named `time1`, `time2`, etc. For example, to view quantitative within-region features for layer 1 (max. altitude) at time slice 4, type:
+```
+$ # from command line
+$ cat ./data/hawaii/time4/qw_feature1.csv
+G,N,K,O,M,H,Z
+50,500,3787,nan,nan,nan,1500
+```
+
+Below is a visualization of maximum island altitude across regions and epoch, made by summarizing the feature files across the different `time` directories:
+
+{% figure times %}
+<img src="figures/plot_features_vs_time.feat_qw1.png" width="40%">
+{% figcaption %}
+Maximum altitude values for seven regions across seven epochs. This quantitative within-region feature may influence within-region speciation and extinction rates through the sign and magnitude of the estimated $\phi_w^{(1)}$ and $\phi_e^{(1)}$ parameters. Light colors are small values, dark colors are large values, and gray indicates the region was absent (missing feature).
+{% endfigcaption %}
+{% endfigure %}
+
 {% subsection Setup %}
 
 > ## Important version info!
@@ -589,11 +619,20 @@ plotAncStatesMAP(t=states,
 ggsave(output_file, width = 9, height = 9)
 ```
 
+We use a modified version of this RevGadgets script to produce the following figure.
+
 {% figure states %}
-<img src="figures/states.png" width="80%">
+<img src="figures/plot_states_prob.png" width="60%">
 {% figcaption %}
-Ancestral state reconstruction of Hawaiian Silverswords. Nodes are colored based on the range with the highest probability. Range labels represents sets of regions (R = northwest islands, K = Kauai, O = Oahu, M = Maui Nui, H = Hawaii, Z = outgroup region).
+Ancestral state reconstruction of *Kadua*. Pie chart colors indicate the three most probable ancestral ranges for an ancestral branch or node. Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.
 {% endfigcaption %}
 {% endfigure %}
 
-As we can see from the figure above, we do not find evidence that the silverswords dipsersed first to now eroded northwest island before colonizing and radiating in Kauai.
+In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence.
+
+{% figure states %}
+<img src="figures/plot_rate_vs_time.process_w.png" width="60%">
+{% figcaption %}
+Within-region speciation rate estimates for *Kadua*. Dark colors are high rates, light colors are low rates, and gray indicates the region did not exist during that interval (missing feature). Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.
+{% endfigcaption %}
+{% endfigure %}
