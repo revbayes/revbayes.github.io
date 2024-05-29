@@ -567,6 +567,8 @@ plotAncStatesMAP(t=states,
 ggsave(output_file, width = 9, height = 9)
 ```
 
+Here, we show an ancestral tree built using RevGadgets, with a few other stylistic changes.
+
 {% figure states %}
 <img src="figures/plot_states_map.png" width="80%">
 {% figcaption %}
@@ -574,13 +576,16 @@ Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
 {% endfigure %}
 
-You can also examine the output files, like `model.log`, to assess the relationships between regional features and biogeographic processes, or to compare relative rates of different event types. This can also be done using RevGadgets. Here, we show a posterior plot for a single parameter ($\phi_d^{Distance}$) as an example.
+You can also examine the output files, like `model.log`, to assess the relationships between regional features and biogeographic processes, or to compare relative rates of different event types. This can also be done using RevGadgets. For example, to show the posterior plot for a single parameter ($\phi_d^{Distance}$) type the following.
+
 
 ```
 trace <- readTrace(path=log_file)
 plotTrace(trace, vars=c("phi_d[1]"))
 ggsave(posterior_file, width = 9, height = 9)
 ```
+
+Here is a figure with more information, also created using RevGadgets.
 
 {% figure param_d %}
 <img src="figures/plot_param.process_d.png" width="60%">
@@ -595,7 +600,7 @@ From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, th
 {% figure rate_d %}
 <img src="figures/plot_rate_vs_time.process_d.png" width="50%">
 {% figcaption %}
-Mean posterior estimates for dispersal rates, $r_d(i,j).
+Mean posterior estimates for dispersal rates, $r_d(i,j)$.
 {% endfigcaption %}
 {% endfigure %}
 
