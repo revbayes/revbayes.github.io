@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Feature-informed geographic state-dependent speciation-extinction (FIG) model</h1>
 	<h3 class="subtitle">A phylogenetic model where GeoSSE event rates are informed by regional features</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 27, 2024</h5>
+  <h5>Last modified on May 29, 2024</h5>
 </div>
 
 
@@ -127,7 +127,13 @@
         
         
         
-          <li><a href="/tutorials/multifig/example_output/out.model.txt">out.model.txt</a></li>
+          <li><a href="/tutorials/multifig/example_output/multifig.bg.txt">multifig.bg.txt</a></li>
+        
+          <li><a href="/tutorials/multifig/example_output/multifig.model.txt">multifig.model.txt</a></li>
+        
+          <li><a href="/tutorials/multifig/example_output/multifig.states.txt">multifig.states.txt</a></li>
+        
+          <li><a href="/tutorials/multifig/example_output/multifig.tre">multifig.tre</a></li>
         
         </ul>
     
@@ -175,6 +181,11 @@
 <figcaption>The 8 regional features investigated in this analysis and the 16 associated parameters relating these features to core biogeographic processes.</figcaption>
 </figure>
 
+<figure id="states"><p><img src="figures/plot_features_vs_time.feat_qb1.png" width="40%" /><br />
+<img src="figures/plot_features_vs_time.feat_cb2.png" width="40%" /></p>
+<figcaption>Examples of between-region regional features for a quantitative feature (distance) and a categorical feature (relative island age). These features (and others) influence dispersal and between-region speciation rates.</figcaption>
+</figure>
+
 <h3 class="subsection" id="setup">Setup</h3>
 <hr class="subsection" />
 
@@ -208,7 +219,7 @@
 <p>Next, we want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># filesystem
-analysis      = "simple_multiFIG" # + ".job_1"
+analysis      = "multifig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -221,8 +232,8 @@ out_fn        = "./output/" + analysis
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># MCMC variables
 num_proc  = 6
-num_gen   = 10000
-print_gen = 1
+num_gen   = 5000
+print_gen = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 </code></pre></div></div>
@@ -553,9 +564,6 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       condition    = "time",
                       taxa         = taxa,
                       nStates      = num_ranges,
-                      absTol       = 1e-7,
-                      relTol       = 1e-7,
-                      maxDenseSteps = 5000,
                       nProc        = num_proc)
 </code></pre></div></div>
 
@@ -666,8 +674,8 @@ plotAncStatesMAP(t=states,
 ggsave(output_file, width = 9, height = 9)
 </code></pre></div></div>
 
-<figure id="states"><p><img src="figures/states.png" width="95%" /></p>
-<figcaption>Ancestral state reconstruction of <em>Liolaemus</em>.</figcaption>
+<figure id="states"><p><img src="figures/plot_states_map.png" width="80%" /></p>
+<figcaption>Ancestral state reconstruction of <em>Kadua</em>.</figcaption>
 </figure>
 
 <p>You can also examine the output files, like <code class="language-plaintext highlighter-rouge">model.log</code>, to assess the relationships between regional features and biogeographic processes, or to compare relative rates of different event types. This can also be done using RevGadgets. Here, we show a posterior plot for a single parameter ($\phi_d^{Distance}$) as an example.</p>
@@ -677,9 +685,17 @@ plotTrace(trace, vars=c("phi_d[1]"))
 ggsave(posterior_file, width = 9, height = 9)
 </code></pre></div></div>
 
-<figure id="states"><p><img src="figures/posterior.png" width="40%" /></p>
-<figcaption>Posterior for the parameter $\phi_d^{Distance}$, which relates quantitative distances between regions to the process of dispersal. The 95% Highest Posterior Density (HPD) interval is shaded in dark blue. Note that 0 (a null effect) falls outside this interval. Therefore, distance is likely related to dispersal. A negative value indicates a negative relationship; more distance between regions reduces dispersal.</figcaption>
+<figure id="param_d"><p><img src="figures/plot_param.process_d.png" width="60%" /></p>
+<figcaption>Posterior estimates for parameters related to the dispersal process.</figcaption>
 </figure>
+
+<p>From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates <em>decrease</em> with distance. The third figure shows that models using distance as an explanatory to shape dispersal rates have reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.</p>
+
+<figure id="rate_d"><p><img src="figures/plot_rate_vs_time.process_d.png" width="50%" /></p>
+<figcaption>Mean posterior estimates for dispersal rates, $r_d(i,j).</figcaption>
+</figure>
+
+<p>A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$.</p>
 
 <ol class="bibliography"><li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
 

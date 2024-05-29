@@ -1,14 +1,13 @@
 # load Tensorphylo plugin
-# loadPlugin("TensorPhylo")
-loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+loadPlugin("TensorPhylo")
+# loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
 
 ##################
 # ANALYSIS SETUP #
 ##################
 
-
 # filesystem
-analysis      = "multiFIG" # + ".job_1"
+analysis      = "multifig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -18,8 +17,8 @@ out_fn        = "./output/" + analysis
 
 # MCMC variables
 num_proc  = 6
-num_gen   = 10000
-print_gen = 1
+num_gen   = 5000
+print_gen = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 
@@ -328,9 +327,6 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       condition    = "time",
                       taxa         = taxa,
                       nStates      = num_ranges,
-                      absTol       = 1e-7,
-                      relTol       = 1e-7,
-                      maxDenseSteps = 5000,
                       nProc        = num_proc)
 
 
