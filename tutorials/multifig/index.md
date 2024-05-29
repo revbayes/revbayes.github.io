@@ -77,7 +77,7 @@ Next, we want to tell RevBayes where to find our data (and where to save our out
 
 ```
 # filesystem
-analysis      = "simple_multiFIG" # + ".job_1"
+analysis      = "multifig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -563,7 +563,7 @@ ggsave(output_file, width = 9, height = 9)
 {% figure states %}
 <img src="figures/states.png" width="95%">
 {% figcaption %}
-Ancestral state reconstruction of *Liolaemus*.
+Ancestral state reconstruction of *Kadua*.
 {% endfigcaption %}
 {% endfigure %}
 
