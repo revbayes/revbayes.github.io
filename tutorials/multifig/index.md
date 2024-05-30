@@ -15,7 +15,7 @@ prerequisites:
 
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the Hawaiian *Kadua*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant islands, or go extinct at a higher rate on smaller islands.
 
-The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} address this. Rather than giving each region its own evolutionary rate parameters, it uses functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features.
+The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} attempt to model this expectation. Rather than giving each region its own evolutionary rate parameters, FIG models use functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions without suffering an explosion in the number of model parameters. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features. Later tutorials will explore how to adapt FIG to allow for regional features, and their linked biogeographic rates, to change over time.
 
 {% subsection The MultiFIG model %}
 
@@ -32,9 +32,31 @@ The FIG model incorporates geographical features with two value types as model v
 
 Each regional feature is assigned a "feature effect" parameter that measures the strength and direction of the effect of a particular feature on a particular process. Note that "effect" refers to a mathematical relationship here, but does *not* indicate causality. These strength parameters are referred to as $\sigma$ and $\phi$, representing the effects of categorical and quantitative features respectively. There is one $\sigma$ or $\phi$ parameter per feature per process. For example, $\phi_w^{Altitude}$ would represent the relationship between region altitude and within-region speciation.
 
-For each process, the categorical and quantitative feature effects (with feature data modified by strength parameters) are gathered into $c$ and $q$ vectors, then ultimately combined into an $m$ vector. The $m$ vector represents the total effects of all regional features on a particular process, with entries representing each region (or region pair for between-region processes). The $m$ vector represents relative rates among regions, but to obtain absolute rates, the $m$ vector for each process is multiplied by a process-specific base rate parameter $\rho$. This constructs the $r$ vectors that are analogous to GeoSSE rates: $r_w$ for within-region speciation rates, $r_e$ for extinction rates, and $r_d$ for dispersal rates (calculating $r_b$ for between-region speciation rates also requires the use of a range split score, as in {% cite Landis2022 %}). This tutorial will not describe the details of these intermediate functions, but they can be found in {% cite Swiston2023 %}.
+For each process, the categorical and quantitative feature effects (with feature data modified by strength parameters) are gathered into $c$ and $q$ vectors, then ultimately combined into an $m$ vector. The $m$ vector represents the total effects of all regional features on a particular process, with entries representing each region (or region pair for between-region processes). The $m$ vector represents relative rates among regions, but to obtain absolute rates, the $m$ vector for each process is multiplied by a process-specific base rate parameter $\rho$. This constructs the $r$ vectors that are analogous to GeoSSE rates: $r_w$ for within-region speciation rates, $r_e$ for extinction rates, and $r_d$ for dispersal rates. Calculating $r_b$ for between-region speciation rates also requires the use of a range split score, as in {% cite Landis2022 %}. This tutorial will not describe the details of these intermediate functions, but they can be found in {% cite Swiston2023 %}.
 
-In this analysis, we are examining 8 regional features. 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
+For example, the absolute rates for within-region speciation at region $i$ equals
+
+$$
+r_w(i) = \rho_w \times m_w(i)
+$$
+
+and, similarly, the absolute dispersal rates from region $i$ in to $j$ are
+
+$$
+r_d(i,j) = \rho_d \times m_d(i,j)
+$$
+
+which then are used to assign rates to GeoSSE events.
+
+In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
+
+{% figure features %}
+<img src="figures/plot_features_vs_time.feat_qb1.png" width="40%"><br>
+<img src="figures/plot_features_vs_time.feat_cb2.png" width="40%">
+{% figcaption %}
+Examples of a between-region quantitative feature (distance) and a categorical feature (relative island age). These features (and others) may shape dispersal and between-region speciation rates.
+{% endfigcaption %}
+{% endfigure %}
 
 Because each within-region feature acts on 2 processes and each between-region feature acts on 2 processes, this creates a total of 16 parameters. Adding one $\rho$ parameter for each process results in a total of 20 model parameters to be estimated. We will use a time-calibrated phylogeny and present-day ranges for *Kadua* to estimate these parameters, and use those estimates to determine which regional features are most strongly related to particular processes.
 
@@ -46,14 +68,6 @@ The 8 regional features investigated in this analysis and the 16 associated para
 {% endfigure %}
 
 
-
-{% figure states %}
-<img src="figures/plot_features_vs_time.feat_qb1.png" width="40%"><br>
-<img src="figures/plot_features_vs_time.feat_cb2.png" width="40%">
-{% figcaption %}
-Examples of between-region regional features for a quantitative feature (distance) and a categorical feature (relative island age). These features (and others) influence dispersal and between-region speciation rates.
-{% endfigcaption %}
-{% endfigure %}
 
 {% subsection Setup %}
 
@@ -595,7 +609,7 @@ Posterior estimates for parameters related to the dispersal process.
 {% endfigcaption %}
 {% endfigure %}
 
-From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates *decrease* with distance. The third figure shows that models using distance as an explanatory to shape dispersal rates have reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.
+From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates *decrease* with distance. The third figure shows that models using distance as an explanatory factor to shape dispersal rates have higher reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.
 
 {% figure rate_d %}
 <img src="figures/plot_rate_vs_time.process_d.png" width="60%">
