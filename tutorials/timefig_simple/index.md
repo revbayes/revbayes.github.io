@@ -23,7 +23,9 @@ In this tutorial, we will model the evolution and biogeography of *Kadua* using 
 
 {% subsection The Hawaiian Hot Spot Archipelago %}
 
-The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of *Kadua* (26 spp. including mainland outgoups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.
+The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of *Kadua* (26 spp. including non-Hawaiian outgroups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.
+
+The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago ([link](https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua)). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a "conveyor belt" system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial relies makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).
 
 {% figure features %}
 <img src="figures/features.png" width="65%">
