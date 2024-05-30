@@ -16,9 +16,10 @@ The geographic state-dependent speciation-extinction (or GeoSSE) model is phylog
 
 {% subsection Model overview %}
 
-In the GeoSSE model, lineage "states" represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Within-region speciation and extinction happen inside a single region, whereas between-region and dispersal involve two or more regions ({% ref geosseevents %}).
+In the GeoSSE model, lineage "states" represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition among these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal ({% ref geossephylo %}). Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Within-region speciation and extinction happen inside a single region, whereas between-region speciation and dispersal involve two or more regions ({% ref geosseevents %}).
 
-{% figure geosse %}
+
+{% figure geossephylo %}
 <img src="figures/exampletree.png" width="40%">
 {% figcaption %}
 An example tree showing GeoSSE event types: within-region speciation (w), extinction (e), between-region speciation (b), and dispersal (d).
@@ -139,11 +140,29 @@ Finally, we want to format the range data to be used in a GeoSSE analysis. This 
 bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
 ```
 
-If you are interested in learning how to set up the GeoSSE rates manually without using the `formatDiscreteCharacterData` function, or if you want to further customize the model (ie. GeoHiSSE), the [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) tutorial gives an example of hand-coded rates.
+The range assignments for this exercise with two regions are:
+
+{% table geosseevents %}
+
+|---------|----------|---------|
+| Range   | Vector   | State   |
+|---------|----------|---------|
+| A       | 10       | 1       |
+| B       | 01       | 2       |
+| AB      | 11       | 3       |
+|---------|----------|---------|
+
+{% tabcaption %}
+Species ranges as region-sets, presence-absence vectors, and numerical states for two-region system.
+{% endtabcaption %}
+{% endtable %}
+
+If you are interested in learning how to set up the GeoSSE rates manually without using the `formatDiscreteCharacterData` function, or if you want to further customize the model (ie. GeoHiSSE), the [ClaSSE](https://revbayes.github.io/tutorials/sse/classe.html) tutorial gives an example of hand-coded rates. 
+
 
 {% subsection Model setup %}
 
-In the GeoSSE model, there are four processes: within-region speciation, extinction, between-region speciation, and dispersal. For each process, each possible event its own event rate that depends on the involved regions or region pairs. This will result in two rate vectors `r_w` and `r_e` with lengths equal to the number of regions, and two square rate matrices `r_b` and `r_d` with a number of entries equal to the number of region pairs. We will construct the event rates by multiplying the region- or pair-specific relative rate parameters in `m_x` for each event class $x \in { w, e, b, d}$ against the appropriate base rate parameter `rho_x` to produce the absolute rates `r_x`. All `rho_x` parameters will be drawn from the exponential distribution `dnExp(1)`. We will use Dirichlet distributions to generate relative rates.
+In the GeoSSE model, there are four processes: within-region speciation, extinction, between-region speciation, and dispersal. For each process, each distinct event is assigned its own rate that depends on the involved regions or region pairs. This will result in two rate vectors `r_w` and `r_e` with lengths equal to the number of regions, and two square rate matrices `r_b` and `r_d` with a number of entries equal to the number of region pairs. We will construct the event rates by multiplying the region- or pair-specific relative rate parameters in `m_x` for each event class $x \in { w, e, b, d}$ against the appropriate base rate parameter `rho_x` to produce the absolute rates `r_x`. All `rho_x` parameters will be drawn from the exponential distribution `dnExp(1)`. We will use Dirichlet distributions to generate relative rates.
 
 We will set up within-region speciation rates first.
 
@@ -154,7 +173,7 @@ m_w := m_w_simplex * num_regions
 r_w := rho_w * m_w
 ```
 
-To obtain our vector of relative rates, `m_w`, we first create the simplex `m_w_simplex` which is a vector containing `num_regions` random values that will be estimated, where each value is between 0 and 1 and all values sum to 1. The Dirichlet(1) distribution assigns equal probability to any combination of values in the simplex, making it a "flat prior". Setting the alpha value to be large sets higher prior probability on relative rates being similar to one another. We design the model in this way so that users can better control how relative rates of within-region speciation are distributed among regions. We then multiply `m_w_simplex` by `num_regions` to produce the mean relative rate value of 1 for any region represented in the resulting relative rate vector, `m_w`. Lastly, we multiply these relative rates by the absolute scaling factor, `rho_w`, to obtain our vector of absolute rates, `r_w`.
+To obtain our vector of relative rates, `m_w`, we first create the simplex `m_w_simplex`, which is a vector containing `num_regions` random values that will be estimated, where each value is between 0 and 1 and all values sum to 1. The Dirichlet(1) distribution assigns equal probability to any combination of values in the simplex, making it a "flat prior". Setting the alpha value to be large sets higher prior probability on relative rates being similar to one another. We design the model in this way so that users can better control how relative rates of within-region speciation are distributed among regions. We then multiply `m_w_simplex` by `num_regions` to produce the mean relative rate value of 1 for any region represented in the resulting relative rate vector, `m_w`. Lastly, we multiply these relative rates by the absolute scaling factor, `rho_w`, to obtain our vector of absolute rates, `r_w`.
 
 Extinction rates are set up similarly. The same general logic applies as before. However, these rates are applied only to extinction and not to within-region speciation.
 
@@ -165,7 +184,7 @@ m_e := m_e_simplex * num_regions
 r_e := rho_e * m_e
 ```
 
-From these extinction rates (which are actually single-region extinction rates), we will set up global extinction rates for each possible range in the state space. In the GeoSSE model, lineage-level extincion events occur when a species goes globally extinct (i.e. it loses the last region from its range). Therefore, we will assign all multi-region ranges an extinction rate of 0, and we will assign all single-region ranges an extinction rate equal to the local extirpation rate. Note, ranges are numbered such that indices `1`, `2`, through `num_regions` correspond to ranges that respectively contain only region 1, region 2, up through the last region in the system.
+From these extinction rates (which are actually single-region extinction rates), we will set up lineage-level extinction rates for each possible range in the state space. In the GeoSSE model, lineage-level extincion events occur when a species goes globally extinct (i.e. it loses the last region from its range). Therefore, we will assign all multi-region ranges an extinction rate of 0, and we will assign all single-region ranges an extinction rate equal to the local extirpation rate. Note, ranges are numbered such that indices `1`, `2`, through `num_regions` correspond to ranges that respectively contain only region 1, region 2, up through the last region in the system.
 
 ```
 for (i in 1:num_ranges) {
