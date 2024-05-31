@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Time-heterogeneous FIG (TimeFIG) model</h1>
 	<h3 class="subtitle">A FIG model with paleogeographically varying regional features</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 29, 2024</h5>
+  <h5>Last modified on May 30, 2024</h5>
 </div>
 
 
@@ -144,12 +144,28 @@
 
 <p>However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. The TimeFIG model addresses the time-heterogeneity of regional features using “time slices” (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant.</p>
 
-<p>In this tutorial, we will model the evolution and biogeography of <em>Kadua</em> using seven regions, eight regional features, and seven time slices.</p>
+<p>For example, in the <a href="http://revbayes.github.io/tutorials/multifig/">previous tutorial</a>, the within-region speciation rate for region $i$ was defined as</p>
+
+\[r_w(i) = \rho_w \times m_w(i)\]
+
+<p>which is the base rate for the process, $\rho_w$, times the relative rate multiplier for region $i$, $m_w(i)$. This formulation assume the rate is constant across time. In this tutorial, we instead define piecewise constant within-speciation rates that depend on time as</p>
+
+\[r_w(i,t) = \rho_w \times m_w(i,t)\]
+
+<p>where the key difference is that $m_w(i,t)$ is now itself a function of time, $t$. We can retain the notation and interpretation given in the MultiFIG tutorial, while adapting it to be a function of time, yielding</p>
+
+\[m_w(i,t) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i,t) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i,t)}_{\text{categorical effects}} \Bigr\}\]
+
+<p>What is important to stress is that all $\phi$ and $\sigma$ parameters are independent of time and region. They only modulate the sign and strength of effect between a particular regional feature layer ($k$ or $\ell$) and a biogeographic process (in this case $w$ for within-region speciation). However, the quantitative ($q^{(k)}_w(i,t)$) and categorical features ($c^{(k)}_w(i,t)$ may themselves change with time. In fact, they are the only variables on the left hand side that are functions of time, meaning the time-varying features drive any dynamical changes for relative rates in $m_w(i,t)$, while the feature effect parameters mostly control the sign and magnitude of those changes.</p>
+
+<p>In this tutorial, we will model the evolution and biogeography of <em>Kadua</em> using seven regions, eight regional features, and seven time slices. We summarize some relevant details below.</p>
 
 <h3 class="subsection" id="the-hawaiian-hot-spot-archipelago">The Hawaiian Hot Spot Archipelago</h3>
 <hr class="subsection" />
 
-<p>The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of <em>Kadua</em> (26 spp. including mainland outgoups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.</p>
+<p>The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of <em>Kadua</em> (26 spp. including non-Hawaiian outgroups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.</p>
+
+<p>The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago (<a href="https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua">link</a>). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a “conveyor belt” system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial relies makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).</p>
 
 <figure id="features"><p><img src="figures/features.png" width="65%" /></p>
 <figcaption>We will use the same features for the TimeFIG analysis that we used in the MultiFIG analysis. For reference, here are the 8 regional features and the 16 associated parameters relating these features to core biogeographic processes.</figcaption>
