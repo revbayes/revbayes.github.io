@@ -84,7 +84,7 @@ G,N,K,O,M,H,Z
 
 Below is a visualization of maximum island altitude across regions and epoch, made by summarizing the feature files across the different `time` directories:
 
-{% figure times %}
+{% figure feature_times %}
 <img src="figures/plot_features_vs_time.feat_qw1.png" width="40%">
 {% figcaption %}
 Maximum altitude values for seven regions across seven epochs. This quantitative within-region feature may influence within-region speciation and extinction rates through the sign and magnitude of the estimated $\phi_w^{(1)}$ and $\phi_e^{(1)}$ parameters. Light colors are small values, dark colors are large values, and gray indicates the region was absent (missing feature).
@@ -632,16 +632,16 @@ git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
 ```
 
-Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/projects/timefig_simple/plots`:
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/timefig_simple/plot`:
 ```
 # copy
-cp ~/fig_tools/scripts/*.R ~/projects/timefig_simple/plots
-cp ~/fig_tools/scripts/*.Rev ~/projects/timefig_simple/plots
+cp ~/fig_tools/scripts/*.R ~/timefig_simple/plot
+cp ~/fig_tools/scripts/*.Rev ~/timefig_simple/plot
 ```
 
 These scripts assume you are in the base of your analysis directory:
 ```
-cd ~/projects/timefig_simple
+cd ~/timefig_simple
 ```
 
 
@@ -649,7 +649,7 @@ Now we can generate plots using FIG tools. First, we generate a tree with ancest
 
 ```
 # prepare tree and state output for plotting
-rb --args ./output/simple_timefig.tre ./output/simple_timefig.states.txt --file ./plot_scripts/make_tree.Rev
+rb --args ./output/simple_timefig.tre ./output/simple_timefig.states.txt --file ./plot/make_tree.Rev
 
 # make ancestral tree plot
 Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
@@ -663,7 +663,7 @@ Ancestral state reconstruction of *Kadua*. Pie chart colors indicate the three m
 {% endfigure %}
 
 
-To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial, enter this code:
+To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial ({% ref feature_times %}), enter this code:
 ```
 # make region feature vs. time plots
 Rscript ./plot/plot_rates_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
@@ -676,9 +676,23 @@ In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, f
 Rscript Rscript ./scripts/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
 
-{% figure states %}
+{% figure rates_times %}
 <img src="figures/plot_rate_vs_time.process_w.png" width="60%">
 {% figcaption %}
 Within-region speciation rate estimates for *Kadua*. Dark colors are high rates, light colors are low rates, and gray indicates the region did not exist during that interval (missing feature). Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.
+{% endfigcaption %}
+{% endfigure %}
+
+
+Lastly, this script will plot a network that summarizes relationships between regional features, feature effect parameters, and core biogeographic processes:
+```
+# make feature vs. rate network plot
+Rscript ./plot/plot_feature_rate_network.R ./output/simple_timefig.model.txt ./data/hawaii/feature_description.csv
+```
+
+{% figure rates_times %}
+<img src="figures/plot_feature_rate_network.png" width="80%">
+{% figcaption %}
+Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)
 {% endfigcaption %}
 {% endfigure %}

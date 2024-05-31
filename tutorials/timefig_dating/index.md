@@ -888,7 +888,54 @@ While the posterior-based TimeFIG calibration produces a young mean age for the 
 
 Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian *Kadua*.
 
-For instance, these ancestral range estimates are a byproduct of our analysis:
+Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the [FIG Tools](https://github.com/hawaiian-plant-biogeography/fig_tools) repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.
+
+NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
+
+To proceed, we'll exit RevBayes and work from the command line prompt in shell. To generate the images below, first save a copy of FIG tools to your filesystem:
+```
+# Option 1: download and decompress .zip file (open in browser our save in command line)
+wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
+unzip main.zip
+
+# Option 2: clone repository
+git@github.com:hawaiian-plant-biogeography/fig_tools.git
+
+```
+
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/timefig_dating/plot`:
+```
+# copy
+cp ~/fig_tools/scripts/*.R ~/timefig_dating/plot
+cp ~/fig_tools/scripts/*.Rev ~/timefig_dating/plot
+```
+
+These scripts assume you are in the base of your analysis directory:
+```
+cd ~/timefig_dating
+```
+
+
+Now we can generate plots using FIG tools. First, we generate one plot with a maximum clade credibility tree with node age estimates and another plot with ancestral range estimates using these commands:
+
+```
+# prepare tree and state output for plotting
+rb --args ./output/divtime_timefig.tre ./output/divtime_timefig.states.txt --file ./plot/make_tree.Rev
+
+# make MCC tree plot
+Rscript ./scripts/plot_mcc_tree.R ./output/out.mcc.tre
+
+# make ancestral tree plot
+Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
+```
+
+{% figure mcc_tree %}
+<img src="figures/plot_mcc_tree.png" width="60%">
+{% figcaption %}
+Maximum clade credibility tree for Hawaiian *Kadua* (another version).
+{% endfigcaption %}
+{% endfigure %}
+
 
 {% figure states %}
 <img src="figures/plot_states_prob.png" width="60%">
@@ -897,13 +944,33 @@ Ancestral ranges for Hawaiian *Kadua*.
 {% endfigcaption %}
 {% endfigure %}
 
-These regional rate estimates also emerge naturally from the analysis:
 
-{% figure states %}
+In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:
+
+```
+# make region rate vs. time plots
+Rscript ./plot/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+```
+
+{% figure rates_times %}
 <img src="figures/plot_rate_vs_time.process_w.png" width="60%">
 {% figcaption %}
-Within-region speciation rates for Hawaiian *Kadua* across regions and time slices.
+Within-region speciation rate estimates for *Kadua*. Dark colors are high rates, light colors are low rates, and gray indicates the region did not exist during that interval (missing feature). Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.
 {% endfigcaption %}
 {% endfigure %}
 
 Notice the differences in ancestral range and rate estimates when comparing these results to those from the simpler TimeFIG analysis in the previous tutorial.
+
+
+Lastly, this script will plot a network that summarizes relationships between regional features, feature effect parameters, and core biogeographic processes:
+```
+# make feature vs. rate network plot
+Rscript ./plot/plot_feature_rate_network.R ./output/divtime_timefig.model.txt ./data/hawaii/feature_description.csv
+```
+
+{% figure rates_times %}
+<img src="figures/plot_feature_rate_network.png" width="80%">
+{% figcaption %}
+Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)
+{% endfigcaption %}
+{% endfigure %}

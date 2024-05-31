@@ -51,10 +51,11 @@ which looks complicated, but can be understood easily in parts. Each quantitativ
 In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
 
 {% figure features %}
+<img src="figures/plot_features_vs_time.feat_qw1.png" width="40%"><br>
 <img src="figures/plot_features_vs_time.feat_qb1.png" width="40%"><br>
 <img src="figures/plot_features_vs_time.feat_cb2.png" width="40%">
 {% figcaption %}
-Examples of a between-region quantitative feature (distance) and a categorical feature (relative island age). These features (and others) may shape dispersal and between-region speciation rates.
+Examples of a within-region quantitative feature (max. altitude), a between-region quantitative feature (distance), and a categorical quantitative feature (relative island age). These features (and others) may shape core biogeographic rates depending on which regions are involved in an event.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -573,26 +574,26 @@ git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
 ```
 
-Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/projects/multifig/plots`:
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/multifig/plot`:
 ```
 # copy
-cp ~/fig_tools/scripts/*.R ~/projects/multifig/plots
-cp ~/fig_tools/scripts/*.Rev ~/projects/multifig/plots
+cp ~/fig_tools/scripts/*.R ~/multifig/plot
+cp ~/fig_tools/scripts/*.Rev ~/multifig/plot
 ```
 
 These scripts assume you are in the base of your analysis directory:
 ```
-cd ~/projects/multifig
+cd ~/multifig
 ```
 
 Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:
 
 ```
 # prepare tree and state output for plotting
-rb --args ./output/multifig.tre ./output/multifig.states.txt --file ./plot_scripts/make_tree.Rev
+rb --args ./output/multifig.tre ./output/multifig.states.txt --file ./plot/make_tree.Rev
 
 # make ancestral tree plot
-Rscript ./plot_scripts/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
+Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
 ```
 
 
@@ -609,7 +610,7 @@ Ancestral state reconstruction of *Kadua*.
 Next, we generate figures for the marginal posterior densities associated with the core GeoSSE processes:
 ```
 # make model posterior plots
-Rscript ./plot_scripts/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/feature_summary.csv ./data/hawaii/feature_description.csv
+Rscript ./plot/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/feature_summary.csv ./data/hawaii/feature_description.csv
 ```
 
 {% figure param_d %}
@@ -630,7 +631,7 @@ echo "index,mean_age\n" > ~/data/hawaii/age_summary.csv
 cp ~/output/multifig.bg.txt ~/output/multifig.time1.bg.txt
 
 # make region rate plots
-Rscript ./plot_scripts/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript ./plot/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
 
 {% figure rate_d %}
@@ -640,4 +641,26 @@ Mean posterior estimates for dispersal rates, $r_d(i,j)$.
 {% endfigcaption %}
 {% endfigure %}
 
-A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$.
+A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$ ({% ref rate_d %}).
+
+{% figure rate_w %}
+<img src="figures/plot_rate_vs_time.process_w.png" width="60%">
+{% figcaption %}
+Mean posterior estimates for within-region speciation rates, $r_w(i)$.
+{% endfigcaption %}
+{% endfigure %}
+
+Within-region specation rates, $r_w(i)$, are estimated as highest in the middle-aged islands, Kauai and Oahu ({% ref rate_w %}).
+
+Lastly, this script will plot a network that summarizes relationships between regional features, feature effect parameters, and core biogeographic processes:
+```
+# make feature vs. rate network plot
+Rscript ./plot/plot_feature_rate_network.R ./output/multifig.model.txt ./data/hawaii/feature_description.csv
+```
+
+{% figure rates_times %}
+<img src="figures/plot_feature_rate_network.png" width="80%">
+{% figcaption %}
+Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)
+{% endfigcaption %}
+{% endfigure %}
