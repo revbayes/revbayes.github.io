@@ -573,11 +573,11 @@ git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
 ```
 
-Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory:
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/projects/multifig/plots`:
 ```
 # copy
-cp ~/fig_tools/scripts/*.R ~/projects/multifig/scripts
-cp ~/fig_tools/scripts/*.Rev ~/projects/multifig/scripts
+cp ~/fig_tools/scripts/*.R ~/projects/multifig/plots
+cp ~/fig_tools/scripts/*.Rev ~/projects/multifig/plots
 ```
 
 These scripts assume you are in the base of your analysis directory:

@@ -616,32 +616,44 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 
 {% subsection Output %}
 
-One interesting thing we can do with the output of the TimeFIG analysis is plot the time-calibrated tree with ancestral states. This can be done using RevGadgets, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the `timefig.R` script, or by executing the following code in R. Before plotting the ancestral state tree, we create two vectors. The vector `labels` is useful because it maps actual region labels onto state numbers, so the legend can be easily interpreted. If you used your own data, you would have to provide your own state labels.
+
+Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the [FIG Tools](https://github.com/hawaiian-plant-biogeography/fig_tools) repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.
+
+NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
+
+To proceed, we'll exit RevBayes and work from the command line prompt in shell. To generate the images below, first save a copy of FIG tools to your filesystem:
+```
+# Option 1: download and decompress .zip file (open in browser our save in command line)
+wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
+unzip main.zip
+
+# Option 2: clone repository
+git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
 ```
-library(RevGadgets)
-library(ggplot2)
 
-tree_file = "../output/ase.tre"
-states_file = "../figures/states.png"
-
-labels <- c("0" = "R","1" = "K","2" = "O","3" = "M","4" = "H","5" = "Z","6" = "RK","7" = "RO","8" = "KO","9" = "RM","10" = "KM","11" = "OM","12" = "RH","13" = "KH","14" = "OH","15" = "MH","16" = "RZ","17" = "KZ","18" = "OZ","19" = "MZ","20" = "HZ","21" = "RKO","22" = "RKM","23" = "ROM","24" = "KOM","25" = "RKH","26" = "ROH","27" = "KOH","28" = "RMH","29" = "KMH","30" = "OMH","31" = "RKZ","32" = "ROZ","33" = "KOZ","34" = "RMZ","35" = "KMZ","36" = "OMZ","37" = "RHZ","38" = "KHZ","39" = "OHZ","40" = "MHZ","41" = "RKOM","42" = "RKOH","43" = "RKMH","44" = "ROMH","45" = "KOMH","46" = "RKOZ","47" = "RKMZ","48" = "ROMZ","49" = "KOMZ","50" = "RKHZ","51" = "ROHZ","52" = "KOHZ","53" = "RMHZ","54" = "KMHZ","55" = "OMHZ","56" = "RKOMH","57" = "RKOMZ","58" = "RKOHZ","59" = "RKMHZ","60" = "ROMHZ","61" = "KOMHZ","62" = "RKOMHZ")
-
-states <- processAncStates(tree_file, state_labels=labels)
-plotAncStatesMAP(t=states,
-                 timeline=T,
-                 geo=F,
-                 time_bars=F,
-                 node_size=2,
-                 node_color_as="state",
-                 node_size_as=NULL,
-                 tip_labels_offset=0.1) +
-                 ggplot2::theme(legend.position="bottom",
-                                legend.title=element_blank())
-ggsave(output_file, width = 9, height = 9)
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/projects/timefig_simple/plots`:
+```
+# copy
+cp ~/fig_tools/scripts/*.R ~/projects/timefig_simple/plots
+cp ~/fig_tools/scripts/*.Rev ~/projects/timefig_simple/plots
 ```
 
-We use a modified version of this RevGadgets script to produce the following figure.
+These scripts assume you are in the base of your analysis directory:
+```
+cd ~/projects/timefig_simple
+```
+
+
+Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:
+
+```
+# prepare tree and state output for plotting
+rb --args ./output/simple_timefig.tre ./output/simple_timefig.states.txt --file ./plot_scripts/make_tree.Rev
+
+# make ancestral tree plot
+Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
+```
 
 {% figure states %}
 <img src="figures/plot_states_prob.png" width="60%">
@@ -650,7 +662,19 @@ Ancestral state reconstruction of *Kadua*. Pie chart colors indicate the three m
 {% endfigcaption %}
 {% endfigure %}
 
-In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence.
+
+To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial, enter this code:
+```
+# make region feature vs. time plots
+Rscript ./plot/plot_rates_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+```
+
+In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:
+
+```
+# make region rate vs. time plots
+Rscript Rscript ./scripts/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+```
 
 {% figure states %}
 <img src="figures/plot_rate_vs_time.process_w.png" width="60%">
