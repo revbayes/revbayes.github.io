@@ -1,7 +1,7 @@
 ---
 title: Feature-informed geographic state-dependent speciation-extinction (FIG) model
 subtitle: A phylogenetic model where GeoSSE event rates are informed by regional features
-authors:  Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
+authors:  Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata, Michael Landis
 level: 8
 order: 9
 index: true
