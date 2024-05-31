@@ -1,0 +1,394 @@
+# load Tensorphylo plugin
+loadPlugin("TensorPhylo")
+# loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+
+##################
+# ANALYSIS SETUP #
+##################
+
+# filesystem
+analysis      = "multifig"
+dat_fp        = "./data/kadua/"
+phy_fn        = dat_fp + "kadua.tre"
+bg_fn         = dat_fp + "kadua_range_n7.nex"
+geo_fp        = "./data/hawaii/"
+feature_fn    = geo_fp + "feature_summary.csv"
+out_fn        = "./output/" + analysis
+
+# MCMC variables
+num_proc  = 6
+num_gen   = 5000
+print_gen = 20
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+# tree input
+phy          <- readTrees(phy_fn)[1]
+taxa         = phy.taxa()
+num_taxa     = taxa.size()
+num_branches = 2 * num_taxa - 2
+
+# biogeography input
+dat_01         = readDiscreteCharacterData(bg_fn)
+num_regions    = dat_01.nchar()
+max_range_size = 4
+num_ranges     = 0
+for (k in 1:max_range_size) {
+    num_ranges += choose(num_regions, k)
+}
+dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
+desc           = dat_nn.getStateDescriptions()
+
+#write("index,range\n", filename=label_fn)
+#for (i in 1:desc.size()) {
+#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+#}
+
+
+###################
+# GEOGRAPHY MODEL #
+###################
+
+# read files stored in feature_fn, store into RevBayes data structures,
+# normalize/re-center values, then provide methods to get feature-sets
+# for CW/QW/CB/QB associated with D/E/W/B
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",", nonexistent_region_token="nan")
+geo_features.normalize("within")
+geo_features.normalize("between")
+
+# get feature-sets for each measurement-type, process-type, and timeslice
+feature_CW <- geo_features.get("within","categorical",1)
+feature_QW <- geo_features.get("within","quantitative",1)
+feature_CB <- geo_features.get("between","categorical",1)
+feature_QB <- geo_features.get("between","quantitative",1)
+
+for (i in 1:feature_CW.size()) {
+    layer_CW[i] <- feature_CW[i].get()
+}
+for (i in 1:feature_QW.size()) {
+    layer_QW[i] <- feature_QW[i].get()
+}
+for (i in 1:feature_CB.size()) {
+    layer_CB[i] <- feature_CB[i].get()
+}
+for (i in 1:feature_QB.size()) {
+    layer_QB[i] <- feature_QB[i].get()
+}
+
+# set up priors for feature effects
+rj_null_value <- 0.0          # fixed "off-value" for RJMCMC
+rj_prob       <- 0.5          # prob. of RJMCMC taking "off-value"
+
+# prior of "on-value" for RJMCMC
+bound <- 2
+rj_base_sym_dist = dnUniform(-bound, bound)
+rj_base_neg_dist = dnUniform(-bound, 0)     # negative only (e.g. distance on dispersal)
+rj_base_pos_dist = dnUniform(0, bound)      # positive only (e.g. distance on betw.-reg. speciation)
+rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
+rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
+rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
+
+# categorical feature effects
+for (i in 1:feature_CW.size()) sigma_w[i] ~ rj_sym_dist
+for (i in 1:feature_CW.size()) sigma_e[i] ~ rj_sym_dist
+for (i in 1:feature_CB.size()) sigma_d[i] ~ rj_sym_dist
+for (i in 1:feature_CB.size()) sigma_b[i] ~ rj_sym_dist
+
+# quantitative feature effects
+for (i in 1:feature_QW.size()) phi_w[i] ~ rj_sym_dist
+for (i in 1:feature_QW.size()) phi_e[i] ~ rj_sym_dist
+for (i in 1:feature_QB.size()) phi_d[i] ~ rj_sym_dist
+for (i in 1:feature_QB.size()) phi_b[i] ~ rj_sym_dist
+
+# force signed relationships between region features and rates
+# (overrides existing distribution assignments)
+phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
+phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
+sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
+sigma_w[1] ~ rj_pos_dist   # High Islands (1) drives faster speciation 
+phi_d[1]   ~ rj_neg_dist   # Distance (km) results in slower dispersal
+phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
+sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
+sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
+
+# regional rate factors
+# NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+m_w := fnFeatureInformedRates(layer_CW, layer_QW, sigma_w, phi_w, null_rate=0)
+m_e := fnFeatureInformedRates(layer_CW, layer_QW, sigma_e, phi_e, null_rate=1e3)
+m_d := fnFeatureInformedRates(layer_CB, layer_QB, sigma_d, phi_d, null_rate=0)
+m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
+
+# initialize categorical feature effects, create moves, add monitor variables
+for (i in 1:feature_CW.size()) {
+    sigma_w[i].setValue(0)
+    moves.append( mvScale(sigma_w[i], weight=2) )
+    moves.append( mvSlide(sigma_w[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CW.size()) {
+    sigma_e[i].setValue(0)
+    moves.append( mvScale(sigma_e[i], weight=2) )
+    moves.append( mvSlide(sigma_e[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB.size()) {
+    sigma_d[i].setValue(0)
+    moves.append( mvScale(sigma_d[i], weight=2) )
+    moves.append( mvSlide(sigma_d[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_CB.size()) {
+    sigma_b[i].setValue(0)
+    moves.append( mvScale(sigma_b[i], weight=2) )
+    moves.append( mvSlide(sigma_b[i], weight=2) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
+}
+
+# initialize quantitative feature effects, create moves, add monitor variables
+for (i in 1:feature_QW.size()) {
+    phi_w[i].setValue(0)
+    moves.append( mvScale(phi_w[i], weight=2) )
+    moves.append( mvSlide(phi_w[i], weight=2) )
+    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QW.size()) {
+    phi_e[i].setValue(0)
+    moves.append( mvScale(phi_e[i], weight=2) )
+    moves.append( mvSlide(phi_e[i], weight=2) )
+    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB.size()) {
+    phi_d[i].setValue(0)
+    moves.append( mvScale(phi_d[i], weight=2) )
+    moves.append( mvSlide(phi_d[i], weight=2) )
+    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
+}
+for (i in 1:feature_QB.size()) {
+    phi_b[i].setValue(0)
+    moves.append( mvScale(phi_b[i], weight=2) )
+    moves.append( mvSlide(phi_b[i], weight=2) )
+    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
+}
+
+##############
+# TREE MODEL #
+##############
+
+
+#######################################
+# define model base rates             #
+#######################################
+
+# base rate parameters
+rho_d ~ dnExp(40)
+rho_e ~ dnExp(40)
+rho_w ~ dnExp(40)
+rho_b ~ dnExp(40)
+
+rho_d.setValue(0.1)
+rho_e.setValue(0.1)
+rho_w.setValue(0.1)
+rho_b.setValue(0.1)
+
+moves.append( mvScale(rho_d, weight=5) )
+moves.append( mvScale(rho_e, weight=5) )
+moves.append( mvScale(rho_w, weight=5) )
+moves.append( mvScale(rho_b, weight=5) )
+
+
+# summarize base rates
+speciation_rates := [ rho_w, rho_b ]
+total_speciation := sum( speciation_rates )
+
+#################################
+# dispersal-extirpation process #
+#################################
+
+# dispersal rate (region gain)
+for (i in 1:num_regions) {
+    r_d[i] := rho_d * m_d[i]
+}
+
+# extirpation rate (region loss)
+r_e := rho_e * m_e[1]
+
+# dispersal-extirpation rate matrix
+# - states are discrete ranges
+# - elements are rates of range expansion/contraction
+Q_bg := fnBiogeographyRateMatrix(dispersalRates=r_d,
+                                 extirpationRates=r_e,
+                                 maxRangeSize=max_range_size)
+
+#####################
+# speciation rates  #
+#####################
+
+# speciation rate matrix
+clado_map := fnBiogeographyCladoEventsBD(speciation_rates=speciation_rates,
+                                         within_region_features=m_w[1],
+                                         between_region_features=m_b,
+                                         max_range_size=max_range_size,
+                                         normalize_split_score=false)
+# clado_map
+
+# speciation rates for each range
+lambda := clado_map.getSpeciationRateSumPerState()
+
+# probabilities of speciation outcomes for each range
+omega := clado_map.getCladogeneticProbabilityMatrix()
+
+# monitor variables for absolute speciation rates
+r_w := rho_w * m_w[1]
+
+# NOTE: this rate only represents species with range size 2
+#       i.e., the inverse sum of inverse edge weights
+#       (relative rates in m_b[i][j]) is equal to the edge weight
+#       of a 2-region range
+for (i in 1:num_regions) {
+    r_b[i] := rho_b * m_b[i]
+}
+
+
+####################
+# extinction rates #
+####################
+
+# extinction rates (lineage death)
+for (i in 1:num_ranges) {
+    if (i <= num_regions) {
+        # species with range-size 1 can go extinct
+        mu[i] := r_e[i]
+    } else {
+        # widespread species cannot
+        mu[i] <- abs(0)
+    }
+}
+
+####################################
+# starting and sampling conditions #
+####################################
+
+# base frequencies
+pi_bg_base <- rep(1, num_ranges)
+pi_bg <- simplex(pi_bg_base)
+
+
+# tip state sampling probabilities
+# assume that ranges with ingroup regions (RKOMH) are perfectly
+# sampled, while the outgroup region (Z) has very low sampling
+
+# accepted number of species, two new K. cordata lineages, one new K. haupuensis
+# see ref Lorence 2010
+n_total           <- 29 + 2 + 1
+n_total_ingroup   <- 22 + 2
+n_total_outgroup  <- n_total - n_total_ingroup
+n_sample_ingroup  <- 24
+n_sample_outgroup <- 3
+rho_ingroup       <- Probability(n_sample_ingroup/n_total_ingroup) 
+rho_outgroup      <- Probability(n_sample_outgroup/n_total_outgroup)
+rho_poorly_sampled_ranges <- [ 7 ]
+for (i in 1:num_ranges) {
+    rho_sample[1][i] <- rho_ingroup
+}
+for (i in rho_poorly_sampled_ranges) {
+    rho_sample[1][i] <- rho_outgroup
+}
+rho_times <- [ 0.0 ]  # we need this for technical reasons
+
+############
+# root age #
+############
+
+# fixed root age
+root_age <- phy.rootAge()
+
+
+#############
+# SSE model #
+#############
+
+# use Time/Multi FIG setup
+timetree ~ dnGLHBDSP( rootAge      = root_age,
+                      lambda       = lambda,
+                      mu           = mu,
+                      eta          = Q_bg,
+                      omega        = omega,
+                      rhoTimes     = rho_times,
+                      pi           = pi_bg,
+                      rho          = rho_sample,
+                      condition    = "time",
+                      taxa         = taxa,
+                      nStates      = num_ranges,
+                      nProc        = num_proc)
+
+
+##########################
+# ASSIGN VALUES TO MODEL #
+##########################
+
+timetree.clamp(phy)
+timetree.clampCharData(dat_nn)
+
+
+###################
+# CREATE MONITORS #
+###################
+
+# screen monitor, so you don't get bored
+monitors.append( mnScreen(rho_d, rho_e, rho_w, rho_b, printgen=print_gen) )
+
+# file monitor for all simple model variables
+monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+
+# file monitor for tree
+monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+
+# monitor ancestral ranges at internal nodes
+monitors.append( mnJointConditionalAncestralState(
+    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    filename=out_fn+".states.txt",
+    withTips=true, withStartStates=true, type="NaturalNumbers") )
+
+# file monitor for biogeographic rates
+bg_mon_fn = out_fn + ".bg.txt"
+monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+                         rho_e, rho_w, rho_d, rho_b,
+                         r_e, r_w,
+                         r_d[1], r_d[2], r_d[3], r_d[4],
+                         r_d[5], r_d[6], r_d[7],
+                         r_b[1], r_b[2], r_b[3], r_b[4],
+                         r_b[5], r_b[6], r_b[7],
+                         m_e[1], m_w[1],
+                         m_d[1], m_d[2], m_d[3], m_d[4],
+                         m_d[5], m_d[6], m_d[7],
+                         m_b[1], m_b[2], m_b[3], m_b[4],
+                         m_b[5], m_b[6], m_b[7] ) )
+
+# monitor stochastic mappings along branches of tree
+# NOTE: uncomment if needed, but can cause performance issues
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
+
+########
+# MCMC #
+########
+
+# create model object
+mymodel = model(timetree)
+
+# create MCMC object
+mymcmc = mcmc(mymodel, moves, monitors)
+
+# run MCMC
+mymcmc.run(num_gen)
+

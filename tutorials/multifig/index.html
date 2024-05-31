@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Feature-informed geographic state-dependent speciation-extinction (FIG) model</h1>
 	<h3 class="subtitle">A phylogenetic model where GeoSSE event rates are informed by regional features</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 30, 2024</h5>
+  <h5>Last modified on May 31, 2024</h5>
 </div>
 
 
@@ -92,6 +92,8 @@
         
         
           <li><a href="/tutorials/multifig/data/hawaii/README.md">README.md</a></li>
+        
+          <li><a href="/tutorials/multifig/data/hawaii/age_summary.csv">age_summary.csv</a></li>
         
           <li><a href="/tutorials/multifig/data/hawaii/cb_feature1.csv">cb_feature1.csv</a></li>
         
@@ -143,7 +145,45 @@
         
         
         
+          <li><a href="/tutorials/multifig/scripts/README.md">README.md</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/fig_tools_util.R">fig_tools_util.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/make_all.sh">make_all.sh</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/make_all_multifig.sh">make_all_multifig.sh</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/make_all_ts.sh">make_all_ts.sh</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/make_tree.Rev">make_tree.Rev</a></li>
+        
           <li><a href="/tutorials/multifig/scripts/multifig.Rev">multifig.Rev</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_feature_rate_network.R">plot_feature_rate_network.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_features_vs_time_grid.R">plot_features_vs_time_grid.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_features_vs_time_line.R">plot_features_vs_time_line.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_mcc_tree.R">plot_mcc_tree.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_model_posterior.R">plot_model_posterior.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_range_counts.R">plot_range_counts.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_rates_vs_time.R">plot_rates_vs_time.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_rates_vs_time_grid.R">plot_rates_vs_time_grid.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_rj_effects.R">plot_rj_effects.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/plot_states_tree.R">plot_states_tree.R</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/range_colors.n6.txt">range_colors.n6.txt</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/state_labels.n6.txt">state_labels.n6.txt</a></li>
+        
+          <li><a href="/tutorials/multifig/scripts/thin_trace.R">thin_trace.R</a></li>
         
         </ul>
     
@@ -662,26 +702,37 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 <h3 class="subsection" id="output">Output</h3>
 <hr class="subsection" />
 
-<p>One interesting thing we can do with the output of the MultiFIG analysis is plot ancestral states. This can be done using RevGadgets, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by executing the following code in R. Before plotting the ancestral state tree, we create a vectors <code class="language-plaintext highlighter-rouge">colors</code>, which is necessary in this case because RevGadgets does not automatically generate color schemes with more than 12 colors, and there are more than 12 states on the reconstructed tree. If you use your own data, you may need more colors or fewer colors (the <code class="language-plaintext highlighter-rouge">colors</code> vector is allowed to have more colors than states).</p>
+<p>Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
 
 <p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">kadua_geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>colors &lt;- c("#FD3216", "#00FE35", "#6A76FC", "#FED4C4", "#FE00CE", "#0DF9FF", "#F6F926", "#FF9616", "#479B55", "#EEA6FB", "#DC587D", "#D626FF", "#6E899C", "#00B5F7", "#B68E00", "#C9FBE5", "#FF0092", "#22FFA7", "#E3EE9E", "#86CE00", "#BC7196", "#7E7DCD", "#FC6955", "#E48F72")
+<p>To proceed, we’ll exit RevBayes and work from the command line prompt in shell. To generate the images below, first save a copy of FIG tools to your filesystem:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Option 1: download and decompress .zip file (open in browser our save in command line)
+wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
+unzip main.zip
 
-library(RevGadgets)
-library(ggplot2)
-tree_file = "./output/ase.tre"
-output_file = "../output/states.png"
-states &lt;- processAncStates(tree_file, state_labels=labels)
-plotAncStatesMAP(t=states,
-                 tree_layout="circular",
-                 node_size=1.5,
-                 node_color_as="state",
-                 node_color=colors,
-                 node_size_as=NULL) +
-                 ggplot2::theme(legend.position="bottom",
-                                legend.title=element_blank())
-ggsave(output_file, width = 9, height = 9)
+# Option 2: clone repository
+git@github.com:hawaiian-plant-biogeography/fig_tools.git
+
+</code></pre></div></div>
+
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
+cp ~/fig_tools/scripts/*.R ~/projects/multifig/scripts
+cp ~/fig_tools/scripts/*.Rev ~/projects/multifig/scripts
+</code></pre></div></div>
+
+<p>These scripts assume you are in the base of your analysis directory:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/projects/multifig
+</code></pre></div></div>
+
+<p>Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># prepare tree and state output for plotting
+rb --args ./output/multifig.tre ./output/multifig.states.txt --file ./plot_scripts/make_tree.Rev
+
+# make ancestral tree plot
+Rscript ./plot_scripts/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
 </code></pre></div></div>
 
 <p>Here, we show an ancestral tree built using RevGadgets, with a few other stylistic changes.</p>
@@ -690,20 +741,26 @@ ggsave(output_file, width = 9, height = 9)
 <figcaption>Ancestral state reconstruction of <em>Kadua</em>.</figcaption>
 </figure>
 
-<p>You can also examine the output files, like <code class="language-plaintext highlighter-rouge">model.log</code>, to assess the relationships between regional features and biogeographic processes, or to compare relative rates of different event types. This can also be done using RevGadgets. For example, to show the posterior plot for a single parameter ($\phi_d^{Distance}$) type the following.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace &lt;- readTrace(path=log_file)
-plotTrace(trace, vars=c("phi_d[1]"))
-ggsave(posterior_file, width = 9, height = 9)
+<p>Next, we generate figures for the marginal posterior densities associated with the core GeoSSE processes:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make model posterior plots
+Rscript ./plot_scripts/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/feature_summary.csv ./data/hawaii/feature_description.csv
 </code></pre></div></div>
-
-<p>Here is a figure with more information, also created using RevGadgets.</p>
 
 <figure id="param_d"><p><img src="figures/plot_param.process_d.png" width="60%" /></p>
 <figcaption>Posterior estimates for parameters related to the dispersal process.</figcaption>
 </figure>
 
 <p>From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates <em>decrease</em> with distance. The third figure shows that models using distance as an explanatory factor to shape dispersal rates have higher reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.</p>
+
+<p>Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a “dummy” file showing to generate the figure. This is a bit hacky and will be fixed soon. The code for this is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make dummy timeslice
+echo "index,mean_age\n" &gt; ~/data/hawaii/age_summary.csv
+cp ~/output/multifig.bg.txt ~/output/multifig.time1.bg.txt
+
+# make region rate plots
+Rscript ./plot_scripts/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+</code></pre></div></div>
 
 <figure id="rate_d"><p><img src="figures/plot_rate_vs_time.process_d.png" width="60%" /></p>
 <figcaption>Mean posterior estimates for dispersal rates, $r_d(i,j)$.</figcaption>
