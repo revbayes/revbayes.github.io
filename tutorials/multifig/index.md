@@ -32,7 +32,7 @@ The FIG model incorporates geographical features with two value types as model v
 
 Each regional feature is assigned a "feature effect" parameter that measures the strength and direction of the effect of a particular feature on a particular process. Note that "effect" refers to a mathematical relationship here, but does *not* indicate causality. These strength parameters are referred to as $\sigma$ and $\phi$, representing the effects of categorical and quantitative features respectively. There is one $\sigma$ or $\phi$ parameter per feature per process. For example, $\phi_w^{Altitude}$ would represent the relationship between region altitude and within-region speciation.
 
-For each process, the categorical and quantitative feature effects (with feature data modified by strength parameters) are gathered into $c$ and $q$ vectors, then ultimately combined into an $m$ vector. The $m$ vector represents the total effects of all regional features on a particular process, with entries representing each region (or region pair for between-region processes). The $m$ vector represents relative rates among regions, but to obtain absolute rates, the $m$ vector for each process is multiplied by a process-specific base rate parameter $\rho$. This constructs the $r$ vectors that are analogous to GeoSSE rates: $r_w$ for within-region speciation rates, $r_e$ for extinction rates, and $r_d$ for dispersal rates. Calculating $r_b$ for between-region speciation rates also requires the use of a range split score, as in {% cite Landis2022 %}. This tutorial will not describe the details of these intermediate functions, but they can be found in {% cite Swiston2023 %}.
+For each process, the categorical and quantitative feature effects (with feature data modified by strength parameters) are gathered into $c$ and $q$ vectors, then ultimately combined into an $m$ vector. The $m$ vector represents the total effects of all regional features on a particular process, with entries representing each region (or region pair for between-region processes). The $m$ vector represents relative rates among regions, but to obtain absolute rates, the $m$ vector for each process is multiplied by a process-specific base rate parameter $\rho$. This constructs the $r$ vectors that are analogous to GeoSSE rates: $r_w$ for within-region speciation rates, $r_e$ for extinction rates, and $r_d$ for dispersal rates. Calculating $r_b$ for between-region speciation rates also requires the use of a range split score, as in {% cite Landis2022 %}. 
 
 For example, the absolute rates for within-region speciation at region $i$ equals
 
@@ -40,13 +40,13 @@ $$
 r_w(i) = \rho_w \times m_w(i)
 $$
 
-and, similarly, the absolute dispersal rates from region $i$ in to $j$ are
+where $\rho_w$ is the base rate and $m_w(i)$, the relative rate factor for this process at region $i$. The relative rate factor is defined as
 
 $$
-r_d(i,j) = \rho_d \times m_d(i,j)
+  m_w(i) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i)}_{\text{categorical effects}} \Bigr\}
 $$
 
-which then are used to assign rates to GeoSSE events.
+which looks complicated, but can be understood easily in parts. Each quantitative feature from layer $k$ for region $i$ is represented by $q^{(k)}_w(i)$ and multiplied by a corresponding feature effect parameter that links the feature to the within-region speciation rate, called $\phi_w^{(k)}$. A similar structure is used for categorical features, $c^{(\ell)}_w(i)$ and categorical feature effect parameters, $\sigma_w^{(\ell)}$, for each categorical layer $\ell$. (In this example, we assume categorical variables take values 0 or 1 to simplify notation.) Each individual term can be negative, positive, or zero, and so can the sum of all terms. The sum of effects across all layers for region $i$ is then exponentiated, yielding a relative rate factor for each region. For example, if the relative rates for regions $i$ and $j$ have the relationship $m_w(i) > m_w(j)$ then the absolute rates also follow $r_w(i) > r_w(j)$. Other $m$ functions behave in a similar manner.More details on the design of the $m$ functions are provided in {% cite Swiston2023 %}.
 
 In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
 

@@ -19,7 +19,27 @@ In the previous tutorial, we saw how the MultiFIG model {% cite Swiston2023 %} a
 
 However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. The TimeFIG model addresses the time-heterogeneity of regional features using "time slices" (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant.
 
-In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions, eight regional features, and seven time slices.
+For example, in the [previous tutorial](http://revbayes.github.io/tutorials/multifig/), the within-region speciation rate for region $i$ was defined as
+
+$$
+r_w(i) = \rho_w \times m_w(i)
+$$
+
+which is the base rate for the process, $\rho_w$, times the relative rate multiplier for region $i$, $m_w(i)$. This formulation assume the rate is constant across time. In this tutorial, we instead define piecewise constant within-speciation rates that depend on time as
+
+$$
+  r_w(i,t) = \rho_w \times m_w(i,t)
+$$
+
+where the key difference is that $m_w(i,t)$ is now itself a function of time, $t$. We can retain the notation and interpretation given in the MultiFIG tutorial, while adapting it to be a function of time, yielding
+
+$$
+  m_w(i,t) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i,t) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i,t)}_{\text{categorical effects}} \Bigr\}
+$$
+
+What is important to stress is that all $\phi$ and $\sigma$ parameters are independent of time and region. They only modulate the sign and strength of effect between a particular regional feature layer ($k$ or $\ell$) and a biogeographic process (in this case $w$ for within-region speciation). However, the quantitative ($q^{(k)}_w(i,t)$) and categorical features ($c^{(k)}_w(i,t)$ may themselves change with time. In fact, they are the only variables on the left hand side that are functions of time, meaning the time-varying features drive any dynamical changes for relative rates in $m_w(i,t)$, while the feature effect parameters mostly control the sign and magnitude of those changes.
+
+In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions, eight regional features, and seven time slices. We summarize some relevant details below.
 
 {% subsection The Hawaiian Hot Spot Archipelago %}
 
