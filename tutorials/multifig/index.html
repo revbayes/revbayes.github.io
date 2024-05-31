@@ -145,45 +145,7 @@
         
         
         
-          <li><a href="/tutorials/multifig/scripts/README.md">README.md</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/fig_tools_util.R">fig_tools_util.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/make_all.sh">make_all.sh</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/make_all_multifig.sh">make_all_multifig.sh</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/make_all_ts.sh">make_all_ts.sh</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/make_tree.Rev">make_tree.Rev</a></li>
-        
           <li><a href="/tutorials/multifig/scripts/multifig.Rev">multifig.Rev</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_feature_rate_network.R">plot_feature_rate_network.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_features_vs_time_grid.R">plot_features_vs_time_grid.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_features_vs_time_line.R">plot_features_vs_time_line.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_mcc_tree.R">plot_mcc_tree.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_model_posterior.R">plot_model_posterior.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_range_counts.R">plot_range_counts.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_rates_vs_time.R">plot_rates_vs_time.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_rates_vs_time_grid.R">plot_rates_vs_time_grid.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_rj_effects.R">plot_rj_effects.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/plot_states_tree.R">plot_states_tree.R</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/range_colors.n6.txt">range_colors.n6.txt</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/state_labels.n6.txt">state_labels.n6.txt</a></li>
-        
-          <li><a href="/tutorials/multifig/scripts/thin_trace.R">thin_trace.R</a></li>
         
         </ul>
     
@@ -225,9 +187,10 @@
 
 <p>In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the <em>shape</em> of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).</p>
 
-<figure id="features"><p><img src="figures/plot_features_vs_time.feat_qb1.png" width="40%" /><br />
+<figure id="features"><p><img src="figures/plot_features_vs_time.feat_qw1.png" width="40%" /><br />
+<img src="figures/plot_features_vs_time.feat_qb1.png" width="40%" /><br />
 <img src="figures/plot_features_vs_time.feat_cb2.png" width="40%" /></p>
-<figcaption>Examples of a between-region quantitative feature (distance) and a categorical feature (relative island age). These features (and others) may shape dispersal and between-region speciation rates.</figcaption>
+<figcaption>Examples of a within-region quantitative feature (max. altitude), a between-region quantitative feature (distance), and a categorical quantitative feature (relative island age). These features (and others) may shape core biogeographic rates depending on which regions are involved in an event.</figcaption>
 </figure>
 
 <p>Because each within-region feature acts on 2 processes and each between-region feature acts on 2 processes, this creates a total of 16 parameters. Adding one $\rho$ parameter for each process results in a total of 20 model parameters to be estimated. We will use a time-calibrated phylogeny and present-day ranges for <em>Kadua</em> to estimate these parameters, and use those estimates to determine which regional features are most strongly related to particular processes.</p>
@@ -716,23 +679,23 @@ git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
 </code></pre></div></div>
 
-<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory:</p>
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">~/multifig/plot</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
-cp ~/fig_tools/scripts/*.R ~/projects/multifig/scripts
-cp ~/fig_tools/scripts/*.Rev ~/projects/multifig/scripts
+cp ~/fig_tools/scripts/*.R ~/multifig/plot
+cp ~/fig_tools/scripts/*.Rev ~/multifig/plot
 </code></pre></div></div>
 
 <p>These scripts assume you are in the base of your analysis directory:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/projects/multifig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/multifig
 </code></pre></div></div>
 
 <p>Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># prepare tree and state output for plotting
-rb --args ./output/multifig.tre ./output/multifig.states.txt --file ./plot_scripts/make_tree.Rev
+rb --args ./output/multifig.tre ./output/multifig.states.txt --file ./plot/make_tree.Rev
 
 # make ancestral tree plot
-Rscript ./plot_scripts/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
+Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
 </code></pre></div></div>
 
 <p>Here, we show an ancestral tree built using RevGadgets, with a few other stylistic changes.</p>
@@ -743,7 +706,7 @@ Rscript ./plot_scripts/plot_states_tree.R ./output/out.states.tre ./output/out.m
 
 <p>Next, we generate figures for the marginal posterior densities associated with the core GeoSSE processes:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make model posterior plots
-Rscript ./plot_scripts/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/feature_summary.csv ./data/hawaii/feature_description.csv
+Rscript ./plot/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/feature_summary.csv ./data/hawaii/feature_description.csv
 </code></pre></div></div>
 
 <figure id="param_d"><p><img src="figures/plot_param.process_d.png" width="60%" /></p>
@@ -759,14 +722,29 @@ echo "index,mean_age\n" &gt; ~/data/hawaii/age_summary.csv
 cp ~/output/multifig.bg.txt ~/output/multifig.time1.bg.txt
 
 # make region rate plots
-Rscript ./plot_scripts/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript ./plot/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 </code></pre></div></div>
 
 <figure id="rate_d"><p><img src="figures/plot_rate_vs_time.process_d.png" width="60%" /></p>
 <figcaption>Mean posterior estimates for dispersal rates, $r_d(i,j)$.</figcaption>
 </figure>
 
-<p>A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$.</p>
+<p>A plot of regional dispersal rates shows how geographic distance and youngwards dispersal shape variation in $r_d(i,j)$ (<a href="#rate_d"></a>).</p>
+
+<figure id="rate_w"><p><img src="figures/plot_rate_vs_time.process_w.png" width="60%" /></p>
+<figcaption>Mean posterior estimates for within-region speciation rates, $r_w(i)$.</figcaption>
+</figure>
+
+<p>Within-region specation rates, $r_w(i)$, are estimated as highest in the middle-aged islands, Kauai and Oahu (<a href="#rate_w"></a>).</p>
+
+<p>Lastly, this script will plot a network that summarizes relationships between regional features, feature effect parameters, and core biogeographic processes:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make feature vs. rate network plot
+Rscript ./plot/plot_feature_rate_network.R ./output/multifig.model.txt ./data/hawaii/feature_description.csv
+</code></pre></div></div>
+
+<figure id="rates_times"><p><img src="figures/plot_feature_rate_network.png" width="80%" /></p>
+<figcaption>Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)</figcaption>
+</figure>
 
 <ol class="bibliography"><li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
 

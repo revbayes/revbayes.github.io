@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Time-heterogeneous FIG (TimeFIG) model</h1>
 	<h3 class="subtitle">A FIG model with paleogeographically varying regional features</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 30, 2024</h5>
+  <h5>Last modified on May 31, 2024</h5>
 </div>
 
 
@@ -196,7 +196,7 @@ G,N,K,O,M,H,Z
 
 <p>Below is a visualization of maximum island altitude across regions and epoch, made by summarizing the feature files across the different <code class="language-plaintext highlighter-rouge">time</code> directories:</p>
 
-<figure id="times"><p><img src="figures/plot_features_vs_time.feat_qw1.png" width="40%" /></p>
+<figure id="feature_times"><p><img src="figures/plot_features_vs_time.feat_qw1.png" width="40%" /></p>
 <figcaption>Maximum altitude values for seven regions across seven epochs. This quantitative within-region feature may influence within-region speciation and extinction rates through the sign and magnitude of the estimated $\phi_w^{(1)}$ and $\phi_e^{(1)}$ parameters. Light colors are small values, dark colors are large values, and gray indicates the region was absent (missing feature).</figcaption>
 </figure>
 
@@ -705,40 +705,65 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 <h3 class="subsection" id="output">Output</h3>
 <hr class="subsection" />
 
-<p>One interesting thing we can do with the output of the TimeFIG analysis is plot the time-calibrated tree with ancestral states. This can be done using RevGadgets, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the <code class="language-plaintext highlighter-rouge">timefig.R</code> script, or by executing the following code in R. Before plotting the ancestral state tree, we create two vectors. The vector <code class="language-plaintext highlighter-rouge">labels</code> is useful because it maps actual region labels onto state numbers, so the legend can be easily interpreted. If you used your own data, you would have to provide your own state labels.</p>
+<p>Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
-library(ggplot2)
+<p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">kadua_geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
 
-tree_file = "../output/ase.tre"
-states_file = "../figures/states.png"
+<p>To proceed, we’ll exit RevBayes and work from the command line prompt in shell. To generate the images below, first save a copy of FIG tools to your filesystem:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Option 1: download and decompress .zip file (open in browser our save in command line)
+wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
+unzip main.zip
 
-labels &lt;- c("0" = "R","1" = "K","2" = "O","3" = "M","4" = "H","5" = "Z","6" = "RK","7" = "RO","8" = "KO","9" = "RM","10" = "KM","11" = "OM","12" = "RH","13" = "KH","14" = "OH","15" = "MH","16" = "RZ","17" = "KZ","18" = "OZ","19" = "MZ","20" = "HZ","21" = "RKO","22" = "RKM","23" = "ROM","24" = "KOM","25" = "RKH","26" = "ROH","27" = "KOH","28" = "RMH","29" = "KMH","30" = "OMH","31" = "RKZ","32" = "ROZ","33" = "KOZ","34" = "RMZ","35" = "KMZ","36" = "OMZ","37" = "RHZ","38" = "KHZ","39" = "OHZ","40" = "MHZ","41" = "RKOM","42" = "RKOH","43" = "RKMH","44" = "ROMH","45" = "KOMH","46" = "RKOZ","47" = "RKMZ","48" = "ROMZ","49" = "KOMZ","50" = "RKHZ","51" = "ROHZ","52" = "KOHZ","53" = "RMHZ","54" = "KMHZ","55" = "OMHZ","56" = "RKOMH","57" = "RKOMZ","58" = "RKOHZ","59" = "RKMHZ","60" = "ROMHZ","61" = "KOMHZ","62" = "RKOMHZ")
+# Option 2: clone repository
+git@github.com:hawaiian-plant-biogeography/fig_tools.git
 
-states &lt;- processAncStates(tree_file, state_labels=labels)
-plotAncStatesMAP(t=states,
-                 timeline=T,
-                 geo=F,
-                 time_bars=F,
-                 node_size=2,
-                 node_color_as="state",
-                 node_size_as=NULL,
-                 tip_labels_offset=0.1) +
-                 ggplot2::theme(legend.position="bottom",
-                                legend.title=element_blank())
-ggsave(output_file, width = 9, height = 9)
 </code></pre></div></div>
 
-<p>We use a modified version of this RevGadgets script to produce the following figure.</p>
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">~/timefig_simple/plot</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
+cp ~/fig_tools/scripts/*.R ~/timefig_simple/plot
+cp ~/fig_tools/scripts/*.Rev ~/timefig_simple/plot
+</code></pre></div></div>
+
+<p>These scripts assume you are in the base of your analysis directory:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/timefig_simple
+</code></pre></div></div>
+
+<p>Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># prepare tree and state output for plotting
+rb --args ./output/simple_timefig.tre ./output/simple_timefig.states.txt --file ./plot/make_tree.Rev
+
+# make ancestral tree plot
+Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre ./data/kadua/kadua_range_label.csv GNKOMHZ
+</code></pre></div></div>
 
 <figure id="states"><p><img src="figures/plot_states_prob.png" width="60%" /></p>
 <figcaption>Ancestral state reconstruction of <em>Kadua</em>. Pie chart colors indicate the three most probable ancestral ranges for an ancestral branch or node. Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.</figcaption>
 </figure>
 
-<p>In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence.</p>
+<p>To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial (<a href="#feature_times"></a>), enter this code:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make region feature vs. time plots
+Rscript ./plot/plot_rates_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+</code></pre></div></div>
 
-<figure id="states"><p><img src="figures/plot_rate_vs_time.process_w.png" width="60%" /></p>
+<p>In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make region rate vs. time plots
+Rscript Rscript ./scripts/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+</code></pre></div></div>
+
+<figure id="rates_times"><p><img src="figures/plot_rate_vs_time.process_w.png" width="60%" /></p>
 <figcaption>Within-region speciation rate estimates for <em>Kadua</em>. Dark colors are high rates, light colors are low rates, and gray indicates the region did not exist during that interval (missing feature). Range labels represent the following set of regions: G=Gardner, N=Necker, K=Kauai, O=Oahu, M=Maui Nui, H=Hawaii, Z=Remaining non-Hawaiian regions.</figcaption>
+</figure>
+
+<p>Lastly, this script will plot a network that summarizes relationships between regional features, feature effect parameters, and core biogeographic processes:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make feature vs. rate network plot
+Rscript ./plot/plot_feature_rate_network.R ./output/simple_timefig.model.txt ./data/hawaii/feature_description.csv
+</code></pre></div></div>
+
+<figure id="rates_times"><p><img src="figures/plot_feature_rate_network.png" width="80%" /></p>
+<figcaption>Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)</figcaption>
 </figure>
 
 <ol class="bibliography"><li><span id="Swiston2023">Swiston S.K., Landis M.J. 2023. Testing relationships between multiple regional features and
