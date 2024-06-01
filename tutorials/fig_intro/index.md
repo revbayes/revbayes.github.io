@@ -37,8 +37,6 @@ The FIG tutorials are designed to be run with [RevBayes](https://github.com/revb
 
 {% subsection Empirical system: Hawaiian *Kadua* %}
 
-*Isaac plans to write this section.*
-
 Island archipelagos are ideal microcosms for studying biogeographic patterns of dispersal, speciation, and extinction. Among islands, the Hawaiian archipelago holds particular value for biogeographers in part because of its unique paleogeography. Each island in the Hawaiian "chain" is produced through volcanic eruption from a hotspot in the mid pacific and then moves northwest along a tectonic assembly line during which subsidence and erosion cause gradual decay. Thus, the Hawaiian chain acts as a geological time-capsule, with hundreds of progressively older, more eroded islands stretching northwest towards the arctic. The vast majority of Hawaiian biodiversity is concentrated within four larger, younger high island systems of varying age, Kauai (~6.1 Ma), Oahu (~4.1 Ma), Maui Nui(~2.5 Ma), and Hawaii(~1.2 Ma).
 
 The age and origin of the many independent radiation of plants, animals, and fungi that have occurred in Hawaii has been a perennial topic of evolutionary studies. One hypothesis that has been difficult to test concerns the age of onset of endemic hawaiian evolutionary radiations. The extreme isolation of the Hawaiian islands makes colonization from distant sources highly improbably, but various biogeographers have hypothesized that the now eroded northwest islands could have provided a landing pad for such lineages that is much older, making dispersal more likely, followed by dispersal to and subsequent radiation in the modern high islands.
@@ -52,7 +50,7 @@ Hawaiian *Kadua* (Rubiaceae) is a clade of 29 flowering plant taxa. They inhabit
 {% endfigcaption %}
 {% endfigure %}
 
-Based in initial phylogenetic studies of *Kadua*, it is likely the island was colonized once by a progenitor lineage with multiple dispersal events between Hawaiian islands. However, there are no known fossils that could be used to date the age of Hawaiian *Kadua* lineages, making it difficult to estimate when, where, and how the clade dispersed, speciated, and went extinct as different Hawaiian islands formed, rose, eroded, and subsided.  
+Based in initial phylogenetic studies of *Kadua*, it is likely the Hawaiian Archipelago was colonized once by a progenitor lineage with multiple dispersal events between Hawaiian islands. However, there are no known fossils that could be used to date the age of Hawaiian *Kadua* lineages, making it difficult to estimate when, where, and how the clade dispersed, speciated, and went extinct as different Hawaiian islands formed, rose, eroded, and subsided.  
 
 These tutorials will analyze an unpublished *Kadua* dataset that contains 26 Hawaiian taxa and 3 non-Hawaiian taxa. The geographic dataset includes 8 quantitative and 8 categorical paleogeographical features for 7 regions across 7 timeslices. The biogeographic dataset presence-absence data that records species ranges against the taxon set. In addition, we include a 2-region dataset to illustrate how GeoSSE models behave before moving to the 7-region dataset. Lastly, the molecular dataset includes 10 loci from a larger Angiosperms353 analysis.
 

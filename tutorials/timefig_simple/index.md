@@ -34,10 +34,24 @@ $$
 where the key difference is that $m_w(i,t)$ is now itself a function of time, $t$. We can retain the notation and interpretation given in the MultiFIG tutorial, while adapting it to be a function of time, yielding
 
 $$
-  m_w(i,t) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i,t) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i,t)}_{\text{categorical effects}} \Bigr\}
+  m_w(i,t) = \underbrace{ \prod_{k} q^{k}_w(i,t) }_{\text{quantitative effects}} \times \underbrace{\prod_{\ell} c^{\ell}_w(i,t)}_{\text{categorical effects}}
 $$
 
-What is important to stress is that all $\phi$ and $\sigma$ parameters are independent of time and region. They only modulate the sign and strength of effect between a particular regional feature layer ($k$ or $\ell$) and a biogeographic process (in this case $w$ for within-region speciation). However, the quantitative ($q^{(k)}_w(i,t)$) and categorical features ($c^{(k)}_w(i,t)$ may themselves change with time. In fact, they are the only variables on the left hand side that are functions of time, meaning the time-varying features drive any dynamical changes for relative rates in $m_w(i,t)$, while the feature effect parameters mostly control the sign and magnitude of those changes.
+where now we define the feature effect variables that control relative within-region speciation rates
+
+$$
+q^{k}_w(i,t) = \text{exp} \left\{ \phi_w^{k} \times w_q^{k}(i,t) \right\}
+$$
+
+and
+
+$$
+c^{\ell}_w(i,t) = \text{exp} \left\{ \sigma_w^{\ell} \times w_c^{\ell}(i,t) \right\}
+$$
+
+as functions of both a region, $i$, but now also a time, $t$.
+
+What is important to stress is that all $\phi$ and $\sigma$ parameters are independent of time and region. They only modulate the sign and strength of effect between a particular regional feature layer ($k$ or $\ell$) and a biogeographic process (in this case $w$ for within-region speciation). However, the quantitative ($w^{(k)}_q(i,t)$) and categorical features ($w^{(k)}_c(i,t)$ may themselves change with time. In fact, they are the only variables on the right hand side that are functions of time, meaning the time-varying features drive any dynamical changes for relative rates in $m_w(i,t)$, while the feature effect parameters mostly control the sign and magnitude of those changes.
 
 In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions, eight regional features, and seven time slices. We summarize some relevant details below.
 
