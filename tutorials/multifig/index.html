@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Feature-informed geographic state-dependent speciation-extinction (FIG) model</h1>
 	<h3 class="subtitle">A phylogenetic model where GeoSSE event rates are informed by regional features</h3>
 	<h4 class="authors">Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata, Michael Landis</h4>
-  <h5>Last modified on May 31, 2024</h5>
+  <h5>Last modified on June  1, 2024</h5>
 </div>
 
 
@@ -733,13 +733,9 @@ Rscript ./plot/plot_model_posterior.R ./output/multifig.model.txt ./data/hawaii/
 
 <p>From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates <em>decrease</em> with distance. The third figure shows that models using distance as an explanatory factor to shape dispersal rates have higher reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.</p>
 
-<p>Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a “dummy” file showing to generate the figure. This is a bit hacky and will be fixed soon. The code for this is:</p>
+<p>Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a “dummy” age summary file showing to generate the figure. The code for this is:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make dummy timeslice
-echo "index,mean_age\n" &gt; ~/data/hawaii/age_summary.csv
-cp ~/output/multifig.bg.txt ~/output/multifig.time1.bg.txt
-
-# make region rate plots
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make region rate plots
 Rscript ./plot/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 </code></pre></div></div>
 
@@ -761,7 +757,7 @@ Rscript ./plot/plot_feature_rate_network.R ./output/multifig.model.txt ./data/ha
 </code></pre></div></div>
 
 <figure id="rates_times"><p><img src="figures/plot_feature_rate_network.png" width="80%" /></p>
-<figcaption>Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)</figcaption>
+<figcaption>Network diagram displaying the relationships between regional features (gold), feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan). Edges colors indicate positive (blue) versus negative (red) relationships and widths indicate weak (thin) versus (strong) interactions.</figcaption>
 </figure>
 
 <ol class="bibliography"><li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>

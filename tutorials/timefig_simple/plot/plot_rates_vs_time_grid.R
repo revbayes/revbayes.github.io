@@ -42,16 +42,13 @@ df_desc = read.csv(desc_fn, sep=",", header=T)
 results_tok = strsplit(results_fp, split="/")[[1]]
 n_tok = length(results_tok)
 res_fp = paste(results_tok[1:(n_tok-1)], collapse="/")
-res_prefix = results_tok[n_tok]
-res_pattern = paste0(res_prefix, ".time.*")
-print(res_pattern)
-print(res_prefix)
+res_prefix = paste0(results_tok[n_tok], ".*")
+res_pattern = paste0(res_prefix, "\\.bg") #\\..*")
 files = list.files(path=res_fp, pattern=res_pattern, full.names=T)
-# num_ages = length(files)
 
 # dimensions
 regions = strsplit(region_names, "")[[1]]
-ages = c(0, df_age$mean_age, 22)
+# ages = c(0, df_age$mean_age, 22)
 num_regions = length(regions)
 num_ages = length(df_age$mean_age) + 1
 
@@ -70,6 +67,7 @@ for (i in 1:length(files)) {
     }
 
     df = df[(n_burn+1):nrow(df), ]
+    colnames(df) = paste0( colnames(df), "_fileindex_", i )
     df_time[[i]] = df
 }
 
@@ -118,8 +116,13 @@ for (p in proc) {
 
 
 for (y in proc) {
-    
-    desc = paste0("r_", y, "(t)")
+   
+    if (y == "e" || y == "w") {
+        desc = paste0("r_", y, "(i,t)")
+    }
+    if (y == "b" || y == "d") {
+        desc = paste0("r_", y, "(i,j,t)")
+    }
     title <- ggdraw() +
       draw_label(desc, fontface = 'bold', x = 0, hjust = 0
       ) + theme( plot.margin = margin(0.5, 0.5, 0.5, 7) )
@@ -180,6 +183,7 @@ for (y in proc) {
 }
 
 
+if (FALSE) {
 df_all = data.frame()
 for (y in proc) {
     for (i in 1:num_ages) {
@@ -220,3 +224,4 @@ pp = pp + theme_bw()
 pp = pp + xlab("Age (Ma)") + ylab("r_w(i,t) - r_e(i,t)")
 pp = pp + ggtitle("Within-region net div. rates over time")
 pp
+}

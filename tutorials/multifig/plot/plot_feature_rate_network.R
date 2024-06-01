@@ -52,8 +52,9 @@ for (i in 1:length(param_node)) {
     typ = ifelse(tok[1] == "phi", "quantitative", "categorical")
     rel = ifelse(tok[2] %in% c("e", "w"), "within", "between")
     idx = as.numeric(tok[3])
+    param_print = paste0( tok[1], "_", tok[2], "[", idx, "]" )
     
-    y = c(idx, rel, typ, tok[1], tok[2], param_node[i])
+    y = c(idx, rel, typ, tok[1], tok[2], param_node[i], param_print)
     
     param_desc = rbind(param_desc, y)
 }
@@ -61,12 +62,12 @@ for (i in 1:length(param_node)) {
 # get data frame of parameter descriptions
 df_param_desc = data.frame(param_desc)
 rownames(df_param_desc)=NULL
-colnames(df_param_desc)=c("idx","rel","typ","letter","process","param")
+colnames(df_param_desc)=c("idx","rel","typ","letter","process","param","param_print")
 
 # sort for plotting purposes
 sort_idx = order(df_param_desc$typ, df_param_desc$rel, df_param_desc$idx)
 df_param_desc = df_param_desc[sort_idx, ]
-param_node_sort = df_param_desc$param
+param_node_sort = df_param_desc$param_print
 
 coverage = 0.8
 df_mean = colMeans(df_eff)
@@ -77,12 +78,13 @@ m = matrix(0, ncol=length(proc_node), nrow=length(param_node_sort))
 rownames(m) = param_node_sort
 colnames(m) = proc_node
 all_names = c(param_node_sort, proc_node)
-
 for (i in 1:length(df_mean)) {
     n = names(df_mean)[i]
     j = paste0("m_", df_param_desc$process[df_param_desc$param == n])
-    m[n,j] = df_mean[i]
+    pretty_n = df_param_desc$param_print[df_param_desc$param == n]
+    m[pretty_n,j] = df_mean[i]
 }
+
 
 # build graph object
 g1 = graph_from_biadjacency_matrix(m, weighted=T)
@@ -135,13 +137,43 @@ plot.igraph(g1,
 
 par(mar=c(0,0,0,0)+.1)
 
+## NOTE: this part needs to be generalized
+
 # get this from file
 qfeat = c("Distance (km)",  "Log distance (km)", "Altitude (m)", "Log altitude (m)")
 cfeat = c("In/out Hawaii?", "Into younger?", "Young island?",  "Net growth?")
 
 # add info about regional features for effects
-text( x=-5, y=-(1:4)*2 + 1/2, qfeat, adj=0)
-text( x=5, y=-(1:4)*2 + 1/2, cfeat, adj=1)
+sw = 2.0
+sh = 0.5
+frsz = 0.0
+rect(
+     -4.5 - sw/2 - frsz,
+     -(1:4)*2+0.5 - sh/2 - frsz,
+     -4.5 + sw/2 + frsz,
+     -(1:4)*2+0.5 + sh/2 + frsz,
+     col="gold"
+)
+text( x=-4.5, y=-(1:4)*2 + 1/2, qfeat, adj=0.5)
+segments( x0=3, x1=3, y0=-(1:4)*2+0, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=3, x1=3, y0=-(1:4)*2+0, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=3, x1=2.8, y0=-(1:4)*2+0, y1=-(1:4)*2+0, lwd=1, col="black")
+segments( x0=3, x1=2.8, y0=-(1:4)*2+1, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=3, x1=3.2, y0=-(1:4)*2+0.5, y1=-(1:4)*2+0.5, lwd=1, col="black")
+
+rect(
+     4.5 - sw/2 - frsz,
+     -(1:4)*2+0.5 - sh/2 - frsz,
+     4.5 + sw/2 + frsz,
+     -(1:4)*2+0.5 + sh/2 + frsz,
+     col="gold"
+)
+text( x= 4.5, y=-(1:4)*2 + 1/2, cfeat, adj=0.5)
+segments( x0=-3, x1=-3, y0=-(1:4)*2+0, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=-3, x1=-3, y0=-(1:4)*2+0, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=-3, x1=-2.8, y0=-(1:4)*2+0, y1=-(1:4)*2+0, lwd=1, col="black")
+segments( x0=-3, x1=-2.8, y0=-(1:4)*2+1, y1=-(1:4)*2+1, lwd=1, col="black")
+segments( x0=-3, x1=-3.2, y0=-(1:4)*2+0.5, y1=-(1:4)*2+0.5, lwd=1, col="black")
 
 
 dev.off()

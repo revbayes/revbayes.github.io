@@ -175,7 +175,7 @@
 
 <p>The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of <em>Kadua</em> (26 spp. including non-Hawaiian outgroups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.</p>
 
-<p>The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago (<a href="https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua">link</a>). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a “conveyor belt” system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial relies makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).</p>
+<p>The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago (<a href="https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua">link</a>). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a “conveyor belt” system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).</p>
 
 <figure id="features"><p><img src="figures/features.png" width="65%" /></p>
 <figcaption>We will use the same features for the TimeFIG analysis that we used in the MultiFIG analysis. For reference, here are the 8 regional features and the 16 associated parameters relating these features to core biogeographic processes.</figcaption>
@@ -325,10 +325,10 @@ geo_features.normalize("between")
 
 # get feature-sets for each measurement-type, process-type, and timeslice
 for (i in 1:num_times) {
-	feature_CW[i] &lt;- geo_features.get("within","categorical",i)
-	feature_QW[i] &lt;- geo_features.get("within","quantitative",i)
-	feature_CB[i] &lt;- geo_features.get("between","categorical",i)
-	feature_QB[i] &lt;- geo_features.get("between","quantitative",i)
+    feature_CW[i] &lt;- geo_features.get("within","categorical",i)
+    feature_QW[i] &lt;- geo_features.get("within","quantitative",i)
+    feature_CB[i] &lt;- geo_features.get("between","categorical",i)
+    feature_QB[i] &lt;- geo_features.get("between","quantitative",i)
 
     for (j in 1:feature_CW[i].size()) {
         layer_CW[i][j] &lt;- feature_CW[i][j].get()
@@ -398,10 +398,10 @@ sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># regional rate factors
 for (t in 1:num_times) {
     # NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
-	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
-	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
-	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
-	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
+    m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
+    m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
+    m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
+    m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
 }
 </code></pre></div></div>
 
@@ -773,7 +773,7 @@ Rscript ./plot/plot_feature_rate_network.R ./output/simple_timefig.model.txt ./d
 </code></pre></div></div>
 
 <figure id="rates_times"><p><img src="figures/plot_feature_rate_network.png" width="80%" /></p>
-<figcaption>Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)</figcaption>
+<figcaption>Network diagram displaying the relationships between regional features (gold), feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan). Edges colors indicate positive (blue) versus negative (red) relationships and widths indicate weak (thin) versus (strong) interactions.</figcaption>
 </figure>
 
 <ol class="bibliography"><li><span id="Swiston2023">Swiston S.K., Landis M.J. 2023. Testing relationships between multiple regional features and
