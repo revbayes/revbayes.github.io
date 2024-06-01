@@ -181,11 +181,29 @@
 
 <p>where $\rho_w$ is the base rate and $m_w(i)$, the relative rate factor for this process at region $i$. The relative rate factor is defined as</p>
 
-\[m_w(i) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i)}_{\text{categorical effects}} \Bigr\}\]
+<!--
+$$
+  m_w(i) = \text{exp} \Bigl\{ \underbrace{ \sum_{k} \phi_w^{(k)} q^{(k)}_w(i) }_{\text{quantitative effects}} + \underbrace{\sum_{\ell} \sigma_w^{(\ell)} c^{(\ell)}_w(i)}_{\text{categorical effects}} \Bigr\}
+$$
+-->
 
-<p>which looks complicated, but can be understood easily in parts. Each quantitative feature from layer $k$ for region $i$ is represented by $q^{(k)}_w(i)$ and multiplied by a corresponding feature effect parameter that links the feature to the within-region speciation rate, called $\phi_w^{(k)}$. A similar structure is used for categorical features, $c^{(\ell)}_w(i)$ and categorical feature effect parameters, $\sigma_w^{(\ell)}$, for each categorical layer $\ell$. (In this example, we assume categorical variables take values 0 or 1 to simplify notation.) Each individual term can be negative, positive, or zero, and so can the sum of all terms. The sum of effects across all layers for region $i$ is then exponentiated, yielding a relative rate factor for each region. For example, if the relative rates for regions $i$ and $j$ have the relationship $m_w(i) &gt; m_w(j)$ then the absolute rates also follow $r_w(i) &gt; r_w(j)$. Other $m$ functions behave in a similar manner.More details on the design of the $m$ functions are provided in <a class="citation" href="#Swiston2023">(Swiston and Landis 2023)</a>.</p>
+\[m_w(i) = \underbrace{ \prod_{k} q^{k}_w(i) }_{\text{quantitative effects}} \times \underbrace{\prod_{\ell} c^{\ell}_w(i)}_{\text{categorical effects}}\]
 
-<p>In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the <em>shape</em> of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strenght parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).</p>
+<p>where you’ll notice that $m_w(i)$ equals the product of large number of terms. Each term is either the relative rate contribution from a quantitative feature from layer $k$ for region $i$, as represented by $q^{k}_w(i)$, or a categorical feature from layer $\ell$ for region $i$, as represented by $\sigma_w^{\ell}$. These terms can be broken down into even simpler parts. Each quantitative effect variable is parameterized as</p>
+
+\[q^{k}_w(i) = \text{exp} \left\{ \phi_w^{k} \times w_q^{k}(i) \right\}\]
+
+<p>where $\phi_w^{k}$ is the quantitative feature effect parameter controlling within-region speciation (subscript $w$) for feature layer $k$. Notice that if the feature effect parameter equals zero, then $q^{k}_w(i) = e^0 = 1$, which means that layer has no influence on the rate for the process.</p>
+
+<p>Similarly, each categorical effect variable is parameterized as</p>
+
+\[c^{\ell}_w(i) = \text{exp} \left\{ \sigma_w^{\ell} \times w_c^{\ell}(i) \right\}\]
+
+<p>and behaves similarly to the quantitative effect variable. (In this example, we assume categorical variables take values 0 or 1 and treat them numerically to simplify notation. More complex relationships are written with more complex notation.)</p>
+
+<p>Each individual effect variable can be $&lt;1$, $&gt;1$, or $=1$, and so can the product of all effect variables. All relative rates are eventually rescaled by the same base rate (e.g. $\rho_w$). If the relative rates for regions $i$ and $j$ have the relationship $m_w(i) &gt; m_w(j)$ then the absolute rates also follow $r_w(i) &gt; r_w(j)$. Other $m$ functions behave in a similar manner. More details on the design of the $m$ functions are provided in <a class="citation" href="#Swiston2023">(Swiston and Landis 2023)</a>.</p>
+
+<p>In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the <em>shape</em> of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strength parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).</p>
 
 <figure id="features"><p><img src="figures/plot_features_vs_time.feat_qw1.png" width="40%" /><br />
 <img src="figures/plot_features_vs_time.feat_qb1.png" width="40%" /><br />
