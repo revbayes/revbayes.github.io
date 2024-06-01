@@ -4,7 +4,7 @@ subtitle: Using the TimeFIG model to jointly infer divergence times and biogeogr
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata
 level: 8
 order: 11
-index: false
+index: true
 redirect: false
 prerequisites:
   - ctmc

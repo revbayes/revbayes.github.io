@@ -4,7 +4,7 @@ subtitle: A FIG model with paleogeographically varying regional features
 authors:  Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata, Michael Landis
 level: 8
 order: 10
-index: false
+index: true
 include_all: true
 include_example_output: true
 include_files:
