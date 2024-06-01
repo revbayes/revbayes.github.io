@@ -648,10 +648,6 @@ From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, th
 Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a "dummy" file showing to generate the figure. This is a bit hacky and will be fixed soon. The code for this is:
 
 ```
-# make dummy timeslice
-echo "index,mean_age\n" > ~/data/hawaii/age_summary.csv
-cp ~/output/multifig.bg.txt ~/output/multifig.time1.bg.txt
-
 # make region rate plots
 Rscript ./plot/plot_rates_vs_time_grid.R ./output/multifig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
