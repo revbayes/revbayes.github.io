@@ -971,6 +971,6 @@ Rscript ./plot/plot_feature_rate_network.R ./output/divtime_timefig.model.txt ./
 {% figure rates_times %}
 <img src="figures/plot_feature_rate_network.png" width="80%">
 {% figcaption %}
-Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)
+Network diagram displaying the relationships between regional features (gold), feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan). Edges colors indicate positive (blue) versus negative (red) relationships and widths indicate weak (thin) versus (strong) interactions.
 {% endfigcaption %}
 {% endfigure %}

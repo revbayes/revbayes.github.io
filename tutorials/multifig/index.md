@@ -645,7 +645,7 @@ Posterior estimates for parameters related to the dispersal process.
 
 From top to bottom, the first figure shows the base dispersal rate, $\rho_d$, that would apply if all regions were completely identical. The second figure shows quantitative feature effect parameters, $\phi^{(k)}_d$, wherein the parameter for Distance is negative, meaning dispersal rates *decrease* with distance. The third figure shows that models using distance as an explanatory factor to shape dispersal rates have higher reversible jump probabilities, whereas including or excluding log-distance has no major impact on model fit. The fourth figure shows categorical feature effect parameters, $\sigma^{(k)}_d$, for which dispersal into younger regions tend to have higher dispersal rates (positive) and dispersal into or out of the Hawaiian islands is penalized (negative). In the last figure, models with or without these categorical features tend to have similar fit, though models that favor dispersal into younger islands are roughly three times as probable as those that do not.
 
-Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a "dummy" file showing to generate the figure. This is a bit hacky and will be fixed soon. The code for this is:
+Lastly, we generate figures for region-specific biogeographic rates. Note, this code is intended for the time-heterogeneous FIG models that are introduced in the next tutorial. This tutorial can be thought as a special case of the time-heterogeneous FIG model where time is constant. Because of this, the current scripts require we that we pass a "dummy" age summary file showing to generate the figure. The code for this is:
 
 ```
 # make region rate plots
@@ -679,6 +679,6 @@ Rscript ./plot/plot_feature_rate_network.R ./output/multifig.model.txt ./data/ha
 {% figure rates_times %}
 <img src="figures/plot_feature_rate_network.png" width="80%">
 {% figcaption %}
-Network diagram displaying the relationship between regional features, feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan).)
+Network diagram displaying the relationships between regional features (gold), feature effect parameters ($\phi$ and $\sigma$ in green), and rate modifier functions ($m$ in cyan). Edges colors indicate positive (blue) versus negative (red) relationships and widths indicate weak (thin) versus (strong) interactions.
 {% endfigcaption %}
 {% endfigure %}
