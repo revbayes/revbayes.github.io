@@ -4,7 +4,7 @@ subtitle: Using the feature-informed geographic state-dependent speciation-extin
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata
 level: 8
 order: 8
-index: false
+index: true
 include_all: false
 
 ---

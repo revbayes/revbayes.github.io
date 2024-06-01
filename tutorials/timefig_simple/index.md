@@ -59,7 +59,7 @@ In this tutorial, we will model the evolution and biogeography of *Kadua* using 
 
 The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of *Kadua* (26 spp. including non-Hawaiian outgroups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.
 
-The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago ([link](https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua)). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a "conveyor belt" system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial relies makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).
+The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago ([link](https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua)). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a "conveyor belt" system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).
 
 {% figure features %}
 <img src="figures/features.png" width="65%">
@@ -227,10 +227,10 @@ geo_features.normalize("between")
 
 # get feature-sets for each measurement-type, process-type, and timeslice
 for (i in 1:num_times) {
-	feature_CW[i] <- geo_features.get("within","categorical",i)
-	feature_QW[i] <- geo_features.get("within","quantitative",i)
-	feature_CB[i] <- geo_features.get("between","categorical",i)
-	feature_QB[i] <- geo_features.get("between","quantitative",i)
+    feature_CW[i] <- geo_features.get("within","categorical",i)
+    feature_QW[i] <- geo_features.get("within","quantitative",i)
+    feature_CB[i] <- geo_features.get("between","categorical",i)
+    feature_QB[i] <- geo_features.get("between","quantitative",i)
 
     for (j in 1:feature_CW[i].size()) {
         layer_CW[i][j] <- feature_CW[i][j].get()
@@ -301,10 +301,10 @@ Now we can create the relative rates of each process. These $m$ containers hold 
 # regional rate factors
 for (t in 1:num_times) {
     # NOTE: do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
-	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
-	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
-	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
-	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
+    m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0)
+    m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
+    m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
+    m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
 }
 ```
 
