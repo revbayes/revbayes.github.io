@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Time-heterogeneous FIG (TimeFIG) model</h1>
 	<h3 class="subtitle">A FIG model with paleogeographically varying regional features</h3>
 	<h4 class="authors">Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata, Michael Landis</h4>
-  <h5>Last modified on June  1, 2024</h5>
+  <h5>Last modified on June  2, 2024</h5>
 </div>
 
 
@@ -249,6 +249,7 @@ analysis      = "simple_timeFIG"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.csv"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 times_fn      = geo_fp + "age_summary.csv"
@@ -259,7 +260,7 @@ out_fn        = "./output/" + analysis
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># MCMC variables
 num_proc  = 6
-num_gen   = 10000
+num_gen   = 500          # set num_gen = 5000 for full analysis
 print_gen = 1
 moves     = VectorMoves()
 monitors  = VectorMonitors()
@@ -687,7 +688,7 @@ monitors.append( mnStochasticCharacterMap(
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")       # set moveschedule="random" for full analysis
 
 # run MCMC
 mymcmc.run(num_gen)
@@ -715,7 +716,16 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 <h3 class="subsection" id="output">Output</h3>
 <hr class="subsection" />
 
-<p>Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
+<blockquote class="info">
+  <h2 id="example-output">Example output</h2>
+  <p><strong>Note:</strong> Complete FIG analyses can take several hours to run. To explore
+FIG analysis output as part of a workshop, we recommend that you
+download precomputed “example output” from the top left menu on this
+page. Save these files into your local <code class="language-plaintext highlighter-rouge">output</code> directory and view results
+and/or run the following plotting code.</p>
+</blockquote>
+
+<p>This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
 
 <p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">kadua_geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
 
@@ -726,17 +736,16 @@ unzip main.zip
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
-
 </code></pre></div></div>
 
-<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">~/timefig_simple/plot</code>:</p>
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your TimeFIG project directory as <code class="language-plaintext highlighter-rouge">./timefig_simple/plot</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
-cp ~/fig_tools/scripts/*.R ~/timefig_simple/plot
-cp ~/fig_tools/scripts/*.Rev ~/timefig_simple/plot
+cp ./fig_tools/scripts/*.R ./timefig_simple/plot
+cp ./fig_tools/scripts/*.Rev ./timefig_simple/plot
 </code></pre></div></div>
 
 <p>These scripts assume you are in the base of your analysis directory:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/timefig_simple
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ./timefig_simple
 </code></pre></div></div>
 
 <p>Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:</p>

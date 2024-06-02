@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Feature-informed geographic state-dependent speciation-extinction (FIG) model</h1>
 	<h3 class="subtitle">A phylogenetic model where GeoSSE event rates are informed by regional features</h3>
 	<h4 class="authors">Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata, Michael Landis</h4>
-  <h5>Last modified on June  1, 2024</h5>
+  <h5>Last modified on June  2, 2024</h5>
 </div>
 
 
@@ -254,6 +254,7 @@ analysis      = "multifig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.csv"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 out_fn        = "./output/" + analysis
@@ -263,7 +264,7 @@ out_fn        = "./output/" + analysis
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># MCMC variables
 num_proc  = 6
-num_gen   = 5000
+num_gen   = 500             # set num_gen = 5000 for full analysis
 print_gen = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
@@ -649,13 +650,13 @@ monitors.append( mnStochasticCharacterMap(
     use_simmap_default=false) )
 </code></pre></div></div>
 
-<p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC!</p>
+<p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC! Note, we suggest that you set <code class="language-plaintext highlighter-rouge">moveschedule="single"</code> for your first time running this code. Full analyses should instead use <code class="language-plaintext highlighter-rouge">moveschedule="random"</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create model object
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")     # set moveschedule="random" for full analysis
 
 # run MCMC
 mymcmc.run(num_gen)
@@ -683,6 +684,15 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 <h3 class="subsection" id="output">Output</h3>
 <hr class="subsection" />
 
+<blockquote class="info">
+  <h2 id="example-output">Example output</h2>
+  <p><strong>Note:</strong> Complete FIG analyses can take several hours to run. To explore
+FIG analysis output as part of a workshop, we recommend that you
+download precomputed “example output” from the top left menu on this
+page. Save these files into your local <code class="language-plaintext highlighter-rouge">output</code> directory and view results
+and/or run the following plotting code.</p>
+</blockquote>
+
 <p>Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
 
 <p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">kadua_geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
@@ -694,13 +704,12 @@ unzip main.zip
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
-
 </code></pre></div></div>
 
-<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">~/multifig/plot</code>:</p>
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">./multifig/plot</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
-cp ~/fig_tools/scripts/*.R ~/multifig/plot
-cp ~/fig_tools/scripts/*.Rev ~/multifig/plot
+cp ./fig_tools/scripts/*.R ./multifig/plot
+cp ./fig_tools/scripts/*.Rev ./multifig/plot
 </code></pre></div></div>
 
 <p>These scripts assume you are in the base of your analysis directory:</p>

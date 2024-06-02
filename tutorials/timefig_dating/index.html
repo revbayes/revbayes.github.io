@@ -205,7 +205,9 @@ include_all: false</li>
 
 <p>Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of <em>expected substitutions per site</em>. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the <em>molecular clock</em> (missing reference). An accurate estimate of such a clock rate would enable <em>molecular dating</em>, because a research would only need to convert molecular distances into clock “ticks” to estimate the ages of species in units of geological time.</p>
 
-<p>Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $d$. For example, the products of both $d = r \times t = 10 \times 1$ and $d = r \times t = 2 \times 5$ both yield the same molecular distant, $d = 10$. Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same amount of evolutionary change. This is known as rate-time non-identifiability. The phylogenetic model assigns equal likelihood to both of these alternative scenarios, so the true rate and time values cannot be learned directly from molecular data without extrinsic evidence</p>
+<p>Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $v$. For example, the products of both $v = r \times t = 10 \times 1$ and $v = r \times t = 2 \times 5$ both yield the same molecular distance, $v = 10$. In either scenario, the transition probability is computed as $P(v=10) = \text{exp} { Qv }$.</p>
+
+<p>Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same numbers of events. This is known as rate-time non-identifiability. The phylogenetic model assigns equal likelihood to both of these alternative scenarios, so the true rate and time values cannot be learned directly from molecular data without extrinsic evidence</p>
 
 <p>This tutorial demonstrates what happens when you run a simple molecular phylogenetic analysis <em>without</em> any information to time-calibrate the tree. The tutorial reviews several important concepts for phylogenetic tree estimation, such as the relaxed molecular clock. It also demonstrates that extrinsic (non-molecular) evidence is needed to time-calibrate divergence times using standard phylogenetic approaches.</p>
 
@@ -224,12 +226,12 @@ calib_fn      = dat_fp + "kadua_calib.csv"
 out_fn        = "./output/" + analysis
 </code></pre></div></div>
 
-<p>These variables will later configure the MCMC analysis. The empty vectors for moves and monitors will be populated later.</p>
+<p>These variables will later configure the MCMC analysis. The empty vectors for moves and monitors will be populated later. We suggest setting a shorter analysis for only 500 MCMC iterations when using the script the first time. Use 5000 or more iterations for a full analysis</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># number of MCMC iterations
-num_gen = 10000
+num_gen = 500         # set num_gen = 5000 for full analysis
 
 # number of iterations between MCMC samples
-print_gen = 50
+print_gen = 20
 
 # empty vector for MCMC moves
 moves = VectorMoves()
@@ -252,10 +254,10 @@ num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 </code></pre></div></div>
 
-<p>After that, we read in 10 molecular sequence alignments, each one corresponding to a different Angiosperms353 locus. We store the each locus as an element in a vector.</p>
+<p>After that, we read in the molecular sequence alignments, each one corresponding to a different Angiosperms353 locus. We store the each locus as an element in a vector. This tutorial comes with 10 loci that can be used for a full analysis. However, we recommend using only two as you begin to speed things up.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create vector of molecular alignment matrices
-num_loci = 10
+num_loci = 2       # num_loci = 10 
 
 # visit each locus
 for (i in 1:num_loci) {
@@ -724,6 +726,7 @@ out_fn        = "./output/" + analysis
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># new filesystem variables
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.csv"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 times_fn      = geo_fp + "age_summary.csv"
@@ -735,10 +738,10 @@ times_fn      = geo_fp + "age_summary.csv"
 num_proc = 6
 
 # number of MCMC iterations
-num_gen = 10000
+num_gen = 500         # set num_gen = 5000 for full analysis
 
 # number of interations between MCMC samples
-print_gen = 10
+print_gen = 20
 
 # empty vector for MCMC moves
 moves = VectorMoves()
@@ -783,17 +786,17 @@ for (k in 1:max_range_size) {
 dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
 
 # save relationships between 01 and integer coding to file
-#desc           = dat_nn.getStateDescriptions()
-#write("index,range\n", filename=label_fn)
-#for (i in 1:desc.size()) {
-#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
-#}
+desc           = dat_nn.getStateDescriptions()
+write("index,range\n", filename=label_fn)
+for (i in 1:desc.size()) {
+    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+}
 </code></pre></div></div>
 
-<p>Load in the molecular dataset.</p>
+<p>Load in the molecular dataset. As before, we’ll use only two loci to experiment with the script. Set the number of loci to 10 for a full analysis.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create vector of molecular alignment matrices
-num_loci = 10
+num_loci = 2         # set num_loci = 10 for full analysis
 
 # visit each locus
 for (i in 1:num_loci) {
@@ -950,13 +953,13 @@ monitors.append( mnJointConditionalAncestralState(
 #    use_simmap_default=false) )
 </code></pre></div></div>
 
-<p>With our model, moves, and monitors all in place, we can build and run our MCMC analysis.</p>
+<p>With our model, moves, and monitors all in place, we can build and run our MCMC analysis. We recommend using <code class="language-plaintext highlighter-rouge">moveschedule="single"</code> as an option when learning to run this analysis for the first time. Full analysis shoudl instead use <code class="language-plaintext highlighter-rouge">moveschedule="random"</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create model object
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")     # set moveschedule="random" for full analysis
 
 # run MCMC
 mymcmc.run(num_gen)
@@ -982,7 +985,16 @@ mymcmc.run(num_gen)
 
 <p>Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian <em>Kadua</em>.</p>
 
-<p>Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
+<blockquote class="info">
+  <h2 id="example-output">Example output</h2>
+  <p><strong>Note:</strong> Complete FIG analyses can take several hours to run. To explore
+FIG analysis output as part of a workshop, we recommend that you
+download precomputed “example output” from the top left menu on this
+page. Save these files into your local <code class="language-plaintext highlighter-rouge">output</code> directory and view results
+and/or run the following plotting code.</p>
+</blockquote>
+
+<p>This section shows how generate plots for FIG analysis results using the <a href="https://github.com/hawaiian-plant-biogeography/fig_tools">FIG Tools</a> repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.</p>
 
 <p>NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the <code class="language-plaintext highlighter-rouge">kadua_geosse.Rev</code> script by adding the RevBayes command <code class="language-plaintext highlighter-rouge">seed(1)</code>.</p>
 
@@ -993,17 +1005,16 @@ unzip main.zip
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
-
 </code></pre></div></div>
 
-<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your MultiFIG project directory as <code class="language-plaintext highlighter-rouge">~/timefig_dating/plot</code>:</p>
+<p>Next, copy the files in <code class="language-plaintext highlighter-rouge">./fig_tools/scripts</code> into your TimeFIG project directory as <code class="language-plaintext highlighter-rouge">./timefig_dating/plot</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># copy
-cp ~/fig_tools/scripts/*.R ~/timefig_dating/plot
-cp ~/fig_tools/scripts/*.Rev ~/timefig_dating/plot
+cp ./fig_tools/scripts/*.R ./timefig_dating/plot
+cp ./fig_tools/scripts/*.Rev ./timefig_dating/plot
 </code></pre></div></div>
 
 <p>These scripts assume you are in the base of your analysis directory:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/timefig_dating
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ./timefig_dating
 </code></pre></div></div>
 
 <p>Now we can generate plots using FIG tools. First, we generate one plot with a maximum clade credibility tree with node age estimates and another plot with ancestral range estimates using these commands:</p>
