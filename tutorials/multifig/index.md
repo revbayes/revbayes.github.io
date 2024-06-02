@@ -128,6 +128,7 @@ analysis      = "multifig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.csv"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 out_fn        = "./output/" + analysis
@@ -138,7 +139,7 @@ Eventually, we will be running an MCMC analysis at the end of the tutorial. This
 ```
 # MCMC variables
 num_proc  = 6
-num_gen   = 5000
+num_gen   = 500             # set num_gen = 5000 for full analysis
 print_gen = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
@@ -546,14 +547,14 @@ monitors.append( mnStochasticCharacterMap(
     use_simmap_default=false) )
 ```
 
-Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC!
+Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC! Note, we suggest that you set `moveschedule="single"` for your first time running this code. Full analyses should instead use `moveschedule="random"`.
 
 ```
 # create model object
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")     # set moveschedule="random" for full analysis
 
 # run MCMC
 mymcmc.run(num_gen)
@@ -581,6 +582,14 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 
 {% subsection Output %}
 
+> ## Example output
+> **Note:** Complete FIG analyses can take several hours to run. To explore
+> FIG analysis output as part of a workshop, we recommend that you
+> download precomputed "example output" from the top left menu on this
+> page. Save these files into your local `output` directory and view results
+> and/or run the following plotting code.
+{:.info}
+
 Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the [FIG Tools](https://github.com/hawaiian-plant-biogeography/fig_tools) repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.
 
 NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
@@ -593,14 +602,13 @@ unzip main.zip
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
-
 ```
 
-Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/multifig/plot`:
+Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `./multifig/plot`:
 ```
 # copy
-cp ~/fig_tools/scripts/*.R ~/multifig/plot
-cp ~/fig_tools/scripts/*.Rev ~/multifig/plot
+cp ./fig_tools/scripts/*.R ./multifig/plot
+cp ./fig_tools/scripts/*.Rev ./multifig/plot
 ```
 
 These scripts assume you are in the base of your analysis directory:

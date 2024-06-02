@@ -44,7 +44,9 @@ Because these analyses build on each other, the tutorial focuses on what changes
 
 Molecular phylogenetic models use these estimates of genetic distance to infer phylogenetic divergence, in terms of topology (relationships among lineages) and branch lengths (distances along lineages). Phylogenetic models often measure genetic distances in units of *expected substitutions per site*. These distances are, in fact, the product of time (e.g. millions of years) and the substitution rate (substitutions per site per time). This substitution rate is often called the *molecular clock* {% cite Zuckerkandl1967 %}. An accurate estimate of such a clock rate would enable *molecular dating*, because a research would only need to convert molecular distances into clock "ticks" to estimate the ages of species in units of geological time.
 
-Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $d$. For example, the products of both $d = r \times t = 10 \times 1$ and $d = r \times t = 2 \times 5$ both yield the same molecular distant, $d = 10$. Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same amount of evolutionary change. This is known as rate-time non-identifiability. The phylogenetic model assigns equal likelihood to both of these alternative scenarios, so the true rate and time values cannot be learned directly from molecular data without extrinsic evidence
+Ideally, a molecular phylogenetic model would decompose branch length estimates into separate estimates of substitution rates and evolutionary time. In real biological settings, we never know the precise time or rate underlying a molecular distance, and they must both be estimated. The problem is there are an infinite number of products of rate, $r$, and time, $t$, that equal a given distance, $v$. For example, the products of both $v = r \times t = 10 \times 1$ and $v = r \times t = 2 \times 5$ both yield the same molecular distance, $v = 10$. In either scenario, the transition probability is computed as $P(v=10) = \text{exp} \{ Qv \}$.
+
+Scenarios of a fast evolution over a short time and slow evolution over a long time produce the same numbers of events. This is known as rate-time non-identifiability. The phylogenetic model assigns equal likelihood to both of these alternative scenarios, so the true rate and time values cannot be learned directly from molecular data without extrinsic evidence
 
 This tutorial demonstrates what happens when you run a simple molecular phylogenetic analysis *without* any information to time-calibrate the tree. The tutorial reviews several important concepts for phylogenetic tree estimation, such as the relaxed molecular clock. It also demonstrates that extrinsic (non-molecular) evidence is needed to time-calibrate divergence times using standard phylogenetic approaches.
 
@@ -63,13 +65,13 @@ calib_fn      = dat_fp + "kadua_calib.csv"
 out_fn        = "./output/" + analysis
 ```
 
-These variables will later configure the MCMC analysis. The empty vectors for moves and monitors will be populated later.
+These variables will later configure the MCMC analysis. The empty vectors for moves and monitors will be populated later. We suggest setting a shorter analysis for only 500 MCMC iterations when using the script the first time. Use 5000 or more iterations for a full analysis
 ```
 # number of MCMC iterations
-num_gen = 10000
+num_gen = 500         # set num_gen = 5000 for full analysis
 
 # number of iterations between MCMC samples
-print_gen = 50
+print_gen = 20
 
 # empty vector for MCMC moves
 moves = VectorMoves()
@@ -93,11 +95,11 @@ num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 ```
 
-After that, we read in 10 molecular sequence alignments, each one corresponding to a different Angiosperms353 locus. We store the each locus as an element in a vector.
+After that, we read in the molecular sequence alignments, each one corresponding to a different Angiosperms353 locus. We store the each locus as an element in a vector. This tutorial comes with 10 loci that can be used for a full analysis. However, we recommend using only two as you begin to speed things up.
 
 ```
 # create vector of molecular alignment matrices
-num_loci = 10
+num_loci = 2       # num_loci = 10 
 
 # visit each locus
 for (i in 1:num_loci) {
@@ -608,6 +610,7 @@ Now, we also load species range data and paleogeographical data for the TimeFIG 
 ```
 # new filesystem variables
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.csv"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 times_fn      = geo_fp + "age_summary.csv"
@@ -620,10 +623,10 @@ Next, we create various MCMC analysis settings, to be used later.
 num_proc = 6
 
 # number of MCMC iterations
-num_gen = 10000
+num_gen = 500         # set num_gen = 5000 for full analysis
 
 # number of interations between MCMC samples
-print_gen = 10
+print_gen = 20
 
 # empty vector for MCMC moves
 moves = VectorMoves()
@@ -670,18 +673,18 @@ for (k in 1:max_range_size) {
 dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
 
 # save relationships between 01 and integer coding to file
-#desc           = dat_nn.getStateDescriptions()
-#write("index,range\n", filename=label_fn)
-#for (i in 1:desc.size()) {
-#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
-#}
+desc           = dat_nn.getStateDescriptions()
+write("index,range\n", filename=label_fn)
+for (i in 1:desc.size()) {
+    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+}
 ```
 
-Load in the molecular dataset.
+Load in the molecular dataset. As before, we'll use only two loci to experiment with the script. Set the number of loci to 10 for a full analysis.
 
 ```
 # create vector of molecular alignment matrices
-num_loci = 10
+num_loci = 2         # set num_loci = 10 for full analysis
 
 # visit each locus
 for (i in 1:num_loci) {
@@ -849,14 +852,14 @@ Similarly, you can construct a monitor to generate stochastic mappings that repr
 #    use_simmap_default=false) )
 ```
 
-With our model, moves, and monitors all in place, we can build and run our MCMC analysis.
+With our model, moves, and monitors all in place, we can build and run our MCMC analysis. We recommend using `moveschedule="single"` as an option when learning to run this analysis for the first time. Full analysis shoudl instead use `moveschedule="random"`.
 
 ```
 # create model object
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="single")     # set moveschedule="random" for full analysis
 
 # run MCMC
 mymcmc.run(num_gen)
@@ -889,7 +892,15 @@ While the posterior-based TimeFIG calibration produces a young mean age for the 
 
 Other analyses, such generating figures for ancestral ranges or regional biogeographic rates through time, are done in the same manner as with previous tutorials. The difference here is that rather than assuming fixed phylogenetic divergence times, the phylogeny can be estimated as part of the analysis. The ability to jointly estimate phylogeny and biogeography is especially crucial in scenarios where paleogeography is expected to shape when and where species diversified, as in the case of Hawaiian *Kadua*.
 
-Example output files are provided with this tutorial (see panel on top left). This section shows how generate plots for FIG analysis results using the [FIG Tools](https://github.com/hawaiian-plant-biogeography/fig_tools) repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.
+> ## Example output
+> **Note:** Complete FIG analyses can take several hours to run. To explore
+> FIG analysis output as part of a workshop, we recommend that you
+> download precomputed "example output" from the top left menu on this
+> page. Save these files into your local `output` directory and view results
+> and/or run the following plotting code.
+{:.info}
+
+ This section shows how generate plots for FIG analysis results using the [FIG Tools](https://github.com/hawaiian-plant-biogeography/fig_tools) repository, which primarily uses R, RevGadgets, ggplot, and igraph for visualization.
 
 NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
 
@@ -901,19 +912,18 @@ unzip main.zip
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
-
 ```
 
-Next, copy the files in `./fig_tools/scripts` into your MultiFIG project directory as `~/timefig_dating/plot`:
+Next, copy the files in `./fig_tools/scripts` into your TimeFIG project directory as `./timefig_dating/plot`:
 ```
 # copy
-cp ~/fig_tools/scripts/*.R ~/timefig_dating/plot
-cp ~/fig_tools/scripts/*.Rev ~/timefig_dating/plot
+cp ./fig_tools/scripts/*.R ./timefig_dating/plot
+cp ./fig_tools/scripts/*.Rev ./timefig_dating/plot
 ```
 
 These scripts assume you are in the base of your analysis directory:
 ```
-cd ~/timefig_dating
+cd ./timefig_dating
 ```
 
 

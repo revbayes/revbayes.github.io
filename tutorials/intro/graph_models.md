@@ -8,6 +8,12 @@ prerequisites:
 - intro
 index: true
 redirect: false
+include_all: false
+include_files:
+  - data/x.csv
+  - data/y.csv
+  - scripts/linear_regression.Rev
+  - scripts/linear_regression_generative.Rev
 ---
 
 Overview

@@ -10,8 +10,8 @@ phy_fn        = dat_fp + "kadua.tre"
 out_fn        = "./output/" + analysis
 
 # MCMC variables
-num_gen = 10000
-print_gen = 10
+num_gen = 5000
+print_gen = 20
 moves = VectorMoves()
 monitors = VectorMonitors()
 
@@ -140,22 +140,22 @@ for (i in 1:num_loci) {
 }
 
 for (i in 1:num_loci) {
-    kappa[i] ~ dnLognormal(-1/2, 1)
-    moves.append(mvScale(kappa[i], weight=3))
+    kappa_mol[i] ~ dnLognormal(-1/2, 1)
+    moves.append(mvScale(kappa_mol[i], weight=3))
     
     pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
     moves.append(mvSimplex(pi_mol[i], alpha=3, offset=0.5, weight=3))
     
-    Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+    Q_mol[i] := fnHKY(kappa=kappa_mol[i], baseFrequencies=pi_mol[i])
 }
 
 for (i in 1:num_loci) {
-    alpha[i] ~ dnExp(0.1)
-    moves.append(mvScale(alpha[i], weight=3))
+    alpha_mol[i] ~ dnExp(0.1)
+    moves.append(mvScale(alpha_mol[i], weight=3))
     
-    site_rates[i] := fnDiscretizeGamma(shape=alpha[i],
-                                       rate=alpha[i],
-                                       numCats=4)
+    site_rates_mol[i] := fnDiscretizeGamma(shape=alpha_mol[i],
+                                           rate=alpha_mol[i],
+                                           numCats=4)
 }
 
 for (i in 1:num_loci) {
@@ -163,7 +163,7 @@ for (i in 1:num_loci) {
         Q=Q_mol[i],
         tree=timetree,
         branchRates=mu_mol[i],
-        siteRates=site_rates[i],
+        siteRates=site_rates_mol[i],
         rootFrequencies=pi_mol[i],
         nSites=num_sites[i],
         type="DNA" )
@@ -220,7 +220,7 @@ monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
 
 # run MCMC
 mymcmc.run(num_gen)

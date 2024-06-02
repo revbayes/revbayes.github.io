@@ -1,6 +1,5 @@
 # load Tensorphylo plugin
-# loadPlugin("TensorPhylo")
-loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+loadPlugin("TensorPhylo")
 
 ##################
 # ANALYSIS SETUP #
@@ -12,6 +11,7 @@ analysis      = "simple_timeFIG" # + ".job_1"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
+label_fn      = dat_fp + "kadua_range_label.nex"
 geo_fp        = "./data/hawaii/"
 feature_fn    = geo_fp + "feature_summary.csv"
 times_fn      = geo_fp + "age_summary.csv"
@@ -41,10 +41,10 @@ for (k in 1:max_range_size) {
 dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
 desc           = dat_nn.getStateDescriptions()
 
-#write("index,range\n", filename=label_fn)
-#for (i in 1:desc.size()) {
-#    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
-#}
+write("index,range\n", filename=label_fn)
+for (i in 1:desc.size()) {
+    write((i-1) + "," + desc[i] + "\n", filename=label_fn, append=true)
+}
 
 
 ###################
@@ -425,7 +425,7 @@ for (k in 1:num_times) {
 mymodel = model(timetree)
 
 # create MCMC object
-mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
 
 # run MCMC
 mymcmc.run(num_gen)
