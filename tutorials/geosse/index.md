@@ -278,6 +278,7 @@ timetree ~ dnGLHBDSP(
     eta         = Q_bg,
     omega       = omega,
     pi          = pi,
+    rho         = 1.0,
     condition   = "time",
     taxa        = taxa,
     nStates     = num_ranges,
@@ -317,8 +318,8 @@ We also want MCMC to keep track of certain things while it runs. We want it to p
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
 mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.txt")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.txt")
 ```
 
 Let's also store information for how the integer-valued ranges (0, 1, 2) relate to the regional presence-absence representation of ranges (A=10, B=01, AB=11).

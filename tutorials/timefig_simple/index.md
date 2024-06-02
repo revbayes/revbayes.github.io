@@ -139,7 +139,7 @@ Next, we want to tell RevBayes where to find our data (and where to save our out
 
 ```
 # filesystem
-analysis      = "simple_timeFIG"
+analysis      = "simple_timefig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -538,9 +538,6 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       condition    = "time",
                       taxa         = taxa,
                       nStates      = num_ranges,
-                      absTol       = 1e-7,
-                      relTol       = 1e-7,
-                      maxDenseSteps = 5000,
                       nProc        = num_proc)
 ```
 
@@ -548,7 +545,7 @@ Then we can clamp the variable with the fixed tree and present-day range states,
 
 ```
 timetree.clamp(phy)
-timetree.clampCharData(bg_dat)
+timetree.clampCharData(dat_nn)
 ```
 
 {% subsection MCMC %}
@@ -590,10 +587,10 @@ for (k in 1:num_times) {
 
 # monitor stochastic mappings along branches of tree
 # NOTE: uncomment if needed, but can cause performance issues
-monitors.append( mnStochasticCharacterMap(
-    glhbdsp=timetree, printgen=print_gen*10,
-    filename=out_fn+".stoch.txt",
-    use_simmap_default=false) )
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 ```
 
 Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC!
@@ -686,14 +683,14 @@ Ancestral state reconstruction of *Kadua*. Pie chart colors indicate the three m
 To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial ({% ref feature_times %}), enter this code:
 ```
 # make region feature vs. time plots
-Rscript ./plot/plot_rates_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript Rscript ./plot/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
 
 In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:
 
 ```
 # make region rate vs. time plots
-Rscript Rscript ./scripts/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript ./plot/plot_rates_vs_time_grid.R ./output/simple_timefig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
 
 {% figure rates_times %}

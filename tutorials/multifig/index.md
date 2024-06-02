@@ -499,7 +499,7 @@ Then we can clamp the variable with the fixed tree and present-day range states,
 
 ```
 timetree.clamp(phy)
-timetree.clampCharData(bg_dat)
+timetree.clampCharData(dat_nn)
 ```
 
 {% subsection MCMC %}
@@ -541,10 +541,10 @@ monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
 
 # monitor stochastic mappings along branches of tree
 # NOTE: can cause performance issues, comment out if necessary
-monitors.append( mnStochasticCharacterMap(
-    glhbdsp=timetree, printgen=print_gen*10,
-    filename=out_fn+".stoch.txt",
-    use_simmap_default=false) )
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 ```
 
 Then we can start up the MCMC. It doesn't matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC! Note, we suggest that you set `moveschedule="single"` for your first time running this code. Full analyses should instead use `moveschedule="random"`.
