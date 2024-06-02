@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Geographic state-dependent speciation-extinction (GeoSSE) model</h1>
 	<h3 class="subtitle">A phylogenetic model of biogeographic dispersal, extinction, and speciation</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on May 30, 2024</h5>
+  <h5>Last modified on June  2, 2024</h5>
 </div>
 
 
@@ -411,6 +411,7 @@ pi &lt;- simplex(pi_base)
     eta         = Q_bg,
     omega       = omega,
     pi          = pi,
+    rho         = 1.0,
     condition   = "time",
     taxa        = taxa,
     nStates     = num_ranges,
@@ -448,8 +449,8 @@ mv[mvi++] = mvSimplex(m_d_simplex, weight=m_d_simplex.size())
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
 mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=p+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+stoch.txt")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.txt")
 </code></pre></div></div>
 
 <p>Let’s also store information for how the integer-valued ranges (0, 1, 2) relate to the regional presence-absence representation of ranges (A=10, B=01, AB=11).</p>

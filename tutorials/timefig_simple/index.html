@@ -245,7 +245,7 @@ G,N,K,O,M,H,Z
 <p>Next, we want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># filesystem
-analysis      = "simple_timeFIG"
+analysis      = "simple_timefig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 bg_fn         = dat_fp + "kadua_range_n7.nex"
@@ -625,16 +625,13 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
                       condition    = "time",
                       taxa         = taxa,
                       nStates      = num_ranges,
-                      absTol       = 1e-7,
-                      relTol       = 1e-7,
-                      maxDenseSteps = 5000,
                       nProc        = num_proc)
 </code></pre></div></div>
 
 <p>Then we can clamp the variable with the fixed tree and present-day range states, allowing us to infer model parameters based on our observed data.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(phy)
-timetree.clampCharData(bg_dat)
+timetree.clampCharData(dat_nn)
 </code></pre></div></div>
 
 <h3 class="subsection" id="mcmc">MCMC</h3>
@@ -676,10 +673,10 @@ for (k in 1:num_times) {
 
 # monitor stochastic mappings along branches of tree
 # NOTE: uncomment if needed, but can cause performance issues
-monitors.append( mnStochasticCharacterMap(
-    glhbdsp=timetree, printgen=print_gen*10,
-    filename=out_fn+".stoch.txt",
-    use_simmap_default=false) )
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 </code></pre></div></div>
 
 <p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC!</p>
@@ -762,13 +759,13 @@ Rscript ./plot/plot_states_tree.R ./output/out.states.tre ./output/out.mcc.tre .
 
 <p>To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial (<a href="#feature_times"></a>), enter this code:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make region feature vs. time plots
-Rscript ./plot/plot_rates_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript Rscript ./plot/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 </code></pre></div></div>
 
 <p>In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># make region rate vs. time plots
-Rscript Rscript ./scripts/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript ./plot/plot_rates_vs_time_grid.R ./output/simple_timefig ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 </code></pre></div></div>
 
 <figure id="rates_times"><p><img src="figures/plot_rate_vs_time.process_w.png" width="60%" /></p>

@@ -602,7 +602,7 @@ timetree ~ dnGLHBDSP( rootAge      = root_age,
 <p>Then we can clamp the variable with the fixed tree and present-day range states, allowing us to infer model parameters based on our observed data.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(phy)
-timetree.clampCharData(bg_dat)
+timetree.clampCharData(dat_nn)
 </code></pre></div></div>
 
 <h3 class="subsection" id="mcmc">MCMC</h3>
@@ -644,10 +644,10 @@ monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
 
 # monitor stochastic mappings along branches of tree
 # NOTE: can cause performance issues, comment out if necessary
-monitors.append( mnStochasticCharacterMap(
-    glhbdsp=timetree, printgen=print_gen*10,
-    filename=out_fn+".stoch.txt",
-    use_simmap_default=false) )
+# monitors.append( mnStochasticCharacterMap(
+#    glhbdsp=timetree, printgen=print_gen*10,
+#    filename=out_fn+".stoch.txt",
+#    use_simmap_default=false) )
 </code></pre></div></div>
 
 <p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use the timetree. RevBayes will find all the other parameters that are connected to the timetree and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model. Finally, we can run that MCMC! Note, we suggest that you set <code class="language-plaintext highlighter-rouge">moveschedule="single"</code> for your first time running this code. Full analyses should instead use <code class="language-plaintext highlighter-rouge">moveschedule="random"</code>.</p>
