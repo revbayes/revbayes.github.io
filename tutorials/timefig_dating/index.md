@@ -130,10 +130,10 @@ for (i in 1:num_loci) {
     dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
 
     # unhide all taxa from the phylogeny in this locus 
-    dat_mol[i].includeTaxa( taxa )
+    dat_mol[i].includeTaxa( taxa_names )
     
     # insert ???? chars for taxa in phylogeny but not this locus
-    dat_mol[i].addMissingTaxa( taxa )
+    dat_mol[i].addMissingTaxa( taxa_names )
 }
 ```
 
@@ -364,9 +364,9 @@ for (i in 1:num_loci) {
         Q=Q_mol[i],
         tree=timetree,
         branchRates=mu_mol[i],
-        siteRates=site_rates[i],
+        siteRates=site_rates_mol[i],
         rootFrequencies=pi_mol[i],
-        nSites=num_sites_mol[i],
+        nSites=num_sites[i],
         type="DNA" )
 }
 ```
@@ -672,6 +672,11 @@ for (k in 1:max_range_size) {
 # convert the presence/absence matrix into integer-valued ranges
 dat_nn         = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
 
+```
+
+We'll save a copy of the range state labels to csv file for later use.
+
+```
 # save relationships between 01 and integer coding to file
 desc           = dat_nn.getStateDescriptions()
 write("index,range\n", filename=label_fn)
@@ -716,10 +721,10 @@ for (i in 1:num_loci) {
     dat_mol[i].excludeTaxa( dat_mol[i].taxa() )
 
     # unhide all taxa from the phylogeny in this locus 
-    dat_mol[i].includeTaxa( taxa )
+    dat_mol[i].includeTaxa( taxa_names )
     
     # insert ???? chars for taxa in phylogeny but not this locus
-    dat_mol[i].addMissingTaxa( taxa )
+    dat_mol[i].addMissingTaxa( taxa_names )
 }
 ```
 
