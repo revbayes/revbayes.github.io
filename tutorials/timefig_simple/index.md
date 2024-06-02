@@ -643,11 +643,11 @@ writeNexus(state_tree,filename="output/" + analysis + ".ase.tre")
 
 NOTE: Your output may look slightly different than the output shown below. If you want to exactly replicate the results of the tutorial, you must set a seed at the beginning of the `kadua_geosse.Rev` script by adding the RevBayes command `seed(1)`.
 
-To proceed, we'll exit RevBayes and work from the command line prompt in shell. To generate the images below, first save a copy of FIG tools to your filesystem:
+To proceed, we'll exit RevBayes and work from the command line prompt in shell. We assume that `./timefig_simple` is a subdirectory from your current location. To generate the images below, first save a copy of FIG tools to your filesystem:
 ```
 # Option 1: download and decompress .zip file (open in browser our save in command line)
 wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
-unzip main.zip
+unzip main.zip  -d fig_tools
 
 # Option 2: clone repository
 git@github.com:hawaiian-plant-biogeography/fig_tools.git
@@ -656,8 +656,7 @@ git@github.com:hawaiian-plant-biogeography/fig_tools.git
 Next, copy the files in `./fig_tools/scripts` into your TimeFIG project directory as `./timefig_simple/plot`:
 ```
 # copy
-cp ./fig_tools/scripts/*.R ./timefig_simple/plot
-cp ./fig_tools/scripts/*.Rev ./timefig_simple/plot
+cp -R ./fig_tools/scripts ./timefig_simple/plot
 ```
 
 These scripts assume you are in the base of your analysis directory:
