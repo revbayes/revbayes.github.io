@@ -436,7 +436,7 @@ The first monitor `mnScreen` prints out values to the screen,
 and the second monitor `mnModel` prints a log file.
 ```
 monitors[1] = mnScreen()
-monitors[2] = mnModel("output/linear_regression.log")
+monitors[2] = mnModel(filename="output/linear_regression.log")
 ```
 RevBayes provides many other monitors that can be useful for different types of analyses,
 but these are sufficient for this example.

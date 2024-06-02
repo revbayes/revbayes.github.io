@@ -22,9 +22,10 @@ This tutorial demonstrates how to perform a biogeographic dating analysis using 
 
 This tutorial has three parts: 
 
-- [Part 1: Molecular phylogenetics](molecular-phylogenetics) (Day 1 of workshop)
-- [Part 2: Biogeographic dating with node calibrations](biogeographic-dating-with-node-calibrations) (Day 2 of workshop)
-- [Part 3: Biogeographic dating with TimeFIG](biogeographic-dating-with-timefig) (Day 2 of workshop)
+- [Part 1: Molecular phylogenetics](https://revbayes.github.io/tutorials/timefig_dating/#molecular-phylogenetics) (Day 1 of workshop)
+- [Part 2: Biogeographic dating with node calibrations](https://revbayes.github.io/tutorials/timefig_dating/#biogeographic-dating-with-node-calibrations) (Day 2 of workshop)
+- [Part 3: Biogeographic dating with TimeFIG](https://revbayes.github.io/tutorials/timefig_dating/#biogeographic-dating-with-timefig) (Day 2 of workshop)
+include_all: false
 
 As with previous tutorials in this series, we will analyze a dataset for Hawaiian *Kadua* plant species. All input datasets are the same as before, with the addition of 10 molecular loci obtained from the Angiosperms353 protocol.
 
