@@ -909,12 +909,14 @@ NOTE: Your output may look slightly different than the output shown below. If yo
 
 To proceed, we'll exit RevBayes and work from the command line prompt in shell. We assume that `./timefig_dating` is a subdirectory from your current location. To generate the images below, first save a copy of FIG tools to your filesystem:
 ```
-# Option 1: download and decompress .zip file (open in browser our save in command line)
+# Download .zip file (open in browser our save in command line)
 wget https://github.com/hawaiian-plant-biogeography/fig_tools/archive/refs/heads/main.zip
-unzip main.zip -d fig_tools
 
-# Option 2: clone repository
-git@github.com:hawaiian-plant-biogeography/fig_tools.git
+# Unzip file as "fig_tools-main"
+unzip main.zip
+
+# Rename directory
+mv fig_tools-main fig_tools
 ```
 
 Next, copy the files in `./fig_tools/scripts` into your TimeFIG project directory as `./timefig_dating/plot`:
