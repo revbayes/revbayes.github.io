@@ -685,7 +685,7 @@ Ancestral state reconstruction of *Kadua*. Pie chart colors indicate the three m
 To generate the plot of the inputted paleogeographically varying features displayed at the start of this tutorial ({% ref feature_times %}), enter this code:
 ```
 # make region feature vs. time plots
-Rscript Rscript ./plot/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
+Rscript ./plot/plot_features_vs_time_grid.R ./data/hawaii/feature_summary.csv ./data/hawaii/age_summary.csv ./data/hawaii/feature_description.csv GNKOMHZ
 ```
 
 In addition, we generate a plot of within-region speciation rates, $r_w(i,t)$, for each region $i$ at time $t$, which shows elevated speciation in islands soon after emergence. The code for this is:
