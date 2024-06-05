@@ -107,6 +107,10 @@ Maximum altitude values for seven regions across seven epochs. This quantitative
 
 {% subsection Setup %}
 
+> ## Important dataset and script!
+**Tutorial files:** This tutorial requires numerous input files and scripts to run properly. Download and unzip the [timefig_simple_project.zip](timefig_simple_project.zip) archive to create a project directory named `timefig_simple_project`. Enter the new directory to run the tutorial exercises. Analysis scripts are available on the sidebar for easy access.
+{:.info}
+
 > ## Important version info!
 > **Note:** This tutorial currently requires specific versions of [RevBayes](https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43) and [TensorPhylo](https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301) to run properly (see linked branches and commits).
 >

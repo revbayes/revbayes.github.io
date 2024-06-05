@@ -31,7 +31,9 @@ As with previous tutorials in this series, we will analyze a dataset for Hawaiia
 
 Because these analyses build on each other, the tutorial focuses on what changes between the scripts. This tutorial is also bundled with RevBayes scripts that complete analyses equivalent to those written below. However, the scripts are often designed to be more modular and general, making them ideal to customize for analyses of new datasets, other than Hawaiian *Kadua*.
 
+> ## Important dataset and script!
 **Tutorial files:** This tutorial requires numerous input files and scripts to run properly. Download and unzip the [timefig_dating_project.zip](timefig_dating_project.zip) archive to create a project directory named `timefig_dating_project`. Enter the new directory to run the tutorial exercises. Analysis scripts are available on the sidebar for easy access.
+{:.info}
 
 > ## Important version info!
 > **Note:** This tutorial currently requires specific versions of [RevBayes](https://github.com/revbayes/revbayes/commit/55c8174ea696fbd580daad8383d58f7ffd444d43) and [TensorPhylo](https://bitbucket.org/mrmay/tensorphylo/commits/daa0aed2c4acd394e2cb098b1c3706633d5b8301) to run properly (see linked branches and commits).
