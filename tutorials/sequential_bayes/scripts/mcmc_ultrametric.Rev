@@ -8,14 +8,14 @@
 #
 ################################################################################
 
-GENE = "partitioned"
+GENE = "COI"
 
 
 ### Read in the tree samples from the previous analysis
 ### Here I assume that we had 50,000 sampled trees (2x an MCMC of 25,000 iterations)
 ### If we want to remove 20% as burnin, that leaves 40,000 samples.
 ### Then, if we want 100 trees, we should take every 400th sample => thin=400
-treetrace = readTreeTrace("output/photinus_"+GENE+".trees", treetype="non-clock", thinning=400, burnin=0.2)
+treetrace = readTreeTrace("output/photinus_"+GENE+".trees", treetype="non-clock", thinning=40, burnin=0.2)
 
 ## let's just double check how many trees we have for this analysis
 ## it should be 100 (or 101, if the tree for iteration 0 was included)
@@ -64,7 +64,7 @@ moves.append( mvScale( clock_rate_sd, weight=3 ) )
 # Tree model #
 ##############
 
-## From our study, Catalan et al (2020), we know that the root age
+## From our study, Catalan et al (2022), we know that the root age
 ## for Photinus should be around 42.5Ma.
 ## We thus specify a normal distribution as the prior on the root age.
 root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
@@ -90,12 +90,13 @@ time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, ta
 
 ## initialize the time tree with the MAP tree from our previous analysis
 ## you could also use an externally rooted tree
-unrooted_MAP_tree = readTrees("output/photinus_"+GENE+"_MAP.tre")[1]
+unrooted_MAP_tree = readBranchLengthTrees("output/photinus_"+GENE+"_MAP.tre")[1]
 unrooted_MAP_tree.makeBifurcating()
-unrooted_MAP_tree.makeUltrametric()
-unrooted_MAP_tree.rescale( root_time / unrooted_MAP_tree.rootAge() )
-time_tree.setValue( unrooted_MAP_tree )
-
+ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
+ultrametric_MAP_tree.rescale( root_time / ultrametric_MAP_tree.rootAge() )
+time_tree.setValue( ultrametric_MAP_tree )
+write(file="ultrametric.tre",time_tree)
+time_tree.setValue( readTrees("ultrametric.tre")[1] )
 
 ## Apply a bunch of moves on the time tree
 moves.append( mvNodeTimeSlideUniform(time_tree,weight=n_species) )

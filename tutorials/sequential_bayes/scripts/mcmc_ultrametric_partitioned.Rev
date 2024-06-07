@@ -1,0 +1,203 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of a rooted time tree using a
+#                   relaxed clock model and a posterior distribution of trees
+#                   as data.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+H = 0.587405
+
+
+### read in the character data
+tmp_data = readDiscreteCharacterData( "data/")
+
+supermatrix = concatenate( tmp_data, merge="union" )
+
+n_data_subsets = tmp_data.size()
+
+all_taxa <- supermatrix.taxa()
+
+for ( i in 1:n_data_subsets ) {
+    data[i] = tmp_data[i]
+    data[i].addMissingTaxa( all_taxa )
+}
+
+
+# Get some useful variables from the data. We need these later on.
+taxa            = data[1].taxa()
+num_taxa        = taxa.size()
+num_branches    = 2 * num_taxa - 2
+
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Substitution Model #
+######################
+
+for ( i in 1:n_data_subsets ) {
+
+    # exchangeability rates
+    er_prior[i] <- v(1,1,1,1,1,1)
+    er[i] ~ dnDirichlet(er_prior[i])
+    er[i].setValue( simplex( rep(1,6) ) )
+    moves.append( mvBetaSimplex(er[i], alpha=10, tune=true, weight=2) )
+    moves.append( mvDirichletSimplex(er[i], alpha=10, tune=true, weight=1) )
+
+    # stationary frequencies
+    pi_prior[i] <- v(1,1,1,1)
+    pi[i] ~ dnDirichlet(pi_prior[i])
+    pi[i].setValue( data[i].getEmpiricalBaseFrequencies() )
+    moves.append( mvBetaSimplex(pi[i], alpha=20, tune=true, weight=2) )
+    moves.append( mvDirichletSimplex(pi[i], alpha=20, tune=true, weight=1) )
+
+    # rate matrix for partition i
+    Q[i] := fnGTR(er[i],pi[i])
+
+    # +Gamma for partition i
+    alpha[i] ~ dnUniform( 0, 1E8 )
+    alpha[i].setValue( 0.2 )
+    sr[i] := fnDiscretizeGamma( alpha[i], alpha[i], 4, false )
+
+    # add moves for the alpha parameter
+    moves.append( mvScale(alpha[i],weight=2) )
+
+}
+
+
+
+########################
+# Partition Rate Model #
+########################
+
+rel_part_rate ~ dnDirichlet( rep(5,n_data_subsets) )
+moves.append( mvBetaSimplex(rel_part_rate, alpha=20, tune=true, weight=n_data_subsets) )
+moves.append( mvDirichletSimplex(rel_part_rate, alpha=20, tune=true, weight=3) )
+
+avmvn_part_rate = mvAVMVN(weight=20)
+avmvn_part_rate.addVariable(rel_part_rate)
+moves.append( avmvn_part_rate )
+
+
+
+##############
+# Tree model #
+##############
+
+## From our study, Catalan et al (2020), we know that the root age
+## for Photinus should be around 42.5Ma.
+## We thus specify a normal distribution as the prior on the root age.
+root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
+root_time.setValue( 42.5 )
+moves.append( mvScale(root_time, weight=2.0) )
+moves.append( mvSlide(root_time, weight=2.0) )
+
+
+## The birth and death rates are drawn from a uniform prior
+birth_rate ~ dnUniform(0,1E6)
+death_rate ~ dnUniform(0,1E6)
+
+## We initialize the birth and death rates with reasonable values.
+birth_rate.setValue( ln(num_taxa/2.0) / root_time )
+death_rate.setValue( birth_rate / 1E4 )
+
+## we apply movesto the birth and death rate variables using a scale proposal
+moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
+
+## specify the prior on the time tree as a birth-death process.
+time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, taxa=taxa)
+
+
+## Apply a bunch of moves on the time tree
+moves.append( mvNodeTimeSlideUniform(time_tree,weight=num_taxa) )
+moves.append( mvNarrow(time_tree,weight=num_taxa) )
+moves.append( mvFNPR(time_tree,weight=num_taxa/5.0) )
+
+
+
+#####################
+# Branch-Rate Model #
+#####################
+
+## We assume a uncorrelated lognormal relaxed clocks.
+## So we need to specify this lognormal distribution
+## with a mean and standard deviation.
+
+## Specify a uniform prior on the clock mean
+clock_rate_mean ~ dnUniform(0,1E4)
+clock_rate_mean.setValue( 0.1 )
+
+## also specify a uniform prior on the sd of the clock rates
+clock_rate_sd ~ dnUniform(0,1E4)
+clock_rate_sd.setValue( 0.01 )
+
+## transform the clock mean to log-space for the lognormal distribution.
+clock_rate_ln_mean := ln(clock_rate_mean)
+
+## Specify scaling moves on the mean and sd.
+## Since the mean is in real space, a scaling move should work.
+## Alternatively, we could us a sliding move.
+moves.append( mvScale( clock_rate_mean, weight=3 ) )
+moves.append( mvScale( clock_rate_sd, weight=3 ) )
+
+mv_up_down_branch_rates = mvUpDownScale( weight=5.0 )
+mv_up_down_branch_rates.addVariable( clock_rate_mean, up=TRUE )
+
+## construct the lognormal branch length prior
+for ( i in 1:num_branches) {
+  branch_rates[i] ~ dnLognormal(clock_rate_ln_mean, clock_rate_sd)
+	moves.append( mvScale( branch_rates[i], weight=2 ) )
+	mv_up_down_branch_rates.addVariable( branch_rates[i], up=TRUE  )
+}
+
+moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
+moves.append( mv_up_down_branch_rates )
+moves.append( mvRateAgeBetaShift(tree=time_tree, rates=branch_rates, tune=true, weight=num_taxa) )
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+for ( i in 1:n_data_subsets ) {
+
+    part_rate[i] := rel_part_rate[i] * n_data_subsets * branch_rates
+
+    seq[i] ~ dnPhyloCTMC(tree=time_tree, Q=Q[i], siteRates=sr[i], branchRates=part_rate[i], type="DNA")
+    seq[i].clamp( data[i] )
+
+}
+
+
+
+
+############
+# Analysis #
+############
+
+mymodel = model(time_tree)
+
+# add monitors
+monitors.append( mnScreen( clock_rate_mean, clock_rate_sd, printgen=10) )
+monitors.append( mnFile(time_tree, filename="output/photinus_ultrametric_partitioned.trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_ultrametric_partitioned.log", printgen=1) )
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(25000, tuningInterval=100)
+
+# summarize output
+treetrace = readTreeTrace("output/photinus_ultrametric_partitioned.trees", treetype="clock")
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/photinus_ultrametric_partitioned_MAP.tre")
+
+
+# you may want to quit RevBayes now
+q()
