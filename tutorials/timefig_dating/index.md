@@ -599,7 +599,7 @@ We will use the same basic fileset as the molecular phylogenetics exercise.
 
 ```
 # filesystem variables
-analysis      = "divtime_timeFIG"
+analysis      = "divtime_timefig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 out_fn        = "./output/" + analysis
