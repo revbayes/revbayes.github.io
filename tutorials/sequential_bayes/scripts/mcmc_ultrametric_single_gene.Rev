@@ -1,0 +1,170 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of a rooted time tree using a
+#                   relaxed clock model.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+H = 0.587405
+GENE = "COI"
+
+
+### Read in sequence data for the gene
+data = readDiscreteCharacterData( "data/photinus_"+GENE+".fas" )
+
+
+# Get some useful variables from the data. We need these later on.
+taxa            = data.taxa()
+num_taxa        = taxa.size()
+num_branches    = 2 * num_taxa - 2
+
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Substitution Model #
+######################
+
+# specify the stationary frequency parameters
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
+
+
+# specify the exchangeability rate parameters
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
+
+
+# create a deterministic variable for the rate matrix, GTR
+Q := fnGTR(er,pi)
+
+
+#############################
+# Among Site Rate Variation #
+#############################
+
+# among site rate variation, +Gamma4
+alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue(1.0)
+
+sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
+
+
+##############
+# Tree model #
+##############
+
+## From our study, Catalan et al (2022), we know that the root age
+## for Photinus should be around 42.5Ma.
+## We thus specify a normal distribution as the prior on the root age.
+root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
+root_time.setValue( 42.5 )
+moves.append( mvScale(root_time, weight=2.0) )
+moves.append( mvSlide(root_time, weight=2.0) )
+
+
+## The birth and death rates are drawn from a uniform prior
+birth_rate ~ dnUniform(0,1E6)
+death_rate ~ dnUniform(0,1E6)
+
+## We initialize the birth and death rates with reasonable values.
+birth_rate.setValue( ln(num_taxa/2.0) / root_time )
+death_rate.setValue( birth_rate / 1E4 )
+
+## we apply moves to the birth and death rate variables using a scale proposal
+moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
+
+## specify the prior on the time tree as a birth-death process.
+time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, taxa=taxa)
+
+
+## Apply a bunch of moves on the time tree
+moves.append( mvNodeTimeSlideUniform(time_tree,weight=num_taxa) )
+moves.append( mvNarrow(time_tree,weight=num_taxa) )
+moves.append( mvFNPR(time_tree,weight=num_taxa/5.0) )
+
+
+
+#####################
+# Branch-Rate Model #
+#####################
+
+## We assume a uncorrelated lognormal relaxed clocks.
+## So we need to specify this lognormal distribution
+## with a mean and standard deviation.
+
+## Specify a uniform prior on the clock mean
+clock_rate_mean ~ dnUniform(0,1E4)
+clock_rate_mean.setValue( 0.1 )
+
+## also specify a uniform prior on the sd of the clock rates
+clock_rate_sd ~ dnUniform(0,1E4)
+clock_rate_sd.setValue( 0.01 )
+
+## transform the clock mean to log-space for the lognormal distribution.
+clock_rate_ln_mean := ln(clock_rate_mean)
+
+## Specify scaling moves on the mean and sd.
+## Since the mean is in real space, a scaling move should work.
+## Alternatively, we could us a sliding move.
+moves.append( mvScale( clock_rate_mean, weight=3 ) )
+moves.append( mvScale( clock_rate_sd, weight=3 ) )
+
+mv_up_down_branch_rates = mvUpDownScale( weight=5.0 )
+mv_up_down_branch_rates.addVariable( clock_rate_mean, up=TRUE )
+
+## construct the lognormal branch length prior
+for ( i in 1:num_branches) {
+  branch_rates[i] ~ dnLognormal(clock_rate_ln_mean, clock_rate_sd)
+	moves.append( mvScale( branch_rates[i], weight=2 ) )
+	mv_up_down_branch_rates.addVariable( branch_rates[i], up=TRUE  )
+}
+
+moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
+moves.append( mv_up_down_branch_rates )
+moves.append( mvRateAgeBetaShift(tree=time_tree, rates=branch_rates, tune=true, weight=num_taxa) )
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=time_tree, Q=Q, siteRates=sr, branchRates=branch_rates, type="DNA")
+seq.clamp( data )
+
+
+
+############
+# Analysis #
+############
+
+mymodel = model(time_tree)
+
+# add monitors
+monitors.append( mnScreen( clock_rate_mean, clock_rate_sd, printgen=10) )
+monitors.append( mnFile(time_tree, filename="output/photinus_ultrametric_single_gene_"+GENE+".trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_ultrametric_single_gene_"+GENE+".log", printgen=1) )
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(25000, tuningInterval=100)
+
+# summarize output
+treetrace = readTreeTrace("output/photinus_ultrametric_single_gene_"+GENE+".trees", treetype="clock")
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/photinus_ultrametric_single_gene_"+GENE+"_MAP.tre")
+
+
+# you may want to quit RevBayes now
+q()
