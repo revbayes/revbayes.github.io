@@ -473,17 +473,17 @@ If the script runs successfully, you should see MCMC diagnostics being printed t
 
 Once you have your new copy of the script, begin editing it. First, we'll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval).
 
-Previously, the `root_age` variable followed the distribution `dnUniform(0,34)`. We replace the wide prior for `root_age` with a narrower prior reflecting the secondary node age calibration. 
+Previously, the `root_age` variable followed the distribution `dnUniform(0.0, 34.0)`. We replace the wide prior for `root_age` with a narrower prior reflecting the secondary node age calibration. 
 
 The new `root_age` prior density is easily replaced with the following commands:
 ```
 # comment out the uniform prior on root age!
-# root_age ~ dnUniform(0.0, 32.0)
+# root_age ~ dnUniform(0.0, 34.0)
     
 # Calibration density #1: MRCA of sampled Kadua
 # secondary calibration corresponding
 # to MRCA of Hawaiian and non-Hawaiian Kadua   
-root_age ~ dnNormal(3.0, 13.0)
+root_age ~ dnUniform(3.0, 13.0)
 
 root_age.setValue( phy.rootAge() )
 moves.append( mvScale(root_age, weight=15) )
@@ -495,7 +495,7 @@ Rather than implementing the secondary node age calibration as a flat prior on `
 
 ```
 # comment out the uniform prior on root age!
-# root_age ~ dnUniform(0.0, 32.0)
+# root_age ~ dnUniform(0.0, 34.0)
     
 # Alternate calibration density #1: MRCA of sampled
 # Kadua secondary calibration corresponding
