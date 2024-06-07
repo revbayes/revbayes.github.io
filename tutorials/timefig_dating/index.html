@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Biogeographic dating using the TimeFIG model</h1>
 	<h3 class="subtitle">Using the TimeFIG model to jointly infer divergence times and biogeographic history</h3>
 	<h4 class="authors">Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fábio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on June  5, 2024</h5>
+  <h5>Last modified on June  7, 2024</h5>
 </div>
 
 
@@ -607,16 +607,16 @@ mcc_tree = mccTree(trace=tt, file=out_fn+".mcc.tre")
 
 <p>Once you have your new copy of the script, begin editing it. First, we’ll time-calibrate the root node that represents the most recent common ancestor of our clade. A previous fossil-based Bayesian analysis estimated the age of this node as 7.0 [3.0, 13.0] Ma (posterior mean and HPD95 credible interval).</p>
 
-<p>Previously, the <code class="language-plaintext highlighter-rouge">root_age</code> variable followed the distribution <code class="language-plaintext highlighter-rouge">dnUniform(0,34)</code>. We replace the wide prior for <code class="language-plaintext highlighter-rouge">root_age</code> with a narrower prior reflecting the secondary node age calibration.</p>
+<p>Previously, the <code class="language-plaintext highlighter-rouge">root_age</code> variable followed the distribution <code class="language-plaintext highlighter-rouge">dnUniform(0.0, 34.0)</code>. We replace the wide prior for <code class="language-plaintext highlighter-rouge">root_age</code> with a narrower prior reflecting the secondary node age calibration.</p>
 
 <p>The new <code class="language-plaintext highlighter-rouge">root_age</code> prior density is easily replaced with the following commands:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># comment out the uniform prior on root age!
-# root_age ~ dnUniform(0.0, 32.0)
+# root_age ~ dnUniform(0.0, 34.0)
     
 # Calibration density #1: MRCA of sampled Kadua
 # secondary calibration corresponding
 # to MRCA of Hawaiian and non-Hawaiian Kadua   
-root_age ~ dnNormal(3.0, 13.0)
+root_age ~ dnUniform(3.0, 13.0)
 
 root_age.setValue( phy.rootAge() )
 moves.append( mvScale(root_age, weight=15) )
@@ -625,7 +625,7 @@ moves.append( mvScale(root_age, weight=15) )
 <blockquote class="aside"><h2>A shapelier node age density prior</h2><p>Rather than implementing the secondary node age calibration as a flat prior on <code class="language-plaintext highlighter-rouge">root_age</code>, we could instead design with prior with more shape. For example, to use a truncated normal distribution with mean, min, and max ages matching the posterior mean, lower, and upper bounds of the 95% credible interval above. The standard deviation of the prior is similarly design so the width of the interval $\pm 2\sigma$ matches the width of the credible interval, then further doubled to be conservative (less informative).</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># comment out the uniform prior on root age!
-# root_age ~ dnUniform(0.0, 32.0)
+# root_age ~ dnUniform(0.0, 34.0)
     
 # Alternate calibration density #1: MRCA of sampled
 # Kadua secondary calibration corresponding
@@ -717,7 +717,7 @@ loadPlugin("TensorPhylo", plugin_fp)
 <p>We will use the same basic fileset as the molecular phylogenetics exercise.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># filesystem variables
-analysis      = "divtime_timeFIG"
+analysis      = "divtime_timefig"
 dat_fp        = "./data/kadua/"
 phy_fn        = dat_fp + "kadua.tre"
 out_fn        = "./output/" + analysis
