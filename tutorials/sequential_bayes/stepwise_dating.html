@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Stepwise Bayesian inference of phylogeny</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
+	<h3 class="subtitle">Rooting and time-calibrating the gene trees</h3>
+	<h4 class="authors">Sebastian Höhna</h4>
+  <h5>Last modified on June  7, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/sequential_bayes/unrooted_gene_trees.html">Stepwise Bayesian inference of phylogeny</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/mcmc_ultrametric.Rev">mcmc_ultrametric.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="estimating-a-time-calibrated-phylogeny-from-a-posterior-sample-of-unrooted-phylogenies">Estimating a time-calibrated phylogeny from a posterior sample of unrooted phylogenies</h1>
+
+<p>In the previous <a href="/tutorials/sequential_bayes/unrooted_gene_trees">exercise 1</a> we inferred the phylogeny of the North American firefly genus <em>Photinus</em>.
+In this exercise, we will use the previous output to infer a time-calibrated phylogeny assuming a relaxed-clock model.</p>
+
+<h2 class="subsection" id="reading-the-data-posterior-tree-samples">Reading the data (posterior tree samples)</h2>
+<p>The first step is to read in the posterior tree samples from the previous analysis.
+Here, we assume that we had 50,000 sampled trees (2x an MCMC of 25,000 iterations) in the previous step.
+If we want to remove 20% as burnin, that leaves 40,000 samples.
+Then, if we want 100 trees, we should take every 400th sample, thus specifying the option <code class="language-plaintext highlighter-rouge">thin=400</code>.
+Obviously we would like to use as many trees as possible, but this comes at a computational cost <a class="citation" href="#Hoehna2024">(Höhna and Hsiang 2024)</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/photinus_COI.trees", treetype="non-clock", thinning=400, burnin=0.2)
+</code></pre></div></div>
+<p>Let us double check how many trees we have for this analysis.
+It should be 100 (or 101, if the tree for iteration 0 was included).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace.size(true)
+</code></pre></div></div>
+
+<h2 class="subsection" id="specifying-helper-variables">Specifying helper variables</h2>
+<p>We get the taxon information from the first tree</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = treetrace.getTree(1).taxa()
+n_species &lt;- taxa.size()
+</code></pre></div></div>
+<p>And as usual, we create our vector of moves and monitors.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves     = VectorMoves()
+monitors  = VectorMonitors()
+</code></pre></div></div>
+
+<h2 class="subsection" id="branch-rate-model-relaxed-clock">Branch-Rate Model (relaxed clock)</h2>
+
+<p>Here, we assume a uncorrelated lognormal relaxed clock.
+Thus, we need to specify this lognormal distribution with a mean and standard deviation.
+Specify a uniform prior on the clock mean</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate_mean ~ dnUniform(0,1E4)
+clock_rate_mean.setValue( 0.1 )
+</code></pre></div></div>
+<p>Also specify a uniform prior on the standard deviation of the clock rates</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate_sd ~ dnUniform(0,1E4)
+clock_rate_sd.setValue( 0.01 )
+</code></pre></div></div>
+<p>As the lognormal distribution is parameterized by the log-transformed mean, we need to transform the clock mean to log-space for the lognormal distribution.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate_ln_mean := ln(clock_rate_mean)
+</code></pre></div></div>
+<p>Now we can construct the lognormal branch length prior.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rate_prior = dnLognormal(clock_rate_ln_mean, clock_rate_sd)
+</code></pre></div></div>
+<p>As can be seen here, it would be easy to replace this <code class="language-plaintext highlighter-rouge">dnLognormal</code> with a Gamma distribution (<code class="language-plaintext highlighter-rouge">dnGamma</code>) or Exponential distribution (<code class="language-plaintext highlighter-rouge">dnExponential</code>).</p>
+
+<p>Next, specify scaling moves on the mean and standard deviation.
+Since the mean is in real space, a scaling move should work.
+Alternatively, we could us a sliding move.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide( clock_rate_mean, weight=3 ) )
+moves.append( mvScale( clock_rate_sd, weight=3 ) )
+</code></pre></div></div>
+
+<h2 class="subsection" id="tree-model">Tree model</h2>
+
+<p>From our previous study <a class="citation" href="#Catalan2022">(Catalan et al. 2022)</a> we know that the root age for Photinus should be around 42.5Ma.
+We thus specify a normal distribution as the prior on the root age.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
+root_time.setValue( 42.5 )
+moves.append( mvScale(root_time, weight=2.0) )
+moves.append( mvSlide(root_time, weight=2.0) )
+</code></pre></div></div>
+
+<p>The birth and death rates are drawn from a uniform prior.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate ~ dnUniform(0,1E6)
+death_rate ~ dnUniform(0,1E6)
+</code></pre></div></div>
+<p>We initialize the birth and death rates with reasonable values.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate.setValue( ln(n_species/2.0) / root_time )
+death_rate.setValue( birth_rate / 1E4 )
+</code></pre></div></div>
+<p>We apply moves to the birth and death rate variables using a scale proposal.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
+</code></pre></div></div>
+<p>Now we can specify the prior on the time tree as a birth-death process.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, taxa=taxa)
+</code></pre></div></div>
+<p>You could also apply more node calibrations, see <a href="/tutorials/clocks">relaxed clock tutorial</a></p>
+
+<h2 class="subsection" id="initializing-the-tree">Initializing the tree</h2>
+<p>In this analysis, it might be very important to initialize the time tree with a sampled topology.
+Remember that the probability of the tree topology will be computed by the sample frequency <a class="citation" href="#Hoehna2024">(Höhna and Hsiang 2024)</a>, thus all topologies that were not sampled in the previous analysis have a probability of 0.
+Such trees are problematic as we cannot initialize the MCMC with them, as computing the acceptance ratio entails a division by 0.</p>
+
+<p>Henve, we initialize the time tree with the MAP tree from our previous analysis.
+You could also use an externally rooted tree, which might be preferred.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree = readBranchLengthTrees("output/photinus_COI_MAP.tre")[1]
+</code></pre></div></div>
+<p>Now we need to make this tree bifurcating (the root was trifurcating) and to make it ultrametric.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree.makeBifurcating()
+ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
+ultrametric_MAP_tree.rescale( root_time / ultrametric_MAP_tree.rootAge() )
+</code></pre></div></div>
+<p>Unfortunately, this transformation currently messes up the internal node indices in RevBayes.
+Therefore, we use the trick to write the tree to a file and read it back in.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write(file="ultrametric.tre",time_tree)
+time_tree.setValue( readTrees("ultrametric.tre")[1] )
+</code></pre></div></div>
+
+<p>In this specific analysis, we also want to infer the time-calibrated phylogeny.
+Most important, this affects the root position.
+Thus, apply a bunch of moves on the time tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(time_tree,weight=n_species) )
+moves.append( mvNarrow(time_tree,weight=n_species) )
+moves.append( mvFNPR(time_tree,weight=n_species/5.0) )
+</code></pre></div></div>
+
+<h2 class="subsection" id="connecting-the-time-tree-to-the-posterior-sample-of-unrooted-trees">Connecting the time tree to the posterior sample of unrooted trees</h2>
+
+<p>First, specify a root branch fraction.
+This has to be a uniform prior between 0 and 1, which is actually a Beta(1,1) prior.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_branch_fraction ~ dnBeta(1,1)
+moves.append( mvBetaProbability(root_branch_fraction, weight=2.0) )
+</code></pre></div></div>
+<p>The branch length trees are the trees we sampled in step 1.
+We use our distribution <code class="language-plaintext highlighter-rouge">dnEmpiricalSample</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phis ~ dnEmpiricalSample( dnBranchRateTree( time_tree, branch_rate_prior, root_branch_fraction ) )
+phis.clamp(treetrace.getTrees())
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="running-the-analysis">Running the Analysis</h2>
+<p>First, you must create a model object with all variables contained.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(time_tree)
+</code></pre></div></div>
+<p>Next, you must specify the monitors which write specific variables to a file.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen( clock_rate_mean, clock_rate_sd, printgen=10) )
+monitors.append( mnFile(time_tree, filename="output/photinus_ultrametric_COI.trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_ultrametric_COI.log", printgen=1) )
+</code></pre></div></div>
+<p>Finally, set up an MCMC object with two replicates and run the MCMC simulation for 25,000 iterations.
+Run this longer if necessary.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(25000, tuningInterval=100)
+</code></pre></div></div>
+<p>At the end of the analysis, construct the tree summary as the maximum a posterior tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/photinus_ultrametric_COI.trees", treetype="clock")
+map_tree = mapTree(treetrace,"output/photinus_ultrametric_COI_MAP.tre")
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="plotting-the-map-tree-in-revgadgets">Plotting the MAP tree in RevGadgets</h2>
+<p>Next, we plot the MAP tree and inspect it.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggtree</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+
+</span><span class="n">LOCUS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"COI"</span><span class="w">
+
+</span><span class="n">tree</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"output/photinus_ultrametric_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">"_MAP.tre"</span><span class="p">))</span><span class="w">
+</span><span class="n">plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="p">,</span><span class="w">
+                 </span><span class="n">timeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w">
+                 </span><span class="n">geo_units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"epochs"</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_labels_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.005</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_age_bars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+                 </span><span class="n">line_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w">
+                 </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2.5</span><span class="p">,</span><span class="w">
+                 </span><span class="n">age_bars_colored_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"posterior"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggsave</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="s2">"ultrametric_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">".pdf"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<figure id="fig_ultrametric_MAP"><p><img src="figures/ultrametric_COI.png" width="75%" height="75%" /></p>
+<figcaption>MAP time-calibrated phylogeny plotted with <code class="language-plaintext highlighter-rouge">RevGadgets</code> <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a>. For more information see <a href="/tutorials/intro/RevGadgets">RevGadget tutorial</a>.</figcaption>
+</figure>
+
+<h2 id="exercise">Exercise</h2>
+
+<ol class="bibliography"><li><span id="Catalan2022">Catalan A., Höhna S., Lower S.E., Duchen P. 2022. Inferring the demographic history of the North American firefly Photinus pyralis. Journal of Evolutionary Biology. 35:1488–1499.</span>
+
+</li>
+<li><span id="Hoehna2024">Höhna S., Hsiang A.Y. 2024. Sequential Bayesian phylogenetic inference. Systematic Biology.:syae020.</span>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

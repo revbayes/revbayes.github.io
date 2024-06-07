@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Stepwise Bayesian inference of phylogeny</title>
+    <title>RevBayes: Sequential Bayesian inference of phylogeny</title>
   </head>
   <body>
     <div class="container">
@@ -52,10 +52,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
-	<h3 class="subtitle">A full analysis pipeline for phylogenetic inference using RevBayes</h3>
-	<h4 class="authors">Sebastian Höhna and Allison Hsiang</h4>
-  <h5>Last modified on January 18, 2021</h5>
+	<h1 class="maintitle">Sequential Bayesian inference of phylogeny</h1>
+	<h3 class="subtitle">Example sequential Bayesian analysis for divergence time estimation in RevBayes</h3>
+	<h4 class="authors">Sebastian Höhna</h4>
+  <h5>Last modified on June  7, 2024</h5>
 </div>
 
 
@@ -84,17 +84,57 @@
 
 
 
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_16S.fas">photinus_16S.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_18S.fas">photinus_18S.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_28S.fas">photinus_28S.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_CAD.fas">photinus_CAD.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_COI.fas">photinus_COI.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_UV_opsin.fas">photinus_UV_opsin.fas</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/data/photinus_WG.fas">photinus_WG.fas</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/check_convergence_unrooted.R">check_convergence_unrooted.R</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/mcmc_ultrametric_single_gene.Rev">mcmc_ultrametric_single_gene.Rev</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/plot_ultrametric_MAP_trees.R">plot_ultrametric_MAP_trees.R</a></li>
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/plot_unrooted_MAP_trees.R">plot_unrooted_MAP_trees.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
 </div>
 <h1 class="section" id="overview">Overview</h1>
 
-<p>This tutorial aims to guide you through our stepwise Bayesian inference pipeline using <a href="http://revbayes.com">RevBayes</a>. The exercises are based on a dataset of north american fireflies (genus <em>Photinus</em>) for which we have molecular sequence data for extant species. The material used in this tutorial is directly taken from three others that explore some of the topics in more detail.</p>
+<p>This tutorial aims to guide you through our sequential (or stepwise) Bayesian inference pipeline using <a href="http://revbayes.com">RevBayes</a> <a class="citation" href="#Hoehna2024">(Höhna and Hsiang 2024)</a>. The exercises are based on a dataset of North American fireflies (genus <em>Photinus</em>) for which we have molecular sequence data for extant species <a class="citation" href="#Catalan2022">(Catalan et al. 2022)</a>. Our goal is to estimate a time-calibrated phylogeny using a relaxed clock model. The two steps in our sequential Bayesian analysis are first to estimate the posterior distribution of phylogenies with branch lengths, and second to use these samples to infer a time-calibrated phylogeny.</p>
 
-<ul>
-  <li><a href="/tutorials/ctmc/">Continuous Time Markov Models</a> written by Sebastian Höhna</li>
-</ul>
-
-<p>In <a href="/tutorials/step_bayes/unrooted_gene_trees">exercises 1</a> we’ll use the molecular sequence data to infer the relationships among living species.
-In <a href="/tutorials/step_bayes/relaxed">exercise 2</a> we transform the branch lengths from units of substitution into units of time assuming a relaxed clock model.</p>
+<p>In <a href="/tutorials/sequential_bayes/unrooted_gene_trees">exercises 1</a> we’ll use the molecular sequence data to infer the relationships among living species.
+In <a href="/tutorials/sequential_bayes/stepwise_dating">exercise 2</a> we transform the branch lengths from units of substitution into units of time assuming a relaxed clock model.</p>
 
 <h3 id="the-data">The data</h3>
 
@@ -104,17 +144,18 @@ In this directory, create a subdirectory called <strong>data</strong>, and downl
 </blockquote>
 
 <p>In the <strong>data</strong> folder, you should now have seven files.
-Each file is a <em>fasta</em> formatted alignment of a different protein coding gene.</p>
+Each file is a <em>fasta</em> formatted alignment of a different protein coding gene.
+In the tutorial we are only going to use a single gene, COI, but as an exercise you should repeat the analysis with another gene and also with all genes concatenated together as a partitioned analysis.</p>
 
 <h3 id="scripts">Scripts</h3>
 
-<p>For more complex models and analyses, it’s useful to create separate Rev scripts that contain all the model parameters, moves, and functions for different model components (e.g. the substitution model and the clock model).</p>
+<p>For more complex models and analyses, it’s useful to create separate Rev scripts that contain all the model parameters, moves, and functions for different model components (e.g., the substitution model and the clock model).</p>
 
 <blockquote class="instruction">
   <p>Create another subdirectory called <strong>scripts</strong>.</p>
 </blockquote>
 
-<p>In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under <strong>Scripts</strong> but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.</p>
+<p>In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under <strong>scripts</strong> but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.</p>
 
 <h3 id="exercises">Exercises</h3>
 
@@ -123,11 +164,16 @@ Each file is a <em>fasta</em> formatted alignment of a different protein coding 
 </blockquote>
 
 <ol>
-  <li><a href="/tutorials/step_bayes/unrooted_gene_trees">Estimating unrooted gene tree(s)</a></li>
-  <li><a href="/tutorials/step_bayes/dating">Rooting and time calibrating the gene tree(s)</a></li>
+  <li><a href="/tutorials/sequential_bayes/unrooted_gene_trees">Estimating unrooted gene tree(s)</a></li>
+  <li><a href="/tutorials/sequential_bayes/stepwise_dating">Rooting and time calibrating the gene tree(s)</a></li>
 </ol>
 
-<ol class="bibliography"></ol>
+<ol class="bibliography"><li><span id="Catalan2022">Catalan A., Höhna S., Lower S.E., Duchen P. 2022. Inferring the demographic history of the North American firefly Photinus pyralis. Journal of Evolutionary Biology. 35:1488–1499.</span>
+
+</li>
+<li><span id="Hoehna2024">Höhna S., Hsiang A.Y. 2024. Sequential Bayesian phylogenetic inference. Systematic Biology.:syae020.</span>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');

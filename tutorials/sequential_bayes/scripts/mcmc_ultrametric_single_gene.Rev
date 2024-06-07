@@ -1,33 +1,22 @@
 ################################################################################
 #
 # RevBayes Example: Bayesian inference of a rooted time tree using a
-#                   relaxed clock model and a posterior distribution of trees
-#                   as data.
+#                   relaxed clock model.
 #
 # authors: Sebastian Hoehna
 #
 ################################################################################
 
 H = 0.587405
+GENE = "COI"
 
 
-### read in the character data
-tmp_data = readDiscreteCharacterData( "data/")
-
-supermatrix = concatenate( tmp_data, merge="union" )
-
-n_data_subsets = tmp_data.size()
-
-all_taxa <- supermatrix.taxa()
-
-for ( i in 1:n_data_subsets ) {
-    data[i] = tmp_data[i]
-    data[i].addMissingTaxa( all_taxa )
-}
+### Read in sequence data for the gene
+data = readDiscreteCharacterData( "data/photinus_"+GENE+".fas" )
 
 
 # Get some useful variables from the data. We need these later on.
-taxa            = data[1].taxa()
+taxa            = data.taxa()
 num_taxa        = taxa.size()
 num_branches    = 2 * num_taxa - 2
 
@@ -40,72 +29,41 @@ monitors = VectorMonitors()
 # Substitution Model #
 ######################
 
-for ( i in 1:n_data_subsets ) {
-
-    # exchangeability rates
-    er_prior[i] <- v(1,1,1,1,1,1)
-    er[i] ~ dnDirichlet(er_prior[i])
-    er[i].setValue( simplex( rep(1,6) ) )
-    moves.append( mvBetaSimplex(er[i], alpha=10, tune=true, weight=2) )
-    moves.append( mvDirichletSimplex(er[i], alpha=10, tune=true, weight=1) )
-
-    # stationary frequencies
-    pi_prior[i] <- v(1,1,1,1)
-    pi[i] ~ dnDirichlet(pi_prior[i])
-    pi[i].setValue( data[i].getEmpiricalBaseFrequencies() )
-    moves.append( mvBetaSimplex(pi[i], alpha=20, tune=true, weight=2) )
-    moves.append( mvDirichletSimplex(pi[i], alpha=20, tune=true, weight=1) )
-
-    # rate matrix for partition i
-    Q[i] := fnGTR(er[i],pi[i])
-
-    # +Gamma for partition i
-    alpha[i] ~ dnUniform( 0, 1E8 )
-    alpha[i].setValue( 0.2 )
-    sr[i] := fnDiscretizeGamma( alpha[i], alpha[i], 4, false )
-
-    # add moves for the alpha parameter
-    moves.append( mvScale(alpha[i],weight=2) )
-
-    # the probability of a site being invariable
-    pinvar[i] ~ dnBeta(1,1)
-    moves.append( mvBetaProbability(pinvar[i], delta=20, tune=true, weight=2.0) )
-
-}
+# specify the stationary frequency parameters
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
 
 
-
-########################
-# Partition Rate Model #
-########################
-
-#rel_part_rate[1] <- 1
-#
-#for ( i in 2:n_data_subsets ) {
-#
-##    rel_part_rate[i] ~ dnUniform(0,1E4)
-#    rel_part_rate[i] ~ dnLognormal(0,H)
-#    rel_part_rate[i].setValue(1.0)
-#    moves.append( mvScale(rel_part_rate[i],lambda=0.01,weight=2.0) )
-#
-#}
+# specify the exchangeability rate parameters
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
 
 
-rel_part_rate ~ dnDirichlet( rep(5,n_data_subsets) )
-moves.append( mvBetaSimplex(rel_part_rate, alpha=20, tune=true, weight=n_data_subsets) )
-moves.append( mvDirichletSimplex(rel_part_rate, alpha=20, tune=true, weight=3) )
+# create a deterministic variable for the rate matrix, GTR
+Q := fnGTR(er,pi)
 
-avmvn_part_rate = mvAVMVN(weight=20)
-avmvn_part_rate.addVariable(rel_part_rate)
-moves.append( avmvn_part_rate )
 
+#############################
+# Among Site Rate Variation #
+#############################
+
+# among site rate variation, +Gamma4
+alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue(1.0)
+
+sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
 
 
 ##############
 # Tree model #
 ##############
 
-## From our study, Catalan et al (2020), we know that the root age
+## From our study, Catalan et al (2022), we know that the root age
 ## for Photinus should be around 42.5Ma.
 ## We thus specify a normal distribution as the prior on the root age.
 root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
@@ -122,7 +80,7 @@ death_rate ~ dnUniform(0,1E6)
 birth_rate.setValue( ln(num_taxa/2.0) / root_time )
 death_rate.setValue( birth_rate / 1E4 )
 
-## we apply movesto the birth and death rate variables using a scale proposal
+## we apply moves to the birth and death rate variables using a scale proposal
 moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
 moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
 
@@ -167,7 +125,7 @@ mv_up_down_branch_rates.addVariable( clock_rate_mean, up=TRUE )
 
 ## construct the lognormal branch length prior
 for ( i in 1:num_branches) {
-    branch_rates[i] ~ dnLognormal(clock_rate_ln_mean, clock_rate_sd)
+  branch_rates[i] ~ dnLognormal(clock_rate_ln_mean, clock_rate_sd)
 	moves.append( mvScale( branch_rates[i], weight=2 ) )
 	mv_up_down_branch_rates.addVariable( branch_rates[i], up=TRUE  )
 }
@@ -182,15 +140,8 @@ moves.append( mvRateAgeBetaShift(tree=time_tree, rates=branch_rates, tune=true, 
 ###################
 
 # the sequence evolution model
-for ( i in 1:n_data_subsets ) {
-
-    part_rate[i] := rel_part_rate[i] * n_data_subsets * branch_rates
-
-    seq[i] ~ dnPhyloCTMC(tree=time_tree, Q=Q[i], siteRates=sr[i], pInv=pinvar[i], branchRates=part_rate[i], type="DNA")
-    seq[i].clamp( data[i] )
-
-}
-
+seq ~ dnPhyloCTMC(tree=time_tree, Q=Q, siteRates=sr, branchRates=branch_rates, type="DNA")
+seq.clamp( data )
 
 
 
@@ -202,17 +153,17 @@ mymodel = model(time_tree)
 
 # add monitors
 monitors.append( mnScreen( clock_rate_mean, clock_rate_sd, printgen=10) )
-monitors.append( mnFile(time_tree, filename="output/photinus_ultrametric_partitioned.trees", printgen=1) )
-monitors.append( mnModel(filename="output/photinus_ultrametric_partitioned.log", printgen=1) )
+monitors.append( mnFile(time_tree, filename="output/photinus_ultrametric_single_gene_"+GENE+".trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_ultrametric_single_gene_"+GENE+".log", printgen=1) )
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
 mymcmc.run(25000, tuningInterval=100)
 
 # summarize output
-treetrace = readTreeTrace("output/photinus_ultrametric_partitioned.trees", treetype="clock")
+treetrace = readTreeTrace("output/photinus_ultrametric_single_gene_"+GENE+".trees", treetype="clock")
 # and then get the MAP tree
-map_tree = mapTree(treetrace,"output/photinus_ultrametric_partitioned_MAP.tre")
+map_tree = mapTree(treetrace,"output/photinus_ultrametric_single_gene_"+GENE+"_MAP.tre")
 
 
 # you may want to quit RevBayes now

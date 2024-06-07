@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Stepwise Bayesian inference of phylogeny</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
+	<h3 class="subtitle">Rooting and calibrating the gene trees</h3>
+	<h4 class="authors">Sebastian Höhna</h4>
+  <h5>Last modified on June  7, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/sequential_bayes/scripts/mcmc_unrooted_gene_tree.Rev">mcmc_unrooted_gene_tree.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="estimating-posterior-distribution-of-unrooted-topologies-with-branch-lengths">Estimating posterior distribution of unrooted topologies with branch lengths</h1>
+
+<h2 class="subsection" id="the-data">The data</h2>
+
+<p>The data used in this exercise is a single gene, COI, for the North American firefly genus <em>photinus</em> (<strong>photinus_COI.fas</strong>). We will use the standard substitution model (the GTR + $\Gamma$ model) for phylogeny inference. If you want, you can also use a different locus. More details about the analysis can be found in the <a href="/tutorials/ctmc">CTMC tutorial</a>.</p>
+
+<h2 class="subsection" id="the-rev-script">The Rev script</h2>
+
+<p>First, we need to create a script for the unrooted phylogeny analysis.</p>
+
+<blockquote class="instruction">
+  <p>Create a new Rev script and call it <strong>MCMC_unrooted_photinus_COI.Rev</strong>.</p>
+</blockquote>
+
+<p>Let’s start with writing the script for this analysis. We are going to be brief in the explanation as more details are already given in the <a href="/tutorials/ctmc">CTMC tutorial</a>.</p>
+
+<p>First, read in the sequence data.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Read in sequence data for the gene
+data = readDiscreteCharacterData( "data/photinus_COI.fas" )
+</code></pre></div></div>
+<p>Then, obtain some useful variable, such as the number of taxa and number of branches.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Get some useful variables from the data. We need these later on.
+num_taxa &lt;- data.ntaxa()
+num_branches &lt;- 2 * num_taxa - 3
+taxa &lt;- data.taxa()
+</code></pre></div></div>
+<p>As usual in RevBayes, we need to create our vector of moves and monitors.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="substitution-model">Substitution Model</h2>
+<p>The next step in our model setup is the substitution model.
+We will specify a common GTR + $\Gamma$ substitution model, as suggest by <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a> and <a class="citation" href="#Fabreti2023">Fabreti and Höhna (2023)</a>.</p>
+
+<p>First, we specify the stationary frequency parameters drawn from a flat Dirichlet distribution, together with moves working on them (the first changing only one frequency and rescaling the others, the second changing all frequencies).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
+</code></pre></div></div>
+<p>Second, we specify the exchangeability rate parameters also drawn from a flat Dirichlet distribution, together with the two appropriate moves.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
+</code></pre></div></div>
+<p>Then, we can create a deterministic variable for the rate matrix, <em>Q</em></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
+</code></pre></div></div>
+<p>We also model among site rate variation using a dicretized $\Gamma$ distribution with four categories <a class="citation" href="#Yang1994a">(Yang 1994)</a>.
+Our prior on the $\alpha$ parameter of the $\Gamma$ distribution will be a uniform prior as this prior was shown to collapse best to a model without rate variation <a class="citation" href="#Fabreti2023">Fabreti and Höhna (2023)</a>. Note that is very helpful to initial $\alpha$ with a value of 1.0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue(1.0)
+
+sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="tree-model">Tree model</h2>
+<p>The next step in our model is to specify the prior on the phylogeny.
+We will use a joint prior on both the branch lenghts and topology, <code class="language-plaintext highlighter-rouge">dnUniformTopologyBranchLength</code>.
+The topology will receive a uniform prior while we use and exponential prior on the branch lengths.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># hyper-prior for the
+branch_length_lambda &lt;- 10.0
+
+# Prior distribution on the tree topology and branch lengths
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(branch_length_lambda))
+</code></pre></div></div>
+<p>Next, we specify some common moves on the tree topology and branch lengths.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/5.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches*2) )
+
+TL := psi.treeLength()
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="ctmc-model-along-the-phylogeny">CTMC Model along the Phylogeny</h2>
+<p>As usual, we specify a <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> distribution to model our molecular sequence evolution.
+This corresponds to the standard phylogenetic likelihood.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
+</code></pre></div></div>
+<p>Now, attach the observed data to this variables</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
+</code></pre></div></div>
+
+<h2 class="subsubsection" id="running-the-analysis">Running the Analysis</h2>
+
+<p>First, you must create a combined model object with all variables together.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(psi)
+</code></pre></div></div>
+<p>Then, specify the variables that are monitored and to which files these will be written.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># add monitors
+monitors.append( mnScreen(alpha, TL, printgen=100) )
+monitors.append( mnFile(psi, filename="output/photinus_COI.trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_COI.log", printgen=1) )
+</code></pre></div></div>
+<p>Finally, set up an MCMC object with two replicates and run the MCMC simulation for 25,000 iterations.
+This should be enough for this small dataset, but maybe 50,000 or 100,000 are required for larger datasets and more complex models.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=25000, tuningInterval=100)
+</code></pre></div></div>
+<p>At the end of the analysis, construct the tree summary as the maximum a posterior tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/photinus_COI.trees", treetype="non-clock")
+map_tree = mapTree(treetrace,"output/photinus_COI_MAP.tre")
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_unrooted_gene_tree.Rev</code></p>
+
+<h2 class="subsection" id="examining-the-output">Examining the output</h2>
+
+<p>Let us first look at convergence of this analysis.
+Just start <code class="language-plaintext highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">convenience</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Analysis settings</span><span class="w">
+</span><span class="n">N_REPS</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span><span class="n">LOCUS</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"COI"</span><span class="w">
+
+</span><span class="n">treefile_names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"output/photinus_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">"_run_"</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="n">N_REPS</span><span class="p">,</span><span class="s2">".trees"</span><span class="p">)</span><span class="w">
+</span><span class="n">logfile_names</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"output/photinus_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">"_run_"</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="n">N_REPS</span><span class="p">,</span><span class="s2">".log"</span><span class="p">)</span><span class="w">
+</span><span class="n">format</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"revbayes"</span><span class="w">
+
+</span><span class="n">conv.control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeControl</span><span class="p">(</span><span class="w"> </span><span class="n">tracer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w">
+                            </span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">,</span><span class="w">
+                            </span><span class="n">precision</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w">
+                            </span><span class="n">namesToExclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
+                           </span><span class="p">)</span><span class="w">
+
+</span><span class="n">check_conv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">checkConvergence</span><span class="p">(</span><span class="w"> </span><span class="n">list_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">logfile_names</span><span class="p">,</span><span class="w"> </span><span class="n">treefile_names</span><span class="w"> </span><span class="p">),</span><span class="w">
+                                </span><span class="n">control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">conv.control</span><span class="p">,</span><span class="w">
+                                </span><span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="w"> </span><span class="p">)</span><span class="w">
+
+</span><span class="n">pdf</span><span class="p">(</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"convergence_unrooted_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">".pdf"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="p">)</span><span class="w">
+  </span><span class="n">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w">
+  </span><span class="n">plotEssContinuous</span><span class="p">(</span><span class="n">check_conv</span><span class="p">)</span><span class="w">
+  </span><span class="n">plotKS</span><span class="p">(</span><span class="n">check_conv</span><span class="p">)</span><span class="w">
+  </span><span class="n">plotEssSplits</span><span class="p">(</span><span class="n">check_conv</span><span class="p">)</span><span class="w">
+  </span><span class="n">plotDiffSplits</span><span class="p">(</span><span class="n">check_conv</span><span class="p">)</span><span class="w">
+</span><span class="n">dev.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<figure id="fig_convergence_unrooted"><p><img src="figures/convergence_unrooted_COI.png" width="75%" height="75%" /></p>
+<figcaption>Convergence assessment using <code class="language-plaintext highlighter-rouge">convenience</code> <a class="citation" href="#Fabreti2022">(Fabreti and Höhna 2022)</a>. For more information see <a href="/tutorials/convergence">RevGadget tutorial</a></figcaption>
+</figure>
+
+<h3 class="subsubsection" id="plotting-the-map-tree-in-revgadgets">Plotting the MAP tree in RevGadgets</h3>
+<p>Next, we plot the MAP tree and inspect it.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggtree</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+
+</span><span class="n">LOCUS</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"COI"</span><span class="w">
+
+
+</span><span class="n">tree</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"output/photinus_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">"_MAP.tre"</span><span class="p">))</span><span class="w">
+</span><span class="n">plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="p">,</span><span class="w">
+                 </span><span class="n">timeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"posterior"</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_labels_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.005</span><span class="p">,</span><span class="w">
+                 </span><span class="n">tip_labels_italics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+                 </span><span class="n">tip_labels_remove_underscore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+                 </span><span class="n">node_pp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggsave</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="s2">"unrooted_"</span><span class="p">,</span><span class="n">LOCUS</span><span class="p">,</span><span class="s2">".pdf"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<figure id="fig_unrooted_MAP"><p><img src="figures/unrooted_COI.png" width="75%" height="75%" /></p>
+<figcaption>MAP phylogeny plotted with <code class="language-plaintext highlighter-rouge">RevGadgets</code> <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a>. For more information see <a href="/tutorials/intro/RevGadgets">RevGadget tutorial</a>.</figcaption>
+</figure>
+
+<h2 class="subsection" id="exercise">Exercise</h2>
+
+<p>Above we have seen how to infer the posterior distribution of gene trees.
+Now, after your have run this analysis, try to run the same analysis for different genes as well as a concatenated analysis of all genes.</p>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<h3 id="next">Next</h3>
+
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/sequential_bayes/stepwise_dating">Estimating divergence times from posterior sampled unrooted trees</a></li>
+</ul>
+
+<ol class="bibliography"><li><span id="Fabreti2022">Fabreti L.G., Höhna S. 2022. Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution. 13:77–90.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13727">https://doi.org/10.1111/2041-210X.13727</a>
+
+</li>
+<li><span id="Fabreti2023">Fabreti L.G., Höhna S. 2023. Nucleotide substitution model selection is not necessary for Bayesian inference of phylogeny with well-behaved priors. Systematic Biology. 72:1418–1432.</span>
+
+</li>
+<li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+
+<a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
+
+</li>
+<li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
+
+<a href="https://doi.org/10.1007/BF00160154">10.1007/BF00160154</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
