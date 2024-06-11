@@ -17,11 +17,6 @@ include_files:
 - data/horses_heterochronous_ages.tsv
 ---
 
-> ## For your info
-> This tutorial and the included exercises are currently under construction.
-> If you want to run the analyses, please compile `RevBayes` from the [dev-coalescent](https://github.com/revbayes/revbayes/tree/dev-coalescent) branch as described [here](https://revbayes.github.io/compile-linux) (for the development branch).
-{:.info}
-
 {% section Overview %}
 This tutorial describes how to run a demographic analysis using the coalescent process in `RevBayes`.
 Demographic inference is about estimating population dynamics and in this tutorial, we will specifically focus on population size estimation.
