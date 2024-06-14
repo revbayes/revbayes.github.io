@@ -1,0 +1,159 @@
+################################################################################################
+#
+# RevBayes Example: Bayesian StairwayPlot Analysis using GMRF priors
+#
+# authors: Sebastian Hoehna
+#
+################################################################################################
+
+## Global settings
+
+NUM_REPLICATES      = 2
+NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+
+# create the monitor and moves vectors
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+#######################
+# Reading in the Data #
+#######################
+
+# in principle it is possible to read in VCF files and to compute the SFS directly, although this is less efficient.
+# we read in here the folded SFS for Lampyris noctiluca from Catalan et al. 2024
+
+obs_sfs = [ 405017549, 1393598, 922300, 682542, 530181, 421015, 360546, 303107, 257549, 218569, 197952, 172446, 161453, 145816, 136546, 123085, 121036, 114119, 116561, 113349, 65829 ]
+
+N_IND   = 2*abs(obs_sfs.size()-1)
+N_SITES = round(sum(obs_sfs))
+
+#####################
+# Demographic model #
+#####################
+
+avmvn = mvAVMVN(weight=100)
+
+log_theta_at_present ~ dnUniform(-20,2)
+log_theta_at_present.setValue( ln( 0.001 ) )
+
+moves.append( mvSlideBactrian(log_theta_at_present,weight=5) )
+avmvn.addVariable(log_theta_at_present)
+
+
+## Global shrinkage parameter
+global_scale_hyperprior     <- 1.0
+
+# Global-scaled variances for hierarchical horseshoe
+global_scale ~ dnHalfCauchy(0,1)
+
+# Make sure values initialize to something reasonable
+global_scale.setValue(runif(1,0.005,0.1)[1])
+
+# moves on the global scale
+moves.append( mvScaleBactrian(global_scale,weight=5.0) )
+
+# now specify a different theta per interval
+for (i in 1:(N_IND-2)) {
+
+  # non-centralized parameterization of horseshoe
+  delta[i] ~ dnNormal( mean=0, sd=global_scale*global_scale_hyperprior )
+
+  # Make sure values initialize to something reasonable
+  delta[i].setValue(runif(1,-0.1,0.1)[1])
+
+  # set a sliding move for this variable
+  moves.append( mvSlideBactrian(delta[i], weight=5) )
+  avmvn.addVariable(delta[i])
+
+  if ( i > 1 ) {
+    move_up_down_delta[i-1] = mvUpDownSlide(weight=3)
+    move_up_down_delta[i-1].addVariable( delta[i], up=TRUE )
+    move_up_down_delta[i-1].addVariable( delta[i-1], up=FALSE )
+    moves.append( move_up_down_delta[i-1] )
+  }
+
+}
+
+# Assemble first-order differences and speciation_rate at present into the random field
+theta := fnassembleContinuousMRF(log_theta_at_present, delta, initialValueIsLogScale=TRUE, order=1)
+
+# Move all field parameters in one go
+#moves.append( mvEllipticalSliceSamplingSimple(delta,weight=5,tune=FALSE) )
+
+# joint sliding moves of all vector elements
+moves.append( mvVectorSlide(delta, weight=10) )
+#moves.append( mvShrinkExpand( log_delta, weight=10 ) )
+moves.append( avmvn )
+
+
+
+#################
+# Stairway Plot #
+#################
+
+sfs ~ dnStairwayPlot( theta, numSites=N_SITES, numIndividuals=N_IND, folded=TRUE, coding="all" )
+sfs.clamp( obs_sfs )
+
+# obtain the expected coalescent times
+times := sfs.getTimes()
+
+
+# specify some assume mutation rate and generation time.
+mu        = 2.8e-09
+GEN_TIME  = 2
+
+# get transformed variables for post processing
+ordered_Ne    := rev(theta) / 4.0 / mu
+ordered_times := rev(times) / mu * GEN_TIME
+
+# get expected SFS for leave-one-out cross-validation
+esfs := sfs.getExpectedAlleleFrequencies()
+
+
+
+#############
+# The Model #
+#############
+
+
+### workspace model wrapper ###
+my_model = model(sfs)
+
+
+
+################
+# The Analysis #
+################
+
+#add monitors
+monitors.append( mnModel(filename="output/StairwayPlot_GMRF.log", printgen=10) )
+monitors.append( mnFile(ordered_Ne, filename="output/StairwayPlot_GMRF_ordered_Ne.log", printgen=10) )
+monitors.append( mnFile(ordered_times, filename="output/StairwayPlot_GMRF_ordered_times.log", printgen=10) )
+monitors.append( mnFile(esfs, filename="output/StairwayPlot_GMRF_esfs.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000) )
+
+my_mcmc = mcmc(my_model, monitors, moves, nruns=4, combine="none")
+my_mcmc.burnin( generations=100000, tuningInterval=100 )
+my_mcmc.run( generations=500000, tuningInterval=200 )
+
+my_mcmc.operatorSummary()
+
+
+
+#################################################
+# Model Testing: Leave-one-out cross-validation #
+#################################################
+
+for (i in 1:4) {
+  cpo = ConditionalPosteriorOrdinate( filename="output/StairwayPlot_GMRF_esfs_run_"+i+".log" )
+  pred_prob = cpo.predictiveProbability( obs_sfs, log=FALSE )
+
+  "predictive probability"
+  pred_prob
+}
+
+
+
+# you may want to quit RevBayes now
+q()

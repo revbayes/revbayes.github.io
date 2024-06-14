@@ -1,0 +1,120 @@
+################################################################################################
+#
+# RevBayes Example: Bayesian StairwayPlot Analysis using iid priors
+#
+# authors: Sebastian Hoehna
+#
+################################################################################################
+
+## Global settings
+
+NUM_REPLICATES      = 2
+NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+
+# create the monitor and moves vectors
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+#######################
+# Reading in the Data #
+#######################
+
+# in principle it is possible to read in VCF files and to compute the SFS directly, although this is less efficient.
+# we read in here the folded SFS for Lampyris noctiluca from Catalan et al. 2024
+
+obs_sfs = [ 405017549, 1393598, 922300, 682542, 530181, 421015, 360546, 303107, 257549, 218569, 197952, 172446, 161453, 145816, 136546, 123085, 121036, 114119, 116561, 113349, 65829 ]
+
+N_IND   = 2*abs(obs_sfs.size()-1)
+N_SITES = round(sum(obs_sfs))
+
+#####################
+# Demographic model #
+#####################
+
+avmvn = mvAVMVN(weight=100)
+
+# now specify a different theta per interval
+for (k in 1:(N_IND-1)) {
+
+  # draw theta from a uniform prior distribution
+  theta[k] ~ dnUnif( 0.0, 0.1 )
+
+  # set a scaling move for this variable
+  moves.append( mvScale(theta[k], weight=10) )
+  avmvn.addVariable(theta[k])
+
+}
+moves.append( avmvn )
+
+
+
+#################
+# Stairway Plot #
+#################
+
+sfs ~ dnStairwayPlot( theta, numSites=N_SITES, numIndividuals=N_IND, folded=TRUE, coding="all" )
+sfs.clamp( obs_sfs )
+
+# obtain the expected coalescent times
+times := sfs.getTimes()
+
+
+# specify some assume mutation rate and generation time.
+mu        = 2.8e-09
+GEN_TIME  = 2
+
+# get transformed variables for post processing
+ordered_Ne    := rev(theta) / 4.0 / mu
+ordered_times := rev(times) / mu * GEN_TIME
+
+# get expected SFS for leave-one-out cross-validation
+esfs := sfs.getExpectedAlleleFrequencies()
+
+
+
+#############
+# The Model #
+#############
+
+
+### workspace model wrapper ###
+my_model = model(sfs)
+
+
+
+################
+# The Analysis #
+################
+
+#add monitors
+monitors.append( mnModel(filename="output/StairwayPlot_iid.log", printgen=10) )
+monitors.append( mnFile(ordered_Ne, filename="output/StairwayPlot_iid_ordered_Ne.log", printgen=10) )
+monitors.append( mnFile(ordered_times, filename="output/StairwayPlot_iid_ordered_times.log", printgen=10) )
+monitors.append( mnFile(esfs, filename="output/StairwayPlot_iid_esfs.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000) )
+
+my_mcmc = mcmc(my_model, monitors, moves, nruns=4, combine="mixed")
+my_mcmc.burnin( generations=10000, tuningInterval=100 )
+my_mcmc.run( generations=100000, tuningInterval=200 )
+
+my_mcmc.operatorSummary()
+
+
+
+#################################################
+# Model Testing: Leave-one-out cross-validation #
+#################################################
+
+for (i in 1:4) {
+  cpo = ConditionalPosteriorOrdinate( filename="output/StairwayPlot_iid_esfs_run_"+i+".log" )
+  pred_prob = cpo.predictiveProbability( obs_sfs, log=FALSE )
+
+  "predictive probability"
+  pred_prob
+}
+
+
+
+# you may want to quit RevBayes now
+q()
