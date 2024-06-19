@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Coalescent Models from Trees with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 13, 2024</h5>
+  <h5>Last modified on June 19, 2024</h5>
 </div>
 
 
@@ -189,7 +189,7 @@ If you would like to read them out later, you can set them here.</p>
 In this case, you can read it in with <code class="language-plaintext highlighter-rouge">readTrees</code>.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 taxa &lt;- maptree.taxa()
 </code></pre></div></div>
 <p>The remaining part of the script is similar to having a tree sample.

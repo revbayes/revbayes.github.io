@@ -74,7 +74,7 @@ changePoints := events.getRealPosValues(name="time")
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 
 trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()

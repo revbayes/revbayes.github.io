@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 trees = readTreeTrace("output/horses_het_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 taxa <- maptree.taxa()
 
 # Get the number of taxa. We need it later on.

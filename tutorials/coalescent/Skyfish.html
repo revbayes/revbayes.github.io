@@ -55,7 +55,7 @@
 	<h1 class="maintitle">The Skyfish Model</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with the Skyfish Model</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 13, 2024</h5>
+  <h5>Last modified on June 19, 2024</h5>
 </div>
 
 
@@ -215,7 +215,7 @@ changePoints := events.getRealPosValues(name="time")
 <p>In our example, we realized that it is difficult to find a starting tree with this model.
 We just set the <em>maximum a posteriori</em> (MAP) tree of the analysis with the Constant model as our starting tree.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()
