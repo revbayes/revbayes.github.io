@@ -125,7 +125,7 @@ In our example, we realized that it is difficult to find a starting tree with th
 We just set the *maximum a posteriori* (MAP) tree of the analysis with the Constant model as our starting tree.
 ~~~
 trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()

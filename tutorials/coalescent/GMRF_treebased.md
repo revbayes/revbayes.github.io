@@ -94,7 +94,7 @@ In this case, you can read it in with `readTrees`.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.
 ~~~
 trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
-maptree = mapTree(trace=trees)
+maptree = mapTree(trace=trees, conditionalAges=TRUE)
 taxa <- maptree.taxa()
 ~~~
 The remaining part of the script is similar to having a tree sample.
