@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
 	<h3 class="subtitle">Introduction to MCMC Simulation using a simple Binomial Model</h3>
 	<h4 class="authors">Mike May, Brian Moore and Sebastian H&#246;hna</h4>
-  <h5>Last modified on February 28, 2022</h5>
+  <h5>Last modified on June 21, 2024</h5>
 </div>
 
 
@@ -220,23 +220,23 @@ current value of $p$.</p>
 <p>Actually, in this case, we’re just going to make up some data on the
 spot. Feel free to alter these values to see how they influence the
 posterior distribution</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Make up some coin flips!
-    # Feel free to change these numbers
-    n &lt;- 100 # the number of flips
-    x &lt;- 63	# the number of heads
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
+# Feel free to change these numbers
+n &lt;- 100 # the number of flips
+x &lt;- 63	# the number of heads
 </code></pre></div></div>
-<p>Initializing the Markov chain
-—————————–</p>
+
+<h2 id="initializing-the-markov-chain">Initializing the Markov chain</h2>
 
 <p>We have to start the MCMC off with some initial parameter values. One
 way to do this is to randomly draw values of the parameters (just $p$,
 in this case) from the prior distribution. We’ll assume a “flat” beta
 prior distribution; that is, one with parameters $\alpha = 1$ and
 $\beta = 1$.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Initialize the chain with starting values
-    alpha &lt;- 1
-    beta  &lt;- 1
-    p &lt;- rbeta(n=1,alpha,beta)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with starting values
+alpha &lt;- 1
+beta  &lt;- 1
+p &lt;- rbeta(n=1,alpha,beta)[1]
 </code></pre></div></div>
 <h3 id="likelihood-function">Likelihood function</h3>
 
@@ -244,27 +244,27 @@ $\beta = 1$.</p>
 probability for the likelihood function. Since the likelihood is defined
 only for values of $p$ between 0 and 1, we return 0.0 if $p$ is outside
 this range:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # specify the likelihood function
-    function likelihood(p) {
-        if(p &lt; 0 || p &gt; 1)
-            return 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the likelihood function
+function likelihood(p) {
+    if(p &lt; 0 || p &gt; 1)
+        return 0
 
-        l = dbinomial(x,p,n,log=false)
-        return l
-    }
+    l = dbinomial(x,p,n,log=false)
+    return l
+}
 </code></pre></div></div>
 <h3 id="prior-distribution">Prior distribution</h3>
 
 <p>Similarly, we need to specify a function for the prior distribution.
 Here, we use the beta probability distribution for the prior on $p$:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # specify the prior function
-    function prior(p) {
-        if(p &lt; 0 || p &gt; 1)
-            return 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the prior function
+function prior(p) {
+    if(p &lt; 0 || p &gt; 1)
+        return 0
 
-        pp = dbeta(p,alpha,beta,log=false)
-        return pp
-    }
+    pp = dbeta(p,alpha,beta,log=false)
+    return pp
+}
 </code></pre></div></div>
 <h3 id="monitoring-parameter-values">Monitoring parameter values</h3>
 
@@ -272,20 +272,20 @@ Here, we use the beta probability distribution for the prior on $p$:</p>
 <em>i.e.</em>, store, parameter values into a file
 during the MCMC simulation. For this file we need to write the column
 headers:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Prepare a file to log our samples
-    write("iteration","p","\n",file="binomial_MH.log")
-    write(0,p,"\n",file="binomial_MH.log",append=TRUE)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
+write("iteration","p","\n",file="binomial_MH.log")
+write(0,p,"\n",file="binomial_MH.log",append=TRUE)
 </code></pre></div></div>
 <p>(You may have to change the newline characters to
 <code class="language-plaintext highlighter-rouge">\backslashr\backslashn</code> if you’re using a Windows operating system.)
 We’ll also monitor the parameter values to the screen, so let’s print
 the initial values:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Print the initial values to the screen
-    print("iteration","p")
-    print(0,p)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
+print("iteration","p")
+print(0,p)
 </code></pre></div></div>
-<p>Writing the MH Algorithm
-————————</p>
+
+<h2 id="writing-the-mh-algorithm">Writing the MH Algorithm</h2>
 
 <p>At long last, we can write our MCMC algorithm. First, let us define the
 frequency how often we print to file
@@ -293,13 +293,13 @@ frequency how often we print to file
 thinning. If we set the variable <code class="language-plaintext highlighter-rouge">printgen</code> to 1, then we will store the
 parameter values every single iteration; if we choose <code class="language-plaintext highlighter-rouge">printgen=10</code>
 instead, then only every $10^{th}$ iteration.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    printgen = 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printgen = 10
 </code></pre></div></div>
 <p>We will repeat this resampling procedure many times (here, 10000), and
 iterate the MCMC using a <code class="language-plaintext highlighter-rouge">for</code> loop:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Write the MH algorithm
-    reps = 10000
-    for(rep in 1:reps){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm
+reps = 10000
+for(rep in 1:reps){
 </code></pre></div></div>
 <p>(remember to close your <code class="language-plaintext highlighter-rouge">for</code> loop at the end).</p>
 
@@ -307,34 +307,34 @@ iterate the MCMC using a <code class="language-plaintext highlighter-rouge">for<
 $p^\prime$ to evaluate. We’ll propose a new value of $p$ from a uniform
 distribution between 0 and 1. Note that in this first example we do not
 condition new parameter values on the current value.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    	# Propose a new value of p
-    	p_prime &lt;- runif(n=1,0.0,1.0)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Propose a new value of p
+    p_prime &lt;- runif(n=1,0.0,1.0)[1]
 </code></pre></div></div>
 <p>Next, we compute the proposed likelihood and prior probabilities, as
 well as the acceptance probability, $R$:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    	# Compute the acceptance probability
-    	R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Compute the acceptance probability
+    R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
 </code></pre></div></div>
 <p>Then, we accept the proposal with probability $R$ and reject otherwise:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    	# Accept or reject the proposal
-    	u &lt;- runif(1,0,1)[1]
-    	if(u &lt; R){
-    		# Accept the proposal
-    		p &lt;- p_prime
-    	}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Accept or reject the proposal
+    u &lt;- runif(1,0,1)[1]
+    if(u &lt; R){
+        # Accept the proposal
+        p &lt;- p_prime
+    }
 </code></pre></div></div>
 <p>Finally, we store the current value of $p$ in our log file. Here, we
 actually check if we want to store the value during this iteration.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if ( (rep % printgen) == 0 ) {
-            # Write the samples to a file
-            write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
-            # Print the samples to the screen
-            print(rep,p)
-        }
-    } # end MCMC
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( (rep % printgen) == 0 ) {
+        # Write the samples to a file
+        write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
+        # Print the samples to the screen
+        print(rep,p)
+    }
+} # end MCMC
 </code></pre></div></div>
-<p>Visualizing the samples of an MCMC simulation
-———————————————</p>
+
+<h2 id="visualizing-the-samples-of-an-mcmc-simulation">Visualizing the samples of an MCMC simulation</h2>
 
 <p>Below we show an example of the obtained output in
 <code class="language-plaintext highlighter-rouge">Tracer</code>. Specifically, <a href="#fig:mcmc_samples"></a> shows
@@ -358,17 +358,17 @@ which are more efficient than others.</p>
 
 <p>First, let us rewrite the MCMC loop so that we use instead a function,
 which we call <code class="language-plaintext highlighter-rouge">move_uniform</code> for simplicity, that performs the move:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (rep in 1:reps){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (rep in 1:reps){
 
-        # call uniform move
-        move_uniform(1)
+    # call uniform move
+    move_uniform(1)
 
-        if ( (rep % printgen) == 0 ) {
-            # Write the samples to a file
-            write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
-        }
+    if ( (rep % printgen) == 0 ) {
+        # Write the samples to a file
+        write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
+    }
 
-    } # end MCMC
+} # end MCMC
 </code></pre></div></div>
 <p>This loop looks already much cleaner.</p>
 
@@ -376,27 +376,27 @@ which we call <code class="language-plaintext highlighter-rouge">move_uniform</c
 
 <p>Now we need to actually write the <code class="language-plaintext highlighter-rouge">move_uniform</code> function. We mostly
 just copy the code we had before into a dedicated function</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    function move_uniform( Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_uniform( Natural weight) {
 
-        for (i in 1:weight) {
-            # Propose a new value of p
-            p_prime &lt;- runif(n=1,0.0,1.0)[1]
+    for (i in 1:weight) {
+        # Propose a new value of p
+        p_prime &lt;- runif(n=1,0.0,1.0)[1]
 
-            # Compute the acceptance probability
-            R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
+        # Compute the acceptance probability
+        R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
 
-            # Accept or reject the proposal
-            u &lt;- runif(1,0,1)[1]
-            if (u &lt; R){
-                # Accept the proposal
-                p &lt;- p_prime
-            } else {
-                # Reject the proposal
-                # (we don't have to do anything here)
-            }
+        # Accept or reject the proposal
+        u &lt;- runif(1,0,1)[1]
+        if (u &lt; R){
+            # Accept the proposal
+            p &lt;- p_prime
+        } else {
+            # Reject the proposal
+            # (we don't have to do anything here)
         }
-
     }
+
+}
 </code></pre></div></div>
 <p>There are a few things to consider in the function <code class="language-plaintext highlighter-rouge">move_uniform</code>.
 First, we do not have a return value because the move simply changes the
@@ -414,27 +414,27 @@ script).</p>
 moves propose an update by drawing a random number from a uniform
 distribution and then adding this random number to the current value
 (<em>i.e.</em>, centered on the previous value).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    function move_slide( RealPos delta, Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_slide( RealPos delta, Natural weight) {
 
-        for (i in 1:weight) {
-            # Propose a new value of p
-            p_prime &lt;- p + runiform(n=1,-delta,delta)[1]
+    for (i in 1:weight) {
+        # Propose a new value of p
+        p_prime &lt;- p + runiform(n=1,-delta,delta)[1]
 
-            # Compute the acceptance probability
-            R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
+        # Compute the acceptance probability
+        R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
 
-            # Accept or reject the proposal
-            u &lt;- runif(1,0,1)[1]
-            if (u &lt; R) {
-                # Accept the proposal
-                p &lt;- p_prime
-            } else {
-                # Reject the proposal
-                # (we don't have to do anything here)
-            }
+        # Accept or reject the proposal
+        u &lt;- runif(1,0,1)[1]
+        if (u &lt; R) {
+            # Accept the proposal
+            p &lt;- p_prime
+        } else {
+            # Reject the proposal
+            # (we don't have to do anything here)
         }
-
     }
+
+}
 </code></pre></div></div>
 <p>In addition to the weight of the move, this move has another argument,
 <code class="language-plaintext highlighter-rouge">delta</code>. The argument <code class="language-plaintext highlighter-rouge">delta</code> defines the width of the uniform window
@@ -460,28 +460,28 @@ this scaling factor by the current value. An interesting feature of this
 move is that it is not symmetrical and thus needs a Hastings ratio. The
 Hastings ratio is rather trivial in this case, and one only needs to
 multiply the acceptance rate by the scaling factor.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    function move_scale( RealPos lambda, Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_scale( RealPos lambda, Natural weight) {
 
-        for (i in 1:weight) {
-            # Propose a new value of p
-            sf &lt;- exp( lambda * ( runif(n=1,0,1)[1] - 0.5 ) )
-            p_prime &lt;- p * sf
+    for (i in 1:weight) {
+        # Propose a new value of p
+        sf &lt;- exp( lambda * ( runif(n=1,0,1)[1] - 0.5 ) )
+        p_prime &lt;- p * sf
 
-            # Compute the acceptance probability
-            R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) ) * sf
+        # Compute the acceptance probability
+        R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) ) * sf
 
-            # Accept or reject the proposal
-            u &lt;- runif(1,0,1)[1]
-            if (u &lt; R){
-                # Accept the proposal
-                p &lt;- p_prime
-            } else {
-                # Reject the proposal
-                # (we don't have to do anything here)
-            }
+        # Accept or reject the proposal
+        u &lt;- runif(1,0,1)[1]
+        if (u &lt; R){
+            # Accept the proposal
+            p &lt;- p_prime
+        } else {
+            # Reject the proposal
+            # (we don't have to do anything here)
         }
-
     }
+
+}
 </code></pre></div></div>
 <p>As before, this move has a tuning parameter called <em>lambda</em>.</p>
 
@@ -503,54 +503,54 @@ Part 2 <a href="https://www.youtube.com/watch?v=DOZLkjGKEnQ"><img src="/assets/i
 modeling functionality. It turns out that the <code class="language-plaintext highlighter-rouge">Rev</code> code to specify the
 above model is extremely simple and similar to the one we used before.
 Again, we start by “reading in” (<em>i.e.</em>, making up) our data.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Make up some coin flips!
-    # Feel free to change these numbers
-    n &lt;- 100 # the number of flips
-    x &lt;- 63	# the number of heads
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
+# Feel free to change these numbers
+n &lt;- 100 # the number of flips
+x &lt;- 63	# the number of heads
 </code></pre></div></div>
 <p>Now we specify our prior model.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Specify the prior distribution
-    alpha &lt;- 1
-    beta  &lt;- 1
-    p ~ dnBeta(alpha,beta)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
+alpha &lt;- 1
+beta  &lt;- 1
+p ~ dnBeta(alpha,beta)
 </code></pre></div></div>
 <p>One difference between RevBayes and the MH algorithm that we wrote
 above is that many MCMC proposals are already built-in, but we have to
 specify them <em>before</em> we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
 for that parameter.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Define a move for our parameter, p
-    moves[1] = mvSlide(p,delta=0.1,weight=1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, p
+moves[1] = mvSlide(p,delta=0.1,weight=1)
 </code></pre></div></div>
 <p>Next, our likelihood model.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Specify the likelihood model
-    k ~ dnBinomial(p, n)
-    k.clamp(x)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
+k ~ dnBinomial(p, n)
+k.clamp(x)
 </code></pre></div></div>
 <p>We wrap our full Bayesian model into one model object (this is a
 convenience to keep the entire model in a single object, and is more
 useful when we have very large models):</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Construct the full model
-    my_model = model(p)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
+my_model = model(p)
 </code></pre></div></div>
 <p>We use “monitors” to keep track of parameters throughout the MCMC. The
 two kinds of monitors we use here are the <code class="language-plaintext highlighter-rouge">mnModel</code>, which writes
 parameters to a specified file, and the <code class="language-plaintext highlighter-rouge">mnScreen</code>, which simply outputs
 some parts of the model to screen (as a sort of progress bar).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Make the monitors to keep track of the MCMC
-    monitors[1] = mnModel(filename="binomial_MCMC.log", printgen=10, separator = TAB)
-    monitors[2] = mnScreen(printgen=100, p)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
+monitors[1] = mnModel(filename="binomial_MCMC.log", printgen=10, separator = TAB)
+monitors[2] = mnScreen(printgen=100, p)
 </code></pre></div></div>
 <p>Finally, we assemble the analysis object (which contains the model, the
 monitors, and the moves) and execute the run using the <code class="language-plaintext highlighter-rouge">.run</code> command:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Make the analysis object
-    analysis = mcmc(my_model, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
+analysis = mcmc(my_model, monitors, moves)
 
-    # Run the MCMC
-    analysis.run(100000)
+# Run the MCMC
+analysis.run(100000)
 
-    # Show how the moves performed
-    analysis.operatorSummary()
+# Show how the moves performed
+analysis.operatorSummary()
 </code></pre></div></div>
 <p>Open the resulting <code class="language-plaintext highlighter-rouge">binomial_MCMC.log</code> file in <code class="language-plaintext highlighter-rouge">Tracer</code>. Do the
 posterior distributions for the parameter $p$ look the same as the ones
@@ -611,11 +611,11 @@ sliding-window move?</p>
   </li>
   <li>Add to each move a counter variable that counts how often the move
 was accepted. For example:
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            if (u &lt; R){
-                # Accept the proposal
-                p &lt;- p_prime
-                ++num_sliding_move_accepted
-            }
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (u &lt; R){
+# Accept the proposal
+p &lt;- p_prime
+++num_sliding_move_accepted
+}
 </code></pre></div>    </div>
   </li>
   <li>Have a look at how the acceptance rate changes for different values

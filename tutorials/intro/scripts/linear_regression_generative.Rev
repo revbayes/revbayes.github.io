@@ -32,7 +32,7 @@ moves[3] = mvSlide(sigma)
 moves[4] = mvSlide(mu_x)
 
 monitors[1] = mnScreen()
-monitors[2] = mnModel("output/linear_regression.log")
+monitors[2] = mnModel(filename="output/linear_regression.log")
 
 mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(10000)
