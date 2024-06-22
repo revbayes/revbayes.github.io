@@ -1,10 +1,12 @@
 #### Moves and Operators
 
-### 1 Setting moves along with priors
-moves = VectorMoves()
-
-### 2 Show move parameters
+### 1 Show move parameters
 ?mvSlide
+
+### 2 Setting moves along with priors
+moves = VectorMoves()
+origin_time ~ dnUnif(37.0, 55.0)
+moves.append( mvSlide(origin_time, delta=1.0, weight=1.0) )
 
 ### 3 Checking completeness of moves
 moves

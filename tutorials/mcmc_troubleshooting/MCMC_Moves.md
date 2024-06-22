@@ -4,19 +4,24 @@
 
 In order for the MCMC to work properly, every parameter that is supposed to be optimized (i.e., for which we are searching for the best estimate) has to be associated with a move or operator.
 The type of move and its settings determine how the parameter can be changed between MCMC steps, how much it can be changed by, and how often a change is attempted.
-If the move(s) for a parameter is missing, that parameter cannot be optimized, which will usually cause issues for the MCMC.
-To set up the code in a way to avoid missing operators is to specify them right after the priors for a parameter is set:
-{{ moves_script | snippet: "block#", "1" }}
 
-All move functions in RevBayes start with the prefix `mv`.
+All move functions in RevBayes start with the prefix `mv`, e.g., a sliding move is called using `mvSlide`. 
 The exact arguments differ from move to move, but generally it includes three things:
 The name of the parameter the move should act on (`x` in the example of the sliding move), one or more arguments needed as settings for the move algorithm (e.g., the sliding window's size parameter `delta`), and the move's weight, which determines how often this move will be attempted on average during each MCMC step.
-{{ moves_script | snippet: "block#", "2" }}
-On top of these, moves can have the arguments `tune` (and `tuneTarget`).
+To see all the parameters of a particular move, we can access its documentation entry using `?`:
+{{ moves_script | snippet: "block#", "1" }}
+
+On top of these main three elements, moves can have the arguments `tune` (and `tuneTarget`).
 The former is a boolean (i.e., `TRUE`/`FALSE`) which defines whether the setting-parameters of the move (e.g., window size `delta` here) is allowed to be optimized during auto-tuning.
 We will revisit the tuning options further below.
 
-The whole set of moves in an analysis are collected in a moves vector (which can be defined upfront and be added to using `.append()`), so we can look at this vector before running to ensure it contains all the moves we want.
+The whole set of moves in an analysis are collected in a moves vector (which has to be defined upfront and moves are added to it using `.append()`). Here as an example, we specify a uniform prior on the `origin_time` in the bears script, and then add a slide move to it:
+{{ moves_script | snippet: "block#", "2" }}
+
+If the move(s) for a parameter is missing, that parameter cannot be optimized, which will usually cause issues for the MCMC.
+One strategy to avoid missing operators is to set up the code in a way where we specify the moves for each parameter right after its prior is set, as we did in the example above.
+Alternatively, one can set up the code to have separate prior and move sections, which mirror each other in the order of parameters.
+In either case, we can look at the moves vector before running to ensure it contains all the moves we want.
 {{ moves_script | snippet: "block#", "3" }}
 
 
