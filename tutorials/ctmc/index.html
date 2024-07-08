@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Nucleotide substitution models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on February  2, 2022</h5>
+  <h5>Last modified on July  8, 2024</h5>
 </div>
 
 
@@ -318,19 +318,25 @@ provides information about the alignment:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data
 </code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1141 characters
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1102 characters
    =====================================================
-   Origination:                      primates_and_galeopterus_cytb.nex
-   Number of taxa:                   23
-   Number of included taxa:          23
-   Number of characters:             1141
-   Number of included characters:    1141
-   Datatype:                         DNA
+   Origination:                   "primates_and_galeopterus_cytb.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1102
+   Number of included characters: 1102
+   Datatype:                      DNA
 </code></pre></div></div>
 
 <p>Next we will specify some useful variables based on our dataset. The variable <code class="language-plaintext highlighter-rouge">data</code> has <em>member functions</em>
 that we can use to retrieve information about the dataset. These include, for example,
-the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
+the number of species and the taxa.</p>
+
+<p>To check all available <em>member functions</em>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.methods()
+</code></pre></div></div>
+
+<p>We will need taxon information for setting up different parts of our model.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- data.ntaxa()
 num_branches &lt;- 2 * num_taxa - 3
@@ -380,9 +386,9 @@ instantaneous-rate matrix:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q
 </code></pre></div></div>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
-     0.3333, -1.0000, 0.3333, 0.3333 ] ,
-     0.3333, 0.3333, -1.0000, 0.3333 ] ,
-     0.3333, 0.3333, 0.3333, -1.0000 ] ]
+     [ 0.3333, -1.0000, 0.3333, 0.3333 ] ,
+     [ 0.3333, 0.3333, -1.0000, 0.3333 ] ,
+     [ 0.3333, 0.3333, 0.3333, -1.0000 ] ]
 </code></pre></div></div>
 
 <p>As you can see, all substitution rates are equal.</p>
