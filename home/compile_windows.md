@@ -14,7 +14,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
-    (Cygwin package versions are from May 2022. Newer versions may work, but see special version notes below)
+    (Cygwin package versions are from May 2022. Newer versions may work, but see special version notes below.  As of July 2024, RevBayes requires cmake 3.15 and Boost 1.71.)
 
     | package                 | version   | 
     |-------------------------|-----------| 
@@ -69,6 +69,14 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     - Remove (or rename) the local copy of `b2.exe`, so the system uses the updated version installed globally above.
     - Run `b2 --version` to confirm that a version of b2 >= 5.2 is available.
     
+    6. Update `<path/to/revbayes>/src/CMakeLists.txt` to point to Boost:
+      a. After the line `project(RevBayes)`, add:
+         `set(BOOST_ROOT "C:/boost/boost_1_82_0/gcc")` 
+         (to match the value specified to b2 in the `prefix` argument)
+      b. After the  line starting `find_package(Boost`, around line 170,
+         add `include_directories(${Boost_INCLUDE_DIRS})`
+      c. Close to the end of the file, remove the line
+         `set_target_properties(${RB_EXEC_NAME}   PROPERTIES PREFIX "../")`
 
 2. Retrieve the RevBayes sources.
 
@@ -112,17 +120,17 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     you will need to update `src/CMakeLists.txt` to tell cmake where to 
     find Boost.
     
-    - If you encounter problems finding Boost libraries, it  may help to switch
-      from the Cygwin shell to a regular command prompt, or to use VSCode to
-      build the project.
-
-    6. After the line `project(RevBayes)`, add:
-
-    `set(Boost_COMPILER "-mgw13")`
-    `set(BOOST_ROOT "C:/boost/boost_1_82_0/gcc")` (to match the value specified to b2 in the `prefix` argument)
-
-    7?. Also add `set(BOOST_LIBRARYDIR "C:/boost/boost_1_82_0/")` and, around line 170, `include_directories(${Boost_INCLUDE_DIRS})`
-
+    - If you encounter problems finding specific Boost libraries (e.g. regex),
+      a common issue is that the boost libraries have been built using a 
+      different toolkit (e.g. a different version of gcc) to the toolkit being
+      used to build RevBayes.
+      It may help to switch from the Cygwin shell to a regular command prompt,
+      or to use [VSCode](https://revbayes.github.io/developer/setup/#vscode)
+      to build the project.
+      Add the line `set(Boost_DEBUG ON)` to the top of your `CMakeLists.txt` file
+      to see the toolset used to build Boost (which may differ, confusingly, from
+      the filenames of the compiled libraries in `C:\boost\boost_1_82_0\gcc\lib`).
+      This should match the version number reported by `gcc -v`.
 
 4. Library whack-a-mole
 
