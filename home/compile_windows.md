@@ -14,7 +14,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
-    (Cygwin package versions are from May 2022. Newer versions may work, but see special version notes below.  As of July 2024, RevBayes requires cmake 3.15 and Boost 1.71.)
+    (Cygwin package versions are from May 2022. Newer versions may work, but see special version notes below.  As of July 2024, RevBayes requires cmake 3.5.1 and Boost 1.71.)
 
     | package                 | version   | 
     |-------------------------|-----------| 
