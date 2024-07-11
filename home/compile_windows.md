@@ -75,8 +75,6 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
          (to match the value specified to b2 in the `prefix` argument)
       b. After the  line starting `find_package(Boost`, around line 170,
          add `include_directories(${Boost_INCLUDE_DIRS})`
-      c. Close to the end of the file, remove the line
-         `set_target_properties(${RB_EXEC_NAME}   PROPERTIES PREFIX "../")`
 
 2. Retrieve the RevBayes sources.
 
