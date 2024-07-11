@@ -90,15 +90,16 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
 
 3. Compile RevBayes.
 
-    1. Open a cygwin terminal window and go to the RevBayes source directory if you haven't already done so, e.g., 
+    1. Open a **Cygwin** terminal window (cmd or PowerShell will not work!) and go to the RevBayes source directory
+       if you haven't already done so, e.g., 
         ```
         cd revbayes
         ```
-    2. Next, go into the projects and then the cmake subdirectory: 
+    3. Next, go into the projects and then the cmake subdirectory: 
         ```
         cd projects/cmake
         ```
-    3. Now you can either build the standard version
+    4. Now you can either build the standard version
         ```
         bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake
         ```
