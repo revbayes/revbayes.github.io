@@ -131,6 +131,10 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
       to see the toolset used to build Boost (which may differ, confusingly, from
       the filenames of the compiled libraries in `C:\boost\boost_1_82_0\gcc\lib`).
       This should match the version number reported by `gcc -v`.
+      
+    - If `cmake` cannot find `generated_included_dirs`, these were not generated
+      successfully by `<revbayes>/projects/cmake/regenerate.sh`; head to
+      this folder and run `bash regenerate.sh`.
 
 4. Library whack-a-mole
 
