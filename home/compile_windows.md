@@ -117,8 +117,8 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     then save the file.
         
     - If you installed Boost manually, rather than using the Cygwin package, 
-    you will need to update `src/CMakeLists.txt` to tell cmake where to 
-    find Boost.
+      you will need to update `src/CMakeLists.txt` to tell cmake where to 
+      find Boost, as detailed above.
     
     - If you encounter problems finding specific Boost libraries (e.g. regex),
       a common issue is that the boost libraries have been built using a 
