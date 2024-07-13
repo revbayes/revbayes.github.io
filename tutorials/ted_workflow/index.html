@@ -990,12 +990,9 @@ This model is defined in <code class="language-plaintext highlighter-rouge">modu
 </span><span class="c1"># the branch-specific rates</span><span class="w">
 </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">nbranch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 
-  </span><span class="c1"># draw the log of the rate</span><span class="w">
-  </span><span class="n">mole_branch_rates_log</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">dnLogExponential</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mole_clock_rate_mean</span><span class="p">)</span><span class="w">
-  </span><span class="n">moves.append</span><span class="p">(</span><span class="w"> </span><span class="n">mvSlide</span><span class="p">(</span><span class="n">mole_branch_rates_log</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">)</span><span class="w">
-
-  </span><span class="c1"># exponentiate to get the rate</span><span class="w">
-  </span><span class="n">mole_branch_rates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="n">mole_branch_rates_log</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w">
+  </span><span class="c1"># draw the rate</span><span class="w">
+  </span><span class="n">mole_branch_rates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">dnExponential</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mole_clock_rate_mean</span><span class="p">)</span><span class="w">
+  </span><span class="n">moves.append</span><span class="p">(</span><span class="w"> </span><span class="n">mvScale</span><span class="p">(</span><span class="n">mole_branch_rates</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">)</span><span class="w">
 
 </span><span class="p">}</span><span class="w">
 
@@ -1003,7 +1000,7 @@ This model is defined in <code class="language-plaintext highlighter-rouge">modu
 </span><span class="n">mole_branch_rate_mean</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">mole_branch_rates</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># add a joint move on the branch rates and hyperparameters</span><span class="w">
-</span><span class="n">moves.append</span><span class="p">(</span><span class="w"> </span><span class="n">mvVectorSlideRecenter</span><span class="p">(</span><span class="n">mole_branch_rates_log</span><span class="p">,</span><span class="w"> </span><span class="n">mole_clock_rate_mean_log</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
+</span><span class="n">moves.append</span><span class="p">(</span><span class="w"> </span><span class="n">mvVectorScale</span><span class="p">(</span><span class="n">mole_branch_rates</span><span class="p">,</span><span class="w"> </span><span class="n">mole_clock_rate_mean</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 </blockquote>
 
