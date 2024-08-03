@@ -29,14 +29,14 @@ rate heterogeneity. However, BiSSE has been shown to be prone to falsely identif
 when diversification rate shifts are correlated with a character not included in the model
 {% cite Maddison2015 Rabosky2015 %}.
 
-One approach to reduce the possibility of falsely associating a character with diversification rate
-heterogeneity is to incorporate a second, unobserved character into the model {% cite Beaulieu2016 %}.
-This is called a HiSSE (Hidden State-Dependent Speciation and Extinction) model;
+The HiSSE (Hidden State-Dependent Speciation and Extinction) model reduces the possibility of falsely
+associating a character with diversification rate heterogeneity {% cite Beaulieu2016 %}.
+It does this by incorporating a second, _unobserved_ character.
 The changes in the unobserved character’s state represent background diversification rate changes
-that are not correlated with the oberved character. See {% ref fig_hisse %} for a schematic overview of the HiSSE
-model, and Table 2 for an explanation of the HiSSE model parameters.
+that are not correlated with the observed character.
+See {% ref fig_hisse %} for a schematic overview of the HiSSE model, and Table 2 for an explanation of the HiSSE model parameters.
 
-We will keep this tutorial brief and assume that you have work through the {% page_ref sse/bisse %}.
+We will keep this tutorial brief and assume that you have worked through the {% page_ref sse/bisse %}.
 
 
 {% figure fig_hisse %}
