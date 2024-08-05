@@ -1,6 +1,6 @@
 ---
 title: Setting up Eclipse for RevBayes development
-order: 1
+order: 2
 ---
 
 Eclipse is a Java-based, cross-platform IDE with lots of nice features that make it convenient for RevBayes development. First, it's cross-platform, and unlike Xcode, you can use any compiler you like (not just `clang`).

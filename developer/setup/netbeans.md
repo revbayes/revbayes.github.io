@@ -1,6 +1,6 @@
 ---
 ide: Netbeans
-order: 2
+order: 4
 ---
 
 Conventions: File paths are relative to the repository root. 
