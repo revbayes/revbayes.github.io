@@ -68,7 +68,7 @@ Compile on Windows
   <li>
     <p>Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:</p>
 
-    <p>(Cygwin package versions are from 5/20202. Newer versions may work, but see special version notes below)</p>
+    <p>(Cygwin package versions are from May 2022. Newer versions may work, but see special version notes below.  As of July 2024, RevBayes requires cmake 3.5.1 and Boost 1.71.)</p>
 
     <table>
       <thead>
@@ -171,6 +171,41 @@ Compile on Windows
     <p><strong>Boost and CMake:</strong></p>
 
     <p>It’s important that the version of Boost that you use be supported by the version of CMake that you use. You can check this by going to the package source for the CMake version you’re using e.g. <a href="https://github.com/Kitware/CMake/blob/v3.14.5/Modules/FindBoost.cmake">3.14.5</a>. Search for <code class="language-plaintext highlighter-rouge">_Boost_KNOWN_VERSIONS</code> and ensure your boost version appears in the list.</p>
+
+    <p>Occasionally, RevBayes may require a version of cmake or Boost that is not available via Cygwin.
+ Once you have used Cygwin to install gcc, you can install these separately.</p>
+
+    <p><a href="https://cmake.org/download">cmake</a> has a simple and well-documented installation pathway.</p>
+
+    <p>Configuring <a href="https://www.boost.org/">Boost</a> is less straightforward.</p>
+
+    <ol>
+      <li><a href="https://www.boost.org/users/download/">Download Boost</a> and unzip the archive.  In this tutorial, I unzipped v1.82.0 to <code class="language-plaintext highlighter-rouge">c:\boost\boost_1_82_0</code>.  It may be wise not to use the most current version; at time of writing, the latest 1.85 release caused compatibility issues.</li>
+      <li>Use Open a cygwin terminal window and <code class="language-plaintext highlighter-rouge">cd</code> to the boost directory, here: <code class="language-plaintext highlighter-rouge">c:/boost/boost_1_82_0</code></li>
+      <li>Type <code class="language-plaintext highlighter-rouge">./bootstrap.bat gcc</code> to run the script with the gcc toolset.</li>
+      <li>Execute <code class="language-plaintext highlighter-rouge">b2 toolset=gcc-13 address-model=64 architecture=x86 --build-dir=build variant=release --build-type=complete --prefix=c:/boost/boost_1_82_0/gcc --with-regex --with-program_options --with-thread --with-system --with-filesystem --with-date_time --with-serialization  install</code>.
+        <ul>
+          <li>The <code class="language-plaintext highlighter-rouge">address-model=64 architecture=x86 toolset=gcc-13</code> options are assumed to match the configuration of your system – here, a 64-bit x86 machine – throughout this tutorial.  Use <code class="language-plaintext highlighter-rouge">gcc -v</code> to check which version of gcc you are using and update <code class="language-plaintext highlighter-rouge">gcc-13</code> to match.</li>
+        </ul>
+      </li>
+      <li>Check that installation was successful.  If it was, <code class="language-plaintext highlighter-rouge">C:\boost\boost_1_82_0\gcc\lib\cmake\Boost-1.82.0</code> will contain a file <code class="language-plaintext highlighter-rouge">BoostConfig.cmake</code></li>
+    </ol>
+
+    <p>If you see errors, you may need to use a more recent version of b2 than is bundled with Boost:</p>
+    <ul>
+      <li>Download <a href="https://github.com/bfgroup/b2/releases">b2 5.2.0</a> or above.</li>
+      <li>Remove (or rename) the local copy of <code class="language-plaintext highlighter-rouge">b2.exe</code>, so the system uses the updated version installed globally above.</li>
+      <li>Run <code class="language-plaintext highlighter-rouge">b2 --version</code> to confirm that a version of b2 &gt;= 5.2 is available.</li>
+    </ul>
+
+    <ol>
+      <li>Update <code class="language-plaintext highlighter-rouge">&lt;path/to/revbayes&gt;/src/CMakeLists.txt</code> to point to Boost:
+   a. After the line <code class="language-plaintext highlighter-rouge">project(RevBayes)</code>, add:
+  <code class="language-plaintext highlighter-rouge">set(BOOST_ROOT "C:/boost/boost_1_82_0/gcc")</code> 
+  (to match the value specified to b2 in the <code class="language-plaintext highlighter-rouge">prefix</code> argument)
+   b. After the  line starting <code class="language-plaintext highlighter-rouge">find_package(Boost</code>, around line 170,
+  add <code class="language-plaintext highlighter-rouge">include_directories(${Boost_INCLUDE_DIRS})</code></li>
+    </ol>
   </li>
   <li>
     <p>Retrieve the RevBayes sources.</p>
@@ -182,12 +217,17 @@ Compile on Windows
 </code></pre></div>        </div>
       </li>
     </ol>
+
+    <p>If you have already obtained the source code by another method, 
+ navigate to the folder that contains it.  To get to the folder <code class="language-plaintext highlighter-rouge">c:/RevBayes</code>,
+ use <code class="language-plaintext highlighter-rouge">cd /cygdrive/c/RevBayes</code>.</p>
   </li>
   <li>
     <p>Compile RevBayes.</p>
 
     <ol>
-      <li>Open a cygwin terminal window and go to the RevBayes source directory if you haven’t already done so, e.g.,
+      <li>Open a <strong>Cygwin</strong> terminal window (cmd or PowerShell will not work!) and go to the RevBayes source directory
+if you haven’t already done so, e.g.,
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes
 </code></pre></div>        </div>
       </li>
@@ -203,6 +243,40 @@ Compile on Windows
 </code></pre></div>        </div>
       </li>
     </ol>
+
+    <ul>
+      <li>
+        <p>If you see the error <code class="language-plaintext highlighter-rouge">build.sh: line ##: $'\r': command not found</code>,
+ you need to convert to Unix line endings (<code class="language-plaintext highlighter-rouge">\n</code> rather than Windows <code class="language-plaintext highlighter-rouge">\r\n</code>).
+ Open the problematic file – here, (<code class="language-plaintext highlighter-rouge">build.sh</code>) –
+ in <a href="https://notepad-plus-plus.org/">Notepad++</a>,
+ use the Edit menu→EOL conversion→Unix (LF),
+ then save the file.</p>
+      </li>
+      <li>
+        <p>If you installed Boost manually, rather than using the Cygwin package, 
+you will need to update <code class="language-plaintext highlighter-rouge">src/CMakeLists.txt</code> to tell cmake where to 
+find Boost, as detailed above.</p>
+      </li>
+      <li>
+        <p>If you encounter problems finding specific Boost libraries (e.g. regex),
+a common issue is that the boost libraries have been built using a 
+different toolkit (e.g. a different version of gcc) to the toolkit being
+used to build RevBayes.
+It may help to switch from the Cygwin shell to a regular command prompt,
+or to use <a href="https://revbayes.github.io/developer/setup/#vscode">VSCode</a>
+to build the project.
+Add the line <code class="language-plaintext highlighter-rouge">set(Boost_DEBUG ON)</code> to the top of your <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> file
+to see the toolset used to build Boost (which may differ, confusingly, from
+the filenames of the compiled libraries in <code class="language-plaintext highlighter-rouge">C:\boost\boost_1_82_0\gcc\lib</code>).
+This should match the version number reported by <code class="language-plaintext highlighter-rouge">gcc -v</code>.</p>
+      </li>
+      <li>
+        <p>If <code class="language-plaintext highlighter-rouge">cmake</code> cannot find <code class="language-plaintext highlighter-rouge">generated_included_dirs</code>, these were not generated
+successfully by <code class="language-plaintext highlighter-rouge">&lt;revbayes&gt;/projects/cmake/regenerate.sh</code>; head to
+this folder and run <code class="language-plaintext highlighter-rouge">bash regenerate.sh</code>.</p>
+      </li>
+    </ul>
   </li>
   <li>
     <p>Library whack-a-mole</p>

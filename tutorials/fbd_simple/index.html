@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data</h1>
 	<h3 class="subtitle">A simplified analysis under the fossilized birth-death model for joint inference of divergence times and phylogenetic relationships</h3>
 	<h4 class="authors">Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, Walker Pett, and Tracy A. Heath</h4>
-  <h5>Last modified on January 17, 2023</h5>
+  <h5>Last modified on August 13, 2024</h5>
 </div>
 
 
@@ -184,7 +184,7 @@ However, if certain taxa persist through time and
 fossilize particularly well, then the same taxon may be sampled at different stratigraphic ages. 
 These fossil data are commonly represented by only 
 the first and last appearances of a fossil morphospecies. 
-In this case one might want to consider the <a href="/tutorials/fbd_range/">fossilized birth-death range process</a> <a class="citation" href="#Stadler2018">(Stadler et al. 2018)</a> in RevBayes to model the stratigraphic ranges of fossil occurrences.</p>
+In this case one might want to consider the fossilized birth-death range process <a class="citation" href="#Stadler2018">(Stadler et al. 2018)</a> to model the stratigraphic ranges of fossil occurrences.</p>
 
 <h4 class="subsubsection" id="Intro-Foss-Samp">Accounting for Fossil Age Uncertainty</h4>
 <hr class="subsubsection" />
@@ -495,7 +495,7 @@ Such complex variables require more extensive sampling than other nodes.</p>
 <p>We need to account for uncertainty in the age estimates of our fossils using the observed 
 minimum and maximum stratigraphic ages that are provided in the file <code class="language-plaintext highlighter-rouge">bears_taxa.tsv</code>.
 We can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see <a href="#Intro-Foss-Samp"></a>).
-For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
+For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the stratigraphic age uncertainty interval, we know the likelihood is equal to one when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
 So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.</p>
 
 <p>To do this, we will get all the fossils from the tree and use a <code class="language-plaintext highlighter-rouge">for</code> loop to iterate over them. For each fossil observation, we will create a uniform random variable 
