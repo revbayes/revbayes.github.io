@@ -1,6 +1,6 @@
 ---
 title: Setting up vim for RevBayes development
-order: 2
+order: 5
 ---
 
 [Vim](http://www.vim.org) is a text editor that some people love.

@@ -1,6 +1,6 @@
 ---
 title: Setting up XCode for RevBayes development
-order: 0
+order: 3
 ---
 
  XCode is an IDE for Mac OSX. XCode does not keep track of files, so each time you open your RevBayes project in Xcode you must pull the RevBayes master branch from git & remove reference to all of the source. Eclipse Oxygen does a cleaner job of managing the files; you do not need to pull from git each time you work in it.
