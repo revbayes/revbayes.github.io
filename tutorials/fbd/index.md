@@ -10,7 +10,7 @@ prerequisites:
 exclude_files:
 - mcmc_CEFBDP_Specimens.Rev
 - model_FBDP.Rev
-index: true
+index: false
 title-old: RB_TotalEvidenceDating_FBD_Tutorial
 redirect: false
 ---

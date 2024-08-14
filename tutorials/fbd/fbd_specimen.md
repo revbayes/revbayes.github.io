@@ -38,7 +38,7 @@ probabilistic graphical model {% cite Hoehna2014b %} integrating three separate
 likelihood components or data partitions ({% ref fig_module_gm %}): one
 for molecular data ({% ref Intro-GTR %}), one for
 morphological data ({% ref Intro-Morpho %}), and one for
-fossil stratigraphic range data ({% ref Intro-FBD %}).
+fossil age data ({% ref Intro-FBD %}).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times which is modeled according to a separate
 prior component ({% ref Intro-TipSampling %}).
@@ -164,16 +164,20 @@ present.
 
 In order to account for uncertainty in the ages of our fossil species,
 we can incorporate intervals on the ages of our represented fossil
-species. These intervals can be stratigraphic ranges or measurement
-standard error. We do this by assuming each fossil can occur with
-uniform probability anywhere within its observed interval. This is
-somewhat different from the typical approach to node calibration. Here,
-instead of treating the calibration density as an additional prior
-distribution on the tree, we treat it as the *likelihood* of our fossil
-data given the tree parameter. Specifically, we assume the likelihood of
-a particular fossil's observed stratigraphic range $F_i = (a_i, b_i)$ is equal to one if the
-fossil’s inferred age on the tree $t_i$ falls within its observed time
-interval, and zero otherwise:
+tips. These should ideally represent specimen-level uncertainties
+(stemming from the imprecise dating of the geological unit from which
+a given fossil was collected) rather than stratigraphic ranges (i.e.,
+the interval between the first occurrence of a given species and its last
+occurrence, assuming that at least two stratigraphically unique occurrences
+do in fact exist). We can account for such specimen-level uncertainties
+by assuming each fossil can occur with uniform probability anywhere within
+its observed interval. This is somewhat different from the typical approach
+to node calibration. Here, instead of treating the calibration density as
+an additional prior distribution on the tree, we treat it as the *likelihood*
+of our fossil data given the tree parameter. Specifically, we assume the
+likelihood of a particular fossil's age uncertainty range $F_i = (a_i, b_i)$
+is equal to one if the fossil's inferred age on the tree $t_i$ falls within
+this interval, and zero otherwise:
 
 $$f[F_i \mid t_i] = \begin{cases}
 1 & \text{if } a_i < t_i < b_i\\
@@ -181,12 +185,12 @@ $$f[F_i \mid t_i] = \begin{cases}
 \end{cases}$$
 
 In other words, we assume the likelihood is equal to one
-if the inferred age is consistent with the observed data. We can
+if the inferred age is consistent with the age data. We can
 represent this likelihood in RevBayes using a distribution that is
 proportional to the likelihood,
 *i.e.* non-zero when the likelihood is equal
 to one ({% ref fig_tipsampling_gm %}). This model component represents
-the observed in the modular graphical model shown in {% ref fig_module_gm %}.
+the "Fossil Occurrence Time Data" in the modular graphical model shown in {% ref fig_module_gm %}.
 
 {% figure fig_tipsampling_gm %}
 <img src="figures/tikz/tipsampling_gm.png" width="400" /> 
@@ -194,22 +198,17 @@ the observed in the modular graphical model shown in {% ref fig_module_gm %}.
 A graphical model of the
 fossil age likelihood model used in this tutorial. The likelihood of
 fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
-inferred fossil age $t_i$ falls within the observed time interval
+inferred fossil age $t_i$ falls within the age uncertainty interval
 $(a_i,b_i)$.
 {% endfigcaption %}
 {% endfigure %}
 
-It is worth noting that this is not necessarily the appropriate way to
-model fossil data that are actually observed as stratigraphic ranges. In
-paleontology, a stratigraphic range represents the interval of time
-between the first and last appearances of a fossilized species. Thus,
-this range typically represents multiple fossil specimens observed at
-different times along a single lineage. An extension of the fossilized
-birth-death process that is a distribution on stratigraphic ranges has
-been described by {% citet Stadler2018 %}. 
-This model is fully implemented in RevBayes as the "fossilized birth-death *range* process". 
-For a detailed description of analysis under this model, please see the tutorial on {% page_ref fbd %}.
-
+Once again, it is worth noting that this is not the appropriate way to
+model fossil data that consist of stratigraphic ranges, which represent
+multiple fossil specimens (each of which can further be associated with
+its own specimen-level uncertainty) observed at different times along a
+single lineage. An extension of the fossilized birth-death process that
+is a distribution on stratigraphic ranges was described by {% citet Stadler2018 %}. 
 
 
 {% include_relative sections/sec-Intro-GTR.md %}
