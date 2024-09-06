@@ -539,7 +539,7 @@ moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.
 # which is just a scalar. This operation ensures that the weighted mean
 # of partition-specific branch lengths, weighted by the number of sites
 # in each partition, stays equal to the branch lengths we are 
-# actually sampling - thus yielding the correct overall tree length.
+# actually sampling.
 
 part_rate := (part_rate_mult / num_sites) * sum(num_sites)
 ```
