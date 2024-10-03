@@ -709,7 +709,6 @@ paleontological and neontological data in RevBayes.
 For more information on how to apply RevBayes
 datasets combining morphological and molecular
 characters, please refer to the 
-following tutorials:
+following tutorial:
 
-1. {% page_ref fbd/fbd_specimen %}
-2. {% page_ref fbd %}
+- {% page_ref fbd/fbd_specimen %}
