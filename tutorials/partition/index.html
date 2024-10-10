@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Partitioned data analysis</h1>
 	<h3 class="subtitle">Current Protocols in Bioinformatics - Phylogenetic Inference using RevBayes (Protocol &#35;2)</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J. Landis and Tracy A. Heath</h4>
-  <h5>Last modified on October 12, 2023</h5>
+  <h5>Last modified on September  6, 2024</h5>
 </div>
 
 
@@ -602,12 +602,12 @@ moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.
 # Note that here we are dividing two vectors element-wise, i.e., 
 # each element of part_rate_mult gets divided by the corresponding
 # element of num_sites. Then we multiply the result by sum(num_sites),
-# which is just a scalar. This operation ensures that the mean of
-# partition-specific branch lengths, weighted by the number of sites
+# which is just a scalar. This operation ensures that the weighted mean
+# of partition-specific branch lengths, weighted by the number of sites
 # in each partition, stays equal to the branch lengths we are 
 # actually sampling.
 
-part_rate := part_rate_mult / num_sites * sum(num_sites)
+part_rate := (part_rate_mult / num_sites) * sum(num_sites)
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Different Substitution Models for each Gene</h2><p>Alternatively, we might be interested in applying different substitution
