@@ -8,7 +8,7 @@ prerequisites:
 - intro
 - mcmc
 - ctmc
-index: false
+index: true
 title-old:
 redirect: false
 ---
