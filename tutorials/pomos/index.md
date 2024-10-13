@@ -113,7 +113,7 @@ There are methods that help us correct for this bias by attributing to each of t
 
 ```
 N <- 3
-data <- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo", XXX="Fixed")
+data <- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo", samplingCorrection="Fixed")
 ```
 
 Information about the alignment can be obtained by typing ```data```. 
@@ -136,7 +136,7 @@ If, instead of a count file, you have a list of sequences per individual (in eit
 ```
 data_char = readDiscreteCharacterData("data/individual_sequences.nex")
 taxa = readTaxonData("data/taxon_names.txt")
-data = pomoStateConvert(aln=data_char, k=4, virtualNe=N, taxa, XXX)
+data = pomoStateConvert(aln=data_char, k=4, virtualNe=N, taxa)
 ```
 
 Next, we define some useful variables. These include the number of taxa, taxa names, and the number of branches, which will be important for setting up our model in later steps.
@@ -190,6 +190,7 @@ Because we want the mutations to be reversible, we build the mutation rate vecto
 
 ```
 # mutation rates
+K <- 4
 mu := fnPoMoReversibleMutationRates(K,pi,rho)
 ```
 
@@ -199,7 +200,7 @@ The function ```fnPoMoKN``` will create an instantaneous rate matrix. This funct
 
 ```
 # rate matrix
-Q := fnPoMo4N(K,N,N,mu,phi)
+Q := fnPoMoKN(K,N,N,mu,phi)
 ```
 
 The tree topology and branch lengths are stochastic nodes in our phylogenetic model. We will assume that all possible labeled, unrooted tree topologies have equal probability. For an unrooted tree topology, we use the nearest-neighbor interchange move ```mvNNI``` (a subtree-prune and regrafting move ```mvSPR``` could also be used).
