@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Polymorphism-aware phylogenetic models</h1>
 	<h3 class="subtitle">Species tree inference with allele frequency data in RevBayes</h3>
 	<h4 class="authors"> Rui Borges, Sebastian Höhna, Bastien Boussau, and Carolin Kosiol</h4>
-  <h5>Last modified on October 11, 2024</h5>
+  <h5>Last modified on October 12, 2024</h5>
 </div>
 
 
@@ -210,7 +210,7 @@ chr19 7495905   4,0,2,0                  2,0,0,0               
 <p>There are methods that help us correct for this bias by attributing to each of the allelic counts an appropriate PoMo state. One such method is the weighted-method <a class="citation" href="#Schrempf2016">(Schrempf et al. 2016)</a>, which weights each PoMo state based on binomial sampling. In <strong>RevBayes</strong>, this is done automatically when we use the <code class="language-plaintext highlighter-rouge">readPoMoCountFile</code> function and set the weighting to <code class="language-plaintext highlighter-rouge">Binomial</code>. Alternatively, you can assign the PoMo state closest to the observed frequency. This method is called <code class="language-plaintext highlighter-rouge">Fixed</code>. In this tutorial, we will use <code class="language-plaintext highlighter-rouge">Fixed</code>. To use the <code class="language-plaintext highlighter-rouge">readPoMoCountFile</code> function, define the location of the counts file, set the virtual population size (which we set to <code class="language-plaintext highlighter-rouge">3</code>, as we are using the virtual PoMo Three), specify the data type format <code class="language-plaintext highlighter-rouge">PoMo</code> and apply the <code class="language-plaintext highlighter-rouge">Fixed</code> correction as shown below:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>N &lt;- 3
-data &lt;- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo", XXX="Fixed")
+data &lt;- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo", samplingCorrection="Fixed")
 </code></pre></div></div>
 
 <p>Information about the alignment can be obtained by typing <code class="language-plaintext highlighter-rouge">data</code>. </p>
@@ -230,7 +230,7 @@ data &lt;- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulat
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_char = readDiscreteCharacterData("data/individual_sequences.nex")
 taxa = readTaxonData("data/taxon_names.txt")
-data = pomoStateConvert(aln=data_char, k=4, virtualNe=N, taxa, XXX)
+data = pomoStateConvert(aln=data_char, k=4, virtualNe=N, taxa)
 </code></pre></div></div>
 
 <p>Next, we define some useful variables. These include the number of taxa, taxa names, and the number of branches, which will be important for setting up our model in later steps.</p>
@@ -281,6 +281,7 @@ phi := [1.0,1.0+gamma,1.0+gamma,1.0]
 <p>Because we want the mutations to be reversible, we build the mutation rate vector as a deterministic variable depending on <code class="language-plaintext highlighter-rouge">pi</code> and <code class="language-plaintext highlighter-rouge">rho</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mutation rates
+K &lt;- 4
 mu := fnPoMoReversibleMutationRates(K,pi,rho)
 </code></pre></div></div>
 
@@ -289,7 +290,7 @@ mu := fnPoMoReversibleMutationRates(K,pi,rho)
 <p>The function <code class="language-plaintext highlighter-rouge">fnPoMoKN</code> will create an instantaneous rate matrix. This function requires that an effective population size be input, but in most cases, you will not know it. Therefore, simply set it to the virtual population size.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rate matrix
-Q := fnPoMo4N(K,N,N,mu,phi)
+Q := fnPoMoKN(K,N,N,mu,phi)
 </code></pre></div></div>
 
 <p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. We will assume that all possible labeled, unrooted tree topologies have equal probability. For an unrooted tree topology, we use the nearest-neighbor interchange move <code class="language-plaintext highlighter-rouge">mvNNI</code> (a subtree-prune and regrafting move <code class="language-plaintext highlighter-rouge">mvSPR</code> could also be used).</p>
