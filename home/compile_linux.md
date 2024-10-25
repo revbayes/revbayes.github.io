@@ -22,6 +22,7 @@ Install these using your distribution's package manager
 
 #### Ubuntu
 
+    sudo apt update
     sudo apt install build-essential cmake libboost-all-dev
 
 #### CentOS 8
