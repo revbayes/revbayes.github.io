@@ -55,7 +55,7 @@
 	<h1 class="maintitle">StairwayPlot Analyses</h1>
 	<h3 class="subtitle">Estimating Demographic Histories from SNP data with Bayesian StairwayPlot Approach</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on June 14, 2024</h5>
+  <h5>Last modified on November  5, 2024</h5>
 </div>
 
 
@@ -104,7 +104,8 @@ Population sizes are allowed to vary between coalescent events but assumed to be
 As data, the <code class="language-plaintext highlighter-rouge">StairwayPlot</code> approach uses the site frequency spectrum (SFS), or allele frequency spectrum, and assumes that SNPs are unlinked, i.e., have their own coalescent history.
 <br />
 For a detailed description we refer the reader to <a class="citation" href="#Hoehna2024b">Höhna and Catalán (2024)</a>.
-The data for these analyses are taken from (missing reference).</p>
+The data for these analyses are taken from (missing reference).
+More specifically, the data consists of a folded site frequency spectrum of the Munich population from the big European firefly <em>Lampyris noctiluca</em>.</p>
 
 <p><br />
 <br />
@@ -130,7 +131,7 @@ We will also provide a full script in every tutorial that you can easily run for
 <h3 class="subsection" id="the-data">The Data</h3>
 <hr class="subsection" />
 
-<p>The data for a <code class="language-plaintext highlighter-rouge">StairwayPlot</code> analysis is the site frequency spectrum.
+<p>The data for a <code class="language-plaintext highlighter-rouge">StairwayPlot</code> analysis are the site frequency spectrum.
 For this tutorial, we assume that the site frequency spectrum was already computed.
 We also refer to our own tutorial (currently in preparation) for obtaining an SFS from a VCF file.
 In general, it is best to compute first the SFS so that it can be used efficiently in several analyses without extracting it each time from the VCF.</p>
@@ -138,7 +139,8 @@ In general, it is best to compute first the SFS so that it can be used efficient
 <p>The SFS is simply specified as a vector of counts:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obs_sfs = [ 405017549, 1393598, 922300, 682542, 530181, 421015, 360546, 303107, 257549, 218569, 197952, 172446, 161453, 145816, 136546, 123085, 121036, 114119, 116561, 113349, 65829 ]
 </code></pre></div></div>
-<p>We obtained the data from (missing reference), and you can see it plotted in <a href="#fig_SFS"></a>.</p>
+<p>We obtained the data of the Munich population from the big European firefly <em>Lampyris noctiluca</em> from (missing reference), and you can see it plotted in <a href="#fig_SFS"></a>.
+Here we use the folded site frequency spectrum from 20 diploid individuals, thus the size of the folded site frequency spectrum is 21 and the first entry represents the fixed sites.</p>
 
 <figure id="fig_SFS"><p><img src="figures/SFS_Munich.png" width="50%" height="50%" /></p>
 <figcaption>Unfolded and folded site frequency spectrum of the big European firefly, <em>Lampyris noctiluca</em>. These represent 20 sampled diploid individuals. Data are obtained from (missing reference).</figcaption>
