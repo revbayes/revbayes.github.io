@@ -27,6 +27,7 @@ As data, the `StairwayPlot` approach uses the site frequency spectrum (SFS), or 
 <br>
 For a detailed description we refer the reader to {% citet Hoehna2024b %}.
 The data for these analyses are taken from {% citet Catalan2024 %}.
+More specifically, the data consists of a folded site frequency spectrum of the Munich population from the big European firefly *Lampyris noctiluca*.
 
 <br>
 <br>
@@ -49,7 +50,7 @@ We will also provide a full script in every tutorial that you can easily run for
 
 {% subsection The Data %}
 
-The data for a `StairwayPlot` analysis is the site frequency spectrum.
+The data for a `StairwayPlot` analysis are the site frequency spectrum.
 For this tutorial, we assume that the site frequency spectrum was already computed.
 We also refer to our own tutorial (currently in preparation) for obtaining an SFS from a VCF file.
 In general, it is best to compute first the SFS so that it can be used efficiently in several analyses without extracting it each time from the VCF.
@@ -58,7 +59,9 @@ The SFS is simply specified as a vector of counts:
 ```
 obs_sfs = [ 405017549, 1393598, 922300, 682542, 530181, 421015, 360546, 303107, 257549, 218569, 197952, 172446, 161453, 145816, 136546, 123085, 121036, 114119, 116561, 113349, 65829 ]
 ```
-We obtained the data from {% citet Catalan2024 %}, and you can see it plotted in {% ref fig_SFS %}.
+We obtained the data of the Munich population from the big European firefly *Lampyris noctiluca* from {% citet Catalan2024 %}, and you can see it plotted in {% ref fig_SFS %}.
+Here we use the folded site frequency spectrum from 20 diploid individuals, thus the size of the folded site frequency spectrum is 21 and the first entry represents the fixed sites.
+
 
 {% figure fig_SFS %}
 <img src="figures/SFS_Munich.png" width="50%" height="50%" />
