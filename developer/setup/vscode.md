@@ -12,7 +12,7 @@ You will first need to <a href="https://revbayes.github.io/compile-windows">inst
 
 Now you will need to install three extensions to get RevBayes to work nicely. To do this click on the button shown below in VSCode. 
 
-<img src="figures/Extension-button.png">
+<img src="figures/Extension-button.png" alt="Location of Extension button in VSCode">
 
 Getting RevBayes working 
 ------------------------
@@ -22,4 +22,18 @@ Now that these are installed, Cmake tools will prompt in the lower right asking 
 
 Once the Cmake build finishes, you can setup debugging by clicking the triangle with the small beatle in the lower left. Now click on the gear shown below. This will open a new file called `launch.json`. You need to change the values for the `"program:"` object to the path where your `rb` executeable is. For example, `"${workspaceFolder}/projects/cmake/rb"`. In vscode `${workspaceFolder}` refers to the root folder of the project you opened. To test a specific rev script, change the value of the `"args"` object to a location of a Rev script.With that you can use debugging in VSCode by pressing the play button or using the command palette (CTRL/CMD + SHIFT + P) and using the "Cmake: Debug" command.
 
-<img src="figures/screensho2.png">
+<img src="figures/screensho2.png" alt="Location of Debug command in VSCode">
+
+If you encounter the error `BOOST_ROOT not set`, create a file `.vscode/settings.json` with the content
+
+```json
+{
+    "cmake.environment": {
+        "BOOST_ROOT": "C:/Program Files/Boost/boost_1_86_0",
+        "BOOST_LIBRARYDIR": "C:/Program Files/Boost/boost_1_86_0/lib"
+    }
+}
+```
+
+Update each path to match the location of your own Boost installation.
+
