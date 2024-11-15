@@ -226,7 +226,7 @@ Specifying Models
  |         `<-`         |      constant variable       |  
  |          `~`         |     stochastic variable      |  
  |         `:=`         |    deterministic variable    |  
- |  `node.clamp(data)`  |       clamped variable       |  
+ |  `node.clamp(data)`  |       _observed/fixed_ stochastic variable       |  
  |          `=`         | inference (*i.e.,*non-model) variable  |  
  | `for(i in 1:N){...}` |             plate            |  
 
