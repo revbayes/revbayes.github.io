@@ -79,7 +79,7 @@ However, if certain taxa persist through time and
 fossilize particularly well, then the same taxon may be sampled at different stratigraphic ages. 
 These fossil data are commonly represented by only 
 the first and last appearances of a fossil morphospecies. 
-In this case one might want to consider the [fossilized birth-death range process]({% page_url fbd_range %}) {% cite Stadler2018 %} in RevBayes to model the stratigraphic ranges of fossil occurrences.
+In this case one might want to consider the fossilized birth-death range process {% cite Stadler2018 %} to model the stratigraphic ranges of fossil occurrences.
 
 
 {% subsubsection Accounting for Fossil Age Uncertainty | Intro-Foss-Samp %}
@@ -363,7 +363,7 @@ Such complex variables require more extensive sampling than other nodes.
 We need to account for uncertainty in the age estimates of our fossils using the observed 
 minimum and maximum stratigraphic ages that are provided in the file `bears_taxa.tsv`.
 We can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see {% ref Intro-Foss-Samp %}).
-For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$.
+For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the stratigraphic age uncertainty interval, we know the likelihood is equal to one when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$.
 So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
 To do this, we will get all the fossils from the tree and use a `for` loop to iterate over them. For each fossil observation, we will create a uniform random variable 
@@ -709,7 +709,6 @@ paleontological and neontological data in RevBayes.
 For more information on how to apply RevBayes
 datasets combining morphological and molecular
 characters, please refer to the 
-following tutorials:
+following tutorial:
 
-1. {% page_ref fbd/fbd_specimen %}
-2. {% page_ref fbd %}
+- {% page_ref fbd/fbd_specimen %}

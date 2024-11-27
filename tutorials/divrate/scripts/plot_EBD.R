@@ -20,7 +20,7 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
                          summary = "median")
 
 # plot rates through time
-p <- plotDivRates(df = rates) +
+p <- plotDivRates(rates = rates) +
         xlab("Millions of years ago") +
         ylab("Rate per million years")
 

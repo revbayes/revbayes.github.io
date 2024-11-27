@@ -21,12 +21,12 @@ for (i in 1:x_obs.size()) {
 
 mymodel = model(beta)
 
-moves[1] = mvSlide(beta)
-moves[2] = mvSlide(alpha)
-moves[3] = mvSlide(sigma)
+moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
 
 monitors[1] = mnScreen()
-monitors[2] = mnModel("output/linear_regression.log")
+monitors[2] = mnModel(filename="output/linear_regression.log")
 
 mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(10000)

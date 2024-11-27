@@ -188,20 +188,27 @@ provides information about the alignment:
 data
 ```
 ```
-   DNA character matrix with 23 taxa and 1141 characters
+   DNA character matrix with 23 taxa and 1102 characters
    =====================================================
-   Origination:                      primates_and_galeopterus_cytb.nex
-   Number of taxa:                   23
-   Number of included taxa:          23
-   Number of characters:             1141
-   Number of included characters:    1141
-   Datatype:                         DNA
+   Origination:                   "primates_and_galeopterus_cytb.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1102
+   Number of included characters: 1102
+   Datatype:                      DNA
 ```
 {:.Rev-output}
 
 Next we will specify some useful variables based on our dataset. The variable `data` has *member functions*
 that we can use to retrieve information about the dataset. These include, for example,
-the number of species and the taxa. We will need that taxon information for setting up different parts of our model.
+the number of species and the taxa. 
+
+To check all available *member functions*:
+```
+data.methods()
+```
+
+We will need taxon information for setting up different parts of our model.
 
 ```
 num_taxa <- data.ntaxa()
@@ -253,9 +260,9 @@ Q
 ```
 ```
    [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
-     0.3333, -1.0000, 0.3333, 0.3333 ] ,
-     0.3333, 0.3333, -1.0000, 0.3333 ] ,
-     0.3333, 0.3333, 0.3333, -1.0000 ] ]
+     [ 0.3333, -1.0000, 0.3333, 0.3333 ] ,
+     [ 0.3333, 0.3333, -1.0000, 0.3333 ] ,
+     [ 0.3333, 0.3333, 0.3333, -1.0000 ] ]
 ```
 {:.Rev-output}
 

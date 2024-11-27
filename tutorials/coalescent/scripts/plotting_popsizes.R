@@ -1,5 +1,3 @@
-# library(devtools)
-# devtools::install_github("revbayes/RevGadgets", force = TRUE, ref = "development")
 library(RevGadgets)
 # library(ggplot2)
 
@@ -26,25 +24,11 @@ df <- processPopSizes(population_size_log, interval_change_points_log, burnin = 
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_iso_BSP.png", p)
 
-# constant
-population_size_log = "output/horses_iso_constant_NE.log"
+# Constant
+population_size_log = "output/horses_iso_Constant_NE.log"
 df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_constant.png", p)
-
-# CPP
-population_size_log = "output/horses_iso_CPP_NEs.log"
-interval_change_points_log = "output/horses_iso_CPP_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
-p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_CPP.png", p)
-
-# CPP, MAP tree based (MAP tree from constant analysis)
-population_size_log = "output/horses_iso_CPP_maptreebased_NEs.log"
-interval_change_points_log = "output/horses_iso_CPP_maptreebased_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
-p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_CPP_maptreebased.png", p)
+ggplot2::ggsave("figures/horses_iso_Constant.png", p)
 
 # EBSP
 population_size_log = "output/horses_iso_EBSP_NEs.log"
@@ -116,32 +100,53 @@ df <- processPopSizes(population_size_log, interval_change_points_log, burnin = 
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_iso_HSMRF_maptreebased_100.png", p)
 
-# skyline
-population_size_log = "output/horses_iso_skyline_NEs.log"
-interval_change_points_log = "output/horses_iso_skyline_times.log"
+# SkyfishAC
+population_size_log = "output/horses_iso_SkyfishAC_NEs.log"
+interval_change_points_log = "output/horses_iso_SkyfishAC_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_skyline.png", p)
+ggplot2::ggsave("figures/horses_iso_SkyfishAC.png", p)
 
-# skyline, MAP tree based (MAP tree from constant analysis)
-population_size_log = "output/horses_iso_skyline_maptreebased_NEs.log"
-interval_change_points_log = "output/horses_iso_skyline_maptreebased_times.log"
+# SkyfishAC, MAP tree based (MAP tree from constant analysis)
+population_size_log = "output/horses_iso_SkyfishAC_maptreebased_NEs.log"
+interval_change_points_log = "output/horses_iso_SkyfishAC_maptreebased_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_skyline_maptreebased.png", p)
+ggplot2::ggsave("figures/horses_iso_SkyfishAC_maptreebased.png", p)
 
-# skyride
-population_size_log = "output/horses_iso_skyride_NEs.log"
-interval_change_points_log = "output/horses_iso_skyride_times.log"
+# Skygrid
+population_size_log = "output/horses_iso_Skygrid_NEs.log"
+interval_change_points_log = "output/horses_iso_Skygrid_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_skyride.png", p)
+ggplot2::ggsave("figures/horses_iso_Skygrid.png", p)
+
+# Skyline
+population_size_log = "output/horses_iso_Skyline_NEs.log"
+interval_change_points_log = "output/horses_iso_Skyline_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_iso_Skyline.png", p)
+
+# Skyline, MAP tree based (MAP tree from constant analysis)
+population_size_log = "output/horses_iso_Skyline_maptreebased_NEs.log"
+interval_change_points_log = "output/horses_iso_Skyline_maptreebased_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_iso_Skyline_maptreebased.png", p)
+
+# Skyride
+population_size_log = "output/horses_iso_Skyride_NEs.log"
+interval_change_points_log = "output/horses_iso_Skyride_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_iso_Skyride.png", p)
 
 
 
 # piecewise, 3 constant
-population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
-interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+population_size_log_skyline = "output/horses_iso_Skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_Skyline_times.log"
 df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
@@ -167,8 +172,8 @@ p <- p_skyline + ggplot2::geom_segment(data = df, ggplot2::aes(x = time, xend = 
 ggplot2::ggsave("figures/horses_iso_piecewise_3const.png", p)
 
 # piecewise, 6 different
-population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
-interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+population_size_log_skyline = "output/horses_iso_Skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_Skyline_times.log"
 df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
@@ -294,8 +299,8 @@ ggplot2::ggsave("figures/horses_iso_piecewise_6diff.png", p)
 
 # piecewise, 3 linear
 
-population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
-interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+population_size_log_skyline = "output/horses_iso_Skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_Skyline_times.log"
 df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
@@ -400,25 +405,11 @@ df <- processPopSizes(population_size_log, interval_change_points_log, burnin = 
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_het_BSP.png", p)
 
-# constant
-population_size_log = "output/horses_het_constant_NE.log"
+# Constant
+population_size_log = "output/horses_het_Constant_NE.log"
 df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_constant.png", p)
-
-# CPP
-population_size_log = "output/horses_het_CPP_NEs.log"
-interval_change_points_log = "output/horses_het_CPP_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
-p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_CPP.png", p)
-
-# CPP, MAP tree based (MAP tree from constant analysis)
-population_size_log = "output/horses_het_CPP_maptreebased_NEs.log"
-interval_change_points_log = "output/horses_het_CPP_maptreebased_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
-p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_CPP_maptreebased.png", p)
+ggplot2::ggsave("figures/horses_het_Constant.png", p)
 
 # EBSP
 population_size_log = "output/horses_het_EBSP_NEs.log"
@@ -490,23 +481,44 @@ df <- processPopSizes(population_size_log, interval_change_points_log, burnin = 
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_het_HSMRF_maptreebased_100.png", p)
 
-# skyline
-population_size_log = "output/horses_het_skyline_NEs.log"
-interval_change_points_log = "output/horses_het_skyline_times.log"
+# SkyfishAC
+population_size_log = "output/horses_het_SkyfishAC_NEs.log"
+interval_change_points_log = "output/horses_het_SkyfishAC_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_skyline.png", p)
+ggplot2::ggsave("figures/horses_het_SkyfishAC.png", p)
 
-# skyline, MAP tree based (MAP tree from constant analysis)
-population_size_log = "output/horses_het_skyline_maptreebased_NEs.log"
-interval_change_points_log = "output/horses_het_skyline_maptreebased_times.log"
+# SkyfishAC, MAP tree based (MAP tree from constant analysis)
+population_size_log = "output/horses_het_SkyfishAC_maptreebased_NEs.log"
+interval_change_points_log = "output/horses_het_SkyfishAC_maptreebased_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_skyline_maptreebased.png", p)
+ggplot2::ggsave("figures/horses_het_SkyfishAC_maptreebased.png", p)
 
-# skyride
-population_size_log = "output/horses_het_skyride_NEs.log"
-interval_change_points_log = "output/horses_het_skyride_times.log"
+# Skygrid
+population_size_log = "output/horses_het_Skygrid_NEs.log"
+interval_change_points_log = "output/horses_het_Skygrid_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_het_skyride.png", p)
+ggplot2::ggsave("figures/horses_het_Skygrid.png", p)
+
+# Skyline
+population_size_log = "output/horses_het_Skyline_NEs.log"
+interval_change_points_log = "output/horses_het_Skyline_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_het_Skyline.png", p)
+
+# Skyline, MAP tree based (MAP tree from constant analysis)
+population_size_log = "output/horses_het_Skyline_maptreebased_NEs.log"
+interval_change_points_log = "output/horses_het_Skyline_maptreebased_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_het_Skyline_maptreebased.png", p)
+
+# Skyride
+population_size_log = "output/horses_het_Skyride_NEs.log"
+interval_change_points_log = "output/horses_het_Skyride_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_het_Skyride.png", p)

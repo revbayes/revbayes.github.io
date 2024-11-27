@@ -6,8 +6,8 @@ level: 9
 order: 0.3
 prerequisites:
 - coalescent
-- coalescent/constant
-- coalescent/skyline
+- coalescent/Constant
+- coalescent/Skyline
 index: false
 include_all: false
 include_files:
@@ -29,7 +29,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
   <img src="figures/scheme_equalsize_skyline.png" />
 </p>
 {% figcaption %}
-Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
+Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change-points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -70,7 +70,7 @@ As the intervals can be considered independent from each other, the likelihood o
 We will walk you through the script in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant) and the [skyline model]({{base.url}}/tutorials/coalescent/skyline).
+We will mainly highlight the parts of the script that change compared to the [Constant coalescent model]({{base.url}}/tutorials/coalescent/Constant) and the [Skyline model]({{base.url}}/tutorials/coalescent/Skyline).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.
@@ -123,8 +123,8 @@ This way, the estimated parameters can be treated as independent even with the a
 The overall variability of the trajectory is controlled by the standard deviation of the Normal distribution from which these `delta_log_population_size` values are drawn.
 This standard deviation is the product of a global scale parameter and its hyperprior.
 Therefore, you first need to define the hyperprior for the global scale parameter. <!--- which controls the overall variability of population sizes from present to past. --->
-You can get the appropriate value for this hyperprior dependent on the number of change points by using the `R` package `RevGadgets`.
-Here, we ran the function `setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")` to know the value of $0.1203$ (remember that there are nine change points with ten intervals).
+You can get the appropriate value for this hyperprior dependent on the number of change-points by using the `R` package `RevGadgets`.
+Here, we ran the function `setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")` to know the value of $0.1203$ (remember that there are nine change-points with ten intervals).
 To have a prior distribution on `delta_log_population_size` which favors autocorrelation, but allows for sudden changes, a halfCauchy distribution is chosen for the global scale.
 We also add a scaling move to the global scale.
 ~~~
@@ -214,7 +214,7 @@ Remember to change the file names to avoid overwriting your previous results.
 monitors.append( mnModel(filename="output/horses_iso_GMRF.log",printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_iso_GMRF.trees",psi,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_iso_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -294,62 +294,18 @@ In case you prefer to download a whole HSMRF script to compare it to the GMRF sc
 
 {% endaside %}
 
-{% section The Compound Poisson Process Prior | secCPP %}
-
-It is also possible to have a flexible number of intervals instead of specifying it before the analysis.
-In this case, the number of intervals is also estimated.
-Here, we use a compound poisson process (CPP) prior with a poisson prior on the number of interval change points and two different uniform priors on the population sizes and the change points.
-In this case, a reversible jump MCMC (rjMCMC) is needed to be able to sample from the posterior distribution.
-In `RevBayes`, this functionality is implemented in the `dnMultiValueEvent` distribution.
-
-{% aside Reversible Jump MCMC with CPP prior %}
-
-<!--- In RevBayes, there also is the possibility to estimate the number of intervals via reversible jump MCMC (rjMCMC).
-In this approach, you don't specifically set the number of intervals before the analysis, but make it a parameter that is estimated as part of the analysis.
---->
-For the `eventDistribution` parameter, a distribution on natural numbers has to be chosen.
-These "events" are the number of change points seperating intervals in this case and not coalescent events.
-In this example, we use a Poisson distribution with an expected value of $10$.
-The `valueDistribution` is a vector of prior distributions for the population sizes and the interval times.
-We also should call the variables by their names.
-The `minNumberEvents` are $1$ population size and $0$ times corresponding to interval changes.
-We expect to always have one more population size than change points.
-~~~
-events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
-                   valueDistribution=[dnUniform(1E4,1E8),
-                                      dnUniform(0.0,MAX_AGE)],
-                   names=["theta","time"],
-                   minNumberEvents=[1,0])
-~~~
-Fo the `dnMultiValueEvent` distribution, we add specific moves.
-~~~
-# apply a move that adds and removes pairs of theta+time
-moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
-# add a move that changes the theta variables
-moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
-# add a move that changes the time variables
-moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
-moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
-~~~
-Finally, we need to track the different parameters by assigning them to variables.
-~~~
-n_events := events.getNumberOfEvents()
-population_size := events.getRealPosValues(name="theta")
-changePoints := events.getRealPosValues(name="time")
-~~~
-In the end, all the parameters can be put into the `dnCoalescentSkyline` distribution.
-~~~
-psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
-~~~
-
-You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP).
-
-{% endaside %}
-
 {% section Next Exercise %}
 When you are done, have a look at the next exercise.
 
-* [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
+* [The Skyfish model]({{base.url}}/tutorials/coalescent/Skyfish)
 
-<!--- {% section Alternative Implementations %} --->
-<!--- skygrid --->
+
+{% section Alternative Implementations | secAltPriors %}
+A different model applying a GMRF Prior is the Skygrid model {% cite Gill2012 %}.
+It is based on the Skyride model {% cite Minin2008 %} which is described in the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors).
+The Skyride model does have coalescent event based change-points though, the Skygrid model has independent change-points.
+The degree of smoothing is being regulated by a precision parameter which differs from the global scale parameter presented in this tutorial.
+
+If you would like to have an example of what a `RevBayes` script with this prior can look like, have a look at
+* the [example script for a Skygrid analysis](scripts/mcmc_isochronous_Skygrid.Rev).
+

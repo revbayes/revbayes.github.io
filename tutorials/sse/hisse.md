@@ -27,15 +27,16 @@ index: true
 BiSSE and MuSSE are powerful approaches for testing the association of a character with diversification
 rate heterogeneity. However, BiSSE has been shown to be prone to falsely identifying a positive association
 when diversification rate shifts are correlated with a character not included in the model
-{% cite Maddison2015 Rabosky2015 %}. One approach to reduce the possibility of falsely associating
-a character with diversification rate heterogeneity is to incorporate a second, unobserved character into the
-model (*i.e.,* a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example {% citet Beaulieu2016 %}).
-The changes in the unobserved character’s state represent background diversification rate changes
-that are not correlated with the oberved character. See {% ref fig_hisse %} for a schematic overview of the HiSSE
-model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
-analysis in RevBayes {% cite Hoehna2016b %}.
+{% cite Maddison2015 Rabosky2015 %}.
 
-We will keep this tutorial brief and assume that you have work through the {% page_ref sse/bisse %}.
+The HiSSE (Hidden State-Dependent Speciation and Extinction) model reduces the possibility of falsely
+associating a character with diversification rate heterogeneity {% cite Beaulieu2016 %}.
+It does this by incorporating a second, _unobserved_ character.
+The changes in the unobserved character’s state represent background diversification rate changes
+that are not correlated with the observed character.
+See {% ref fig_hisse %} for a schematic overview of the HiSSE model, and Table 2 for an explanation of the HiSSE model parameters.
+
+We will keep this tutorial brief and assume that you have worked through the {% page_ref sse/bisse %}.
 
 
 {% figure fig_hisse %}

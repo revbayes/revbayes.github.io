@@ -1,0 +1,81 @@
+#### Interacting priors - age calibrations
+
+# Read the full list of taxa (including all fossils and extant species #
+taxa <- readTaxonData("/users/biodiv/barido/Downloads/FBD/data/bears_taxa.tsv")
+
+# Import the morphological character matrix #
+# this file contains only the taxa for which morphological characters are available #
+morpho <- readDiscreteCharacterData("/users/biodiv/barido/Downloads/FBD/data/bears_morphology.nex")
+
+# Add the missing taxa to each data partition #
+morpho.addMissingTaxa( taxa )
+
+# Specify a uniform prior on the origin #
+origin_time ~ dnUnif(37.0, 55.0)
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+fbd_dist = dnFBDP(origin=origin_time, lambda=0.1, mu=0.09, psi=0.01, rho=1.0, taxa=taxa)
+
+### Clade constraints
+
+clade_ursus = clade("Ursus_arctos","Ursus_maritimus","Ursus_americanus","Ursus_thibetanus")
+clade_ursavus = clade("Ursavus_brevirhinus", "Ursavus_primaevus")
+fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=v(clade_ursus, clade_ursavus))
+
+### Node calibrations
+
+age_ursus := tmrca(fbd_tree, clade_ursus)
+age_ursus_prior ~ dnUnif(age_ursus - 28.5, age_ursus - 15.0)
+age_ursus_prior.setValue(0)
+age_ursavus := tmrca(fbd_tree, clade_ursavus)
+age_ursavus_prior ~ dnUnif(age_ursavus - 36.0, age_ursavus - 25.0)
+age_ursavus_prior.setValue(0)
+
+### Moves
+
+moves = VectorMoves()
+moves.append( mvSlide(origin_time, weight=1.0) )
+
+# These moves update the tree topology 
+moves.append( mvFNPR(fbd_tree, weight=15.0) )
+moves.append( mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0) )
+
+# These moves update the node ages #
+moves.append( mvNodeTimeSlideUniform(fbd_tree, weight=40.0) )
+moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
+
+#Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor matrix with
+# two states
+Q_morpho := fnJC(2)
+
+#Set up Gamma-distributed rate variation.
+alpha_morpho ~ dnExponential( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+#Moves on the parameters to the Gamma distribution.
+moves.append( mvScale(alpha_morpho, lambda=0.01, weight=5.0) )
+moves.append( mvScale(alpha_morpho, lambda=0.1,  weight=3.0) )
+moves.append( mvScale(alpha_morpho, lambda=1,    weight=1.0) )
+
+# We assume a strict morphological clock rate, drawn from an exponential prior #
+clock_morpho ~ dnExponential(1.0)
+
+moves.append( mvScale(clock_morpho, lambda=0.01, weight=4.0) )
+moves.append( mvScale(clock_morpho, lambda=0.1,  weight=4.0) )
+moves.append( mvScale(clock_morpho, lambda=1,    weight=4.0) )
+
+### Create the substitution model and clamp with our observed Standard data ###
+# Here we use the option siteMatrices=true specify that the vector Q #
+# represents a site-specific mixture of rate matrices #
+# We also condition on observing only variable characters using coding="variable" #
+phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+
+### MCMC 
+mymodel = model(fbd_tree)
+monitors = VectorMonitors()
+monitors.append( mnModel(filename="/users/biodiv/barido/Downloads/FBD/output/bears_orig.log", printgen=1000) )
+mymcmc = mcmc(mymodel, monitors, moves)
+
+mymcmc.run(generations=1000000)
+

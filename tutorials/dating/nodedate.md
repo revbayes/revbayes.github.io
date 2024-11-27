@@ -27,7 +27,7 @@ In this exercise we will use information from the fossil record to calibrate the
 The molecular data used in this exercise is the same as the previous exercise (**bears_cytb.nex**). We will also use the same substitution and clock models (the GTR + $\Gamma$ model and the uncorrelated exponential clock model).
 
 We will also use the same tree model (the constant rate birth-death process), however, we will add calibration information from the fossil record to generate timetrees on a non-arbitrary timescale.
-The file **bears_taxa.tsv** contains information about the stratigraphic ranges for 20 bear species, including 12 extinct species. We're not going to use all of the information from this file in this exercise, because the node dating approach to calibration limits the amount of data we can take advantage of, but we'll use some of this information to constrain the age of two nodes. In this file `max` is the age of the first appearance (i.e. the oldest) of each species and `min` is the age of the last appearance (i.e. the youngest) (t = 0.0 represents the present). 
+The file **bears_taxa.tsv** contains information about the age ranges for 20 bear species, including 12 extinct species. We're not going to use all of the information from this file in this exercise, because the node dating approach to calibration limits the amount of data we can take advantage of, but we'll use some of this information to constrain the age of two nodes. In this file `max` is the age of the first appearance (i.e. the oldest) of each species and `min` is the age of the last appearance (i.e. the youngest) (t = 0.0 represents the present). 
 
 Again, there are just three steps you need to complete before running the analysis in this exercise. First, we need to create a script for the tree model and add our calibration information.
 Second, we need to switch out the tree model in our master script and update the name of the output files, so we don't overwrite the output generated in the previous exercise.
@@ -173,15 +173,10 @@ The FigTree window. To open your tree you can use File > Open. Select Node Label
 
 If you wanted to visualise the impact of the internal node calibrations, without the influence of the sequence data, you could run the MCMC analysis under the posterior and use an empty sequence alignment (this would be equivalent to running the analysis under the prior in BEAST and MCMCTree).
 
-### Next
+### Caveat
 
 Note that there are many more fossil species in the file **bears_taxa.tsv** with associated age information that we didn't use in this exercise.
 This is because, in the context of node dating, the calibration information is redundant with information already utilised (e.g. all other Urisinae species are younger than the fossil we used to constrain the age of this clade) or because we don't have good prior knowledge about the phylogenetic position of the species.
-
->Click below to begin the next exercise!
-{:.instruction}
-
-* [Estimating speciation times using the fossilized birth-death range model]({{ base.url }}/tutorials/dating/fbdr)
 
 <!--
 For further options and information about the models used in this exercise see Tracy Heath & Sebastian Höhna's tutorial [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).

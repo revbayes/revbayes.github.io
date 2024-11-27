@@ -12,12 +12,9 @@ mole_clock_rate_mean := exp(mole_clock_rate_mean_log)
 # the branch-specific rates
 for(i in 1:nbranch) {
 
-  # draw the log of the rate
-  mole_branch_rates_log[i] ~ dnLogExponential(1 / mole_clock_rate_mean)
-  moves.append( mvSlide(mole_branch_rates_log[i]) )
-
-  # exponentiate to get the rate
-  mole_branch_rates[i] := exp(mole_branch_rates_log[i])
+  # draw the rate
+  mole_branch_rates[i] ~ dnExponential(1 / mole_clock_rate_mean)
+  moves.append( mvScale(mole_branch_rates[i]) )
 
 }
 
@@ -25,4 +22,4 @@ for(i in 1:nbranch) {
 mole_branch_rate_mean := mean(mole_branch_rates)
 
 # add a joint move on the branch rates and standard deviation
-moves.append( mvVectorSlideRecenter(mole_branch_rates_log, mole_clock_rate_mean_log) )
+moves.append( mvVectorScale(mole_branch_rates, mole_clock_rate_mean) )

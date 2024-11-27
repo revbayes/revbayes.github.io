@@ -6,10 +6,11 @@ Begin by reading in the ``observed'' tree.
 ```
 T <- readTrees("data/crocs_T1.tre")[1]
 ```
-When the tree has fossils, it is best to read in the taxa from a taxon data file.
-This is absolutely required if the tree is to be simultaneously inferred.
+Here, we extract the fossil ages directly from the tree. If we were to simultaneously
+infer the tree instead, these ages would have to be read in from a taxon data file.
+(You can find an example of such a file in the {% page_ref divrate/ebd %} tutorial.)
 ```
-taxa <- readTaxonData("data/crocs_taxa.txt",delim=TAB)
+taxa <- T.taxa()
 ```
 Additionally, we initialize a variable for our vector of moves and monitors.
 ```

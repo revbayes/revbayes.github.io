@@ -4,98 +4,13 @@ category: implementation
 order: 0
 ---
 
-There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.
+There are two main classes of functions in RevBayes: regular functions and member functions.  For our example, we will be implement a regular function. First we need to add two files to the RevBayes source code, `Func_hyperbolicCosineFunction.cpp` and `Func_hyperbolicCosineFunction.h`. These will go within `revbayes/src/revlanguage/functions/math` since we are adding a function and it is a mathematical function. Second, we need to register the function by modifying `revbayes/src/revlanguage/workspace/RbRegister_Func.cpp`.
 
-For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a `HyperbolicCosineFunction.cpp` and a `HyperbolicCosineFunction.h`. These will go within `revbayes/src/core/functions/math` since we are adding a function and it is a mathematical function.
+RevLanguage Header file
+-----------------
+{:.subsection}
 
-First, we will write our header file. Within our header file, we need to `include` a few other RevBayes header files, including `ContinousFunction.h` since hyperbolic cosine is a continuous function, and `TypedDagNode.h` since our typed function deals with nodes of DAGs.
-
-```cpp
-#ifndef HyperbolicCosineFunction_h 
-#define HyperbolicCosineFunction_h
-
-#include "ContinuousFunction.h"
-#include "TypedDagNode.h"
-#include <cmath>
-
-namespace RevBayesCore {
-    /**
-     * \brief Hyperbolic Cosine of a real number.
-     *
-     * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
-     *
-     * \copyright (c) Copyright 2009-2018 (GPL version 3)
-     * \author <your-name>
-     * \since Version 1.0, 2015-01-31
-     *
-     */
-    class HyperbolicCosineFunction : public ContinuousFunction {
-
-        public:
-                                          HyperbolicCosineFunction(const TypedDagNode<double> *a); 
-
-            HyperbolicCosineFunction*     clone(void) const; //!< creates a clone
-            void                          update(void);      //!< recomputes the value
-
-        protected:
-            void                          swapParameterInternal(const DagNode *oldP, const DagNode *newP); //!< Implementation of swapping parameters
-
-        private:
-            const TypedDagNode<double>* x;
-
-    };
-}
-
-
-#endif
-```
-The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.
-Next, after including the necessary header files, we have to ensure that our new function is included within the `RevBayesCore` namespace.
-Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the `HyperbolicCosineFunction.cpp` file.
-
-```cpp
-#include "HyperbolicCosineFunction.h"
-
-using namespace RevBayesCore;
-
-HyperbolicCosineFunction::HyperbolicCosineFunction(const TypedDagNode<double> *a) : ContinuousFunction( new double(0.0) ),
-x( a )
-{
-    addParameter( a );
-}
-
-
-HyperbolicCosineFunction* HyperbolicCosineFunction::clone( void ) const
-{
-    return new HyperbolicCosineFunction(*this);
-}
-
-
-void HyperbolicCosineFunction::swapParameterInternal(const DagNode *oldP, const DagNode *newP)
-{
-    
-    if (oldP == x)
-    {
-        x = static_cast<const TypedDagNode<double>* >( newP );
-    }
-    
-}
-
-void HyperbolicCosineFunction::update( void )
-{
-    
-    // recompute and set the internal value
-    double myValue = x -> getValue();
-    double x1 = exp(myValue) + exp(-myValue);
-    *value = 0.5 * x1;
-
-}
-```
-
-
-Now all we need to do is add the hyperbolic cosine function to the `revlanguage` side of things so that when we are using `Rev` we can use our function. First we need to add `Func_hyperbolicCosine.cpp` and `Func_hyperbolicCosine.h` to `/src/revlanguage/functions/math/`. Note that the directory structure of `revlanguage` is similar to that of the `core`. The Revlanguage side serves as a wrapper of the function that we just wrote in the `core`.
-
-The `Func_hyperbolicCosine.h` should look like the following:
+The file `Func_hyperbolicCosine.h` should look like the following:
 
 ```cpp
 
@@ -117,16 +32,14 @@ namespace RevLanguage {
      * Please read the HyperbolicCosineFunction.h for more info.
      *
      *
-     * @copyright Copyright 2009-
+     * @copyright Copyright 2024-
      * @author The RevBayes Development Core Team (<your-name>)
-     * @since 2016-09-26, version 1.0
+     * @since 2024-04-26, version 1.0
      *
      */
     class Func_hyperbolicCosine :  public TypedFunction<Real> {
         
     public:
-        Func_hyperbolicCosine( void );
-        
         // Basic utility functions
         Func_hyperbolicCosine*                         clone(void) const;                                          //!< Clone the object
         static const std::string&                       getClassType(void);                                         //!< Get Rev type
@@ -147,22 +60,26 @@ namespace RevLanguage {
 
 ```
 
+RevLanguage Implementation file
+-----------------
+{:.subsection}
+
 And the `Func_hyperbolicCosine.cpp` should look like this:
 
 ```cpp
 #include "Func_hyperbolicCosine.h"
-#include "HyperbolicCosineFunction.h"
 #include "Probability.h"
 #include "Real.h"
 #include "RlDeterministicNode.h"
 #include "TypedDagNode.h"
+#include "GenericFunction.h"
 
 using namespace RevLanguage;
 
-/** default constructor */
-Func_hyperbolicCosine::Func_hyperbolicCosine( void ) : TypedFunction<Real>( )
+double* hyperbolicCosine(double x)
 {
-    
+    double result = (exp(x) + exp(-x))/2;
+    return new double(result);
 }
 
 
@@ -170,29 +87,25 @@ Func_hyperbolicCosine::Func_hyperbolicCosine( void ) : TypedFunction<Real>( )
  * The clone function is a convenience function to create proper copies of inherited objected.
  * E.g. a.clone() will create a clone of the correct type even if 'a' is of derived type 'b'.
  *
- * \return A new copy of the process.
+ * \return A new copy of the function.
  */
 Func_hyperbolicCosine* Func_hyperbolicCosine::clone( void ) const
 {
-    
     return new Func_hyperbolicCosine( *this );
 }
 
 
 RevBayesCore::TypedFunction<double>* Func_hyperbolicCosine::createFunction( void ) const
 {
-    
     RevBayesCore::TypedDagNode<double>* x = static_cast<const Real&>( this->args[0].getVariable()->getRevObject() ).getDagNode();
-    RevBayesCore::HyperbolicCosineFunction* f = new RevBayesCore::HyperbolicCosineFunction( x );
     
-    return f;
+    return RevBayesCore::generic_function_ptr< double >( hyperbolicCosine, x );
 }
 
 
 /* Get argument rules */
 const ArgumentRules& Func_hyperbolicCosine::getArgumentRules( void ) const
 {
-    
     static ArgumentRules argumentRules = ArgumentRules();
     static bool          rules_set = false;
     
@@ -203,14 +116,13 @@ const ArgumentRules& Func_hyperbolicCosine::getArgumentRules( void ) const
         
         rules_set = true;
     }
-    
+
     return argumentRules;
 }
 
 
 const std::string& Func_hyperbolicCosine::getClassType(void)
 {
-    
     static std::string rev_type = "Func_hyperbolicCosine";
     
     return rev_type;
@@ -219,7 +131,6 @@ const std::string& Func_hyperbolicCosine::getClassType(void)
 /* Get class type spec describing type of object */
 const TypeSpec& Func_hyperbolicCosine::getClassTypeSpec(void)
 {
-    
     static TypeSpec rev_type_spec = TypeSpec( getClassType(), new TypeSpec( Function::getClassTypeSpec() ) );
     
     return rev_type_spec;
@@ -237,15 +148,176 @@ std::string Func_hyperbolicCosine::getFunctionName( void ) const
     return f_name;
 }
 
-
 const TypeSpec& Func_hyperbolicCosine::getTypeSpec( void ) const
 {
-    
     static TypeSpec type_spec = getClassTypeSpec();
     
     return type_spec;
 }
 ```
 
+The function `RevBayesCore::generic_function_ptr< ResultType >(CppFunction, arg1, ...)` in `Func_hyperbolicCosine::createFunction( )` automatically constructs a `RevBayesCore::Function` from the C++ function so that we do not have to.
 
-Finally, we need to include the hyperbolic cosine function in the `RbRegister_Func.cpp` file located in the `/revlanguage/workspace/` directory. To do this go to the `RbRegister_Func.cpp` file and locate the math functions and type `#include Func_hyperbolicCosine.h` in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line `addFunction( new Func_hyperbolicCosine());`
+If `CppFunction` is has multiple type signatures, as is the case with functions like `sqrt( )`, `generic_function_ptr< >` will not work.
+In such cases, we can solve this problem by writing a wrapper function with a single type signature.
+For example,
+
+```
+// Specialize sqrt to only work on doubles
+double mysqrt(double x)
+{
+   return sqrt(x);
+}
+```
+
+Registering the new function
+-----------------
+{:.subsection}
+
+In order to make the new function available for use within the Rev language, we first need to register it.
+To do this,
+1. Go to the `src/revlanguage/workspace/` directory.
+2. Open the file `RbRegister_Func.cpp` file in your editor.
+3. Scroll down until you find the `#include` commands for math functions.       
+4. **Add the line `#include "Func_hyperbolicCosine.h"` in the correct alphabetical order for that group.**
+5. Scroll down in that file until you find the section of the code that adds math functions.
+6. **Add the line `addFunction( new Func_hyperbolicCosine() );`**
+
+Functions with caching and optimized recalculation
+==================================================
+{:.section}
+
+The above method should be prefered for implementing new functions in RevBayes unless the function needs to save intermediate results and use them during recalculation.
+For example, if our function computes `x*(y+z)`, then if only `x` has changed, we could save the old value of `y+z` and re-use it instead of computing `y+z` from scratch.  (In this case, `y+z` is not expensive enough to be worth saving, but is just a simple illustration of an intermediate result.)
+
+In such cases we will also need to write a `RevBayesCore::Function`.
+A `RevBayesCore::Function` serves a different role than a `RevLanguage::Function`.
+A `RevLanguage::Function` interprets the function arguments and connects them to the `RevBayesCore::Function`, which performs the actual calculation and holds the result.
+If we write our own `RevBayesCore::Function`, then we can use the `update()` method to intelligently recalculate the value,
+and we can add data memembers to save intermediate results;        
+
+Here will illustrate how to write a simple `RevBayesCore::Function` using the hyperbolic cosine example.
+Our example does't actually save any intermediate results, it just illustrates how a `RevBayesCore::Function` works.
+It is therefore equivalent to the `RevBayesCore::Function` that is automatically generated by `generic_function_ptr`.
+
+
+RevBayesCore Header file
+-----------
+{:.subsection}
+
+First, we will write our new header file. Within our header file, we need to `#include` a few other RevBayes header files, including `TypedDagNode.h` since our typed function deals with nodes of DAGs. Note that the directory structure of `core` is similar to that of the `revlanguage`.  The file `src/core/functions/math/HyperbolicCosineFunction.h` will be:
+
+```cpp
+#ifndef HyperbolicCosineFunction_h 
+#define HyperbolicCosineFunction_h
+
+#include "TypedFunction.h"
+#include "TypedDagNode.h"
+#include <cmath>
+
+namespace RevBayesCore {
+    /**
+     * \brief Hyperbolic Cosine of a real number.
+     *
+     * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
+     *
+     * \copyright (c) Copyright 2009-2018 (GPL version 3)
+     * \author <your-name>
+     * \since Version 1.0, 2015-01-31
+     *
+     */
+    class HyperbolicCosineFunction : public TypedFunction<double> {
+
+        public:
+                                          HyperbolicCosineFunction(const TypedDagNode<double> *a); 
+
+            HyperbolicCosineFunction*     clone(void) const; //!< creates a clone
+            void                          update(void);      //!< recomputes the value
+
+        protected:
+            void                          swapParameterInternal(const DagNode *oldP, const DagNode *newP); //!< Implementation of swapping parameters
+
+        private:
+            const TypedDagNode<double>* x;
+
+    };
+}
+
+
+#endif
+```
+The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.
+
+
+RevBayesCore Implementation file
+-----------
+{:.subsection}
+
+Next, after including the necessary header files, we have to ensure that our new function is included within the `RevBayesCore` namespace.
+Here we are implementing our hyperbolic cosine function as its own class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes.
+
+The file `src/core/functions/math/HyperbolicCosineFunction.cpp` will look like:
+
+```cpp
+#include "HyperbolicCosineFunction.h"
+
+using namespace RevBayesCore;
+
+HyperbolicCosineFunction::HyperbolicCosineFunction(const TypedDagNode<double> *a) : TypedFunction<double>( new double(0.0) ),
+x( a )
+{
+    addParameter( a );
+}
+
+
+HyperbolicCosineFunction* HyperbolicCosineFunction::clone( void ) const
+{
+    return new HyperbolicCosineFunction(*this);
+}
+
+
+void HyperbolicCosineFunction::swapParameterInternal(const DagNode *oldP, const DagNode *newP)
+{
+    if (oldP == x)
+    {
+        x = static_cast<const TypedDagNode<double>* >( newP );
+    }
+    
+}
+
+void HyperbolicCosineFunction::update( void )
+{
+    // get the current value of x
+    double xValue = x -> getValue();
+
+    // compute the function result
+    double result = (exp(xValue) + exp(-xValue))/2;
+
+    // update the stored value
+    *value = result;        
+
+}
+```
+
+Alternate implemention for `createFunction`
+-------------------------------------------
+
+In order to use the new `RevBayesCore::HyperbolicCosineFunction` class, we need to modify the `RevLanguage::Func_hyperbolicCosine` class to use it instead of `generic_function_ptr( )`.  To do this,
+
+1. Open `src/revlanguage/functions/math/Func_hyperbolicCosine.cpp` in your editor.
+2. **Add an `#include` statement to make the `RevBayesCore::HyperbolicCosineFunction` class visible**
+3. **Modify the definition of `Func_hyperbolicCosine::createFunction()`** as follows:
+
+``` cpp
+...
+#include "HyperbolicCosineFunction.h"
+...
+         
+RevBayesCore::TypedFunction<double>* Func_hyperbolicCosine::createFunction( void ) const
+{
+    
+    RevBayesCore::TypedDagNode<double>* x = static_cast<const Real&>( this->args[0].getVariable()->getRevObject() ).getDagNode();
+    
+    return new RevBayesCore::HyperbolicCosineFunction( x );
+}
+```

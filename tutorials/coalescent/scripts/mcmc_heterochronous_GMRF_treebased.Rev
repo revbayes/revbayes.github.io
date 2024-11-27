@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in the tree sample
-treetrace = readTreeTrace("output/horses_het_constant.trees", treetype = "clock", burnin = 0.1)
+treetrace = readTreeTrace("output/horses_het_Constant.trees", treetype = "clock", burnin = 0.1)
 trees = treetrace.getTrees()
 
 # Get the taxa
@@ -59,7 +59,6 @@ moves.append( mvRandomDive(population_size_at_present,weight=5) )
 # setMRFGlobalScaleHyperpriorNShifts(9, "HSMRF")
 population_size_global_scale_hyperprior <- 0.1203
 population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
 moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 

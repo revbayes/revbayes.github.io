@@ -1,0 +1,61 @@
+### Uniform distribution
+unif ~ dnUnif(lower = 37.0, upper = 55.0)
+
+### Exponential distribution
+exp ~ dnExponential(lambda = 10)
+
+### LogNormal distribution
+lnorm ~ dnLognormal(mean = 0.0, sd = 0.5)
+
+### Gamma distribution
+gamma ~ dnGamma(shape = 2.0, rate = 4.0)
+
+### Beta distribution
+beta ~ dnBeta(alpha = 1.0, beta = 0.8)
+
+### Mixture model
+me ~ dnReversibleJumpMixture(0, dnUnif(0.7, 0.95), 0.5)
+
+###### Interacting priors
+
+# running under the prior
+mymcmc.run(generations=1000000, underPrior = true)
+
+###### Prior conflict
+
+# Checking quantiles
+qLognormal(p = 0.025, 2.0, 1.0)
+qLognormal(p = 0.975, 2.0, 1.0)
+
+# Alternative prior on the speciation rate #
+speciation_rate ~ dnLognormal(-3.0, 1.0)
+
+###### Prior influence
+
+# Uniform prior
+clock_morpho ~ dnUnif(0.0, 2.0)
+
+# Exponential prior
+clock_morpho ~ dnExponential(1.0)
+
+# Lognormal prior
+clock_morpho ~ dnLognormal(-0.18, 0.6)
+
+# Checking quantiles
+qUniform(p = 0.025, 0.0, 2.0)
+qUniform(p = 0.975, 0.0, 2.0)
+qexponential(p = 0.975, 1.0)
+qlognormal(p = 0.025, -0.18, 0.6)
+qlognormal(p = 0.975, -0.18, 0.6)
+
+###### Wide priors
+
+# Narrow prior
+clock_morpho ~ dnExponential(1.0)
+
+# Wide prior
+clock_morpho ~ dnExponential(0.01)
+
+# Checking quantiles
+qexponential(p = 0.975, 1.0)
+qexponential(p = 0.975, 0.01)

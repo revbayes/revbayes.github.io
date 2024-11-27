@@ -14,6 +14,9 @@ then
     exit 1
 fi
 
+trap "echo; echo 'FAILED!'" EXIT
+trap "echo; echo 'FAILED! (Interrupted)'" SIGINT
+
 # make sure we are on source branch
 branch=`git rev-parse --abbrev-ref HEAD`
 
@@ -22,6 +25,23 @@ then
     echo "Error: Cannot deploy from branch '$branch'. Switch to 'source' before deploying."
     exit 1
 fi
+
+remote=`git remote get-url origin`
+
+case $remote in
+    git@*) ;;
+    *) echo "Error: The repo URL must start with git@ to be writeable"
+       echo
+       echo "But your repo URL is"
+       echo "    $remote"
+       echo
+       echo "To fix, run"
+       echo "    git remote rm origin"
+       echo "    git remote add origin git@github.com:revbayes/revbayes.github.io.git"
+       echo
+       exit 1
+       ;;
+esac
 
 # if the _site directory is missing, create it.
 # (we assume later that it exists).
@@ -33,61 +53,80 @@ fi
 
 
 # make sure there are no changes to commit
-if git diff-index --quiet HEAD --
+if ! git diff-index --quiet HEAD --
 then
-    msg=`git log -1 --pretty=%B`
-
-    git pull origin source
-
-    # fetch master
-    (
-        cd _site
-        git checkout master
-        git fetch --quiet origin
-        git reset --quiet --hard origin/master
-
-        # update the documentation?
-        if [ "$1" = "help" ]
-        then
-            git update-index --no-assume-unchanged documentation/index.html
-            git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
-            git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
-        else
-            git update-index --assume-unchanged documentation/index.html
-            git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
-            git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
-        fi
-    )
-
-    # build the site
-    if ! bundle exec jekyll build; then
-        echo "Jekyll build failed. Master not updated."
-        exit 1
-    fi
-
-    (
-        cd _site
-
-        # check if there are any changes on master
-        untracked=`git ls-files --other --exclude-standard --directory`
-
-        if git diff --exit-code > /dev/null && [ "$untracked" = "" ]
-        then
-            echo "Nothing to update on master."
-            cd ..
-        else
-            # deploy the static site
-            git add . && \
-                git commit -am "$msg" && \
-                git push --quiet origin master
-            echo "Successfully built and pushed to master."
-        fi
-    )
-    
-    # deploy source
-    git push --quiet origin source
-    echo "Deployment complete."
-else
     echo "Error: Uncommitted source changes. Please commit or stash before updating master."
     exit 1
 fi
+
+msg=`git log -1 --pretty=%B`
+
+echo "Pulling updates to the source"
+git pull --quiet origin source
+echo
+
+# fetch master
+echo "Pulling master"
+(
+    cd _site
+    git checkout --quiet master
+    git fetch --quiet origin
+    git reset --quiet --hard origin/master
+
+    # update the documentation?
+    if [ "$1" = "help" ]
+    then
+        git update-index --no-assume-unchanged documentation/index.html
+        git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
+        git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
+    else
+        git update-index --assume-unchanged documentation/index.html
+        git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
+        git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
+    fi
+)
+echo
+
+# build the site
+echo "Running jekyll to build the static site."
+if ! bundle exec jekyll build; then
+    echo "Jekyll build failed. Master not updated."
+    exit 1
+fi
+echo
+
+# Push the source BEFORE we push master.
+# If the push to source fails, we don't want to update master.
+
+# deploy source
+echo "Pushing source files."
+git push --quiet origin source
+echo "   Updated the source branch!"
+echo
+
+# deploy master
+(
+    cd _site
+
+    # check if there are any changes on master
+    untracked=`git ls-files --other --exclude-standard --directory`
+
+    if git diff --exit-code > /dev/null && [ "$untracked" = "" ]
+    then
+        echo "Nothing to update on master."
+        cd ..
+    else
+        # deploy the static site
+        echo "Updating the master branch."
+        git add . && \
+            git commit -am "$msg" && \
+            git push --quiet origin master
+        echo "   Successfully built and pushed to master!"
+    fi
+)
+echo
+
+trap - EXIT
+
+echo "Deployment complete."
+

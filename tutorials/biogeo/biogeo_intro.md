@@ -1,6 +1,6 @@
 ---
-title: Introduction to Phylogenetic Models of Discrete Biogeography
-subtitle: Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model
+title: Introduction to phylogenetic biogeography with the DEC model
+subtitle: Overview of the Dispersal-Extinction-Cladogenesis (DEC) model
 authors:  Michael J. Landis and Sarah K. Swiston
 level: 8
 order: 0

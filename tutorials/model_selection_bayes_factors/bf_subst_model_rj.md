@@ -10,7 +10,10 @@ prerequisites:
 - bf_intro
 - bf_subst_model
 exclude_files: 
-- data/primates_and_galeopterus_cytb.nex
+- data/fagus_ITS.nex
+- data/fagus_matK.nex
+- data/fagus_rbcL.nex
+- data/primates_and_galeopterus_cox2.nex
 - data/sim_locus1.nex
 - data/sim_locus2.nex
 - data/sim_locus3.nex

@@ -164,14 +164,14 @@ Typing ‘data‘ reports the dimensions of the concatenated matrix, this
 provides information about the alignment:
 
 ```
-       DNA character matrix with 23 taxa and 1852 characters
-       =====================================================
-       Origination:                   primates_and_galeopterus_cox2.nex
-       Number of taxa:                23
-       Number of included taxa:       23
-       Number of characters:          1852
-       Number of included characters: 1852
-       Datatype:                      DNA
+   DNA character matrix with 23 taxa and 1837 characters
+   =====================================================
+   Origination:                   "primates_and_galeopterus_cox2.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1837
+   Number of included characters: 1837
+   Datatype:                      DNA
 ```
 {:.Rev-output}
 For later use, we will store the taxon information (‘taxa‘) and the
@@ -536,12 +536,12 @@ moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.
 # Note that here we are dividing two vectors element-wise, i.e., 
 # each element of part_rate_mult gets divided by the corresponding
 # element of num_sites. Then we multiply the result by sum(num_sites),
-# which is just a scalar. This operation ensures that the mean of
-# partition-specific branch lengths, weighted by the number of sites
+# which is just a scalar. This operation ensures that the weighted mean
+# of partition-specific branch lengths, weighted by the number of sites
 # in each partition, stays equal to the branch lengths we are 
 # actually sampling.
 
-part_rate := part_rate_mult / num_sites * sum(num_sites)
+part_rate := (part_rate_mult / num_sites) * sum(num_sites)
 ```
 
 
@@ -605,19 +605,19 @@ specify a random variable for our tree parameter which is the same as
 was specified for mcmc_Partition_uniform.Rev.
 ```
 out_group = clade("Galeopterus_variegatus")
-# Prior distribution on the tree topology	
+# Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=n_taxa/2.0) )
 moves.append( mvSPR(topology, weight=n_taxa/10.0) )
 
 # Branch length prior
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
     bl[i] ~ dnExponential(10.0)
-	moves.append( mvScale(bl[i]) )
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
-	
+
 psi := treeAssembly(topology, bl)
 ```
 
