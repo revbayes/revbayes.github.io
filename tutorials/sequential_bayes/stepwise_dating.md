@@ -126,14 +126,20 @@ In this analysis, it might be very important to initialize the time tree with a 
 Remember that the probability of the tree topology will be computed by the sample frequency {% cite Hoehna2024 %}, thus all topologies that were not sampled in the previous analysis have a probability of 0.
 Such trees are problematic as we cannot initialize the MCMC with them, as computing the acceptance ratio entails a division by 0.
 
-Henve, we initialize the time tree with the MAP tree from our previous analysis.
+Hence, we initialize the time tree with the MAP tree from our previous analysis.
 You could also use an externally rooted tree, which might be preferred.
 ```
 unrooted_MAP_tree = readBranchLengthTrees("output/photinus_COI_MAP.tre")[1]
 ```
-Now we need to make this tree bifurcating (the root was trifurcating) and to make it ultrametric.
+Since the tree comes from a non-clock analysis, it is unrooted, which is to say it has a trifurcation at the root.
+We want to make its root bifurcating, but it is not important to us exactly how we do it. Therefore, we will just grab the first of the three children of the root node and make it the outgroup:
 ```
-unrooted_MAP_tree.makeBifurcating()
+root_index = 2*unrooted_MAP_tree.ntips() - 2
+first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
+unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+```
+We also need to make the tree ultrametric:
+```
 ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
 ultrametric_MAP_tree.rescale( root_time / ultrametric_MAP_tree.rootAge() )
 ```

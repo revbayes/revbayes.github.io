@@ -91,7 +91,13 @@ time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, ta
 ## initialize the time tree with the MAP tree from our previous analysis
 ## you could also use an externally rooted tree
 unrooted_MAP_tree = readBranchLengthTrees("output/photinus_"+GENE+"_MAP.tre")[1]
-unrooted_MAP_tree.makeBifurcating()
+
+## resolve the trifurcation at the root
+root_index = 2*unrooted_MAP_tree.ntips() - 2
+first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
+unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+
+## make the tree ultrametric and restore node indices
 ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
 ultrametric_MAP_tree.rescale( root_time / ultrametric_MAP_tree.rootAge() )
 time_tree.setValue( ultrametric_MAP_tree )
