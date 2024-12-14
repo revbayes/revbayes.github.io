@@ -61,6 +61,7 @@ timetree.clamp(T)
 
 ### workspace model wrapper ###
 mymodel = model(birth_rate)
+mymodel.ignoreAllData()
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/primates_Yule_prior.log",printgen=10, separator = TAB) )
@@ -76,7 +77,7 @@ monitors.append( mnScreen(printgen=1000, birth_rate) )
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
-mymcmc.run(generations=50000, underPrior=TRUE)
+mymcmc.run(generations=50000)
 
 
 

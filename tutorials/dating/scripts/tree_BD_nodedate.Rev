@@ -49,5 +49,5 @@ moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
 age_ursinae := tmrca(timetree, clade_ursinae)
 
 # Specify an exponetial distribution on the age of this node #
-obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
-obs_age_ursinae.clamp(-1.84)
+obs_age_ursinae ~ age_ursinae - dnExponential(1.0)
+obs_age_ursinae.clamp(1.84)

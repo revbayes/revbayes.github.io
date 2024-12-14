@@ -112,7 +112,7 @@ Posterior distribution of the age of the _Ursavus_ clade, visualized into Tracer
 {% endfigure %}
 
 We can check the effective priors for any inference by running the analysis **under the prior**, i.e. without taking the contributions of the data into account. There are two ways to achieve this:
-- we can use the `underPrior` option in the MCMC inference itself. **CAREFUL:** this will remove _all_ clamped nodes, including the node calibrations if they use clamping. Thus this option requires node calibrations to be set using the `setValue` function rather than `clamp`.
+- we can use the `.ignoreAllData()` method on the model object to mark clamped nodes as ignored. **CAREFUL:** this will ignore _all_ clamped nodes, including the node calibrations if they use clamping. If you want to retain clamped fossil calibrations, you can use the more selective method `.ignoreData(...)` to ignore some data but retain fossil calibration data.
 
 {{ prior_script | snippet:"block#","7" }}
 - we can simply comment out all the components of the likelihood, which in the case of our analysis is only the `dnPhyloCTMC` component.
