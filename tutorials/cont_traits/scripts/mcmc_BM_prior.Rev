@@ -56,6 +56,7 @@ X.clamp(data)
 #############
 
 mymodel = model(sigma2)
+mymodel.ignoreAllData()        # Sample from the prior
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/simple_BM_prior.log", printgen=10) )
@@ -74,7 +75,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 
 ### run the MCMC ###
-mymcmc.run(generations=50000, underPrior=TRUE)
+mymcmc.run(generations=50000)
 
 ## quit ##
 q()
