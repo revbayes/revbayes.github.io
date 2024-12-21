@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using node dating</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on August 13, 2024</h5>
+  <h5>Last modified on December 13, 2024</h5>
 </div>
 
 
@@ -178,10 +178,9 @@ Thus, if the MCMC samples any state for which the age of $\mathcal{F}_i$ has a p
 <p>From your script, you’ll recall that we previously defined the Ursinae clade and used it to generate a constrained tree topology. We also created a deterministic node <code class="language-plaintext highlighter-rouge">age_ursinae</code> to keep track of the age of this node.</p>
 
 <p>To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
-obs_age_ursinae.clamp(-1.84)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obs_age_ursinae ~ age_ursinae - dnExponential(1.0)
+obs_age_ursinae.clamp(1.84)
 </code></pre></div></div>
-<p>(Note from Rachel: I don’t really understand why the units have to be negative for this distribution, we’ll have to check with Sebastian.)</p>
 
 <h3 id="the-master-rev-script">The master Rev script</h3>
 
@@ -208,19 +207,23 @@ mccTree(trace, file="output/bears_nodedate.mcc.tre" )
 
 <p>Note that the root age is no longer a constant number (= 1) and scale of the diversification parameter may have changed.</p>
 
-<h3 id="running-the-analysis-under-the-prior">Running the analysis under the prior</h3>
+<h3 id="running-the-analysis-without-the-sequence-data">Running the analysis without the sequence data</h3>
 
-<p>It is always useful to examine the output of your MCMC analysis in the absence of information from the sequence data (i.e. without calculating the likelihood that comes from the substitution model). Setting this up in RevBayes is very easy. Let’s do this while the above analysis is still running.</p>
+<p>It is always useful to examine the output of your MCMC analysis when using fossil age data but ignoring sequence data (i.e. without calculating the likelihood that comes from the substitution model).
+Setting this up in RevBayes is very easy.
+Let’s do this while the above analysis is still running.</p>
 
 <blockquote class="instruction">
-  <p>Copy the master script you just created and call it <strong>MCMC_dating_ex3_prior.Rev</strong>.</p>
+  <p>Copy the master script you just created and call it <strong>MCMC_dating_ex3_only_fossil_data.Rev</strong>.</p>
 </blockquote>
 
-<p>We just need to add the argument <code class="language-plaintext highlighter-rouge">underPrior=TRUE</code> when we set up the MCMC run.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, underPrior=TRUE)
+<p>We just need to mark the clamped node <code class="language-plaintext highlighter-rouge">phySeq</code> that represents DNA sequence information as being ignored.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sf)
+mymodel.ignoreData(phySeq)     # obs_age_ursinae is retained
 </code></pre></div></div>
-<p>Again, we need to rename the output files.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_nodedate_prior.log", printgen=10) )
+<p>Note that we retained the clamped node <code class="language-plaintext highlighter-rouge">obs_age_ursinae</code> that represents fossil age information.
+Again, we need to rename the output files.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_nodedate_only_fossil_data.log", printgen=10) )
 </code></pre></div></div>
 <p>We’re not going to bother summarizing the trees, so if you want you can simply remove/comment out the second monitor (<code class="language-plaintext highlighter-rouge">mnFile</code>) and the tree summary functions (<code class="language-plaintext highlighter-rouge">readTreeTrace</code> and <code class="language-plaintext highlighter-rouge">mccTree</code>).</p>
 
@@ -235,7 +238,7 @@ mccTree(trace, file="output/bears_nodedate.mcc.tre" )
 <p>Let’s examine the output in Tracer.</p>
 
 <blockquote class="instruction">
-  <p>Open the program Tracer and load the log files <strong>bears_nodedate.log</strong> and <strong>bears_nodedate_prior.log</strong>.</p>
+  <p>Open the program Tracer and load the log files <strong>bears_nodedate.log</strong> and <strong>bears_nodedate_only_fossil_data.log</strong>.</p>
 </blockquote>
 
 <p>Select both log files and compare the age estimates obtained for the root (<code class="language-plaintext highlighter-rouge">extant_mrca</code>) and the MRCA of Ursinae (<code class="language-plaintext highlighter-rouge">age_ursinae</code>). To reproduce the Tracer images shown below, click on the node of interest and select Colour by: Trace file and Legend: Top-Right.</p>

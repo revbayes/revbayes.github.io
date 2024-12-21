@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
 	<h3 class="subtitle">Rooting and time-calibrating the gene trees</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on June  7, 2024</h5>
+  <h5>Last modified on December  2, 2024</h5>
 </div>
 
 
@@ -186,13 +186,18 @@ moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
 Remember that the probability of the tree topology will be computed by the sample frequency <a class="citation" href="#Hoehna2024">(Höhna and Hsiang 2024)</a>, thus all topologies that were not sampled in the previous analysis have a probability of 0.
 Such trees are problematic as we cannot initialize the MCMC with them, as computing the acceptance ratio entails a division by 0.</p>
 
-<p>Henve, we initialize the time tree with the MAP tree from our previous analysis.
+<p>Hence, we initialize the time tree with the MAP tree from our previous analysis.
 You could also use an externally rooted tree, which might be preferred.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree = readBranchLengthTrees("output/photinus_COI_MAP.tre")[1]
 </code></pre></div></div>
-<p>Now we need to make this tree bifurcating (the root was trifurcating) and to make it ultrametric.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree.makeBifurcating()
-ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
+<p>Since the tree comes from a non-clock analysis, it is unrooted, which is to say it has a trifurcation at the root.
+We want to make its root bifurcating, but it is not important to us exactly how we do it. Therefore, we will just grab the first of the three children of the root node and make it the outgroup:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_index = 2*unrooted_MAP_tree.ntips() - 2
+first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
+unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+</code></pre></div></div>
+<p>We also need to make the tree ultrametric:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
 ultrametric_MAP_tree.rescale( root_time / ultrametric_MAP_tree.rootAge() )
 </code></pre></div></div>
 <p>Unfortunately, this transformation currently messes up the internal node indices in RevBayes.

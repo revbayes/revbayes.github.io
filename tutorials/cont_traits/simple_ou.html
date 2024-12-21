@@ -357,7 +357,7 @@ ggplot(samples[[1]], aes(x=alpha, y=sigma2)) + geom_point()
   <li>Run an MCMC simulation to estimate the posterior distribution of the OU optimum (<code class="language-plaintext highlighter-rouge">theta</code>).</li>
   <li>Load the generated output file into <code class="language-plaintext highlighter-rouge">RevGadgets</code>: What is the mean posterior estimate of <code class="language-plaintext highlighter-rouge">theta</code> and what is the estimated HPD?</li>
   <li>Use <code class="language-plaintext highlighter-rouge">R</code> to compare the joint posterior distributions of <code class="language-plaintext highlighter-rouge">alpha</code> and <code class="language-plaintext highlighter-rouge">sigma2</code>. Are these parameters correlated or uncorrelated?</li>
-  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="language-plaintext highlighter-rouge">underPrior=TRUE</code> in the function <code class="language-plaintext highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
+  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Call the <code class="language-plaintext highlighter-rouge">.ignoreAllData()</code> method on the model object to ignore data at clamped nodes.) Are prior and posterior different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
 </ul>
 
 <h2 class="section" id="comparing-ou-and-bm-models">Comparing OU and BM models</h2>

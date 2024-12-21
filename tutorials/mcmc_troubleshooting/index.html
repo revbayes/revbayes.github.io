@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Debugging your Markov chain Monte Carlo (MCMC)</h1>
 	<h3 class="subtitle">Practical guidelines for issues with MCMC for Bayesian phylogenetic inference</h3>
 	<h4 class="authors">Joëlle Barido-Sottani, Orlando Schwery, Rachel C. M. Warnock, Chi Zhang, April Marie Wright</h4>
-  <h5>Last modified on May 22, 2024</h5>
+  <h5>Last modified on May 21, 2024</h5>
 </div>
 
 
@@ -316,10 +316,11 @@ age_ursavus_prior.setValue(0)
 
 <p>We can check the effective priors for any inference by running the analysis <strong>under the prior</strong>, i.e. without taking the contributions of the data into account. There are two ways to achieve this:</p>
 <ul>
-  <li>we can use the <code class="language-plaintext highlighter-rouge">underPrior</code> option in the MCMC inference itself. <strong>CAREFUL:</strong> this will remove <em>all</em> clamped nodes, including the node calibrations if they use clamping. Thus this option requires node calibrations to be set using the <code class="language-plaintext highlighter-rouge">setValue</code> function rather than <code class="language-plaintext highlighter-rouge">clamp</code>.</li>
+  <li>we can use the <code class="language-plaintext highlighter-rouge">.ignoreAllData()</code> method on the model object to mark clamped nodes as ignored. <strong>CAREFUL:</strong> this will ignore <em>all</em> clamped nodes, including the node calibrations if they use clamping. If you want to retain clamped fossil calibrations, you can use the more selective method <code class="language-plaintext highlighter-rouge">.ignoreData(...)</code> to ignore some data but retain fossil calibration data.</li>
 </ul>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=1000000, underPrior = true)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(variable)
+mymodel.ignoreAllData()
 </code></pre></div></div>
 <ul>
   <li>we can simply comment out all the components of the likelihood, which in the case of our analysis is only the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> component.</li>

@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Gene tree - species tree reconstruction</h1>
 	<h3 class="subtitle">Incomplete lineage sorting and the multispecies coalescent</h3>
 	<h4 class="authors">Bastien Boussau and Sebastian H&#246;hna</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on December 13, 2024</h5>
 </div>
 
 
@@ -590,6 +590,10 @@ model object from it.</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We get a handle on our model.
 # We can use any node of our model as a handle, here we choose to use the topology.
 mymodel = model(psi)
+
+# Ideally one would run more MCMC samples.
+# In the interest of time it may be worth running the analysis under the prior.
+# mymodel.ignoreAllData()
 </code></pre></div>    </div>
   </li>
   <li>
@@ -612,11 +616,8 @@ for ( i in 1:num_loci ) {
 # or use mcmcmc with heated chains.
 mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
 
-# Ideally one would run more MCMC samples.
-# In the interest of time it may be worth running the analysis under the prior.
-mymcmc.burnin(generations=1000,tuningInterval=50)#, underPrior=true)
-mymcmc.run(generations=3000)#, underPrior=true)
-
+mymcmc.burnin(generations=1000,tuningInterval=50)
+mymcmc.run(generations=3000)
 
 mymcmc.operatorSummary()
 </code></pre></div>    </div>
