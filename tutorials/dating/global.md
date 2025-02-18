@@ -84,12 +84,12 @@ extinction_rate ~ dnExponential(10)
 ```
 For every stochastic node we declare, we must also specify moves (or proposal algorithms) to sample the value of the parameter in proportion to its posterior probability. If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.
 
-The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (`mvScale`), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called `lambda` for `mvScale`, which determine the size of the proposed change. Here, we will also use `tune=true`, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial [Diagnosing MCMC performance]({{ base.url }}/tutorials for more information on this topic.
+The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (`mvScale`), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called `lambda` for `mvScale`, which determine the size of the proposed change. Here, we will also use `tune=true`, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial {% page_ref mcmc_troubleshooting %} for more information on this topic.
 ```
 moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 ```
-The `weight` option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a *schedule* of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
+The `weight` option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will execute a *schedule* of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
 
 In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the `:=` operator.
 ```
@@ -149,7 +149,7 @@ We may be interested in monitoring the age of a given node in our MCMC sample. W
 ```
 age_ursinae := tmrca(timetree, clade_ursinae)
 ```
-Note that if we had not included this clade in the constraints that defined the `timetree` variable this node would not be constrained to be monophyletic but we could still monitor the age using the `tmrca` approach.
+Note that if we had not included this clade in the constraints that defined the `timetree` variable, this node would not be constrained to be monophyletic, but we could still monitor the age using the `tmrca` approach.
 
 
 
@@ -191,8 +191,8 @@ er ~ dnDirichlet(er_hp)
 ```
 We need special moves to propose changes to a Dirichlet random variable, also known as a simplex (a vector constrained to sum to one). Here, we use a `mvSimplexElementScale` move, which scales a single element of a simplex and then renormalises the vector to sum to one. The tuning parameter `alpha` specifies how conservative the proposal should be, with larger values of alpha leading to proposals closer to the current value.
 ```
-moves.append( mvSimplexBeta(er, alpha=10.0, weight=3.0) )
-moves.append( mvSimplexBeta(sf, alpha=10.0, weight=2.0) )
+moves.append( mvBetaSimplex(er, alpha=10.0, weight=3.0) )
+moves.append( mvBetaSimplex(sf, alpha=10.0, weight=2.0) )
 ```
 Then we can define a deterministic node for our GTR Q-matrix using the special GTR matrix function (`fnGTR`).
 ```
@@ -245,7 +245,7 @@ monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timet
 ```
 The last monitor we will add to our analysis will print information to the screen. As with `mnFile` we must tell `mnScreen` which parameters we’d like to see updated on the screen. We will choose the age of the MRCA of living bears (`extant_mrca`) and the diversification rate (`diversification`) parameters.
 ```
-monitors.append( mnScreen(printgen=10, extant_mrca, diversification, branch_rates) )
+monitors.append( mnScreen(printgen=10, extant_mrca, diversification) )
 ```
 Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. We do this using the `mcmc` function that simply takes the three main analysis components as arguments.
 ```
@@ -286,7 +286,7 @@ The Trace window in the program Tracer. Click on the "+" sign to load your trace
 {% endfigcaption %}
 {% endfigure %}
 
-Note that the speciation and extinction rates are not especially meaningful because we don't they're not in absolute time.
+Note that the speciation and extinction rates are not especially meaningful because they're not in absolute time.
 
 
 

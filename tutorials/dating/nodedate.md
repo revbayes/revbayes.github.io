@@ -181,6 +181,13 @@ If you wanted to visualise the impact of the internal node calibrations, without
 Note that there are many more fossil species in the file **bears_taxa.tsv** with associated age information that we didn't use in this exercise.
 This is because, in the context of node dating, the calibration information is redundant with information already utilised (e.g. all other Urisinae species are younger than the fossil we used to constrain the age of this clade) or because we don't have good prior knowledge about the phylogenetic position of the species.
 
+### Next
+
+>Click below to begin the next exercise!
+{:.instruction}
+
+* [Estimating speciation times using the fossilized birth-death process]({{ base.url }}/tutorials/fbd/fbd_specimen)
+
 <!--
 For further options and information about the models used in this exercise see Tracy Heath & Sebastian Höhna's tutorial [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
 -->
