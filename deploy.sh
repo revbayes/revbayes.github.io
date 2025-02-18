@@ -51,6 +51,10 @@ if [ ! -d "_site" ] ; then
     echo "Done."
 fi
 
+if [ ! -e "_site/.git" ] ; then
+    echo "Error: The _site/ directory should be a separate git repo, but it is not!  Please remove it."
+    exit 1
+fi
 
 # make sure there are no changes to commit
 if ! git diff-index --quiet HEAD --
