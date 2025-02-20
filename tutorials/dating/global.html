@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The global molecular clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on February  2, 2022</h5>
+  <h5>Last modified on February 18, 2025</h5>
 </div>
 
 
@@ -177,11 +177,11 @@ extinction_rate ~ dnExponential(10)
 </code></pre></div></div>
 <p>For every stochastic node we declare, we must also specify moves (or proposal algorithms) to sample the value of the parameter in proportion to its posterior probability. If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.</p>
 
-<p>The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (<code class="language-plaintext highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called <code class="language-plaintext highlighter-rouge">lambda</code> for <code class="language-plaintext highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we will also use <code class="language-plaintext highlighter-rouge">tune=true</code>, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial [Diagnosing MCMC performance](/tutorials for more information on this topic.</p>
+<p>The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (<code class="language-plaintext highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called <code class="language-plaintext highlighter-rouge">lambda</code> for <code class="language-plaintext highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we will also use <code class="language-plaintext highlighter-rouge">tune=true</code>, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial <a href="/tutorials/mcmc_troubleshooting/">Debugging your Markov chain Monte Carlo (MCMC)</a> for more information on this topic.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
-<p>The <code class="language-plaintext highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="language-plaintext highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
+<p>The <code class="language-plaintext highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="language-plaintext highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
 
 <p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the <code class="language-plaintext highlighter-rouge">:=</code> operator.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
@@ -227,7 +227,7 @@ moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 <p>We may be interested in monitoring the age of a given node in our MCMC sample. We can do this by first using the <code class="language-plaintext highlighter-rouge">clade</code> function to specify the node of interest, as we have done above for Ursinae. Once a clade is defined we can instantiate a deterministic node, in this case <code class="language-plaintext highlighter-rouge">age_ursinae</code>, with the <code class="language-plaintext highlighter-rouge">tmrca</code> function that will record the age of this node.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_ursinae := tmrca(timetree, clade_ursinae)
 </code></pre></div></div>
-<p>Note that if we had not included this clade in the constraints that defined the <code class="language-plaintext highlighter-rouge">timetree</code> variable this node would not be constrained to be monophyletic but we could still monitor the age using the <code class="language-plaintext highlighter-rouge">tmrca</code> approach.</p>
+<p>Note that if we had not included this clade in the constraints that defined the <code class="language-plaintext highlighter-rouge">timetree</code> variable, this node would not be constrained to be monophyletic, but we could still monitor the age using the <code class="language-plaintext highlighter-rouge">tmrca</code> approach.</p>
 
 <h3 id="the-clock-model">The clock model</h3>
 
@@ -264,8 +264,8 @@ er_hp &lt;- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_hp)
 </code></pre></div></div>
 <p>We need special moves to propose changes to a Dirichlet random variable, also known as a simplex (a vector constrained to sum to one). Here, we use a <code class="language-plaintext highlighter-rouge">mvSimplexElementScale</code> move, which scales a single element of a simplex and then renormalises the vector to sum to one. The tuning parameter <code class="language-plaintext highlighter-rouge">alpha</code> specifies how conservative the proposal should be, with larger values of alpha leading to proposals closer to the current value.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexBeta(er, alpha=10.0, weight=3.0) )
-moves.append( mvSimplexBeta(sf, alpha=10.0, weight=2.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, alpha=10.0, weight=3.0) )
+moves.append( mvBetaSimplex(sf, alpha=10.0, weight=2.0) )
 </code></pre></div></div>
 <p>Then we can define a deterministic node for our GTR Q-matrix using the special GTR matrix function (<code class="language-plaintext highlighter-rouge">fnGTR</code>).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_cytb := fnGTR(er,sf)
@@ -309,7 +309,7 @@ source("scripts/sub_GTR.Rev") # the GTR model
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timetree) )
 </code></pre></div></div>
 <p>The last monitor we will add to our analysis will print information to the screen. As with <code class="language-plaintext highlighter-rouge">mnFile</code> we must tell <code class="language-plaintext highlighter-rouge">mnScreen</code> which parameters we’d like to see updated on the screen. We will choose the age of the MRCA of living bears (<code class="language-plaintext highlighter-rouge">extant_mrca</code>) and the diversification rate (<code class="language-plaintext highlighter-rouge">diversification</code>) parameters.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, extant_mrca, diversification, branch_rates) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, extant_mrca, diversification) )
 </code></pre></div></div>
 <p>Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. We do this using the <code class="language-plaintext highlighter-rouge">mcmc</code> function that simply takes the three main analysis components as arguments.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
@@ -343,7 +343,7 @@ mccTree(trace, file="output/bears_global.mcc.tre")
 <figcaption>The Trace window in the program Tracer. Click on the “+” sign to load your trace file or drag and drop you file in the Trace files box.</figcaption>
 </figure>
 
-<p>Note that the speciation and extinction rates are not especially meaningful because we don’t they’re not in absolute time.</p>
+<p>Note that the speciation and extinction rates are not especially meaningful because they’re not in absolute time.</p>
 
 <h4 id="the-tree-output">The tree output</h4>
 

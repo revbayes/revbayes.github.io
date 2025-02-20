@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 17, 2019</h5>
+  <h5>Last modified on February 18, 2025</h5>
 </div>
 
 
@@ -146,7 +146,7 @@ First, we will use a vector scale move to propose changes to all branch rates si
 This way we can sample the total branch rate independently of each individual rate, which can improve mixing.
 Second, we will use a move (<code class="language-plaintext highlighter-rouge">mvRateAgeBetaShift</code>) that changes the node ages and branch rates jointly,
 so that the effective branch length (the product of branch time and branch rate) remains the same.
-Thus, the move is proposing values with same the likelihood but a different prior probability.</p>
+Thus, the move is proposing values with the same likelihood but a different prior probability.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
 moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
 </code></pre></div></div>
