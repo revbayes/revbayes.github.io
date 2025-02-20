@@ -7,10 +7,10 @@ speciation_rate ~ dnExponential(10)
 extinction_rate ~ dnExponential(10)
 
 # Specify a scale move on the speciation_rate parameter #
-moves.append( mvScale(speciation_rate, lambda=0.5,tune=true,weight=3.0) )
+moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 
 # Specify a scale move on the extinction_rate parameter #
-moves.append( mvScale(extinction_rate, lambda=0.5,tune=true,weight=3.0) )
+moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 
 # Create deterministic nodes for the diversification and turnover rates to monitor these parameters #
 diversification := speciation_rate - extinction_rate
@@ -36,7 +36,7 @@ timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #
 moves.append( mvNarrow(timetree, weight=n_taxa) )
-moves.append( mvFNPR(timetree, weight=n_taxa/4.0) )
+moves.append( mvFNPR(timetree, weight=n_taxa/4) )
 moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
 moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 

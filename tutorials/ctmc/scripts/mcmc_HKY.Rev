@@ -1,6 +1,6 @@
 ################################################################################
 #
-# RevBayes Example: Bayesian inference of phylogeny using a Jukes-Cantor
+# RevBayes Example: Bayesian inference of phylogeny using a Hasegawa-Kishino-Yano 
 #            substitution model on a single gene.
 #
 # authors: Sebastian Hoehna, Michael Landis, and Tracy A. Heath
@@ -24,9 +24,22 @@ monitors = VectorMonitors()
 # Substitution Model #
 ######################
 
-# create a constant variable for the rate matrix
-Q <- fnJC(4)
+# prior for the stationary frequencies
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
 
+# add moves to pi
+moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
+
+# prior for the transition-transversions rate
+kappa ~ dnLognormal(0.0, 1.0)
+
+# add moves to kappa
+moves.append( mvScale(kappa) )
+
+# create a variable for the HKY rate matrix
+Q := fnHKY(kappa,pi)
 
 ##############
 # Tree model #
@@ -69,8 +82,8 @@ mymodel = model(Q)
 
 # add monitors
 monitors.append( mnScreen(printgen=100, TL) )
-monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
-monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
+monitors.append( mnFile(filename="output/primates_cytb_HKY.trees", printgen=10, psi) )
+monitors.append( mnModel(filename="output/primates_cytb_HKY.log", printgen=10) )
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors)
@@ -83,9 +96,9 @@ mymcmc.run(generations=20000)
 
 # Now, we will analyze the tree output.
 # Let us start by reading in the tree trace
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
+treetrace = readTreeTrace("output/primates_cytb_HKY.trees", treetype="non-clock")
 # and then get the MAP tree
-map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
+map_tree = mapTree(treetrace,"output/primates_cytb_HKY_MAP.tree")
 
 
 # you may want to quit RevBayes now

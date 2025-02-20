@@ -68,7 +68,7 @@ First, we will use a vector scale move to propose changes to all branch rates si
 This way we can sample the total branch rate independently of each individual rate, which can improve mixing.
 Second, we will use a move (`mvRateAgeBetaShift`) that changes the node ages and branch rates jointly,
 so that the effective branch length (the product of branch time and branch rate) remains the same.
-Thus, the move is proposing values with same the likelihood but a different prior probability.
+Thus, the move is proposing values with the same likelihood but a different prior probability.
 ```
 moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
 moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
