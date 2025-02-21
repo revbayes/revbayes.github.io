@@ -77,6 +77,12 @@ Specific functions for substitution models available in RevBayes.
 [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/z-94P0d10us)
 {% subsection Getting Started %}
 
+{% assign jc_script = "mcmc_JC.Rev" %}
+{% assign gtr_script = "mcmc_GTR.Rev" %}
+{% assign gtrgi_script = "mcmc_GTR_Gamma_Inv.Rev" %}
+{% assign hky_script = "mcmc_HKY.Rev" %}
+{% assign asides_script = "asides.Rev" %}
+
 The first section of this exercise involves:
 1. setting up a Jukes-Cantor (JC) substitution model for an alignment of the cytochrome b subunit;
 2. approximating the posterior probability of the tree topology and node ages (and all other parameters) using MCMC, and;
@@ -159,7 +165,6 @@ If you want to change the directory, enter the path to your directory in the arg
 ```
 setwd("Tutorials/RB_CTMC_Tutorial")
 ```
-{:.Rev-output}
 
 Now check your directory again to make sure you are where you want to be:
 ```
@@ -174,9 +179,7 @@ getwd()
 First load in the sequences using the `readDiscreteCharacterData()`
 function.
 
-```
-data <- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
-```
+{{ jc_script | snippet:"block#","1" }}
 
 Executing these lines initializes the data matrix as the respective
 Rev variables. To report the current value of any variable, simply
@@ -210,21 +213,14 @@ data.methods()
 
 We will need taxon information for setting up different parts of our model.
 
-```
-num_taxa <- data.ntaxa()
-num_branches <- 2 * num_taxa - 3
-taxa <- data.taxa()
-```
+{{ jc_script | snippet:"block#", "2" }}
 
 Additionally, we set up a (vector) variable that holds all the moves for our analysis.
 Recall that moves are algorithms used to propose new parameter values during the MCMC simulation.
 Similarly, we set up a variable for the monitors.
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.
 
-```
-moves    = VectorMoves()
-monitors = VectorMonitors()
-```
+{{ jc_script | snippet:"block#", "3" }}
 
 You may have noticed that we used the `=` operator to create the move index.
 This simply means that the variable is not part of the model.
@@ -249,9 +245,7 @@ magnitude), so we can define it as a constant variable. The function
 $n$ states. Since we use DNA data here, we create a 4x4
 instantaneous-rate matrix:
 
-```
-Q <- fnJC(4)
-```
+{{ jc_script | snippet:"block#", "4" }}
 
 You can see the rates of the $Q$ matrix by typing
 
@@ -285,10 +279,7 @@ thus making the trees easier to visualize.
 Specify the `topology` stochastic node by passing in the list of `taxa`
 to the `dnUniformTopology()` distribution:
 
-```
-out_group = clade("Galeopterus_variegatus")
-topology ~ dnUniformTopology(taxa, outgroup=out_group)
-```
+{{ jc_script | snippet:"block#", "5" }}
 
 Some types of stochastic nodes can be updated by a number of alternative moves.
 Different moves may explore parameter space in different ways,
@@ -296,44 +287,28 @@ and it is possible to use multiple different moves for a given parameter to impr
 (the efficiency of the MCMC simulation).
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
-```
-moves.append( mvNNI(topology, weight=num_taxa) )
-moves.append( mvSPR(topology, weight=num_taxa/10.0) )
-```
+{{ jc_script | snippet:"block#", "6" }}
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
 
 Next we have to create a stochastic node representing the length of each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:
 
-```
-for (i in 1:num_branches) {
-   br_lens[i] ~ dnExponential(10.0)
-   moves.append( mvScale(br_lens[i]) )
-}
-```
+{{ jc_script | snippet:"block#", "7" }}
 
 It is convenient for monitoring purposes to add the tree length as deterministic variable. The tree length is simply the sum of all branch lengths. Accordingly, the tree length can be computed using the `sum()` function, which calculates the sum of any vector of values.
 
-```
-TL := sum(br_lens)
-```
+{{ jc_script | snippet:"block#", "8" }}
 
 Finally, we can create a *phylogram* (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the `treeAssembly()` function, which applies the value of the $i^{th}$ member of the `br_lens` vector to the branch leading to the $i^{th}$ node in `topology`. Thus, the `psi` variable is a deterministic node:
 
-```
-psi := treeAssembly(topology, br_lens)
-```
+{{ jc_script | snippet:"block#", "9" }}
 
 {% aside Alternative tree priors %}
 For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
 We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
-```
-br_len_lambda <- 10.0
-psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves.append( mvNNI(psi, weight=num_taxa) )
-moves.append( mvSPR(psi, weight=num_taxa/10.0) )
-moves.append( mvBranchLengthScale(psi, weight=num_branches) )
-```
+
+{{ asides_script | snippet:"block#", "4-6" }}
+
 You might think that this approach is in fact simpler than the `for` loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
 {% endaside %}
@@ -349,21 +324,17 @@ the corresponding branch lengths {% cite Zhang2012 %}.
 
 First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.
-```
-TL ~ dnGamma(2,4)
-moves.append( mvScale(TL) )
-```
+
+{{ asides_script | snippet:"block#", "7" }}
 
 Now we create a random variable for the relative branch lengths.
-```
-rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
-moves.append( mvBetaSimplex(rel_branch_lengths, weight=num_branches) )
-moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
-```
+
+{{ asides_script | snippet:"block#", "8" }}
+
 Finally, transform the relative branch lengths into actual branch lengths
-```
-br_lens := rel_branch_lengths * TL
-```
+
+{{ asides_script | snippet:"block#", "9" }}
+
 {% endaside %}
 
 {% aside Alternative Prior on Time-Trees: Tree Topology and Node Ages %}
@@ -378,15 +349,11 @@ Fore more information on tree priors, such as birth-death processes, please read
 
 First, we need to specify the age of the tree:
 
-```
-root_age <- 10.0
-```
+{{ asides_script | snippet:"block#", "10" }}
 
 Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
 
-```
-psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
-```
+{{ asides_script | snippet:"block#", "11" }}
 
 Some types of stochastic nodes can be updated by a number of alternative moves.
 Different moves may explore parameter space in different ways,and it is possible to use
@@ -399,15 +366,7 @@ We also need moves that change the ages of the internal nodes, for example, `mvS
 and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with
 them, thus you only need to pass in the `psi` node and proposal `weight`.
 
-```
-moves.append( mvNarrow(psi, weight=num_taxa) )
-moves.append( mvNNI(psi, weight=num_taxa/5.0) )
-moves.append( mvFNPR(psi, weight=num_taxa/5.0) )
-moves.append( mvGPR(psi, weight=num_taxa/30.0) )
-moves.append( mvSubtreeScale(psi, weight=num_taxa/3.0) )
-moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
-```
-
+{{ asides_script | snippet:"block#", "12" }}
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the {% page_ref mcmc %} for more details about moves and MCMC strategies.
 
@@ -415,11 +374,7 @@ The weight specifies how often the move will be applied either on average per it
 
 Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
 
-```
-log_clock_rate ~ dnUniform(-6,1)
-moves.append( mvSlide(log_clock_rate, weight=2.0) )
-clock_rate := 10^log_clock_rate
-```
+{{ asides_script | snippet:"block#", "13-15" }}
 
 Instead, you could also fix the clock rate and estimate the root age.
 For more information on molecular clocks please read the {% page_ref clocks %} tutorial.
@@ -440,15 +395,13 @@ distribution requires several input arguments:
 3. the `type` of character data.
 
 Build the random variable for the character data (sequence alignment).
-```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
-```
+
+{{ jc_script | snippet:"block#", "10" }}
 
 Once the `PhyloCTMC` model has been created, we can attach our sequence
 data to the tip nodes in the tree.
-```
-seq.clamp(data)
-```
+
+{{ jc_script | snippet:"block#", "11" }}
 
 Note that although we assume that our sequence data are random
 variables—they are realizations of our phylogenetic model—for the
@@ -463,9 +416,7 @@ DAG. To do this, we only need to give the `model()` function a single
 node. With this node, the `model()` function can find all of the other
 nodes by following the arrows in the graphical model:
 
-```
-mymodel = model(Q)
-```
+{{ jc_script | snippet:"block#", "12" }}
 
 Now we have specified a simple phylogenetic analysis—each parameter of
 the model will be estimated from every site in our alignment. If we
@@ -492,24 +443,18 @@ First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
 
-```
-monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
-```
+{{ jc_script | snippet:"line", "72" }}
 
 The `mnFile` monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.
 
-```
-monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
-```
+{{ jc_script | snippet:"line", "73" }}
 
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 
-```
-monitors.append( mnScreen(printgen=100, TL) )
-```
+{{ jc_script | snippet:"line", "74" }}
 
 This monitor mostly helps us to see the progress of the MCMC run.
 
@@ -520,9 +465,8 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
-```
-mymcmc = mcmc(mymodel, monitors, moves)
-```
+{{ jc_script | snippet:"line", "77" }}
+
 {% comment %}
 ```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
@@ -533,34 +477,30 @@ You will find that the output is created in two files with extension `_run_1` an
 {% endcomment %}
 
 Now, run the MCMC:
-```
-mymcmc.run(generations=20000)
-```
+
+{{ jc_script | snippet:"line", "78" }}
 
 When the analysis is complete, you will have the monitored files in your output directory.
 
 {% aside Saving and restarting analyses %}
 
 MCMC analyses can take a long time to converge, and it is usually difficult to predict how many generations will be needed to obtain results. In addition, many analyses are run on computer clusters with time limits, and so may be stopped by the cluster partway through. For all of these reasons, it is useful to save the state of the chain regularly through the analysis.
-```
-mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
-```
+
+{{ asides_script | snippet:"block#", "21" }}
+
 The `checkpointInterval` and `checkpointFile` inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions `_mcmc` and `_moves`.
 When multiple independent runs are specified, they will automatically be saved in separate files (with extensions `_run_1`, `_run_2`, etc.).
 
 Restarting the chain from a previous run is done by adding this line:
-```
-mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
-```
+
+{{ asides_script | snippet:"block#", "22" }}
+
 before calling the function `mcmc.run()`. The file name should match what was given as `checkpointFile` when running the previous analysis. **NB:** Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.
 
 The full MCMC block thus becomes:
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state") #comment this out for the first run
 
-mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
-```
+{{ asides_script | snippet:"block#", "20" }}
+{{ asides_script | snippet:"block#", "22-23" }}
 
 {% endaside %}
 
@@ -592,17 +532,12 @@ Therefore, we need to summarize the trees sampled from the posterior
 distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
-```
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
-```
-
+{{ jc_script | snippet:"line", "87" }}
 
 The `mapTree()` function will summarize the tree samples and write the
 maximum *a posteriori* tree to file:
 
-```
-map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
-```
+{{ jc_script | snippet:"line", "89" }}
 
 {% figure jc_tree %}
 <img src="figures/primates_cytb_JC_tree.png" width="800" />
@@ -638,17 +573,7 @@ Posterior probabilities under different analyses
 Note, you can query the posterior probability of a clade being
 monophyletic using the following command:
 
-```
-Lemuroidea <- clade("Cheirogaleus_major",
-                    "Daubentonia_madagascariensis",
-                    "Lemur_catta",
-                    "Lepilemur_hubbardorum",
-                    "Microcebus_murinus",
-                    "Propithecus_coquereli",
-                    "Varecia_variegata_variegata")
-
-treetrace.cladeProbability( Lemuroidea )
-```
+{{ jc_script | snippet:"block#", "16-17" }}
 
 {% table tab_primates %}
 {% tabcaption %}
@@ -696,12 +621,8 @@ $$Q_{K80} = \begin{pmatrix}
 $$
 
 Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:
-```
-kappa ~ dnExp(1)
-moves.append( mvScale(kappa, weight=1.0) )
 
-Q := fnK80(kappa)
-```
+{{ asides_script | snippet:"block#", "16-17" }}
 
 {% endaside %}
 
@@ -735,10 +656,7 @@ Note that we are adding two new variables to our model. We can define a
 variable `pi` for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by
 
-```
-pi_prior <- v(1,1,1,1)
-pi ~ dnDirichlet(pi_prior)
-```
+{{ hky_script | snippet:"block#", "4" }}
 
 Since `pi` is a stochastic variable, we need to specify a move to
 propose updates to it. A good move on variables drawn from a Dirichlet
@@ -747,33 +665,24 @@ from the simplex, proposes a new value for it drawn from a Beta
 distribution, and then rescales all values of the simplex to sum to 1
 again.
 
-```
-moves.append( mvBetaSimplex(pi, weight=2) )
-moves.append( mvDirichletSimplex(pi, weight=1) )
-```
+{{ hky_script | snippet:"block#", "5" }}
 
 The second new variable is $\kappa$, which specifies the ratio of
 transition-transversion rates. The $\kappa$ parameter must be a
 positive-real number and a natural choice as the prior distribution is
 the lognormal distribution:
 
-```
-kappa ~ dnLognormal(0.0, 1.0)
-```
+{{ hky_script | snippet:"block#", "6" }}
 
 Again, we need to specify a move for this new stochastic variable. A
 simple scaling move should do the job.
 
-```
-moves.append( mvScale(kappa) )
-```
+{{ hky_script | snippet:"block#", "7" }}
 
 Finally, we need to create the HKY instantaneous-rate matrix using the
 `fnHKY` function:
 
-```
-Q := fnHKY(kappa,pi)
-```
+{{ hky_script | snippet:"block#", "8" }}
 
 This should be all for the HKY model. Don’t forget to change the output file names, otherwise your old analyses files will be overwritten.
 
@@ -845,9 +754,7 @@ distribution. As we did previously for the Dirichlet prior on base
 frequencies, we first define a constant node specifying the vector of
 concentration-parameter values using the `v()` function:
 
-```
-er_prior <- v(1,1,1,1,1,1)
-```
+{{ gtr_script | snippet:"line", "36" }}
 
 This node defines the concentration-parameter values of the Dirichlet
 prior distribution on the exchangeability rates. Now, we can create a
@@ -856,9 +763,7 @@ function, which takes the vector of concentration-parameter values as an
 argument and the `~` operator. Together, these create a stochastic node
 named `er` ($\theta$ in {% ref gtr_graphical_model %}):
 
-```
-er ~ dnDirichlet(er_prior)
-```
+{{ gtr_script | snippet:"line", "37" }}
 
 The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %}a).
 
@@ -877,33 +782,22 @@ Four different examples of Dirichlet priors on exchangeability rates.
 
 For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter `er` creates a [*simplex*](http://en.wikipedia.org/wiki/Simplex) of values that sum to 1.
 
-```
-moves.append( mvBetaSimplex(er, weight=3) )
-moves.append( mvDirichletSimplex(er, weight=1) )
-```
+{{ gtr_script | snippet:"line", "38-39" }}
 
 We can use the same type of distribution as a prior on the 4 stationary
 frequencies ($\pi_A, \pi_C, \pi_G, \pi_T$) since these parameters also
 represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:
 
-```
-pi_prior <- v(1,1,1,1)
-pi ~ dnDirichlet(pi_prior)
-```
+{{ gtr_script | snippet:"line", "29-30" }}
 
 The node `pi` represents the $\pi$ node in {% ref gtr_graphical_model %}. Now add the simplex scale move on the stationary frequencies to the moves vector:
 
-```
-moves.append( mvBetaSimplex(pi, weight=2) )
-moves.append( mvDirichletSimplex(pi, weight=1) )
-```
+{{ gtr_script | snippet:"line", "31-32" }}
 
 We can finish setting up this part of the model by creating a deterministic node for the GTR instantaneous-rate matrix `Q`. The `fnGTR()` function takes a set of exchangeability rates and a set of base frequencies to compute the instantaneous-rate matrix used when calculating the likelihood of our model.
 
-```
-Q := fnGTR(er,pi)
-```
+{{ gtr_script | snippet:"block#", "6" }}
 
 {% subsection Exercise 3 %}
 
@@ -948,9 +842,8 @@ Then create a stochastic node called `alpha` with a uniform prior distribution b
 (this represents the stochastic node for the $\alpha$-shape parameter in
 {% ref fig_gtrg %}):
 
-```
-alpha ~ dnUniform( 0.0, 10 )
-```
+{{ gtrgi_script | snippet:"line", "51" }}
+
 {% comment %}
 Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10^8$
 (this represents the stochastic node for the $\alpha$-shape parameter in
@@ -969,21 +862,15 @@ The way the ASRV model is implemented involves discretizing the mean-one gamma d
 
 Initialize the `sr` deterministic node vector using the `fnDiscretizeGamma()` function with `4` bins:
 
-```
-sr := fnDiscretizeGamma( alpha, alpha, 4 )
-```
+{{ gtrgi_script | snippet:"line", "52" }}
 
 Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node `alpha`. We will apply a simple scale move to this parameter.
 
-```
-moves.append( mvScale(alpha, weight=2.0) )
-```
+{{ gtrgi_script | snippet:"line", "53" }}
 
 Remember that you need to call the `PhyloCTMC` constructor to include the new site-rate parameter:
 
-```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
-```
+{{ gtrgi_script | snippet:"line", "88" }}
 
 {% subsection Exercise 4 %}
 
@@ -1014,24 +901,18 @@ There seem to be a substantial number of invariant sites.
 
 Now let’s specify the invariable-sites model in RevBayes. We need to specify the prior probability that a site is invariable. A Beta distribution is a common choice for parameters representing probabilities.
 
-```
-p_inv ~ dnBeta(1,1)
-```
+{{ gtrgi_script | snippet:"line", "57" }}
 
 The `Beta(1,1)` distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.
 
 Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.
 
-```
-moves.append( mvSlide(p_inv) )
-```
+{{ gtrgi_script | snippet:"line", "58" }}
 
 Finally, you need to call the `PhyloCTMC` constructor to include the
 new `p_inv` parameter:
 
-```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
-```
+{{ gtrgi_script | snippet:"line", "89" }}
 
 {% subsection Exercise 5 %}
 
