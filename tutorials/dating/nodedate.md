@@ -14,6 +14,10 @@ index: false
 redirect: false
 ---
 
+{% assign ex3_script = "MCMC_dating_ex3.Rev" %}
+{% assign ex3b_script = "MCMC_dating_ex3_only_fossil_data.Rev" %}
+{% assign nodedate_script = "tree_BD_nodedate.Rev" %}
+
 Exercise 3
 ===========
 {:.section}
@@ -48,14 +52,9 @@ We're going to add two node calibrations: one on the root and one on the interna
 The oldest first appearance of a *crown group* bear in our dataset is *Ursus americanus* at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other "dog-like" mammals, from {% cite DosReis2012 %}. We will assume that the age of crown bears can not be older than this.
 
 First, specify the prior on the root. The following commands will replace `extant_mrca <- 1.0` in your tree model script, before the the `tree_dist` variable is specified.
-```
-extant_mrca_min <- 1.84
-extant_mrca_max <- 49.0
-	
-extant_mrca ~ dnUniform(extant_mrca_min, extant_mrca_max)
-	
-moves.append( mvScale(extant_mrca, lambda=1, tune=true, weight=5.0) )
-```
+
+{{ nodedate_script | snippet:"block#", "6-8" }}
+
 Here, we have specified the minimum and maximum constraints described above and stochastic node for the age of the root `extant_mrca`. Finally, we define a move to sample the age of this parameter.
 
 #### Internal node calibration
@@ -79,10 +78,8 @@ Thus, if the MCMC samples any state for which the age of $\mathcal{F}_i$ has a p
 From your script, you'll recall that we previously defined the Ursinae clade and used it to generate a constrained tree topology. We also created a deterministic node `age_ursinae` to keep track of the age of this node.
 
 To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.
-```
-obs_age_ursinae ~ age_ursinae - dnExponential(1.0)
-obs_age_ursinae.clamp(1.84)
-```
+
+{{ nodedate_script | snippet:"block#", "14" }}
 
 ### The master Rev script
 
@@ -90,19 +87,17 @@ obs_age_ursinae.clamp(1.84)
 {:.instruction}
 
 First, change the file used to specify the tree model from **tree_BD.Rev** to **tree_BD_nodedate.Rev**.
-```
-source("scripts/tree_BD_nodedate.Rev")
-```
+
+{{ ex3_script | snippet:"block#", "4" }}
+
 Second, update the name of the output files.
-```
-monitors.append( mnModel(filename="output/bears_nodedate.log", printgen=10) )
-monitors.append( mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree) )
-```
+
+{{ ex3_script | snippet:"block#", "8-9" }}
+
 Don't forget to update the commands used to generate the summary tree.
-```
-trace = readTreeTrace("output/bears_nodedate.trees")
-mccTree(trace, file="output/bears_nodedate.mcc.tre" )
-```
+
+{{ ex3_script | snippet:"block#", "13-14" }}
+
 That's all you need to do!
 
 >Run your MCMC analysis!
@@ -120,15 +115,14 @@ Let's do this while the above analysis is still running.
 {:.instruction}
 
 We just need to mark the clamped node `phySeq` that represents DNA sequence information as being ignored.
-```
-mymodel = model(sf)
-mymodel.ignoreData(phySeq)     # obs_age_ursinae is retained
-```
+
+{{ ex3b_script | snippet:"block#", "7-8" }}
+
 Note that we retained the clamped node `obs_age_ursinae` that represents fossil age information.
 Again, we need to rename the output files.
-```
-monitors.append( mnModel(filename="output/bears_nodedate_only_fossil_data.log", printgen=10) )
-```	
+
+{{ ex3b_script | snippet:"block#", "9" }}
+
 We're not going to bother summarizing the trees, so if you want you can simply remove/comment out the second monitor (`mnFile`) and the tree summary functions (`readTreeTrace` and `mccTree`).
 
 This analysis will show you the estimates of node ages obtained under the tree model in combination with the constraint applied at the root of the tree. Note that although this step is often called "running the model under the prior", the distinction between the prior and posterior varies between programs and becomes less clear once we incorporate fossil data into the tree.
