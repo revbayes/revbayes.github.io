@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on February 18, 2025</h5>
+  <h5>Last modified on February 25, 2025</h5>
 </div>
 
 
@@ -101,6 +101,7 @@
 
 
 </div>
+
 <h1 class="section" id="exercise-2">Exercise 2</h1>
 
 <p>In <a href="/tutorials/dating/global">exercise 1</a> we inferred the phylogeny of living bears and estimated relative node ages assuming a global molecular clock model.
@@ -128,18 +129,25 @@ Second, we need to switch out the global clock model for the relaxed clock model
 <p>We are going to use the uncorrelated exponential relaxed clock model. In this model rates for each branch will be drawn independently from an exponential distribution.</p>
 
 <p>It’s a bit more tricky to set up this clock model. First, we’ll define the mean branch rate as an exponential random variable (<code class="language-plaintext highlighter-rouge">branch_rates_mean</code>). Then, specify a scale proposal move on this parameter.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
+
 moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
+
 <p>Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
 </code></pre></div></div>
+
 <p>Then, use a for loop to define a rate for each branch. The branch rates are independent and identically exponentially distributed with mean equal to the mean branch rate parameter we specified above. For each rate parameter we will also create scale proposal moves.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnExp(1/branch_rates_mean)
     moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
 }
 </code></pre></div></div>
+
 <p>Note that now we have a vector of rates <code class="language-plaintext highlighter-rouge">branch_rates</code>, where each entry corresponds to a different branch in the tree, instead of a single rate that applies to all branches.	
 Lastly, we will use two more specific moves to help improve MCMC convergence.
 First, we will use a vector scale move to propose changes to all branch rates simultaneously. 
@@ -147,6 +155,7 @@ This way we can sample the total branch rate independently of each individual ra
 Second, we will use a move (<code class="language-plaintext highlighter-rouge">mvRateAgeBetaShift</code>) that changes the node ages and branch rates jointly,
 so that the effective branch length (the product of branch time and branch rate) remains the same.
 Thus, the move is proposing values with the same likelihood but a different prior probability.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
 moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
 </code></pre></div></div>
@@ -158,16 +167,24 @@ moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, w
 </blockquote>
 
 <p>First, change the file used to specify the clock model from <strong>clock_global.Rev</strong> to <strong>clock_relaxed_exponential.Rev</strong>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_exponential.Rev")
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_exponential.Rev") # Relaxed exponential clock model
 </code></pre></div></div>
+
 <p>Second, update the name of all the output files.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_relaxed_exponential.log", printgen=10) )
+
 monitors.append( mnFile(filename="output/bears_relaxed_exponential.trees", printgen=10, timetree) )
 </code></pre></div></div>
+
 <p>Don’t forget to update the commands used to generate the summary tree.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_relaxed_exponential.trees")
+
 mccTree(trace, file="output/bears_relaxed_exponential.mcc.tre" )
 </code></pre></div></div>
+
 <p>That’s all you need to do!</p>
 
 <blockquote class="instruction">
@@ -233,14 +250,18 @@ That means, we will need to replace the prior on the <code class="language-plain
 </blockquote>
 
 <p>Since the lognormal distribution is parameterized by the log of the mean, we transform first the mean into the log mean.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_branch_rates_mean := ln( branch_rates_mean )
 </code></pre></div></div>
+
 <p>Now we can replace the <code class="language-plaintext highlighter-rouge">for</code>-loop and specify that we use a lognormal distribution</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
     moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
 }
 </code></pre></div></div>
+
 <p>Next, we are ready to set up the master script to run the analysis.</p>
 
 <blockquote class="instruction">
@@ -248,8 +269,10 @@ That means, we will need to replace the prior on the <code class="language-plain
 </blockquote>
 
 <p>Change the file used to specify the clock model from <strong>clock_relaxed_exponential.Rev</strong> to <strong>clock_relaxed_lognormal.Rev</strong>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_lognormal.Rev")
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_lognormal.Rev") # Relaxed exponential clock model
 </code></pre></div></div>
+
 <p>Don’t forget to update the filenames of the output (<em>e.g.,</em> from <code class="language-plaintext highlighter-rouge">bears_relaxed_exponential</code> to <code class="language-plaintext highlighter-rouge">bears_relaxed_lognormal</code>).</p>
 
 <blockquote class="instruction">
