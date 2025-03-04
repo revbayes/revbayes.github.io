@@ -55,6 +55,7 @@ jobs:
       run: |
         sudo apt-get install -y rubygems
         gem install jekyll bundler --user-install
+        echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> $GITHUB_PATH
         bundle install
 
     - name: Check that website builds (Linux)
