@@ -53,9 +53,8 @@ jobs:
     - name: Install Jekyll (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       run: |
-        sudo apt-get remove rubygems
         sudo apt-get install -y rubygems
-        gem install jekyll bundler
+        gem install jekyll bundler --user-install
         bundle install
 
     - name: Check that website builds (Linux)
