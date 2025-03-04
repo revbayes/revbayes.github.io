@@ -12,23 +12,19 @@ jobs:
   build:
     strategy:
       matrix:
-        name: ubuntu-gcc-14
+        name: ubuntu-gcc-13
 
         include:
 
-          - name: ubuntu-gcc-14
+          - name: ubuntu-gcc-12
             os: ubuntu-latest
             compiler: gcc
-            version: "14"
+            version: "12"
             mpi: false
             arch: linux64
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
 
     - name: Install (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
