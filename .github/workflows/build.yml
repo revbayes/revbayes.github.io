@@ -56,6 +56,7 @@ jobs:
       run: |
         sudo apt-get install -y rubygems
         echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> "$GITHUB_PATH"
+        sudo chmod -R a+rwx /var/lib/gems/3.2.0/cache
         
     - name: Install Jekyll (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
