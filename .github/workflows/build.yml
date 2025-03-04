@@ -81,24 +81,11 @@ jobs:
           exit 1
         fi
 
-        # make sure there are no changes to commit
-        if ! git diff-index --quiet HEAD --
-        then
-          echo "Error: Uncommitted source changes. Please commit or stash before updating master."
-          exit 1
-        fi
-  
-        msg=`git log -1 --pretty=%B`
-  
-        echo "Pulling updates to the source"
-        git pull --quiet origin source
-        echo
-  
         # fetch master
         echo "Pulling master"
         (
           cd _site
-          git checkout --quiet maste
+          git checkout --quiet master
           git fetch --quiet origin
           git reset --quiet --hard origin/master
     
