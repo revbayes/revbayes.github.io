@@ -26,9 +26,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-      with:
-        ruby-version: '3.1'
     - name: Install (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       run: |
@@ -53,13 +50,13 @@ jobs:
     # Caches for different branches are isolated, so we don't need to put the branch name into the key.
     # The total size for all caches in a repository is 5Gb.
 
-#    - name: Install Ruby (Linux)
-#      if: runner.os == 'Linux' && matrix.name != 'windows'
-#      shell: bash
-#      run: |
-#        sudo apt-get install -y rubygems
-#        echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> "$GITHUB_PATH"
-#        sudo chmod -R a+rwx /var/lib/gems/3.2.0
+    - name: Install Ruby (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      shell: bash
+      run: |
+        sudo apt-get install -y rubygems
+        echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> "$GITHUB_PATH"
+        sudo chmod -R a+rwx /var/lib/gems/3.2.0
         
     - name: Install Jekyll (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
@@ -75,7 +72,7 @@ jobs:
         # (we assume later that it exists).
         if [ ! -d "_site" ] ; then
           echo "No _site directory, cloning the master branch into it."
-          git clone git@github.com:revbayes/revbayes.github.io.git _site
+          git clone https://github.com/revbayes/revbayes.github.io.git -b master _site
           echo "Done."
         fi
 
