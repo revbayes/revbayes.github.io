@@ -50,13 +50,18 @@ jobs:
     # Caches for different branches are isolated, so we don't need to put the branch name into the key.
     # The total size for all caches in a repository is 5Gb.
 
-    - name: Install Jekyll (Linux)
+    - name: Install Ruby (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       shell: bash
       run: |
         sudo apt-get install -y rubygems
         echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> "$GITHUB_PATH"
-        echo "$PATH"
+        
+    - name: Install Jekyll (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      shell: bash
+      run: |
+        echo "$PATH"    
         gem install jekyll bundler --user-install
         bundle install
 
