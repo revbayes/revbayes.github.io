@@ -2,18 +2,17 @@
 #
 # RevBayes Example: Molecular dating
 # 
-# This file: Runs the full MCMC for exercise 1
+# This file: Runs the full MCMC for exercise 2
 #
 # authors: Rachel C. M. Warnock, Sebastian Hoehna
 #
 ########################################################
 
-########################################################
+##################################################################
 #
-# Exercise 1: the global molecular clock model
+# Exercise 2: the The uncorrelated exponential relaxed clock model
 #
-########################################################
-
+##################################################################
 
 #######################
 # Reading in the Data #
@@ -36,11 +35,9 @@ monitors = VectorMonitors()
 
 source("scripts/tree_BD.Rev") # BD tree prior
 
-source("scripts/clock_global.Rev") # Global clock model
+source("scripts/clock_relaxed_lognormal.Rev") # Relaxed exponential clock model
 
 source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
-
-
 
 ########
 # MCMC #
@@ -49,16 +46,15 @@ source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 # initialize the model object #
 mymodel = model(sf)	
 
-
 # Create a vector of monitors #
 # 1. for the full model #
-monitors.append( mnModel(filename="output/bears_global.log", printgen=10) )
+monitors.append( mnModel(filename="output/bears_relaxed_lognormal.log", printgen=10) )
 
 # 2. the tree #
-monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timetree) )
+monitors.append( mnFile(filename="output/bears_relaxed_lognormal.trees", printgen=10, timetree) )
 
 # 3. and a few select parameters to be printed to the screen #
-monitors.append( mnScreen(printgen=10, extant_mrca, diversification) )
+monitors.append( mnScreen(printgen=100, extant_mrca, diversification) )
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
@@ -67,16 +63,15 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 mymcmc.run(generations=20000, tuningInterval=200)
 
 
-
 ########################
 # Summarizing the tree #
 ########################
 
 # Read the trace file #
-trace = readTreeTrace("output/bears_global.trees")
+trace = readTreeTrace("output/bears_relaxed_lognormal.trees")
 
 # Maximum clade credibility tree #
-mccTree(trace, file="output/bears_global.mcc.tre" )
+mccTree(trace, file="output/bears_relaxed_lognormal.mcc.tre" )
 
 # Quit RevBayes #
 q()

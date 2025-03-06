@@ -60,6 +60,8 @@ Now, you should be able to build and serve the static HTML with:
 
     bundle exec jekyll serve
 
+To check the static HTML once the command finishes running, navigate to `localhost:4000` on your browser.
+
 The previous command will cause a full rebuild of the site each time a file is modified. This can sometimes take a long time. You can selectively regenerate only modified files using the `--incremental` option
 
     bundle exec jekyll serve --incremental

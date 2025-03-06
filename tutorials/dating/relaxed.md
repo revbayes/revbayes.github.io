@@ -15,6 +15,11 @@ index: false
 redirect: false
 ---
 
+{% assign ex2_script = "MCMC_dating_ex2.Rev" %} 
+{% assign ex2b_script = "MCMC_dating_ex2b.Rev" %}
+{% assign exp_script = "clock_relaxed_exponential.Rev" %} 
+{% assign lnorm_script = "clock_relaxed_lognormal.Rev" %}
+
 Exercise 2
 ===========
 {:.section}
@@ -47,33 +52,26 @@ Remember the clock (or branch-rate) model describes how rates of substitution va
 We are going to use the uncorrelated exponential relaxed clock model. In this model rates for each branch will be drawn independently from an exponential distribution. 
 
 It's a bit more tricky to set up this clock model. First, we'll define the mean branch rate as an exponential random variable (`branch_rates_mean`). Then, specify a scale proposal move on this parameter.
-```
-branch_rates_mean ~ dnExponential(10.0)
-moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
-```
+
+{{ exp_script | snippet:"block#", "1-2" }}
+
 Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.
-```
-n_branches <- 2 * n_taxa - 2
-```
+
+{{ exp_script | snippet:"block#", "3" }}
+
 Then, use a for loop to define a rate for each branch. The branch rates are independent and identically exponentially distributed with mean equal to the mean branch rate parameter we specified above. For each rate parameter we will also create scale proposal moves.
-```
-for(i in 1:n_branches){
-    branch_rates[i] ~ dnExp(1/branch_rates_mean)
-    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
-}
-```	
+
+{{ exp_script | snippet:"block#", "4" }}
+
 Note that now we have a vector of rates `branch_rates`, where each entry corresponds to a different branch in the tree, instead of a single rate that applies to all branches.	
 Lastly, we will use two more specific moves to help improve MCMC convergence.
 First, we will use a vector scale move to propose changes to all branch rates simultaneously. 
 This way we can sample the total branch rate independently of each individual rate, which can improve mixing.
 Second, we will use a move (`mvRateAgeBetaShift`) that changes the node ages and branch rates jointly,
 so that the effective branch length (the product of branch time and branch rate) remains the same.
-Thus, the move is proposing values with same the likelihood but a different prior probability.
-```
-moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
-moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
-```
+Thus, the move is proposing values with the same likelihood but a different prior probability.
 
+{{ exp_script | snippet:"block#", "5" }}
 
 ### The master Rev script
 
@@ -81,19 +79,17 @@ moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, w
 {:.instruction}
 
 First, change the file used to specify the clock model from **clock_global.Rev** to **clock_relaxed_exponential.Rev**.
-```
-source("scripts/clock_relaxed_exponential.Rev")
-```
+
+{{ ex2_script | snippet:"block#", "5" }}
+
 Second, update the name of all the output files.
-```
-monitors.append( mnModel(filename="output/bears_relaxed_exponential.log", printgen=10) )
-monitors.append( mnFile(filename="output/bears_relaxed_exponential.trees", printgen=10, timetree) )
-```
+
+{{ ex2_script | snippet:"block#", "8-9" }}
+
 Don't forget to update the commands used to generate the summary tree.
-```
-trace = readTreeTrace("output/bears_relaxed_exponential.trees")
-mccTree(trace, file="output/bears_relaxed_exponential.mcc.tre" )
-```
+
+{{ ex2_script | snippet:"block#", "13-14" }}
+
 That's all you need to do!
 
 >Run your MCMC analysis!
@@ -169,25 +165,22 @@ That means, we will need to replace the prior on the `branch_rates` so that they
 {:.instruction}
 
 Since the lognormal distribution is parameterized by the log of the mean, we transform first the mean into the log mean.
-```
-ln_branch_rates_mean := ln( branch_rates_mean )
-```
+
+{{ lnorm_script | snippet:"block#", "2" }}
+
 Now we can replace the `for`-loop and specify that we use a lognormal distribution
-```
-for(i in 1:n_branches){
-    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
-    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
-}
-```	
+
+{{ lnorm_script | snippet:"block#", "5" }}
+
 Next, we are ready to set up the master script to run the analysis.
 
 >Copy the master script from the previous exercise and call it **MCMC_dating_ex2b.Rev**. 
 {:.instruction}
 
 Change the file used to specify the clock model from **clock_relaxed_exponential.Rev** to **clock_relaxed_lognormal.Rev**.
-```
-source("scripts/clock_relaxed_lognormal.Rev")
-```
+
+{{ ex2b_script | snippet:"block#", "5" }}
+
 Don't forget to update the filenames of the output (*e.g.,* from `bears_relaxed_exponential` to `bears_relaxed_lognormal`).
 
 >Run your MCMC analysis!

@@ -81,7 +81,7 @@ seq.clamp(data_codon)
 # We define our model.
 # We can use any node of our model as a handle, here we chose to use the rate matrix.
 mymodel = model(psi)
-
+#mymcmc.ignoreAllData()
 
 
 monitors.append( mnModel(filename="output/dNdS_branch.log",printgen=10, separator = TAB) )
@@ -90,7 +90,6 @@ monitors.append( mnScreen(printgen=100, omega_background, omega_focal, prob_inc)
 #mymcmc = mcmcmc(mymodel, monitors, moves, nchain=4, nruns=10)
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
 
-#mymcmc.run(generations=10000,underPrior=TRUE)
 mymcmc.run(generations=10000,tuningInterval=200)
 
 

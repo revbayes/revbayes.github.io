@@ -493,6 +493,10 @@ Scripts are all placed in
         # We can use any node of our model as a handle, here we choose to use the topology.
         mymodel = model(psi)
 
+        # Ideally one would run more MCMC samples.
+        # In the interest of time it may be worth running the analysis under the prior.
+        # mymodel.ignoreAllData()
+
 11. Finally, we need to perform inference under the model, using the
     data. For clarity, we put the results in an output folder, and the
     gene trees will be further included within a folder of their own.
@@ -512,11 +516,8 @@ Scripts are all placed in
         # or use mcmcmc with heated chains.
         mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
 
-        # Ideally one would run more MCMC samples.
-        # In the interest of time it may be worth running the analysis under the prior.
-        mymcmc.burnin(generations=1000,tuningInterval=50)#, underPrior=true)
-        mymcmc.run(generations=3000)#, underPrior=true)
-
+        mymcmc.burnin(generations=1000,tuningInterval=50)
+        mymcmc.run(generations=3000)
 
         mymcmc.operatorSummary()
 

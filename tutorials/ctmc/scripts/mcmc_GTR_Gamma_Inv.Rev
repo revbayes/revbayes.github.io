@@ -28,15 +28,15 @@ monitors = VectorMonitors()
 # specify the stationary frequency parameters
 pi_prior <- v(1,1,1,1) 
 pi ~ dnDirichlet(pi_prior)
-moves.append( mvBetaSimplex(pi, weight=2.0) )
-moves.append( mvDirichletSimplex(pi, weight=1.0) )
+moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
 
 
 # specify the exchangeability rate parameters
 er_prior <- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_prior)
-moves.append( mvBetaSimplex(er, weight=3.0) )
-moves.append( mvDirichletSimplex(er, weight=1.5) )
+moves.append( mvBetaSimplex(er, weight=3) )
+moves.append( mvDirichletSimplex(er, weight=1) )
 
 
 # create a deterministic variable for the rate matrix, GTR
@@ -48,15 +48,14 @@ Q := fnGTR(er,pi)
 #############################
 
 # among site rate variation, +Gamma4
-alpha ~ dnUniform( 0, 10 )
-sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+alpha ~ dnUniform( 0.0, 10 )
+sr := fnDiscretizeGamma( alpha, alpha, 4 )
 moves.append( mvScale(alpha, weight=2.0) )
 
 
 # the probability of a site being invariable, +I
 p_inv ~ dnBeta(1,1)
-moves.append( mvBetaProbability(p_inv, weight=2.0) )
-
+moves.append( mvSlide(p_inv) )
 
 ##############
 # Tree model #
@@ -86,6 +85,7 @@ psi := treeAssembly(topology, bl)
 ###################
 
 # the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type = "DNA")
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 
 # attach the data
@@ -99,13 +99,13 @@ seq.clamp(data)
 mymodel = model(psi)
 
 # add monitors
-monitors.append( mnScreen(alpha, p_inv, TL, printgen=100) )
-monitors.append( mnFile(psi, filename="output/primates_cytb_GTRGI.trees", printgen=10) )
+monitors.append( mnScreen(printgen=100, alpha, p_inv, TL) )
+monitors.append( mnFile(filename="output/primates_cytb_GTRGI.trees", printgen=10, psi) )
 monitors.append( mnModel(filename="output/primates_cytb_GTRGI.log", printgen=10) )
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.run(generations=10000)
+mymcmc.run(generations=20000)
 
 
 # summarize output

@@ -16,7 +16,7 @@ include_files:
 
 > ## For your info
 > This tutorial and the included exercises are currently under construction.
-> If you want to run the analyses, please compile `RevBayes` from the [dev_stairwayplot](https://github.com/revbayes/revbayes/tree/dev_stairwayplot) branch as described [here](https://revbayes.github.io/compile-linux) (for the development branch). The code should be available in the next release (RevBayes v1.2.5).
+> If you want to run the analyses, please compile `RevBayes` from the [dev_stairwayplot](https://github.com/revbayes/revbayes/tree/dev_stairwayplot) branch as described [here](https://revbayes.github.io/compile-linux) (for the development branch). The code should hopefully be available in the next release (RevBayes v1.2.6).
 {:.info}
 
 {% section Overview %}

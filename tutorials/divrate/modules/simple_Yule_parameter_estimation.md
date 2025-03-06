@@ -187,8 +187,8 @@ output directory.
 -   Plot the `birth_rate` using RevGadgets ({% page_ref intro/revgadgets %}, {% citet Tribble2022 %}): What is
     the mean posterior estimate of the `birth_rate` and what is the
     estimated HPD?
--   Compare the prior mean with the posterior mean. (**Hint:** Use the
-    optional argument `underPrior=TRUE` in the function `mymcmc.run()`)
+-   Compare the prior mean with the posterior mean. (**Hint:** Call the
+    method `.ignoreAllData()` on the model object to ignore data at clamped nodes.)
     Are they different (*e.g.,* {% ref fig_prior_posterior %})?
     Is the posterior mean outside the prior 95% probability interval?
 -   Repeat the analysis and allow for two orders of magnitude of
