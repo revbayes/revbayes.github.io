@@ -47,9 +47,6 @@ jobs:
           echo "CXX=ccache clang++-${{ matrix.version }}" >> $GITHUB_ENV
         fi
 
-    # Caches for different branches are isolated, so we don't need to put the branch name into the key.
-    # The total size for all caches in a repository is 5Gb.
-
     - name: Install Ruby (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       shell: bash
