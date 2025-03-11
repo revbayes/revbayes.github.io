@@ -82,7 +82,7 @@ jobs:
           ccache -s
 
           cd projects/cmake
-          BUILD_DIR=build exec_name=rb ./build.sh -help2yml true -DCMAKE_INSTALL_PREFIX=$HOME/local
+          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local
         
           cmake --install build
 
@@ -97,7 +97,8 @@ jobs:
         echo ::group::Test suite
         cd tutorials
 
-        ./run_tutorial_tests.sh "${HOME}/revbayes/projects/cmake/build/rb"
+        
+        ./run_tutorial_tests.sh "${HOME}/local/bin/rb"
 
         cd
         echo ::endgroup::
