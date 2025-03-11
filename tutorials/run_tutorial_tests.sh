@@ -77,7 +77,7 @@ for t in */tests.txt; do
             break
         fi
         if [ $res != 0 ] ; then
-            echo "${testname}/test.sh ==> error $res"
+            echo "${testname} ==> error $res"
         fi
         rm scripts/cp_$script
         rm -rf output

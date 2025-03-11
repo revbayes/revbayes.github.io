@@ -98,16 +98,7 @@ jobs:
         cd tutorials
 
         
-        ./run_tutorial_tests.sh "${HOME}/local/bin/rb"
+        ./run_tutorial_tests.sh rb
 
         cd
         echo ::endgroup::
-
-
-    - name: Upload test files if they failed
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: test-results-${{ matrix.name }}
-        path: tutorials/tests/test_*
-
