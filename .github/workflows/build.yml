@@ -65,41 +65,6 @@ jobs:
     - name: Check that website builds (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       run: |
-        # if the _site directory is missing, create it.
-        # (we assume later that it exists).
-        if [ ! -d "_site" ] ; then
-          echo "No _site directory, cloning the master branch into it."
-          git clone https://github.com/revbayes/revbayes.github.io.git -b master _site
-          echo "Done."
-        fi
-
-        if [ ! -e "_site/.git" ] ; then
-          echo "Error: The _site/ directory should be a separate git repo, but it is not!  Please remove it."
-          exit 1
-        fi
-
-        # fetch master
-        echo "Pulling master"
-        (
-          cd _site
-          git checkout --quiet master
-          git fetch --quiet origin
-          git reset --quiet --hard origin/master
-    
-          # update the documentation?
-          if [ "$1" = "help" ]
-          then
-            git update-index --no-assume-unchanged documentation/index.html
-            git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
-            git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
-          else
-            git update-index --assume-unchanged documentation/index.html
-            git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
-            git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
-          fi
-        )
-        echo
-  
         # build the site
         echo "Running jekyll to build the static site."
         if ! bundle exec jekyll build; then
