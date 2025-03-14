@@ -65,6 +65,10 @@ fi
 
 msg=`git log -1 --pretty=%B`
 
+echo "Checking out source"
+git checkout source
+echo
+
 echo "Pulling updates to the source"
 git pull --quiet origin source
 echo
