@@ -99,15 +99,6 @@ if ! bundle exec jekyll build; then
 fi
 echo
 
-# Push the source BEFORE we push master.
-# If the push to source fails, we don't want to update master.
-
-# deploy source
-echo "Pushing source files."
-git push --quiet origin source
-echo "   Updated the source branch!"
-echo
-
 # deploy master
 (
     cd _site
