@@ -48,7 +48,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>October 23-27, 2017</td>
     <td><a href="http://www.forbio.uio.no/events/courses/2017/RevBayes_and_BEAST2.html">Bayesian Phylogenetics Workshop</a></td>
     <td>Gothenberg, Sweden</td>
-    <td>Walker Pett</td>
+    <td>June Walker</td>
 </tr>
 <tr>
     <td>October 21, 2017</td>

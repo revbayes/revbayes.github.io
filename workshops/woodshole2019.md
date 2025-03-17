@@ -60,7 +60,7 @@ schedule:
     endtime: 2019-08-04T20:00
     topic: "Lab: Phylogenetic Inference under HKY & GTR Models"
     tutorials: ctmc
-    instructors: Walker Pett
+    instructors: June Walker
 
   - starttime: 2019-08-04T20:00
     endtime: 2019-08-04T21:00
@@ -72,7 +72,7 @@ schedule:
     endtime: 2019-08-04T22:00
     topic: "Lab: Divergence-Time Estimation in RevBayes (part 1)"
     tutorials: fbd/fbd_specimen
-    instructors: Walker Pett
+    instructors: June Walker
 
   - starttime: 2019-08-05T09:00
     endtime: 2019-08-05T17:00
@@ -88,7 +88,7 @@ schedule:
     endtime: 2019-08-05T22:00
     topic: "Lab: Divergence-Time Estimation in RevBayes (part 2)"
     tutorials: fbd/fbd_specimen
-    instructors: Walker Pett
+    instructors: June Walker
 ---
 
 ## Using RevBayes on the MBL Cluster 

@@ -108,7 +108,7 @@ schedule:
     endtime: 2018-05-02T12:00:00Z
     topic: Divergence time estimation using the fossilized birth-death model
     tutorials: 
-    instructors: Walker Pett
+    instructors: June Walker
 
   - starttime: 2018-05-02T12:00:00Z
     endtime: 2018-05-02T13:00:00Z
@@ -120,7 +120,7 @@ schedule:
     endtime: 2018-05-02T15:00:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
     tutorials: fbd
-    instructors: Walker Pett
+    instructors: June Walker
 
   - starttime: 2018-05-02T15:00:00Z
     endtime: 2018-05-02T15:15:00Z
@@ -132,13 +132,13 @@ schedule:
     endtime: 2018-05-02T17:30:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
     tutorials: fbd
-    instructors: Walker Pett
+    instructors: June Walker
     
   - starttime: 2018-05-03T9:00:00Z
     endtime: 2018-05-03T9:30:00Z
     topic: Recap
     tutorials: 
-    instructors: Walker Pett
+    instructors: June Walker
     
   - starttime: 2018-05-03T9:30:00Z
     endtime: 2018-05-03T10:15:00Z
