@@ -13,7 +13,7 @@ description:
 instructors:
 - <a href="http://mlandis.github.io/">Michael Landis</a>
 - <a href="http://phyloworks.org/">Tracy Heath</a>
-- <a href="http://willpett.github.io">Walker Pett</a>
+- <a href="http://willpett.github.io">June Walker</a>
 - <a href="https://ib.berkeley.edu/people/faculty/huelsenbeckj">John Huelsenbeck</a>
 - <a href="https://phylogeny.uconn.edu/">Paul Lewis</a>
 

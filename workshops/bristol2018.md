@@ -11,7 +11,7 @@ description:
 
 instructors:
 - <a href="mailto:hoehna@bio.lmu.de?subject=RevBayes%20Workshop%20Bristol%202018">Sebastian Höhna</a>
-- <a href="mailto:willpett@iastate.edu?subject=RevBayes%20Workshop%20Bristol%202018">Walker Pett</a>
+- <a href="mailto:willpett@iastate.edu?subject=RevBayes%20Workshop%20Bristol%202018">June Walker</a>
 - <a href="mailto:rachel.warnock@bsse.ethz.ch?subject=RevBayes%20Workshop%20Bristol%202018">Rachel Warnock</a>
 - <a href="mailto:joe.oreilly@bristol.ac.uk?subject=RevBayes%20Workshop%20Bristol%202018">Joe O'Reilly</a>
 - <a href="mailto:marknputtick@gmail.com?subject=RevBayes%20Workshop%20Bristol%202018">Mark Puttick</a>
