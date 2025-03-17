@@ -1,7 +1,7 @@
 ---
 title: Molecular dating
 subtitle: The uncorrelated exponential relaxed clock model
-authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
+authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and June Walker
 level: 3
 order: 3.2
 prerequisites:
