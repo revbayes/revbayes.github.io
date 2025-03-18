@@ -1,0 +1,50 @@
+
+RevBayes version (1.2.6-preview)
+Build from fix-rate-age-beta-shift (rapture-3500-g64c75b) on Thu Mar  6 05:08:33 PM EST 2025
+
+Visit the website www.RevBayes.com for more information about RevBayes.
+
+RevBayes is free software released under the GPL license, version 3. Type 'license()' for details.
+
+To quit RevBayes type 'quit()' or 'q()'.
+
+
+> source("scripts/MCMC_dating_ex3.Rev")
+   Processing file "scripts/MCMC_dating_ex3.Rev"
+   Successfully read one character matrix from file 'data/bears_cytb.nex'
+   Processing file "scripts/tree_BD_nodedate.Rev"
+   Processing of file "scripts/tree_BD_nodedate.Rev" completed
+   Processing file "scripts/clock_relaxed_exponential.Rev"
+   Processing of file "scripts/clock_relaxed_exponential.Rev" completed
+   Processing file "scripts/sub_GTRG.Rev"
+   Processing of file "scripts/sub_GTRG.Rev" completed
+   
+   Running MCMC simulation
+   This simulation runs 2 independent replicates.
+   The simulator uses 27 different moves in a random move schedule with 66.6 moves per iteration
+   
+
+Iter        |      Posterior   |     Likelihood   |          Prior   |   diversific..   |    extant_mrca   |    elapsed   |        ETA   |
+------------------------------------------------------------------------------------------------------------------------------------------
+0           |       -4263.51   |       -4276.46   |        12.9452   |    -0.08568311   |       3.062681   |   00:00:00   |   --:--:--   |
+
+generation = 0    proposal = 1/67    RateAgeBetaShift(timetree,branch_rates[1],branch_rates[2],branch_rates[3],branch_rates[4],branch_rates[5],branch_rates[6],branch_rates[7],branch_rates[8],branch_rates[9],branch_rates[10],branch_rates[11],branch_rates[12],branch_rates[13],branch_rates[14])
+    BEFORE:   branch_rates[1]:  2.8339143455
+    BEFORE:   branch_rates[2]:  2.9943433874
+    BEFORE:   phySeq:  -4275.3842972
+    BEFORE:   branch_rates[4]:  2.6098732343
+    BEFORE:   timetree:  -14.797706584
+    BEFORE:   branch_rates[12]:  3.0698154227
+    BEFORE:   branch_rates[8]:  2.4884529615
+    BEFORE:   branch_rates[9]:  2.6955800426
+    BEFORE:   obs_age_ursinae:  -1.0729327326
+    BEFORE:   branch_rates[11]:  2.3106435278
+    BEFORE:   branch_rates[14]:  3.2719677451
+    BEFORE:   branch_rates[13]:  0.25559864476
+    BEFORE:   branch_rates[10]:  2.2112235627
+    BEFORE:   branch_rates[3]:  3.0737841019
+    BEFORE:   branch_rates[7]:  2.1142126335
+    BEFORE:   branch_rates[6]:  3.3012207693
+    BEFORE:   branch_rates[5]:  1.5651925605
+
+rb-debug: ../../git/src/core/moves/compound/RateAgeBetaShift.cpp:323: virtual void RevBayesCore::RateAgeBetaShift::performMcmcMove(double, double, double): Assertion `std::abs(ln_prior_ratio - ln_prior_ratio2) < 1.0e-9' failed.
