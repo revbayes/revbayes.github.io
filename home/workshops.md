@@ -66,7 +66,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>August 13-14, 2017</td>
     <td><a href="https://github.com/phyloworks/revbayes-workshop2017">Bayesian Phylogenetics in RevBayes</a></td>
     <td>Iowa State University, Ames, Iowa</td>
-    <td>Walker Pett, Tracy Heath</td>
+    <td>June Walker, Tracy Heath</td>
 </tr>
 <tr>
     <td>August 7-11, 2017</td>
