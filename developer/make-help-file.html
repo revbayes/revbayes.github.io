@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Adding a RevBayes help file</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Adding a RevBayes help file</h1>
+	
+	<h4 class="authors"></h4>
+  <h5>Last modified on March 17, 2025</h5>
+</div>
+
+
+<div class="sidebar no-print" style="width: 100%;">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+</blockquote>
+
+</div>
+
+<h2 class="section" id="set-up-github-access">Set up GitHub Access</h2>
+<hr class="section" />
+
+<ul>
+  <li>Ask someone to send you an invite to the revbayes organization:
+    <ul>
+      <li>Ben Redelings, Tracy Heath, Michael Landis, Sebastian Hoehna, and Joelle Barido-Sotani can do this <a href="https://github.com/revbayes/revbayes/settings/access">here</a>.</li>
+    </ul>
+  </li>
+  <li><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">Generate an ssh public/private key</a> if you don’t have one.</li>
+  <li><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account">Add the public key</a> to your github account.</li>
+  <li>Clone the revbayes repo:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:revbayes/revbayes.git
+</code></pre></div>    </div>
+  </li>
+  <li>Alternatively, if you already cloned the repo, then you may need to change the origin URL for your repo from one that starts with <code class="language-plaintext highlighter-rouge">https:</code> to one that starts with <code class="language-plaintext highlighter-rouge">git@</code>.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git remote -v              # check if the URL for origin starts with https: or git@
+git remote rm origin
+git remote add origin git@github.com:revbayes/revbayes.git
+git remote -v              # check that the origin URL now starts with git@
+</code></pre></div>    </div>
+  </li>
+</ul>
+<h2 class="section" id="the-development-branch-is-protected">The <code class="language-plaintext highlighter-rouge">development</code> branch is “protected”</h2>
+<hr class="section" />
+
+<p>RevBayes does not allow pushing to the <code class="language-plaintext highlighter-rouge">development</code> branch directly.
+Instead, you should create a new branch off of <code class="language-plaintext highlighter-rouge">development</code> and add your changes there.
+In order to merge these changes into the <code class="language-plaintext highlighter-rouge">development</code> branch you will first create a “pull request” (PR) based on your new branch.
+The pull request is a request to merge the changes into the <code class="language-plaintext highlighter-rouge">development</code> branch.
+If automatic tests pass for the the new branch, and the pull request is approved by someone, then you can merge the changes into <code class="language-plaintext highlighter-rouge">development</code>.</p>
+
+<h2 class="section" id="push-a-branch">Push a branch</h2>
+<hr class="section" />
+
+<p>First, make sure you are currently on the <code class="language-plaintext highlighter-rouge">development</code> branch so that your new branch starts from the right place.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout development
+git branch
+git log
+</code></pre></div></div>
+
+<p>Then make a new branch:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch my-new-branch-name
+git checkout my-new-branch-name
+git branch
+</code></pre></div></div>
+
+<p>Finally, let’s commit some changes.  Let’s suppose that you are modifying the help file <code class="language-plaintext highlighter-rouge">help/md/something.md</code>.  So edit this file and save it.  Before you do this, you might want to <a href="https://unix.stackexchange.com/questions/501862/how-can-i-set-the-default-editor-as-nano-on-my-mac">change the default editor</a>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git status                          # check that the file you changed is shown as modified
+git add help/md/something.md
+git status                          # check that your modified file is staged
+git commit
+git push --set-upstream=origin my-new-branch-name
+</code></pre></div></div>
+
+<p>The changes that you committed will then be publicly available from github.
+They do not need to be perfect: making them public allows others to comment on your work, review it, and make suggestions.</p>
+
+<h2 class="section" id="make-a-pull-request-pr">Make a Pull Request (PR)</h2>
+<hr class="section" />
+
+<ul>
+  <li>Go to <a href="https://github.com/revbayes/revbayes/pulls">https://github.com/revbayes/revbayes/pulls</a>.</li>
+  <li>If you just pushed a branch, then there should be a green button to make a PR for that branch.  Otherwise, click the green button <code class="language-plaintext highlighter-rouge">New pull request</code>.</li>
+  <li>Change the left branch button (the base) from <code class="language-plaintext highlighter-rouge">master</code> to <code class="language-plaintext highlighter-rouge">development</code>.</li>
+  <li>The right branch button should be the branch with the changes that you want to merge.</li>
+</ul>
+
+<h2 class="section" id="update-a-help-file">Update a help file</h2>
+<hr class="section" />
+
+<ul>
+  <li>Choose a help file in <code class="language-plaintext highlighter-rouge">help/md/</code> to modify.</li>
+  <li>Look at <code class="language-plaintext highlighter-rouge">help/md/dnNorm.md</code> for an example of what the fields mean, and what information should be included.</li>
+  <li>Q: How much information?  A: Try to include the essential information without letting the file get too long.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">description</code> should be about 1 line.  Longer information goes in the <code class="language-plaintext highlighter-rouge">details</code>.</li>
+  <li>General background information (e.g. “what is a prior”?) that can be found on wikipedia should not go in the help files.</li>
+  <li>You need to run <code class="language-plaintext highlighter-rouge">projects/generate_help.sh</code> to copy information from the markdown files in <code class="language-plaintext highlighter-rouge">help/md</code> into the C++ code.</li>
+</ul>
+
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "default highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "default highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
