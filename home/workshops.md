@@ -48,7 +48,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>October 23-27, 2017</td>
     <td><a href="http://www.forbio.uio.no/events/courses/2017/RevBayes_and_BEAST2.html">Bayesian Phylogenetics Workshop</a></td>
     <td>Gothenberg, Sweden</td>
-    <td>Walker Pett</td>
+    <td>June Walker</td>
 </tr>
 <tr>
     <td>October 21, 2017</td>
@@ -60,7 +60,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>September 25-28, 2017</td>
     <td><a href="https://github.com/phyloworks/revbayes-workshop2017">Bayesian inference of phylogenies with RevBayes</a></td>
     <td>International Biogeography Society Meeting, Bangalore, India</td>
-    <td>Walker Pett, Tracy Heath</td>
+    <td>June Walker, Tracy Heath</td>
 </tr>
 <tr>
     <td>August 13-14, 2017</td>
@@ -102,7 +102,7 @@ Throughout the year, the members of the RevBayes development team and our collab
         <a href="https://github.com/ssb2017/revbayes_reliability">Model Adequacy</a>
     </td>
     <td>SSB Standalone Meeting, Baton Rouge, Louisiana</td>
-    <td>Sebastian Höhna, Lyndon Coghill, Will Freyman, Michael Landis, Tracy Heath, Walker Pett, and April Wright</td>
+    <td>Sebastian Höhna, Lyndon Coghill, Will Freyman, Michael Landis, Tracy Heath, June Walker, and April Wright</td>
 </tr>
 <tr>
     <td>December 9+16, 2017</td>
