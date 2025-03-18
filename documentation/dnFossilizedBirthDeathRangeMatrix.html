@@ -136,12 +136,6 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
-        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -218,7 +212,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -336,8 +330,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnPoisson.html">dnPoisson</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnPseudo.html">dnPseudo</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnReversibleJumpMixture.html">dnReversibleJumpMixture</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnSBBDP.html">dnSBBDP</a></li>
@@ -439,12 +431,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/convertFastaFileToNaturalNumbers.html">convertFastaFileToNaturalNumbers</a></li>
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
@@ -794,8 +780,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/normalize.html">normalize</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/pdInterval.html">pdInterval</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/pomoRF.html">pomoRF</a></li>
         
         <li class="sidebar_item"><a href="/documentation/pomoState4Convert.html">pomoState4Convert</a></li>
@@ -811,12 +795,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/quantile.html">quantile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
         
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
@@ -839,6 +817,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1289,39 +1269,150 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">_mul</code></p>
+        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">dnFossilizedBirthDeathRangeMatrix</code></p>
 </h2>
 
         
 
+        
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnFBDRMatrix</li>
+            
+            </ul>
+            </div>
         
 
         
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            _mul(<a href="/documentation/Distribution__Probability.html">Distribution__Probability</a> baseDistribution, <a href="/documentation/Probability.html">Probability</a> lambda)
+            dnFossilizedBirthDeathRangeMatrix(<a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> psi, <a href="/documentation/Probability.html">Probability</a> rho, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/Natural.html">Natural</a> k, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa, <a href="/documentation/Bool.html">Bool</a> binary)
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
                 
                 <tr>
-                    <td class="lhs argument">baseDistribution : </td>
-                    <td class="rhs argument"><a href="/documentation/Distribution__Probability.html">Distribution__Probability</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The distribution to be transformed.</td>
-                </tr>
-                
-                
-                
-                <tr>
                     <td class="lhs argument">lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The speciation rate(s).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">mu : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extinction rate(s).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">psi : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The fossil sampling rate(s).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">rho : </td>
                     <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The amount muled to base random variable.</td>
+                    <td class="lhs"/><td class="rhs">The extant sampling fraction.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">timeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the piecewise constant process (from oldest to youngest).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">k : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The fossil observation counts (total or [interval] or [interval][species]).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">condition : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The condition of the process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : time</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : time|survival</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs argument">taxa : </td>
+                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxa with stratigraphic ranges used for initialization.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">binary : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Treat fossil counts as binary presence/absence data?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
                 </tr>
                 
                 
@@ -1333,7 +1424,7 @@ Rev Language Reference
         
             <h3 class="help-section-header">Domain Type</h3>
             <div class="help-section-body">
-            <a href="Probability.html">Probability</a>
+            <a href="MatrixReal.html">MatrixReal</a>
             </div>
         
 
@@ -1353,7 +1444,7 @@ Rev Language Reference
 
         <h3 class="help-section-header"></h3>
         <div class="help-section-header" text-align="right">
-        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/_mul.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/dnFossilizedBirthDeathRangeMatrix.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
         </div>
     
 </div>
