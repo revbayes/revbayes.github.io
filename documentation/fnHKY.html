@@ -136,6 +136,12 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
+        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -212,7 +218,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -432,6 +438,14 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/cos.html">cos</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
         <li class="sidebar_item"><a href="/documentation/diagonalMatrix.html">diagonalMatrix</a></li>
@@ -597,6 +611,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/fnLG.html">fnLG</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnLnProbability.html">fnLnProbability</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/fnMinBLTimeScaling.html">fnMinBLTimeScaling</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnMixtureASRV.html">fnMixtureASRV</a></li>
         
@@ -796,6 +812,12 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readAncestralStateTrace.html">readAncestralStateTrace</a></li>
@@ -817,8 +839,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1274,7 +1294,7 @@ Rev Language Reference
 
         
             <div class="help-description">
-            The HKY85 model.
+            DNA evolution model proposed in Hasegawa, Kishino, and Yano (1985).
             </div>
         
 
@@ -1322,12 +1342,29 @@ Rev Language Reference
         
 
         
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            In this model, nucleotides have different stationary frequencies, and transition and transversion rates are allowed to be different. Its first parameter, kappa, codes for the ratio between the rate of transitions and transversions. Its second parameter, baseFrequencies, codes for the frequencies of each nucleotide.
+
+The HKY rate matrix elements will be of the form:
+    Q[i, j] = c * kappa * baseFrequencies[j], if i<->j is a transition 
+            = c * baseFrequencies[j], if i<->j is a transversion
+
+where c is a constant needed to normalize the average rate to 1.
+
+            </div>
+        
 
         
             <h3 class="help-section-header">Example</h3>
             
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnLognormal(0,1)
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the ratio between rates of transitions and transversions
+kappa ~ dnLognormal(0,1)
+
+# the base frequencies
 pi ~ dnDirichlet( v(1,1,1,1) )
+
+# create an HKY rate matrix
 Q := fnHKY(kappa,pi)
 </code></pre></div></div>
 
@@ -1335,6 +1372,27 @@ Q := fnHKY(kappa,pi)
 
         
 
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="fnJC.html">fnJC</a></li>
+            
+            <li><a href="fnK80.html">fnK80</a></li>
+            
+            <li><a href="fnK81.html">fnK81</a></li>
+            
+            <li><a href="fnF81.html">fnF81</a></li>
+            
+            <li><a href="fnT92.html">fnT92</a></li>
+            
+            <li><a href="fnTrN.html">fnTrN</a></li>
+            
+            <li><a href="fnGTR.html">fnGTR</a></li>
+            
+            </ul>
+            </div>
         
 
         

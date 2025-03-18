@@ -136,6 +136,12 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
+        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -212,7 +218,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -432,6 +438,14 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/cos.html">cos</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
         <li class="sidebar_item"><a href="/documentation/diagonalMatrix.html">diagonalMatrix</a></li>
@@ -597,6 +611,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/fnLG.html">fnLG</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnLnProbability.html">fnLnProbability</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/fnMinBLTimeScaling.html">fnMinBLTimeScaling</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnMixtureASRV.html">fnMixtureASRV</a></li>
         
@@ -796,6 +812,12 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readAncestralStateTrace.html">readAncestralStateTrace</a></li>
@@ -817,8 +839,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1338,7 +1358,53 @@ Rev Language Reference
         
             <h3 class="help-section-header">Details</h3>
             <div class="help-section-body">
-            Options are used to personalize RevBayes and are stored on the local machine. Currently this is rather experimental.
+            Runtime options are used to personalize RevBayes and are stored on the local machine.
+The currently available keys and their associated values are as follows:
+
+    lineWidth=<integer>          Screen width when printing (in characters).
+        
+        DEFAULT: 160
+    
+    outputPrecision=<integer>    How many significant digits to print for the values of model graph nodes.
+        
+        DEFAULT: 7
+    
+    printNodeIndex=<true,false>  Print the node indices of a tree as annotations?
+        
+        DEFAULT: true
+    
+    useScaling=<true,false>      Should the partial likelihoods in continuous-time Markov chain (CTMC) models be scaled
+                                 to avoid underflow?
+        DEFAULT: true
+    
+    scalingDensity=<integer>     If so, scale CTMC likelihoods every n-th node (min = 1).
+        
+        DEFAULT: 1
+    
+    tolerance=<numeric>          Tolerance for comparing doubles.
+        
+        DEFAULT: 10e-10
+    
+    debugMCMC=<0,1>              How much work to perform to check MCMC?
+        
+        0: MCMC run without checks.
+        1: MCMC run with additional checks at extra CPU time cost.
+        
+        DEFAULT: 0
+    
+    logMCMC=<0,1,2,3,4>          How much logging to perform when checking MCMC? NOTE: This option serves for debugging and
+                                 should be considered experimental. The exact meaning of individual values may be subject
+                                 to frequent changes.
+        
+        0: No information on individual moves written out.
+        1 or higher: Writes out the generation, within-generation position, and name for each move.
+        2 or higher: Also writes out posterior, likelihood, prior, and Hastings ratios, and if log likelihood = -Inf or NaN,
+                     writes out why this is the case.
+        3 or higher: Writes out each changed probability density and the name of the corresponding model graph node.
+        4: Writes out additional details about the mvSlice move (if present).
+        
+        DEFAULT: 0
+
             </div>
         
 

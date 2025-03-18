@@ -136,6 +136,12 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
+        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -212,7 +218,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -432,6 +438,14 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/cos.html">cos</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
         <li class="sidebar_item"><a href="/documentation/diagonalMatrix.html">diagonalMatrix</a></li>
@@ -597,6 +611,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/fnLG.html">fnLG</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnLnProbability.html">fnLnProbability</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/fnMinBLTimeScaling.html">fnMinBLTimeScaling</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnMixtureASRV.html">fnMixtureASRV</a></li>
         
@@ -796,6 +812,12 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readAncestralStateTrace.html">readAncestralStateTrace</a></li>
@@ -817,8 +839,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1273,6 +1293,10 @@ Rev Language Reference
 </h2>
 
         
+            <div class="help-description">
+            DNA evolution model proposed in Kimura (1981).
+            </div>
+        
 
         
             <h3 class="help-section-header">Aliases</h3>
@@ -1341,11 +1365,64 @@ Rev Language Reference
         
 
         
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            In this model, transition and transversion rates are allowed to be different, and transversion rates for A <-> C, G <-> T and A <-> T, C <-> G transversions are different as well. The first argument, kappa1, defines the ratio between the rate of transitions and the rate of A <-> C, G <-> T transversions. The second argument, kappa2, defines the ratio between the rate of A <-> T, C <-> G transversions and the rate of A <-> C, G <-> T transversions. The third argument, baseFrequencies, defines the stationary frequencies of nucleotide bases. Note that the original Kimura (1981) model assumed equal base frequencies, so this function is more general (if ran without a baseFrequencies argument, however, this is equivalent to K81, since the default is all frequencies equal). 
+
+The K81 rate matrix elements will be of the form:
+    Q[i, j] = c, if i<->j is an A<->C/G<->T transversion
+            = c * kappa1, if i<->j is a transition
+            = c * kappa2, if i<->j is an A<->T/C<->G transversion
+
+where c is a constant needed to normalize the average rate to 1. If using the baseFrequencies parameter, those elements are multiplied by baseFrequencies[j].
+
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the ratio between rates of transitions and A&lt;-&gt;C/G&lt;-&gt;T transversions
+kappa1 ~ dnExp(0.5)
+
+# the ratio between rates of A&lt;-&gt;T/C&lt;-&gt;G and A&lt;-&gt;C/G&lt;-&gt;T transversions
+kappa2 ~ dnExp(0.5)
+
+# create a K81 rate matrix
+Q := fnK81(kappa1, kappa2)
+
+# base frequencies
+baseFrequencies ~ dnDirichlet(v(1,1,1,1))
+
+# K81 rate matrix with non-equal base frequencies
+Q := fnK81(kappa1, kappa2, baseFrequencies)
+</code></pre></div></div>
 
         
 
         
 
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="fnJC.html">fnJC</a></li>
+            
+            <li><a href="fnK80.html">fnK80</a></li>
+            
+            <li><a href="fnF80.html">fnF80</a></li>
+            
+            <li><a href="fnT92.html">fnT92</a></li>
+            
+            <li><a href="fnHKY.html">fnHKY</a></li>
+            
+            <li><a href="fnTrN.html">fnTrN</a></li>
+            
+            <li><a href="fnGTR.html">fnGTR</a></li>
+            
+            </ul>
+            </div>
         
 
         

@@ -136,6 +136,12 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
+        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -212,7 +218,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -432,6 +438,14 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/cos.html">cos</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
         <li class="sidebar_item"><a href="/documentation/diagonalMatrix.html">diagonalMatrix</a></li>
@@ -597,6 +611,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/fnLG.html">fnLG</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnLnProbability.html">fnLnProbability</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/fnMinBLTimeScaling.html">fnMinBLTimeScaling</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnMixtureASRV.html">fnMixtureASRV</a></li>
         
@@ -796,6 +812,12 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readAncestralStateTrace.html">readAncestralStateTrace</a></li>
@@ -817,8 +839,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1285,8 +1305,6 @@ Rev Language Reference
             
             <li>dnFBDRP</li>
             
-            <li>dnFBDSP</li>
-            
             </ul>
             </div>
         
@@ -1295,18 +1313,22 @@ Rev Language Reference
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            dnFossilizedBirthDeathRange(<a href="/documentation/RealPos.html">RealPos</a> rootAge/originAge, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> psi, <a href="/documentation/Probability.html">Probability</a> rho, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/Natural.html">Natural</a> k, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa, <a href="/documentation/TimeTree.html">TimeTree</a> initialTree, <a href="/documentation/Bool.html">Bool</a> binary, <a href="/documentation/Bool.html">Bool</a> extended, <a href="/documentation/Natural.html">Natural</a> ageCheckPrecision)
+            dnFossilizedBirthDeathRange(<a href="/documentation/Bool.html">Bool</a> BDS, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> psi, <a href="/documentation/Probability.html">Probability</a> rho, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa, <a href="/documentation/Bool.html">Bool</a> complete)
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
                 
                 <tr>
-                    <td class="lhs argument">rootAge/originAge : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                    <td class="lhs argument">BDS : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The start time of the process.</td>
+                    <td class="lhs"/><td class="rhs">Assume complete lineage sampling? (BDS model of Silvestro et al. 2019)</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
                 </tr>
                 
                 
@@ -1378,20 +1400,6 @@ Rev Language Reference
                 
                 
                 <tr>
-                    <td class="lhs argument">k : </td>
-                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The fossil observation counts (total or [interval] or [interval][species]).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : NULL</td>
-                </tr>
-                
-                
-                
-                <tr>
                     <td class="lhs argument">condition : </td>
                     <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
                 </tr>
@@ -1405,7 +1413,7 @@ Rev Language Reference
                 
                 
                 <tr>
-                    <td class="lhs"/><td class="rhs">Options : time|survival</td>
+                    <td class="lhs"/><td class="rhs">Options : time|sampling|survival</td>
                 </tr>
                 
                 
@@ -1414,63 +1422,21 @@ Rev Language Reference
                     <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The taxa used for initialization.</td>
+                    <td class="lhs"/><td class="rhs">The taxa with fossil occurrence information.</td>
                 </tr>
                 
                 
                 
                 <tr>
-                    <td class="lhs argument">initialTree : </td>
-                    <td class="rhs argument"><a href="/documentation/TimeTree.html">TimeTree</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">Instead of drawing a tree from the distribution, initialize distribution with this tree.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : NULL</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">binary : </td>
+                    <td class="lhs argument">complete : </td>
                     <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">Treat fossil counts as binary presence/absence data?</td>
+                    <td class="lhs"/><td class="rhs">Assume complete fossil sampling?</td>
                 </tr>
                 
                 <tr>
                     <td class="lhs"/><td class="rhs">Default : FALSE</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">extended : </td>
-                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">Treat tip nodes as extinction events?</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">ageCheckPrecision : </td>
-                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">If an initial tree is provided, how many decimal places should be used when checking its tip ages against a taxon file?</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 4</td>
                 </tr>
                 
                 
@@ -1482,7 +1448,7 @@ Rev Language Reference
         
             <h3 class="help-section-header">Domain Type</h3>
             <div class="help-section-body">
-            <a href="TimeTree.html">TimeTree</a>
+            <a href="MatrixReal.html">MatrixReal</a>
             </div>
         
 

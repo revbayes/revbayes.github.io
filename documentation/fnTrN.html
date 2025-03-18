@@ -136,6 +136,12 @@ Rev Language Reference
         <h4>Distributions</h4>
         <ul class="list-unstyled">
         
+        <li class="sidebar_item"><a href="/documentation/_add.html">_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_mul.html">_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/_sub.html">_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dnAutocorrelatedEvent.html">dnAutocorrelatedEvent</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnBernoulli.html">dnBernoulli</a></li>
@@ -212,7 +218,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
@@ -432,6 +438,14 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/convertToPhylowood.html">convertToPhylowood</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/cos.html">cos</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_add.html">d_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_mul.html">d_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/d_sub.html">d_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/dexponential.html">dexponential</a></li>
         
         <li class="sidebar_item"><a href="/documentation/diagonalMatrix.html">diagonalMatrix</a></li>
@@ -597,6 +611,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/fnLG.html">fnLG</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnLnProbability.html">fnLnProbability</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/fnMinBLTimeScaling.html">fnMinBLTimeScaling</a></li>
         
         <li class="sidebar_item"><a href="/documentation/fnMixtureASRV.html">fnMixtureASRV</a></li>
         
@@ -796,6 +812,12 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/quit.html">quit</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/r_add.html">r_add</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_mul.html">r_mul</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/r_sub.html">r_sub</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/range.html">range</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readAncestralStateTrace.html">readAncestralStateTrace</a></li>
@@ -817,8 +839,6 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readDistanceMatrix.html">readDistanceMatrix</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/readFossilCountsFile.html">readFossilCountsFile</a></li>
         
         <li class="sidebar_item"><a href="/documentation/readMatrix.html">readMatrix</a></li>
         
@@ -1274,7 +1294,7 @@ Rev Language Reference
 
         
             <div class="help-description">
-            The Tamura-Nei nucleotide rate matrix.
+            DNA evolution model proposed in Tamura & Nei (1993).
             </div>
         
 
@@ -1345,14 +1365,34 @@ Rev Language Reference
         
 
         
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            In this model, nucleotide base frequencies are different, and the two transition rates (A <-> G and C<->T) can be different to each other, and to the transversion rate. The first argument, kappa1, defines the ratio between the rate of A <-> G (i.e. purine) transitions to transversions. The second argument, kappa2, defines the ratio between the rate of C <-> T (i.e. pyrimidine) transitions to transversions. The third argument, baseFrequencies, defines the stationary frequencies of nucleotide bases. 
+
+The TrN rate matrix elements are of the form:
+    Q[i, j] = c * kappa1 * baseFrequencies[j], if i<->j is A<->G
+            = c * kappa2 * baseFrequencies[j], if i<->j is C<->T
+            = c * baseFrequencies[j], otherwise
+
+where c is a constant needed to normalize the average rate to 1
+
+            </div>
+        
 
         
             <h3 class="help-section-header">Example</h3>
             
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappaAG ~ dnLognormal(0,1)    # The purine transition rate
-kappaCT ~ dnLognormal(0,1)    # The pyrimindine transition rate
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># A &lt;-&gt; G transition rate
+kappaAG ~ dnLognormal(0,1)
+
+# C &lt;-&gt; T transition rate
+kappaCT ~ dnLognormal(0,1)
+
+# nucleotide base frequencies
 pi ~ dnDirichlet( v(1,1,1,1) )
-Q := fnTrN(kappaAT, kappaCT, ,pi)
+
+# create a TrN rate matrix
+Q := fnTrN(kappaAG, kappaCT, ,pi)
 </code></pre></div></div>
 
         
@@ -1364,7 +1404,17 @@ Q := fnTrN(kappaAT, kappaCT, ,pi)
             <div class="help-section-body">
             <ul class="list-unstyled">
             
+            <li><a href="fnJC.html">fnJC</a></li>
+            
+            <li><a href="fnK80.html">fnK80</a></li>
+            
+            <li><a href="fnK81.html">fnK81</a></li>
+            
+            <li><a href="fnT92.html">fnT92</a></li>
+            
             <li><a href="fnHKY.html">fnHKY</a></li>
+            
+            <li><a href="fnGTR.html">fnGTR</a></li>
             
             </ul>
             </div>
