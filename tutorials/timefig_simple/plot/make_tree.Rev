@@ -1,0 +1,87 @@
+# make_anc.Rev
+# 
+# Use (example):
+#
+# rb --args ./input/results/Kadua_M1_213.tre ./input/results/Kadua_M1_213.states.txt --file ./scripts/make_anc.Rev
+#
+# Description:
+# This script processes the posterior trace of trees (Newick format) and
+# ancestral states (CSV format) to generate two output tree files. 
+# The first file is a time tree with annotations for HPD95 node ages
+# and clade support values. The second file is an ancestral state tree
+# with ancestral state annotations.
+
+# parse arguments
+if (exists("args")) {
+    phy_fn = args[1]
+    state_fn = args[2]
+}
+
+# filesystem
+out_fn = "./output/out"
+mcc_fn = out_fn + ".mcc.tre"
+ase_fn = out_fn + ".states.tre"
+
+# process stochastic mappings? set to false if none exist
+process_stoch = false
+f_burn = 0.2
+
+print("Processing output")
+# make consensus tree
+print("  - readTreeTrace")
+tree_trace = readTreeTrace(file=phy_fn, treetype="clock", burnin=f_burn)
+
+print("  - mccTree")
+mcc_tree = mccTree(trace=tree_trace, file=mcc_fn, positiveBranchLengths=true)
+
+# make ancestral state tree
+print("  - readAncestralStateTrace")
+state_trace = readAncestralStateTrace(file=state_fn, separator="\t")
+#state_trace.setBurnin(1000) # f_burn)
+
+print("  - readAncestralStateTreeTrace")
+state_tree_trace = readAncestralStateTreeTrace(file=phy_fn, treetype="clock")
+#state_tree_trace.setBurnin(1000) # f_burn)
+
+n_burn = floor(f_burn * state_tree_trace.getNumberSamples())
+print("  - ancestralStateTree")
+ase_tree = ancestralStateTree(tree=mcc_tree,
+                   ancestral_state_trace_vector=state_trace,
+                   tree_trace=state_tree_trace,
+                   include_start_states=true,
+                   file=ase_fn,
+                   summary_statistic="MAP",
+                   reconstruction="conditional",
+                   burnin=0,
+                   nStates=3,
+                   site=1)
+
+
+if (process_stoch) {
+    # read in tree trace -- note we only need this when the tree 
+    # and ancestral states are jointly estimated
+    print("  - readAncestralStateTreeTrace")
+    anc_state_tree_trace = readAncestralStateTreeTrace(out_fp+fn+".tre") 
+    anc_state_tree_trace.setBurnin(f_burn)
+
+    # read in character map trace files
+    #bg_anc_state_trace = readAncestralStateTrace(out_fp+bg_fn+".stoch_map.txt") 
+    print("  - readAncestralStateTrace")
+    anc_stoch_trace = readAncestralStateTrace(out_fp+fn+".stoch.txt", separator="\t") 
+
+    # generate marginal MAP character history to be plotted
+    #characterMapTree(tree=mcc_tree, anc_state_trace, out_fn+".char.tree", out_fn+".posteriors.tree", num_time_slices=500, burnin=0.5)
+
+    # create a file that summarizes the sampled stochastically mapped transitions
+    print("  - summarizeCharacterMaps")
+    summarizeCharacterMaps(tree_trace=anc_state_tree_trace,
+                           character_map_trace_vector=anc_stoch_trace,
+                           out_fp+fn+".history.tsv", burnin=f_burn, separator="\t")
+}
+
+
+# done
+quit()
+
+
+

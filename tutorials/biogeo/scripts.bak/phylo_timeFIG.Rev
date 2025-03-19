@@ -1,0 +1,218 @@
+
+# FILENAME: model_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     model_FIG.Rev defines SSE rates for dispersal, extinction
+#     within-region speciation, and between-region speciation using the 
+#     the m_d, m_e, m_w, and m_b functions created in geo_FIG.Rev,
+#     then passes those rates to the SSE model object defined in TensorPhylo.
+#
+# NOTES:
+#     The default RevBayes SSE model can be used for simulation and inference,
+#     and the TensorPhylo SSE model can only be used for inference (currently).
+#     Although RevBayes and the TensorPhylo plugin produce identical likelihoods
+#     given the same data and parameter values, TensorPhylo is generally faster.
+#     We strongly recommend using TensorPhylo for FIG analyses with more than
+#     five regions (e.g. >> 31 states).
+#
+# CALLED BY:
+#     mcmc_FIG.Rev
+#
+# CALLS:
+#     (none)
+#
+#
+
+
+#######################################
+# define model base rates             #
+#######################################
+
+# base rate parameters
+rho_d ~ dnExp(40)
+rho_e ~ dnExp(40)
+rho_w ~ dnExp(40)
+rho_b ~ dnExp(40)
+
+rho_d.setValue(0.1)
+rho_e.setValue(0.1)
+rho_w.setValue(0.1)
+rho_b.setValue(0.1)
+
+moves.append( mvScale(rho_d, weight=5) )
+moves.append( mvScale(rho_e, weight=5) )
+moves.append( mvScale(rho_w, weight=5) )
+moves.append( mvScale(rho_b, weight=5) )
+
+
+# summarize base rates
+speciation_rates := [ rho_w, rho_b ]
+total_speciation := sum( speciation_rates )
+
+#################################
+# dispersal-extirpation process #
+#################################
+
+for (k in 1:num_times) {
+    
+    # dispersal rate (region gain)
+    for (i in 1:num_regions) {
+        r_d[k][i] := rho_d * m_d[k][i]
+    }
+
+    # extirpation rate (region loss)
+    r_e[k] := rho_e * m_e[k][1]
+
+    # dispersal-extirpation rate matrix
+    # - states are discrete ranges
+    # - elements are rates of range expansion/contraction
+    Q_bg[k] := fnBiogeographyRateMatrix(dispersalRates=r_d[k],
+                                  extirpationRates=r_e[k],
+                                  maxRangeSize=max_range_size)
+}
+
+#####################
+# speciation rates  #
+#####################
+
+# speciation rate matrix
+for (k in 1:num_times) {
+    clado_map[k] := fnBiogeographyCladoEventsBD(speciation_rates=speciation_rates,
+                                             within_region_features=m_w[k][1],
+                                             between_region_features=m_b[k],
+                                             max_range_size=max_range_size,
+                                             normalize_split_score=false)
+    # clado_map
+
+    # speciation rates for each range
+    lambda[k] := clado_map[k].getSpeciationRateSumPerState()
+
+    # probabilities of speciation outcomes for each range
+    omega[k] := clado_map[k].getCladogeneticProbabilityMatrix()
+
+    # monitor variables for absolute speciation rates
+    r_w[k] := rho_w * m_w[k][1]
+
+    # NOTE: this rate only represents species with range size 2
+    #       i.e., the inverse sum of inverse edge weights
+    #       (relative rates in m_b[i][j]) is equal to the edge weight
+    #       of a 2-region range
+    for (i in 1:num_regions) {
+        r_b[k][i] := rho_b * m_b[k][i]
+    }
+}
+
+
+####################
+# extinction rates #
+####################
+
+for (k in 1:num_times) {
+    # extinction rates (lineage death)
+    for (i in 1:num_ranges) {
+        if (i <= num_regions) {
+            # species with range-size 1 can go extinct
+            mu[k][i] := r_e[k][i]
+        } else {
+            # widespread species cannot
+            mu[k][i] <- abs(0)
+        }
+    }
+}
+
+####################################
+# starting and sampling conditions #
+####################################
+
+# base frequencies
+pi_bg_base <- rep(0, num_ranges)
+
+# assume that the integer equal to "num_regions" is the
+# range-integer for a species that occurs only in the
+# mainland region, for base-indexing of 1 (Rev script).
+# For example, region 7 is the non-Hawaiian region,
+# set the range-integer for the range {7} to 1.
+pi_allowed_ranges <- [ num_regions ]
+for (i in 1:pi_allowed_ranges.size()) {
+    j = pi_allowed_ranges[i]
+    pi_bg_base[j] <- 1
+}
+pi_bg <- simplex(pi_bg_base)
+
+
+# tip state sampling probabilities
+# assume that ranges with ingroup regions (RKOMH) are perfectly
+# sampled, while the outgroup region (Z) has very low sampling
+
+# accepted number of species, two new K. cordata lineages, one new K. haupuensis
+# see ref Lorence 2010
+n_total           <- 29 + 2 + 1
+n_total_ingroup   <- 22 + 2
+n_total_outgroup  <- n_total - n_total_ingroup
+n_sample_ingroup  <- 24
+n_sample_outgroup <- 3
+rho_ingroup       <- Probability(n_sample_ingroup/n_total_ingroup) 
+rho_outgroup      <- Probability(n_sample_outgroup/n_total_outgroup)
+rho_poorly_sampled_ranges <- [ 7 ]
+for (i in 1:num_ranges) {
+    rho_sample[1][i] <- rho_ingroup
+}
+for (i in rho_poorly_sampled_ranges) {
+    rho_sample[1][i] <- rho_outgroup
+}
+rho_times <- [ 0.0 ]
+
+############
+# root age #
+############
+
+root_age ~ dnUniform(0.0, 32.0)
+root_age.setValue( phy.rootAge() )
+moves.append( mvScale(root_age, weight=15) )
+
+
+#############
+# SSE model #
+#############
+
+# use Time/Multi FIG setup
+timetree ~ dnGLHBDSP( rootAge      = root_age,
+                      lambda       = lambda,
+                      mu           = mu,
+                      eta          = Q_bg,
+                      omega        = omega,
+                      lambdaTimes  = times,
+                      muTimes      = times,
+                      etaTimes     = times,
+                      omegaTimes   = times,
+                      rhoTimes     = rho_times,
+                      pi           = pi_bg,
+                      rho          = rho_sample,
+                      condition    = "time",
+                      taxa         = taxa,
+                      nStates      = num_ranges,
+                      absTol       = 1e-7,
+                      relTol       = 1e-7,
+                      maxDenseSteps = 5000,
+                      nProc        = num_proc)
+
+moves.append( mvNodeTimeSlideUniform(timetree, weight=2*num_taxa) )
+
+# uncomment to enable topology estimation
+# moves.append( mvNNI(timetree, weight=num_taxa) )
+# moves.append( mvFNPR(timetree, weight=num_taxa/4) )
+
+#####################
+# Node age monitors #
+#####################
+
+source("./scripts/kadua_clade.Rev")
+age_ingroup           := tmrca(timetree, clade_ingroup)
+age_affinis           := tmrca(timetree, clade_affinis)
+age_centrantoides     := tmrca(timetree, clade_centrantoides)
+age_flynni            := tmrca(timetree, clade_flynni)
+age_littoralis        := tmrca(timetree, clade_littoralis)
+age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
+diff_age_root_ingroup := root_age - age_ingroup
