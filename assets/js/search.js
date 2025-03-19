@@ -44,7 +44,7 @@
       this.field('content');
 
       for (var key in window.store) { // Add the JSON we generated from the site content to Lunr.js.
-        if (window.store[key].index == "true") {
+        if (!(window.store[key].index == "false")) {
           this.add({
             'id': key,
             'title': window.store[key].title,
