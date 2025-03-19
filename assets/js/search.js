@@ -14,7 +14,7 @@
 
       searchResults.innerHTML = appendString;
     } else {
-      searchResults.innerHTML = '<li>No results found</li>';
+      searchResults.innerHTML = '<br><li>No results found</li>';
     }
   }
 
@@ -34,7 +34,7 @@
   var searchTerm = getQuery('query');
 
   if (searchTerm) {
-    document.getElementById('search-box').setAttribute("value", searchTerm);
+    document.getElementById('search-box-page').setAttribute("value", searchTerm);
 
     // Initalize lunr.js with the fields to search.
     // The title field is given more weight with the "boost" parameter
