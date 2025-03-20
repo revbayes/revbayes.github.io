@@ -3,6 +3,7 @@ title: Tutorial modules
 subtitle: Choosing the right tutorials for your analysis
 level: 0
 order: 0
+layout: paths
 index: false
 ---
 
