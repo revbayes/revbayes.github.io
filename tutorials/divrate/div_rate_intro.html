@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Introduction to Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Overview of Analyses, Models and Theory</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on March 11, 2022</h5>
+  <h5>Last modified on March 20, 2025</h5>
 </div>
 
 
@@ -233,7 +233,7 @@ You can find examples and more information in the <a href="/tutorials/divrate/sa
 <p>As any statistical model, the birth-death process includes several assumptions/conditions.
 Primarily, we condition the process if we only consider study groups that (a) survived until the present, (b) left exactly $N$ extant taxa, or (c) no restrictions.
 The conditions become a bit more involved if phylogenies with fossils are considered.
-You can find more discussion and examples in the <a href="/tutorials/divrate/conditions.html">Assumptions of Diversification Rate Estimation</a>.</p>
+You can find more discussion and examples in the <a href="#conditions">Conditions of the Birth-Death Process</a> section below.</p>
 
 <h2 class="section" id="models">Diversification Rate Models</h2>
 <hr class="section" />
@@ -361,12 +361,48 @@ estimate the diversification rates jointly with the phylogeny and
 divergence times.</p>
 </blockquote>
 
+<h2 class="section" id="conditions">Conditions of the Birth-Death Process</h2>
+<hr class="section" />
+
+<figure id="fig_conditions"><p><img src="figures/condition.png" width="100%" /></p>
+<figcaption><strong>Five different possible conditions for our generalized fossilized-birth-death process.</strong>
+    I) The process survives until the present.
+    II) The process starts at the root and both descendants of the root survive until the present.
+    III) Sampling at least one lineage.
+    IV) The process start at the root and both descendants have at least one lineage sampled.
+    V) The process starts at the root, both descendants have at least one lineage sampled, and the process survives until the present.</figcaption>
+</figure>
+
+<p>Birth-death models are often conditioned on specific events, see <a class="citation" href="#Stadler2013a">(Stadler 2013)</a>, <a class="citation" href="#Hoehna2015a">(Höhna 2015)</a> and <a class="citation" href="#Magee2021">(Magee and Höhna 2021)</a> for some discussion on the topic.
+However, when there are non-contemporaneous samples in the dataset which may be ancestral to other samples, conditioning becomes somewhat complex.
+The key issues for conditioning are whether it is assumed that the process starts at the root or the origin, and whether the descending lineage(s) is (are) assumed to leave any sampled descendant or specifically to have a descendant sampled at the present day.
+Consideration of these possibilities leads to five possible conditions, though conditioning is not strictly required.</p>
+<ul>
+  <li><strong>Survival of the origin</strong>: We condition the process on survival of one lineage, i.e., at least on descendant of the lineage starting at the origin was sampled at the present. This condition represent a case when we have fossils and extant taxa and do not know if the fossils are stem fossils of the entire clade. The condition is obtained by computing $1-E(t_{or})$ with $\phi(t)=0$.</li>
+  <li><strong>Survival of the root</strong>: We condition the process on survival of both lineages, i.e., at least one descendant of each lineage starting at the root was sampled at the present. This is the case for most macroevolutionary analyses without any fossils or if the fossils are known to belong within the crown group of the extant taxa. The condition is obtained by computing $(1-E(t_{MRCA}))^2$ with $\phi(t)=0$.</li>
+  <li><strong>Sampling of origin</strong>: We condition the process to have at least one sample being a descendant of the origin. This is simply a minimal condition that at least something was observed/sampled. This condition represents the case if we would also consider complete extinct clades. The condition is obtained by computing $1-E(t_{or})$.</li>
+  <li><strong>Sampling of the root</strong>: We condition the process to require that both lineages starting at the root are sampled. In this case, all taxa might be extinct but the root age is known or inferred as a parameter of the model. The condition is obtained by computing $(1-E(t_{MRCA}))^2$.</li>
+  <li><strong>Sampling of the root and survival of the origin</strong>: We condition the process on sampling of both descendant lineages of the root and at least one sample at the present. In this case, we condition on this specific root age but one of the descendant lineages of the root might have gone extinct while the other descendant lineage from the root must have survived. The condition is obtained by computing $(1-E_{\phi(t)=0}(t_{MRCA}))(1-E_{\phi(t)\neq 0}(t_{MRCA}))$.</li>
+</ul>
+
+<p>For macroevolutionary analyses of diversification rates, condition (I) is the most adequate if we have both extinct and extant taxa, condition (II) if we have only extant taxa, and condition (III) if we have only extinct taxa.
+For phylodynamic applications, if it can safely be assumed that there are no sampled ancestors prior to the first observed infection (which will always be true if $r(t) = 1$), condition (IV) may be used, otherwise only condition (III) is applicable.
+Conditioning on survival as in (I), (II), or (V) requires $\Phi_0 &gt; 0$, and so is primarily of interest in macroevolutionary applications.
+Of these conditions, (II) is the strictest and requires prior knowledge that the MRCA of the extant samples is the MRCA of all samples.
+Condition (V) is less restrictive, requiring only that none of the fossils could be sampled ancestors prior to the first observed speciation event, which would apply if all fossils are within the crown group.
+We could additionally condition on the number of extant taxa $N$, as suggest by <a class="citation" href="#Gernhard2008">(Gernhard 2008)</a>, although there is, as of today and to our knowledge, no solution known to condition on the number of extinct taxa.</p>
+
 <ol class="bibliography"><li><span id="Condamine2013">Condamine F.L., Rolland J., Morlon H. 2013. Macroevolutionary perspectives to environmental change. Ecology Letters.</span>
 
 <a href="https://doi.org/10.1111/ele.12062">10.1111/ele.12062</a>
 
 </li>
 <li><span id="Condamine2018">Condamine F.L., Rolland J., Höhna S., Sperling F.A.H., Sanmartín I. 2018. Testing the role of the Red Queen and Court Jester as drivers of the macroevolution of Apollo butterflies. Systematic Biology. 67:940–964.</span>
+
+</li>
+<li><span id="Gernhard2008">Gernhard T. 2008. The conditioned reconstructed process. Journal of Theoretical Biology. 253:769–778.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2008.04.005">10.1016/j.jtbi.2008.04.005</a>
 
 </li>
 <li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
@@ -423,6 +459,9 @@ divergence times.</p>
 <li><span id="Stadler2011">Stadler T. 2011. Mammalian phylogeny reveals recent diversification rate shifts. Proceedings of the National Academy of Sciences. 108:6187–6192.</span>
 
 <a href="https://doi.org/10.1073/pnas.1016876108">10.1073/pnas.1016876108</a>
+
+</li>
+<li><span id="Stadler2013a">Stadler T. 2013. How can we improve accuracy of macroevolutionary rate estimates? Systematic Biology. 62:321–329.</span>
 
 </li>
 <li><span id="Thompson1975">Thompson E.A. 1975. Human evolutionary trees. Cambridge University Press Cambridge.</span>
