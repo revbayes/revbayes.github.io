@@ -36,13 +36,13 @@ er_prior <- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_prior)
 moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
 
-pi_prior <- v(1,1,1,1) 
+pi_prior <- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 moves.append( mvSimplexElementScale(pi, alpha=10.0, tune=true, weight=2.0) )
 
 
 #### create a deterministic variable for the rate matrix ####
-Q := fnGTR(er,pi) 
+Q := fnGTR(er,pi)
 
 
 #############################
@@ -102,23 +102,17 @@ phyloSeq.clamp(data)
 
 mymodel = model(psi)
 
-# add monitors
-monitors.append( mnScreen(alpha, pinvar, TL, printgen=1000) )
-monitors.append( mnFile(psi, filename="output/PS_uniform.trees", printgen=10) )
-monitors.append( mnModel(filename="output/PS_uniform.log",printgen=10) )
-
 # run the analysis
-pow_p = powerPosterior(mymodel, moves, monitors, "output/model_uniform.out", cats=100)
-pow_p.burnin(generations=3000,tuningInterval=200)
-pow_p.run(generations=1000)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/model_uniform.out", cats=127)
+pow_p.burnin(generations=5000,tuningInterval=200)
+pow_p.run(generations=2000)
 
 ss = steppingStoneSampler(file="output/model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ss.marginal()
 
-ps = pathSampler(file="model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ps = pathSampler(file="output/model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ps.marginal()
 
 
 # you may want to quit RevBayes now
 q()
-
