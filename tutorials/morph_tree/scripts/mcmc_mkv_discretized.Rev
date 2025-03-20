@@ -54,7 +54,8 @@ moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
 num_cats = 5
 
 # Specify the two parameters to the Beta distribution, and the moves on these parameters.
-beta_scale ~ dnUniform( 0.0, 1E4 )
+#beta_scale ~ dnUniform( 0.0, 1E4 )
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
 beta_scale.setValue( 1.0 )
 moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
 
@@ -65,8 +66,7 @@ cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 # two states. The matrix is initialized from the median values of out four quantiles from
 # the Beta.
 
-for (i in 1:cats.size())
-{
+for (i in 1:cats.size()) {
     Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
 }
 

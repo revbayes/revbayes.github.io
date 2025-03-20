@@ -2,7 +2,7 @@
 #
 # RevBayes Example: Inferring a Phylogeny of Fossil Bears Using the Mk Model
 #                   with the stationary frequencies being drawn from a hyperprior.
-# 
+#
 # This file: Runs the full MCMC ...
 #
 # authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
@@ -57,14 +57,14 @@ moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
 num_cats = 2
 
 dir_alpha ~ dnExponential(1)
-moves.append( mvScale(dir_alpha, lambda=1, weight=4.0 )
+moves.append( mvScale(dir_alpha, lambda=1, weight=4.0 ) )
 
 # Create a vector of how many different state frequencies we will need. We are working with
 # binary data and will only need two. If you were working with multistate data, you could
 # repeat the dir_alpha value for as many states as you need.
 
 pi_prior := v(dir_alpha,dir_alpha)
-	
+
 # Loop over the categories. For each category, draw state frequencies from a Dirichlet. Use
 # those state values to initialize the Q matrix.
 
@@ -72,16 +72,16 @@ for (i in 1:num_cats) {
 	pi[i] ~ dnDirichlet(pi_prior)
 	freq_zero[i] := pi[i][1]
 	freq_one[i]  := pi[i][2]
-    moves.append( mvBetaSimplex(pi[i], alpha=10, weight=4.0) )
-    
-    # now also set up the opposite rate matrix
-    pi[num_cats+i] := simplex(freq_one[i] , freq_zero[i])
-    
-    Q_morpho[i] := fnF81(pi[i])
-    Q_morpho[num_cats+i] := fnF81(pi[num_cats+i])
+  moves.append( mvBetaSimplex(pi[i], alpha=10, weight=4.0) )
+
+  # now also set up the opposite rate matrix
+	pi[num_cats+i] := simplex(freq_one[i] , freq_zero[i])
+
+  Q_morpho[i] := fnF81(pi[i])
+  Q_morpho[num_cats+i] := fnF81(pi[num_cats+i])
 }
 
-# Tell the model what the probability of a character going into any particular category. 
+# Tell the model what the probability of a character going into any particular category.
 matrix_probs <- simplex( rep(1,2*num_cats) )
 
 
@@ -93,7 +93,7 @@ rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 # Moves on the parameters to the Gamma distribution.
 moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
 
-# Combine all of our elements into a CTMC. Because we have not observed any invariant sites, 
+# Combine all of our elements into a CTMC. Because we have not observed any invariant sites,
 # we specify the coding is 'variable'. Note that we are now feeding the site matrices to the CTMC.
 
 phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable", siteMatrices=matrix_probs)
@@ -115,7 +115,7 @@ monitors.append( mnModel(filename="output/mkv_hyperprior.log", printgen=10) )
 # 2. the tree #
 monitors.append( mnFile(filename="output/mkv_hyperprior.trees", printgen=10, phylogeny) )
 # 3. and a few select parameters to be printed to the screen #
-monitors.append mnScreen(printgen=100, freq_zero) )
+monitors.append( mnScreen(printgen=100, freq_zero) )
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
