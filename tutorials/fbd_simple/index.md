@@ -1,7 +1,7 @@
 ---
 title: Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data
 subtitle: A simplified analysis under the fossilized birth-death model for joint inference of divergence times and phylogenetic relationships
-authors:  Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, Walker Pett, and Tracy A. Heath
+authors:  Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, June Walker, and Tracy A. Heath
 level: 3
 order: 15
 prerequisites:
