@@ -4,18 +4,12 @@ subtitle: Choosing the right tutorials for your analysis
 level: 0
 order: 0
 index: false
-downloads: false
 ---
 
-    
-
-These modules are intended to aid users in selecting tutorials best suited for their 
-intended analyses. The modules list important tutorials to develop the necessary 
-skills for an analysis, including pre-requisite knowledge, and optional advanced 
-tutorials depending on a user's specific needs. 
-
+This page is intended to guide users in assembling a set of tutorials that will help them learn 
+how to use RevBayes for a given analysis. Each module lists the tutorials that focus on a particular 
+topic, as well as those that will provide prerequisite knowledge or resources for deeper learning.    
 We encourage users with no RevBayes experience to start with the **RevBayes fundamentals** module.
-
 
 {% aside RevBayes fundamentals %}
 
