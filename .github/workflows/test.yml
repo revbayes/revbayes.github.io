@@ -1,0 +1,104 @@
+name: Check that tutorials run
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        name: [ubuntu-gcc-12]
+
+        include:
+
+          - name: ubuntu-gcc-12
+            os: ubuntu-latest
+            compiler: gcc
+            version: "12"
+            mpi: false
+            arch: linux64
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ccache meson
+        if [ "${{ matrix.compiler }}" = "gcc" ]; then
+          sudo apt-get install -y g++-${{ matrix.version }}
+          echo "C_COMPILER=gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX_COMPILER=g++-${{ matrix.version }}" >> $GITHUB_ENV
+
+          echo "CC=ccache gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=ccache g++-${{ matrix.version }}" >> $GITHUB_ENV
+        else
+          sudo apt-get install -y clang-${{ matrix.version }}
+          echo "C_COMPILER=clang-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX_COMPILER=clang++-${{ matrix.version }}" >> $GITHUB_ENV
+
+          echo "CC=ccache clang-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=ccache clang++-${{ matrix.version }}" >> $GITHUB_ENV
+        fi
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+         key: ${{ matrix.name }}
+         restore-keys: |
+           ${{ matrix.name }}
+
+    - name: Install BOOST (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        # Don't use weird boost version installed by github actions.
+        sudo rm -rf /usr/local/share/boost
+
+        # Maybe install a particular boost version.
+        if [ -n "${{ matrix.install_boost }}" ] ; then
+          sudo apt-get remove libboost-all-dev
+          sudo add-apt-repository ppa:mhier/libboost-latest
+          sudo apt-get update
+          sudo apt-get install -y libboost${{ matrix.install_boost }}-dev
+        else
+          sudo apt-get install -y libboost-all-dev
+        fi
+
+    - name: Clone and build RevBayes development (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        git clone -b development https://github.com/revbayes/revbayes.git
+        (
+          cd revbayes
+    
+          ccache -p
+          ccache -s
+
+          cd projects/cmake
+          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local
+        
+          cmake --install build
+
+          ccache -s
+        )
+
+    - name: Test tutorials
+      run: |
+        export PATH=${HOME}/wrapper:${HOME}/local/bin:$PATH
+
+        echo "\"Hello World\"" | rb
+        echo ::group::Test suite
+        cd tutorials
+
+        
+        ./run_tutorial_tests.sh rb
+
+        cd
+        echo ::endgroup::
