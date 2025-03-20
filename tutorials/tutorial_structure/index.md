@@ -3,7 +3,7 @@ title: Setting Up RevBayes
 subtitle: Preparing your computer to work with phylogenetic data in RevBayes
 authors:  April Wright
 level: 0
-order: 1
+order: 2
 index: true
 redirect: false
 include_files:
