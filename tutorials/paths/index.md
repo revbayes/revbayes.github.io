@@ -12,9 +12,7 @@ Overview
 {:.section}
 
 This tutorial is intended to aid users in selecting tutorials best suited for their 
-intended analy
-dating				model_testing_pps		species_tree
-ses. The modules list important tutorials to develop the necessary 
+intended analyses. The modules list important tutorials to develop the necessary 
 tools for an analysis, including pre-requisite knowledge, and optional advanced 
 tutorials depending on a user's specific needs. 
 
