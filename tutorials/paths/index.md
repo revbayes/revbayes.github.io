@@ -28,6 +28,7 @@ the user through the basics of installing and using RevBayes, and some of the th
 RevBayes analyses.
 
 - Pre-requisites: Basic knowledge on Bayesian statistics
+
 1. [Getting started with RevBayes]({{ base.url }}/tutorials/intro/getting_started). This tutorial includes getting RevBayes working on your machine, and learning about the fundamentals of setting up models in the software.
 2. MCMC fundamentals. Three tutorials lay out the basics of Markov Chain Monte Carlo analysis in RevBayes, using three different examples: [Airline fatalities]({{ base.url }}/tutorials/mcmc/poisson), [coin flips]({{ base.url }}/tutorials/mcmc/binomial), and [archery]({{ base.url }}/tutorials/mcmc/archery). It is recommended that absolute beginners go through all three.
 
@@ -44,8 +45,10 @@ Users will learn how to set up basic molecular evolution model, and be presented
 tutorials to tailor their learning to their desired analyses.
 
 - Pre-requisites: **RevBayes fundamentals**
+
 1. Theoretical background: [Understanding continuous-time Markov models]({{ base.url }}/tutorials/dice). This tutorial will get you up to speed with the theory behind molecular evolution models.
 2. Basic molecular phylogenetic inference: [Nucleotide substitution models]({{ base.url }}/tutorials/ctmc). This tutorial will walk you through a simple example of molecular phylogeny inference.
+
 - If interested in partitioning molecular data: [Partitioned data analysis]({{ base.url }}/tutorials/partition). 
 - If interested in choosing between models of molecular evolution:
     1. [General introduction to model selection]({{ base.url }}/tutorials/model_selection_bayes_factors/bf_intro).
@@ -65,6 +68,7 @@ Users will learn how to set up basic morphological evolution models, including f
 with more than two states.
 
 - Pre-requisites: **RevBayes fundamentals**
+
 1. Theoretical background: [Understanding continuous-time Markov models]({{ base.url }}/tutorials/dice). This tutorial will get you up to speed with the theory behind morphological evolution models.
 2. Morphological phylogenetics with binary traits: [Tree inference with discrete morphology]({{ base.url }}/tutorials/morph_tree). This tutorial will walk you through a simple example of morphological phylogeny inference, using only binary (i.e. two-state) characters.
 3. Expanding your dataset: [Multistate characters]({{ base.url }}/tutorials/morph_tree/V2). This tutorial will teach you how to accommodate characters with more than two states in your morphological phylogenetics analyses.
