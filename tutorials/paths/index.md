@@ -1,19 +1,17 @@
 ---
 title: Tutorial modules
 subtitle: Choosing the right tutorials for your analysis
-authors: Bruno do Rosario Petrucci
 level: 0
 order: 0
 index: false
+downloads: false
 ---
 
-Overview
-========
-{:.section}
+    
 
-This tutorial is intended to aid users in selecting tutorials best suited for their 
+These modules are intended to aid users in selecting tutorials best suited for their 
 intended analyses. The modules list important tutorials to develop the necessary 
-tools for an analysis, including pre-requisite knowledge, and optional advanced 
+skills for an analysis, including pre-requisite knowledge, and optional advanced 
 tutorials depending on a user's specific needs. 
 
 We encourage users with no RevBayes experience to start with the **RevBayes fundamentals** module.
