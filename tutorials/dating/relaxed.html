@@ -268,10 +268,7 @@ That means, we will need to replace the prior on the <code class="language-plain
 
 <p>Now we can replace the <code class="language-plaintext highlighter-rouge">for</code>-loop and specify that we use a lognormal distribution</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
-    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
-    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
-}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
 </code></pre></div></div>
 
 <p>Next, we are ready to set up the master script to run the analysis.</p>

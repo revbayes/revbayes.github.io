@@ -22,7 +22,7 @@ turnover := extinction_rate/speciation_rate
 rho <- 1.0
 
 # Assume an exponential prior on the rate of sampling fossils (psi) #
-psi ~ dnExponential(10) 
+psi ~ dnExponential(10)
 
 # Specify a scale move on the psi parameter #
 moves.append( mvScale(psi, lambda=0.5, tune=true, weight=3) )
@@ -30,23 +30,24 @@ moves.append( mvScale(psi, lambda=0.5, tune=true, weight=3) )
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
 origin_time ~ dnUnif(37.2, 49.0)
+origin_time.setValue(47.0)
 
 # Specify a sliding-window move on the origin_time parameter #
 moves.append( mvSlide(origin_time, delta=1.0, tune=true, weight=5.0) )
 
 # Define the tree-prior distribution as the birth-death process #
-tree_dist = dnFBDRP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
+tree_dist = dnFBDP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, originAge=origin_time, taxa=taxa)
 
 # Define clade constraints #
-clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
-              "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", "Ursus_abstrusus")                  
+clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus",
+              "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", "Ursus_abstrusus")
 constraints = v(clade_ursinae)
 
 # Define a stochastic node for the constrained tree topology #
 timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #
-#moves.append( mvNarrow(timetree, weight=n_taxa) )
+moves.append( mvNarrow(timetree, weight=n_taxa) )
 moves.append( mvFNPR(timetree, weight=n_taxa/5.0) )
 moves.append( mvCollapseExpandFossilBranch(timetree, origin_time, weight=6.0) )
 
@@ -67,10 +68,10 @@ num_samp_anc := timetree.numSampledAncestors()
 
 # Monitor the tree, pruning fossil taxa for which we do not have morphological or molecular data #
 extinct_sp = v("Agriarctos_spp", "Ailurarctos_lufengensis", "Ballusia_elmensis",
-				"Indarctos_arctoides", "Indarctos_punjabiensis", "Indarctos_vireti",
-				"Kretzoiarctos_beatrix", "Parictis_montanus", "Ursavus_brevirhinus",
-				"Ursavus_primaevus", "Ursus_abstrusus", "Zaragocyon_daamsi")
-						
+ "Indarctos_arctoides", "Indarctos_punjabiensis", "Indarctos_vireti",
+ "Kretzoiarctos_beatrix", "Parictis_montanus", "Ursavus_brevirhinus",
+ "Ursavus_primaevus", "Ursus_abstrusus", "Zaragocyon_daamsi")
+
 pruned_tree := fnPruneTree(timetree, prune=extinct_sp)
 
 #pruned_tree := timetree

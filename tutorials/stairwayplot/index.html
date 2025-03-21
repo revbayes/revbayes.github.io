@@ -115,7 +115,7 @@ The <code class="language-plaintext highlighter-rouge">StairwayPlot</code> appro
 Population sizes are allowed to vary between coalescent events but assumed to be constant in between, thus producing the characteristic stairway shape.
 As data, the <code class="language-plaintext highlighter-rouge">StairwayPlot</code> approach uses the site frequency spectrum (SFS), or allele frequency spectrum, and assumes that SNPs are unlinked, i.e., have their own coalescent history.
 <br />
-For a detailed description we refer the reader to <a class="citation" href="#Hoehna2024b">Höhna and Catalán (2024)</a>.
+For a detailed description we refer the reader to <a class="citation" href="#Hoehna2024b">Höhna and Catalán (2025)</a>.
 The data for these analyses are taken from (missing reference).
 More specifically, the data consists of a folded site frequency spectrum of the Munich population from the big European firefly <em>Lampyris noctiluca</em>.</p>
 
@@ -193,7 +193,7 @@ monitors = VectorMonitors()
 <h3 class="subsection" id="demographic-model-prior-on-population-sizes">Demographic Model (Prior on Population Sizes)</h3>
 <hr class="subsection" />
 
-<p>The different priors on the population sizes are the main feature of the Bayesian StairwayPlot compared with the Maximum Likelihood implementation <a class="citation" href="#Liu2020">(Liu and Fu 2020; Höhna and Catalán 2024)</a>.
+<p>The different priors on the population sizes are the main feature of the Bayesian StairwayPlot compared with the Maximum Likelihood implementation <a class="citation" href="#Liu2020">(Liu and Fu 2020; Höhna and Catalán 2025)</a>.
 The StairwayPlot approach allows to specify one population size parameter for each interval between coalescent events, that is, for a dataset with <em>n</em> individuals (more specifically bins in the unfolded SFS, thus assuming haploid individuals) you can specify <em>n-1</em> population size parameters.
 There are various different ways how to specify priors on population size parameters, and we will primarily focus here on the independent and identically distributed (iid) prior.
 Other options, such as the Gaussian Markov Random Field (GMRF) and the Horseshoe Markov Random Field (HSMRF) are provided as additional extensions.</p>
@@ -348,12 +348,12 @@ moves.append( avmvn )
 <hr class="subsection" />
 
 <p>Now comes the main component of the Bayesian StairwayPlot analysis: the StairwayPlot distribution.
-We implemented this distribution in simple but flexible way <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2024)</a> (note that we refer here to the likelihood in <a class="citation" href="#Hoehna2024b">Höhna and Catalán (2024)</a> to match exactly our implementation although the likelihood is, except for conditioning, the same as in <a class="citation" href="#Liu2015">Liu and Fu (2015)</a>).
-Our StairwayPlot distribution (<code class="language-plaintext highlighter-rouge">dnStairwayPlot</code>), which specifies the StairwayPlot likelihood <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2024)</a>, comes with the following parameters:</p>
+We implemented this distribution in simple but flexible way <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2025)</a> (note that we refer here to the likelihood in <a class="citation" href="#Hoehna2024b">Höhna and Catalán (2025)</a> to match exactly our implementation although the likelihood is, except for conditioning, the same as in <a class="citation" href="#Liu2015">Liu and Fu (2015)</a>).
+Our StairwayPlot distribution (<code class="language-plaintext highlighter-rouge">dnStairwayPlot</code>), which specifies the StairwayPlot likelihood <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2025)</a>, comes with the following parameters:</p>
 
 <ul>
   <li><strong>theta</strong>: The vector of $\theta$ parameters. This must be a vector of length <em>n-1</em>.</li>
-  <li><strong>numSites</strong>: The total sequence length, which should be the sum of the SFS. This is used for simulation/initialization and to compute the normalizing constant of the likelihood <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2024)</a>.</li>
+  <li><strong>numSites</strong>: The total sequence length, which should be the sum of the SFS. This is used for simulation/initialization and to compute the normalizing constant of the likelihood <a class="citation" href="#Hoehna2024b">(Höhna and Catalán 2025)</a>.</li>
   <li><strong>numIndividuals</strong>: The number of haploid individuals $n$. This again is used primarily for simulation/initialization and needs to match the size of the observed data.</li>
   <li><strong>folded</strong>: Whether the data are folded or not (<code class="language-plaintext highlighter-rouge">TRUE</code> or <code class="language-plaintext highlighter-rouge">FALSE</code>).</li>
   <li><strong>monomorphicProbability</strong>: Whether to compute the probability of monomorphic sites based on the rest of the probability (<code class="language-plaintext highlighter-rouge">rest</code>) or on the tree length (<code class="language-plaintext highlighter-rouge">treelength</code>)?</li>
@@ -534,7 +534,7 @@ The prior on population sizes was the iid-uniform distribution.</figcaption>
 <li><span id="Hastings1970">Hastings W.K. 1970. Monte Carlo Sampling Methods Using Markov Chains and Their Applications. Biometrika. 57:97–109.</span>
 
 </li>
-<li><span id="Hoehna2024b">Höhna S., Catalán A. 2024. The Bayesian StairwayPlot for Inferring Single Population Demographic Histories from Site Frequency Spectra. in review.</span>
+<li><span id="Hoehna2024b">Höhna S., Catalán A. 2025. Bayesian StairwayPlot for Inferring Single Population Demographic Histories From Site Frequency Spectra. Molecular Ecology Resources.:e14087.</span>
 
 </li>
 <li><span id="Keightley2015">Keightley P.D., Pinharanda A., Ness R.W., Simpson F., Dasmahapatra K.K., Mallet J., Davey J.W., Jiggins C.D. 2015. Estimation of the spontaneous mutation rate in Heliconius melpomene. Molecular biology and evolution. 32:239–243.</span>
@@ -546,10 +546,10 @@ The prior on population sizes was the iid-uniform distribution.</figcaption>
 <li><span id="Lewis2014">Lewis P.O., Xie W., Chen M.-H., Fan Y., Kuo L. 2014. Posterior predictive Bayesian phylogenetic model selection. Systematic biology. 63:309–321.</span>
 
 </li>
-<li><span id="Liu2015">Liu X., Fu Y.-X. 2015. Exploring population size changes using SNP frequency spectra. Nature genetics. 47:555–559.</span>
+<li><span id="Liu2020">Liu X., Fu Y.-X. 2020. Stairway Plot 2: demographic history inference with folded SNP frequency spectra. Genome biology. 21:280.</span>
 
 </li>
-<li><span id="Liu2020">Liu X., Fu Y.-X. 2020. Stairway Plot 2: demographic history inference with folded SNP frequency spectra. Genome biology. 21:280.</span>
+<li><span id="Liu2015">Liu X., Fu Y.-X. 2015. Exploring population size changes using SNP frequency spectra. Nature genetics. 47:555–559.</span>
 
 </li>
 <li><span id="Metropolis1953">Metropolis N., Rosenbluth A.W., Rosenbluth M.N., Teller A.H., Teller E. 1953. Equation of State Calculations by Fast Computing Machines. Journal of Chemical Physics. 21:1087–1092.</span>

@@ -631,20 +631,20 @@ First, we will initialize the model monitor using the <code class="language-plai
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
 </code></pre></div></div>
 
 <p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, TL) )
 </code></pre></div></div>
 
 <p>Finally, create a screen monitor that will report the states of
 specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, TL) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 </code></pre></div></div>
 
 <p>This monitor mostly helps us to see the progress of the MCMC run.</p>
@@ -657,12 +657,12 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
 </code></pre></div></div>
 
 <p>Now, run the MCMC:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
@@ -719,13 +719,13 @@ Therefore, we need to summarize the trees sampled from the posterior
 distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># and then get the MAP tree
 </code></pre></div></div>
 
 <p>The <code class="language-plaintext highlighter-rouge">mapTree()</code> function will summarize the tree samples and write the
 maximum <em>a posteriori</em> tree to file:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 </code></pre></div></div>
 
 <figure id="jc_tree"><p><img src="figures/primates_cytb_JC_tree.png" width="800" /></p>

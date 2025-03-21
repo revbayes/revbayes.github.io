@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Bayesian Island Biogeography (BIB) Model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Bayesian Island Biogeography (BIB) Model</h1>
+	<h3 class="subtitle">Estimating ancestral ranges using the Bayesian Island Biogeography model</h3>
+	<h4 class="authors">Isabel Sanmartin</h4>
+  <h5>Last modified on March 20, 2025</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to phylogenetic biogeography with the DEC model</a></li>
+          
+            <li><a href="/tutorials/biogeo/biogeo_simple.html">Simple phylogenetic analysis using the DEC model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Bystropogon.nex">Bystropogon.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Calathus.nex">Calathus.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Datasets">Datasets</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Dolichoiulus.nex">Dolichoiulus.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Lotus.nex">Lotus.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Micromeria.nex">Micromeria.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Pimelia.nex">Pimelia.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Psyllids.nex">Psyllids.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/BIB/Tolpis.nex">Tolpis.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates.bg.nex">primates.bg.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates.bg_amb.nex">primates.bg_amb.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_range_colors.n4.txt">primates_range_colors.n4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_state_labels.simple.n4.txt">primates_state_labels.simple.n4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/range_colors.n4.txt">range_colors.n4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword.tre">silversword.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword_tree.nex">silversword_tree.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/state_labels.simple.n4.txt">state_labels.simple.n4.txt</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/scripts/make_anc_state.Rev">make_anc_state.Rev</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/mcmc_bib.Rev">mcmc_bib.Rev</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/mcmc_primates_bg_simple.Rev">mcmc_primates_bg_simple.Rev</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple.R">plot_anc_range.simple.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.util.R">plot_anc_range.util.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range_primates_simple.R">plot_anc_range_primates_simple.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_rates_primates_simple.R">plot_rates_primates_simple.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/run_simple.Rev">run_simple.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="intro">Introduction</h2>
+<hr class="section" />
+
+<p>In the <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to phylogenetic biogeography with the DEC model</a> tutorial, we went through the exercise of setting up the
+instantaneous rate matrix and cladogenetic transition probabilities for a simple
+DEC model.
+In this tutorial, we will complete a Bayesian Island Biogeography (BIB) analysis using an empirical dataset.
+For a good introduction to the BIB model, you can read <a class="citation" href="#Sanmartin2008">Sanmartín et al. (2008)</a> or this book chapter <a href="https://books.google.com.mx/books?hl=en&amp;lr=&amp;id=7b5WEAAAQBAJ&amp;oi=fnd&amp;pg=PA27&amp;dq=info:LWXmCk9U9N4J:scholar.google.com&amp;ots=Sk8feF1yvv&amp;sig=HP7U3SJzoSfGRyLrOXJk2DJZF4Y&amp;redir_esc=y#v=onepage&amp;q&amp;f=false">Sanmartin, 2022 ISME</a>.</p>
+
+<h2 class="section" id="bib_intro">Bayesian Island Model</h2>
+<hr class="section" />
+
+<p>The BIB model uses MCMC sampling to estimate ancestral ranges and rates of biogeographic parameters alongside phylogenetic parameters, such as the tree topology, parameters of molecular evolution, and branch lengths; the input data are DNA sequences and tip distributions of the study species <a class="citation" href="#Sanmartin2008">(Sanmartín et al. 2008)</a>.</p>
+
+<p>Though they both use CTMC processes to model range evolution, BIB and DEC models are slightly different (<a href="#fig_bib_1"></a>).
+BIB (Fig. 1a) implements a simpler character evolutionary model, in which ancestors can only occupy single areas (A or B). Range evolution along branches is governed by a CTMC process with only one type of parameter equivalent to range switching or instantaneous dispersal; the Q matrix describes the instantaneous transition from one area to another as a jump dispersal event (p = A to B). At each speciation event in the phylogeny, the single-area ancestral range is inherited entirely and identically by the two descendants, in other words, there is no need to include a cladogenetic component in the BIB model because the ancestral range is not altered through speciation (Fig. 5a).</p>
+
+<figure id="fig_bib_1"><p><img src="figures/fig_bib_1.png" width="55%" /></p>
+<figcaption>Parametric CTMC models in biogeographic inference. a. Standard CTMC model (BIB). b. Dispersal-Extinction Cladogenesis model (DEC)</figcaption>
+</figure>
+
+<p>Modeling dispersal as an instantaneous process without going through a widespread state may seem unrealistic but allows the BIB model to “borrow” the sophisticated machinery and statistical algorithms used in molecular models of nucleotide substitution; in fact, initial implementations of BIB used software routinely employed in molecular phylogenetics <a class="citation" href="#Sanmartin2008">(Sanmartín et al. 2008; Lemey et al. 2009)</a>.</p>
+
+<p>In standard molecular models, nucleotide substitutions within a species DNA sequence are considered as instantaneous In-between demographic-level processes, involving increased allele polymorphism within gene trees, competition among mutations in terms of fitness, and rates of fixation differing between alleles <a class="citation" href="#DeMaio2015">(De Maio et al. 2015)</a>, are typically ignored.
+Similarly, in the BIB model, the species is assumed to instantaneously change area relative to its current range, ignoring the intermediary population-level processes, such as changes in effective population size with migration, introgression, etc.</p>
+
+<p>The BIB model can thus be appropriate to model scenarios in which areas are discrete entities isolated by dispersal barriers, so that migration to a new area effectively leads to speciation, in other words, the ancestor is not expected to maintain the widespread distribution for long, as in the case of founder effects in oceanic islands isolated by geographic barriers <a class="citation" href="#Sanmartin2008">(Sanmartín et al. 2008)</a>, or in continental islands isolated by ecological barriers <a class="citation" href="#Sanmartin2010">(Sanmartín et al. 2010)</a>.</p>
+
+<p>However, the assumption of single-state ancestral ranges means that BIB is most useful to explore and test general patterns of geographic movement or dispersal. If the interest lies on inferring speciation modes or possible ways in which ancestral ranges are divided, BIB is not well suited.</p>
+
+<p>Notice that constraining ancestors to single areas in the Q matrix does not imply that phylogenies with extant widespread species cannot be analyzed with BIB. As in molecular evolutionary models, these widespread terminals will be treated as sources of “ambiguity” in the BIB analysis: 50% of the time the MCMC chain will sample from one of the discrete states, and 50% from the other.</p>
+
+<h3 class="subsection" id="setup">Getting Set Up</h3>
+<hr class="subsection" />
+
+<p>We have provided the following data files for this tutorial:</p>
+
+<ul>
+  <li><a href="data/n4/silversword.tre">silversword.tre</a>:
+Dated phylogeny of the silversword alliance.</li>
+  <li><a href="data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a>:
+A data matrix with the coded ranges for each species.</li>
+</ul>
+
+<blockquote class="instruction">
+  <p>Once you have downloaded the zip file by clicking on the arrow above,
+Unzip that and navigate inside of that directory.
+This directory should be called <code class="language-plaintext highlighter-rouge">revbayes_biogeo_biogeo_simple</code></p>
+
+  <p>Once inside you should see two directories: <code class="language-plaintext highlighter-rouge">data</code> and <code class="language-plaintext highlighter-rouge">scripts</code></p>
+
+  <p>Once you have all of the files, open RevBayes and ensure that your working directory
+is the top directory above the <code class="language-plaintext highlighter-rouge">data</code> folder (e.g., <code class="language-plaintext highlighter-rouge">revbayes_biogeo_biogeo_simple</code>).</p>
+</blockquote>
+
+<h1 id="setting-a-biogeographic-analysis-with-bib">Setting a biogeographic analysis with BIB</h1>
+
+<p>In this tutorial, we are going to program a Bayesian inference biogeographic analysis in RevBayes with the BIB model and the <code class="language-plaintext highlighter-rouge">Rev</code> language and an empirical dataset, consisting on a set of clades that are distributed in the same set of areas As we have learnt from the lectures, the BIB model includes only two components: the <em>Distribution-coded discrete areas</em> and the <em>anagenetic component: the Q matrix</em>. There is no <em>cladogenetic component: range inheritance scenarios</em>. The aim is to estimate commonalities in patterns of range evolution: in particular, can we learn any rules about the rate of migration or dispersal between areas by estimating those rates across multiple clades that share a common biogeographic setting or area distribution.</p>
+
+<h2 id="study-group">Study group</h2>
+
+<p>We will work with a set of nine clades that are distributed in the Canary Islands, a volcanic archipelago located in the Atlantic Ocean, close to northwest Africa.
+These clades (genera, tribes, “generic-alliances) differ in the number of species and taxonomically (they belong to different groups of organisms: e.g., insects, angiosperms, millipeda), and have different ecological preferences; however, they share a common distribution (even though not every clade is distributed in exactly the same set of islands). The Canary Islands were formed by the African plate moving over a “hotspot” (a permanent source of magma) in the Atlantic Ocean; unlike Hawaii, another hotspot archipelago, their volcanic history was also influenced by tectonics, i.e., a continental fracture propagating from the African Atlas mountain range. All islands were formed in the last 20 million years, with the eastern islands (Lanzarote, Fuerteventua) being the oldest, and the westernmost islands (La Palma, El Hierro), the youngest.</p>
+
+<figure id="fig_bib_2"><p><img src="figures/fig_bib_2.png" width="55%" /></p>
+<figcaption>The Canary Islands are formed by seven major islands, with different sizes and ages.</figcaption>
+</figure>
+
+<h2 id="data-description-and-access">Data description and access</h2>
+
+<p>First, download the datasets and scripts needed to complete the task.
+Move into the <code class="language-plaintext highlighter-rouge">BIB</code> folder, where you can find all scripts and files needed for the practice.  Inside this folder, you will find a second folder called <code class="language-plaintext highlighter-rouge">data</code>. Copy the contents of this file into your computer: it contains the datasets of the seven clades, e.g., <em>Bystropogon.nex</em> .</p>
+
+<p>Take a look at each of these datasets. You will note that unlike DEC, BIB works with raw DNA sequence alignment. This means that we will be inferring the phylogeny, the evolutionary relationships between species, jointly with patterns and rates of range evolution.
+There are two components on each dataset: the first matrix contains the DNA alignment and the character states are the nucleotides (e.g., A, C, T, G). The second matrix contains the biogeographic states: only one column with each species (or DNA sequence voucher) coded by distribution.</p>
+
+<figure id="fig_bib_3"><p><img src="figures/fig_bib_3.png" width="55%" /></p>
+<figcaption>Data structure of a BIB model</figcaption>
+</figure>
+
+<p>Area coding follows <a class="citation" href="#Sanmartin2008">Sanmartín et al. (2008)</a>, and divides the Canary Islands into three “geological” groups of islands (islands that were formed in the same geological pulses over the last 20 million years: <em>Eastern Islands (1)</em>: Lanzarote (15 Ma) and Fuerteventura (20 Ma), <em>Central Islands (2)</em>: Gran Canaria (14 Ma), Tenerife (12 Ma) and Gomera (10 Ma), and <em>Western Islands (3)</em>: La Palma (2 Ma) and El Hierro (0.8 Ma). Finally, we will consider a fourth state to allow lineages to migrate into the Canary Islands, <em>Mainland (0)</em>: Iberian Peninsula, other Macaronesian archipelagos, Africa.</p>
+
+<h2 id="launching-revbayes">Launching RevBayes</h2>
+<p>Launch RevBayes by typing <code class="language-plaintext highlighter-rouge">./rb</code> if your are using the Terminal, or <code class="language-plaintext highlighter-rouge">rb-mpi</code> if you are using the parallel version in a cluster command line. This should launch RevBayes and give you a command prompt (the <code class="language-plaintext highlighter-rouge">&gt;</code> character); this means RevBayes is waiting for input.</p>
+
+<h2 id="constructing-the-bib-model-interactively">Constructing the BIB model <em>interactively</em></h2>
+
+<p>First, we will build the molecular part of the model.</p>
+
+<p>We assume each group has its own molecular model, but shares the biogeographic model.</p>
+
+<p>Read in all molecular data matrices into the vector D
+Read in all biogeographic matrices into the vector B</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+filenames &lt;- [  "Input/Bystropogon.nex",
+                "Input/Calathus.nex",
+                "Input/Dolichoiulus.nex",
+                "Input/Lotus.nex",
+                "Input/Micromeria.nex",
+                "Input/Pimelia.nex",
+                "Input/Psyllids.nex"
+              ]
+</code></pre></div></div>
+
+<p>Create a loop</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+for ( i in 1:filenames.size() )
+{
+    X &lt;- readDiscreteCharacterData( filenames[i] )
+
+    D[i] &lt;- X[1]
+    B[i] &lt;- X[2]
+}
+</code></pre></div></div>
+<h3 id="building-the-molecular-model-for-each-clade">Building the molecular model for each clade</h3>
+
+<p>Next, we define the molecular model for each group. We do it in a loop with four steps:</p>
+
+<ol>
+  <li>
+    <p>Define the priors for the two elements of the Q substitution rate matrix: the exchangeability or transition rates between nucleotides <code class="language-plaintext highlighter-rouge">r_M</code> and the stationary or equilibrium frequencies for each nucleotide <code class="language-plaintext highlighter-rouge">p_M</code>. Since these two parameters are stochastic variables in our model, we assign them some priors: in this case, Dirichlet priors.
+p[i] ~ dnDirichlet( v(1,1,1,1) )
+r[i]  ~ dnDirichlet( v(1,1,1,1,1,1) )</p>
+  </li>
+  <li>Build the Q instantaneous rate matrix. Notice that as in the DEC model, Q is a deterministic node, since it is estimated as a function that depends on two types of stochastic variables or parameters, r[i] and p[i]
+Q[i] := fnGTR( r[i], pi[i] )</li>
+  <li>Assign clock rates to each group. We use an exponential prior with expectation 1/1000=0.001 because the dataset is made up of chloroplast markers, which are typically between  10E-4 and 10E-3.
+clockRate[i] ~ dnExponential( 1000.0 )</li>
+  <li>Assign a tree prior: a birth-death prior setting the rate of speciation and extinction. Typically, we do not estimate speciation and extinction directly but two indirect parameters: the net diversification rate: the rate of speciation minus the rate of extinction; the turnover rate: the ratio of extinction over the speciation rate. We set the mean of the diversification prior to correspond to an expectation of 20 lineages in 3.0 Myr, i.e. exp(rT) = 20 when T = 3 and r = 1. For the turnover, we use an uninformative prior. We then convert these two estimates to the underlying parameters.
+diversification[i] ~ dnExponential( 1.0 )
+turnover[i] ~ dnUniform(0.000001,0.999999)</li>
+  <li>We set the root age: anywhere from 0 to 20 Myr old. Age of Canary Islands goes from 0.8 (El Hierro) to 20 Ma (Fuerteventura)
+rootAge[i] ~ dnUniform( 0.000001, 20.0 )</li>
+  <li>We define the complete tree model for each group: tau[i] ~ dnBirthDeath function</li>
+  <li>We add rate heterogeneity across sites in the DNA sequence (allowing substitution rates to be higher for some (variable) sites and lower for other (conserved) sites. We use a discretized gamma model with four categories: alpha_M[i] ~ dnExponential(1.0)</li>
+  <li>We build the complete model <code class="language-plaintext highlighter-rouge">seq</code> from all seven components.</li>
+  <li>We “clamp” the model, assigning it the data.</li>
+  <li>We add the moves.</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+for ( i in 1:D.size() ) {
+
+    pi_M[i] ~ dnDirichlet( v(1,1,1,1) )
+    r_M[i]  ~ dnDirichlet( v(1,1,1,1,1,1) )
+
+
+    Q_M[i] := fnGTR( r_M[i], pi_M[i] )
+
+
+    clockRate_M[i] ~ dnExponential( 1000.0 )
+
+
+    diversification[i] ~ dnExponential( 1.0 )
+    turnover[i] ~ dnUniform(0.000001,0.999999)
+
+
+    lambda[i] := diversification[i] / abs(1.0 - turnover[i])
+    mu[i]     := turnover[i] * lambda
+
+
+    rootAge[i] ~ dnUniform( 0.000001, 20.0 )
+
+
+
+
+    tau[i] ~ dnBirthDeath(  lambda = lambda[i],
+                            mu = mu[i],
+                            rootAge = rootAge[i],
+                            rho = 1.0,
+                            samplingStrategy = "uniform",
+                            condition = "time",
+                            nTaxa = D[i].ntaxa(),
+                            names = D[i].names()
+                        )
+
+    alpha_M[i] ~ dnExponential(1.0)
+
+    probs &lt;- v( 0.125, 0.375, 0.625, 0.875 )
+
+    for ( j in 1:4 )
+        siteRates_M[i][j] := qgamma( probs[j], alpha_M[i], alpha_M[i] )
+
+    seq_M[i] ~ dnPhyloCTMC( tree        = tau[i],
+                            Q           = Q_M[i],
+                            branchRates = clockRate_M[i],
+                            siteRates   = siteRates_M[i],
+                            nSites      = D[i].nchar(),
+                            type        = "DNA"
+                          )
+
+    seq_M[i].clamp( D[i] )
+
+    # add moves
+    moves[ mvi++ ] = mvScale(clockRate_M[i],lambda=1,tune=true,weight=1)
+    moves[ mvi++ ] = mvScale(rootAge[i],lambda=1,tune=true,weight=1)
+    moves[ mvi++ ] = mvScale(diversification[i],lambda=1,tune=true,weight=1)
+    moves[ mvi++ ] = mvScale(turnover[i],lambda=1,tune=true,weight=1)
+    moves[ mvi++ ] = mvNNI(tau[i], weight=10.0)
+    moves[ mvi++ ] = mvFNPR(tau[i], weight=10.0)
+    moves[ mvi++ ] = mvSubtreeScale(tau[i], weight=5.0)
+    moves[ mvi++ ] = mvNodeTimeSlideUniform(tau[i], weight=10.0)
+    moves[ mvi ] = mvScale(alpha_M[i], lambda=1, tune=true, weight=1.0)
+
+
+}
+</code></pre></div></div>
+
+<h3 id="building-the-common-biogeographic-model-shared-by-all-clades">Building the common biogeographic model shared by all clades</h3>
+
+<p>We assume the following state codes (0-offset in Nexus file, 1-offset here)
+0 1 Eastern Islands (Fuerteventura, Lanzarote)
+1 2 Central Islands (Tenerife, Gran Canaria, Gomera)
+2 3 Western Islands (El Hierro, La Palma)
+3 4 Mainland</p>
+
+<p>We first define the island carrying capacities and biotic exchange intensities</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_bio ~ dnDirichlet( v(1,1,1,1) )
+r_bio  ~ dnDirichlet( v(1,1,1,1,1,1) )
+</code></pre></div></div>
+
+<p>Next, we build  the biogeographic rate matrix, which is a deterministic node, a function of two parameters (r and pi)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_bio := fnGTR( r_bio, pi_bio )
+</code></pre></div></div>
+
+<p>We now use a loop to define the components of the biogeographic model for each clade.</p>
+<ol>
+  <li>We first define the migration rate in units of time; the prior is derived assuming an expected rate of 1.0 island switches/Myr. We want a fairly vague prior because the uncertainty is considerable. Here we use a gamma(1,1)=exp(1) prior. It has 50 % credible set (0.29,1.39) and 95 % set (0.025,3.69).</li>
+  <li>We create the model</li>
+  <li>We add moves to the biogeographic part of the model assuming that the molecular evolution moves are already in the vector moves</li>
+  <li>We set up the file and screen monitors</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+mni = 1
+
+
+for ( i in 1:B.size() ) {
+
+migrationRates[i] ~ dnGamma( 1.0, 1.0 )
+
+    # Biogeography model, assuming that tau is in time units
+    bio[i] ~ dnPhyloCTMC(   tree            = tau[i],
+                            Q               = Q_bio,
+                            rootFrequencies = pi_bio,
+                            branchRates     = migrationRates[i],
+                            nSites          = 1,
+                            type            = "Standard"
+                        )
+
+    bio[i].clamp( B[i] )
+
+
+mymodel = model( bio )
+
+
+moves[ mvi++ ] = mvSimplexElementScale(pi_bio, alpha=10.0, tune=true, weight=4.0)
+moves[ mvi++ ] = mvSimplexElementScale(r_bio, alpha=10.0, tune=true, weight=6.0)
+moves[ mvi] = mvScale(migrationRates[i],lambda=1,tune=true,weight=1)
+
+
+runName &lt;- "biogeo_model"
+
+
+monitors[mni++] = mnModel(    
+                                filename = runName + ".csv",
+                                printgen = 10
+                           )
+
+monitors[mni++] = mnScreen(   
+                                printgen = 10,
+                                pi_bio,
+                                r_bio,
+                                migrationRates,
+                                posterior = true,
+                                likelihood = true,
+                                prior = true
+                            )
+}                       
+</code></pre></div></div>
+
+<p>Finally, we run the analysis</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc( mymodel, monitors, moves )
+mymcmc.run( generations=100000 )
+</code></pre></div></div>
+
+<h2 id="run-the-analysis-non-interactively-from-source">Run the analysis non interactively (from source)</h2>
+
+<p>First, we run the molecular model. This script will set up the molecular model we described above.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("Molecular_model.Rev")
+</code></pre></div></div>
+<p>Second, we run the biogeographic model. This script will set up the biogeographic model we described above, and run the analysis.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("biogeo_model.Rev")
+</code></pre></div></div>
+<h2 id="visualize-the-results">Visualize the results</h2>
+<p>Open Tracer to visualize the results and summarize the posterior probabilities for the parameters in the biogeographic model: dispersal rates between the island groups, and between these and the mainland, and the carrying capacities for each island-group and the Mainland. Assess the behaviour of the MCMC by checking for stationarity (after the burnin) and appropriate ESS values (&gt; 200). Compare the posterior probabililies of the six rates and the four stationary frequencies (you can use the “marginal density” button or the “estimates” button. OBS: Here, p1 is p for the Eastern Islands, p2, the Central Islands, p3, the Western Islands, and p4, the Mainland. The rates are numbered by their position in the Q matrix: r1 (EI &lt;&gt; CI), r2 (EI &lt;&gt; WI), r3 (EI &lt;&gt; M), r4 (CI &lt;&gt; WI), r5 (CI &lt;&gt; M), r6 (WI &lt;&gt; M).</p>
+
+<h2 id="questions">Questions</h2>
+<ol>
+  <li>Can you find any general pattern in your results that you can connect to the paleogeography of this archipelago?</li>
+  <li>Do you observe any correlations between the biogeographic patterns and abiotic factors such as island size or geographic distance between islands? (Hint: Compare your estimates with Figure 1).</li>
+  <li>In this exercise, we have a mixed dataset with groups from different taxonomic groups. Do you think this is a good idea? How would you improve the analysis?</li>
+</ol>
+
+<ol class="bibliography"><li><span id="Lemey2009">Lemey P., Rambaut A., Drummond A.J., Suchard M.A. 2009. Bayesian phylogeography finds its roots. PLoS computational biology. 5:e1000520.</span>
+
+</li>
+<li><span id="Sanmartin2010">Sanmartín I., Anderson C.L., Alarcon M., Ronquist F., Aldasoro J.J. 2010. Bayesian island biogeography in a continental setting: the Rand Flora case. Biology letters. 6:703–707.</span>
+
+</li>
+<li><span id="Sanmartin2008">Sanmartín I., Van Der Mark P., Ronquist F. 2008. Inferring dispersal: a Bayesian approach to phylogeny-based island biogeography, with special reference to the Canary Islands. Journal of Biogeography. 35:428–449.</span>
+
+</li>
+<li><span id="DeMaio2015">De Maio N., Schrempf D., Kosiol C. 2015. PoMo: An Allele Frequency-Based Approach for Species Tree Estimation. Systematic Biology. 64:1018–1031.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv048">10.1093/sysbio/syv048</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
