@@ -12,9 +12,8 @@ ln_branch_rates_mean := ln( branch_rates_mean )
 moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
 
 branch_rates_sd ~ dnUniform(0.0, 4*0.587405)
-branch_rates_sd.setValue( 0.587405 )
 moves.append( mvScale(branch_rates_sd, lambda=0.5, tune=true, weight=3.0) )
-
+branch_rates_sd.setValue( 0.587405 )
 
 # Get the number of branches in the tree #
 n_branches <- 2 * n_taxa - 2
