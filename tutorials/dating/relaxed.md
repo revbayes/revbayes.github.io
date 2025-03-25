@@ -168,6 +168,10 @@ Since the lognormal distribution is parameterized by the log of the mean, we tra
 
 {{ lnorm_script | snippet:"block#", "2" }}
 
+And then we'll set the standard deviation of the lognormal distribution
+
+{{ lnorm_script | snipped:"line", "14,16" }}
+
 Now we can replace the `for`-loop and specify that we use a lognormal distribution
 
 {{ lnorm_script | snippet:"block#", "6" }}
