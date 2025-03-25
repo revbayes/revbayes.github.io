@@ -170,7 +170,7 @@ Since the lognormal distribution is parameterized by the log of the mean, we tra
 
 Now we can replace the `for`-loop and specify that we use a lognormal distribution
 
-{{ lnorm_script | snippet:"block#", "5" }}
+{{ lnorm_script | snippet:"block#", "6" }}
 
 Next, we are ready to set up the master script to run the analysis.
 
