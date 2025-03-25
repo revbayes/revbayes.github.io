@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and June Walker</h4>
-  <h5>Last modified on March 17, 2025</h5>
+  <h5>Last modified on March 25, 2025</h5>
 </div>
 
 
@@ -266,9 +266,16 @@ That means, we will need to replace the prior on the <code class="language-plain
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_branch_rates_mean := ln( branch_rates_mean )
 </code></pre></div></div>
 
+<p>And then we’ll set the standard deviation of the lognormal distribution</p>
+
+<p>clock_relaxed_lognormal.Rev</p>
+
 <p>Now we can replace the <code class="language-plaintext highlighter-rouge">for</code>-loop and specify that we use a lognormal distribution</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=branch_rates_sd)
+    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
+}
 </code></pre></div></div>
 
 <p>Next, we are ready to set up the master script to run the analysis.</p>
