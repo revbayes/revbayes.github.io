@@ -3,7 +3,7 @@ title: Polymorphism-aware phylogenetic models with balancing selection
 subtitle: Species tree inference and identification of preferred allele frequency for balancing selection in RevBayes
 authors:  Svitlana Braichenko, Rui Borges, and Carolin Kosiol
 level: 3
-order: 7
+order: 7.1
 prerequisites:
 - intro
 - mcmc

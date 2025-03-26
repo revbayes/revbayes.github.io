@@ -155,7 +155,9 @@ that fossils are sampled from lineages in the diversification process,
 the probability of sampling fossils that are ancestors to taxa sampled
 at a later date is correlated with the turnover rate ($r=\mu/\lambda$)
 and the fossil recovery rate ($\psi$). This feature is important,
-particularly for datasets with many sampled fossils. In the example
+particularly for datasets with many sampled fossils. We expect a large 
+proportion of sampled ancestors for most biologically-realistic
+parameter combinations in the FBD model. In the example
 ({% ref fig_example_tree %}), several of the fossils have sampled
 descendants. These fossils have solid black lines leading to the
 present.
