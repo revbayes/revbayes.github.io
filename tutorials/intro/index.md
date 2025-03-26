@@ -3,7 +3,7 @@ title: Getting Started with RevBayes and Rev Language Syntax
 subtitle: Overview of introductory topics
 authors: Sebastian Höhna
 level: 0
-order: 0
+order: 1
 index: true
 include_all: false
 redirect: false

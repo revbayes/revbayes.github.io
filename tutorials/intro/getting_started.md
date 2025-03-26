@@ -3,7 +3,7 @@ title: Getting Started with RevBayes
 subtitle: A very basic overview on how to use RevBayes
 authors: Sebastian Höhna
 level: 0
-order: 0.1
+order: 1.1
 index: true
 include_all: false
 redirect: false

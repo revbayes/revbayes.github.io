@@ -123,7 +123,7 @@ model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
 {{ "mcmc_Yule.Rev" | snippet:"line","50" }}
 Note that we specified the `condition="survival"`, which says that we assume this process only produced trees that survived until the present.
-Fore more information, see the {% page_ref divrate/conditions %} tutorial.
+Fore more information, see [Conditions of the Birth-Death Process]({{ base.url }}/tutorials/divrate/div_rate_intro#conditions). 
 
 If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %},
 the time tree $\Psi$ is the variable we observe,

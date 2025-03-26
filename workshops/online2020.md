@@ -8,7 +8,7 @@ enddate: 2020-08-12
 
 instructors: 
 - Joëlle Barido-Sottani
-- Walker Pett
+- June Walker
 - Josh Justison
 - Wade Dismukes
 - Luiza Fabreti

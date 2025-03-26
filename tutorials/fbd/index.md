@@ -1,7 +1,7 @@
 ---
 title: Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
-authors:  Tracy A. Heath, April M. Wright, and Walker Pett
+authors:  Tracy A. Heath, April M. Wright, and June Walker
 level: 4
 prerequisites:
 - intro

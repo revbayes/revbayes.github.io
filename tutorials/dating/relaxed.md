@@ -1,7 +1,7 @@
 ---
 title: Molecular dating
 subtitle: The uncorrelated exponential relaxed clock model
-authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
+authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and June Walker
 level: 3
 order: 3.2
 prerequisites:
@@ -168,9 +168,13 @@ Since the lognormal distribution is parameterized by the log of the mean, we tra
 
 {{ lnorm_script | snippet:"block#", "2" }}
 
+And then we'll set the standard deviation of the lognormal distribution
+
+{{ lnorm_script | snipped:"line#", "14-15" }}
+
 Now we can replace the `for`-loop and specify that we use a lognormal distribution
 
-{{ lnorm_script | snippet:"block#", "5" }}
+{{ lnorm_script | snippet:"block#", "6" }}
 
 Next, we are ready to set up the master script to run the analysis.
 
