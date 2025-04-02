@@ -65,6 +65,10 @@ fi
 
 msg=`git log -1 --pretty=%B`
 
+echo "Checking out source"
+git checkout source
+echo
+
 echo "Pulling updates to the source"
 git pull --quiet origin source
 echo
@@ -97,15 +101,6 @@ if ! bundle exec jekyll build; then
     echo "Jekyll build failed. Master not updated."
     exit 1
 fi
-echo
-
-# Push the source BEFORE we push master.
-# If the push to source fails, we don't want to update master.
-
-# deploy source
-echo "Pushing source files."
-git push --quiet origin source
-echo "   Updated the source branch!"
 echo
 
 # deploy master
