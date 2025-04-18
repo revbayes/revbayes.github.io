@@ -443,18 +443,18 @@ First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
 
-{{ jc_script | snippet:"line", "72" }}
+{{ jc_script | snippet:"line", "71" }}
 
 The `mnFile` monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.
 
-{{ jc_script | snippet:"line", "73" }}
+{{ jc_script | snippet:"line", "72" }}
 
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 
-{{ jc_script | snippet:"line", "74" }}
+{{ jc_script | snippet:"line", "73" }}
 
 This monitor mostly helps us to see the progress of the MCMC run.
 
@@ -465,7 +465,7 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
-{{ jc_script | snippet:"line", "77" }}
+{{ jc_script | snippet:"line", "76" }}
 
 {% comment %}
 ```
@@ -478,7 +478,7 @@ You will find that the output is created in two files with extension `_run_1` an
 
 Now, run the MCMC:
 
-{{ jc_script | snippet:"line", "78" }}
+{{ jc_script | snippet:"line", "77" }}
 
 When the analysis is complete, you will have the monitored files in your output directory.
 
@@ -532,12 +532,12 @@ Therefore, we need to summarize the trees sampled from the posterior
 distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
-{{ jc_script | snippet:"line", "87" }}
+{{ jc_script | snippet:"line", "86" }}
 
 The `mapTree()` function will summarize the tree samples and write the
 maximum *a posteriori* tree to file:
 
-{{ jc_script | snippet:"line", "89" }}
+{{ jc_script | snippet:"line", "88" }}
 
 {% figure jc_tree %}
 <img src="figures/primates_cytb_JC_tree.png" width="800" />
@@ -573,7 +573,7 @@ Posterior probabilities under different analyses
 Note, you can query the posterior probability of a clade being
 monophyletic using the following command:
 
-{{ jc_script | snippet:"block#", "16-17" }}
+{{ jc_script | snippet:"block#", "17-18" }}
 
 {% table tab_primates %}
 {% tabcaption %}
