@@ -15,7 +15,7 @@ index: false
 
 {% section Introduction | introduction %}
 
-This tutorial describes the steps to download, compile, and install the TensorPhylo plugin {% cite May2024 %}, discusses its strengths and limitations, and
+This tutorial describes the steps to download, compile, and install the TensorPhylo plugin {% cite May2022 %}, discusses its strengths and limitations, and
 details the usage of the `dnGLHBDSP` function that uses the plugin. This function generalizes state-dependent speciation and extinction (SSE) and fossilized
 birth-death (FBD) models, allowing for users to use it to set up any particular case of those models, e.g. BiSSE {% cite Maddison2007 %}, HiSSE {% cite Beaulieu 2016 %},
 or FBD specimen {% cite Stadler2010 Heath2014 %}.
