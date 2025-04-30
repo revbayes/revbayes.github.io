@@ -42,7 +42,7 @@ We provide the data files which we will use in this tutorial:
     Dated primate phylogeny including 233 out of 367 species. This tree
     is from {% citet MagnusonFord2012 %}, who took it from {% citet Vos2006 %} and then
     randomly resolved the polytomies using the method of {% citet Kuhn2011 %}.
-100000-   [primates_activity_period.nex](data/primates_activity_period.nex):
+-   [primates_activity_period.nex](data/primates_activity_period.nex):
     A file with the coded character states for primate species activity time. This character has just two states: `0` = diurnal and `1` = nocturnal.
 -   [primates_solitariness.nex](data/primates_solitariness.nex):
     A file with the coded character states for primate species social system type. This character has just two states: `0` = group living and `1` = solitary.
@@ -67,7 +67,7 @@ birth-death process*.
 > directory.
 >
 > Alternatively, if you are on a Unix system, and have added RevBayes to your path,
-> you simply have to type `rb` in your Terminal {{ bisse_script | snippet:"line", "130" }}to run the program.
+> you simply have to type `rb` in your Terminal to run the program.
 {:.instruction}
 
 For this tutorial, we will specify a BiSSE model that allows for speciation and extinction
@@ -88,27 +88,27 @@ using the interactive console.
 {% subsection Read in the Data | subsec_readdata %}
 
 For this tutorial, we are assuming that the tree is "observed" and considered _data_.
-Thus, {{ bisse_script | snippet:"line", "130" }}we will read in the dated phylogeny first.
-{{ bisse_script | snippet:"line", "130" }}
-{{ bisse_script | snippet:"line", "23" }}
+Thus, we will read in the dated phylogeny first.
+
+{{ bisse_script | snippet:"line", "28" }}
 
 Next, we will read in the observed character states for primate activity period.
 
-{{ bisse_script | snippet:"line", "24" }}
+{{ bisse_script | snippet:"line", "29" }}
 
 It will be convenient to get the number of sampled
 species `num_taxa` from the tree:
 
-{{ bisse_script | snippet:"line", "26" }}
+{{ bisse_script | snippet:"block#", "3" }}
 
 Additionally, we initialize a variable for our vector of moves and monitors.
 
-{{ bisse_script | snippet:"line", "29-30" }}
+{{ bisse_script | snippet:"block#", "4" }}
 
 Finally, create a helper variable that specifies the number of states
 that the observed character has:
 
-{{ bisse_script | snippet:"line", "19" }}
+{{ bisse_script | snippet:"block#", "1" }}
 
 Using this variable allows us to easily change our script and use a different
 character with a different number of states, essentially changing our
@@ -139,7 +139,7 @@ of the rates we are estimating and create a vector of deterministic nodes
 representing the rate of diversification ($\lambda - \mu$) associated with each
 character state.
 
-{{ bisse_script | snippet:"line", "44-56" }}
+{{ bisse_script | snippet:"block#", "6-10" }}
 
 The stochastic nodes representing the vector of speciation rates and vector of
 extinction rates have been instantiated. The software assumes that the rate in position `[1]` of each
@@ -148,7 +148,7 @@ at position `[2]` of each vector is the rate associated with nocturnal `1` linea
 
 &#8680; If RevBayes has trouble finding good starting values, then you can initialize the speciation and extinction rate as follows:
 
-{{ bisse_script | snippet:"line", "61-62" }}
+{{ bisse_script | snippet:"block#", "11" }}
 
 You can print the current values of the speciation rate vector to your screen:
 ```
@@ -171,7 +171,7 @@ it leaves a fair bit of uncertainty.
 Note that we will actually use a `for`-loop to instantiate the transition rates
 so that our script will also work for non-binary characters.
 
-{{ bisse_script | snippet:"line", "73-77" }}
+{{ bisse_script | snippet:"block#", "12" }}
 
 Here, `rate[1]` is the rate of transition from state `0` (diurnal) to state `1` (nocturnal),
 and `rate[2]` is the rate of going from nocturnal to diurnal.
@@ -179,7 +179,7 @@ and `rate[2]` is the rate of going from nocturnal to diurnal.
 Finally, we put the rates into a matrix, because this is what's needed
 by the function for the state-dependent birth-death process.
 
-{{ bisse_script | snippet:"line", "84" }}
+{{ bisse_script | snippet:"block#", "13" }}
 
 Note that we do not "rescale" the rate matrix. Rate matrices for
 molecular evolution are rescaled to have an average rate of 1.0, but for
@@ -193,7 +193,7 @@ each state. There has been some discussion about this in {% cite FitzJohn2009 %}
 You could also fix the prior probabilities for the root states to be equal
 (generally not recommended), or use empirical state frequencies.
 
-{{ bisse_script | snippet:"line", "92" }}
+{{ bisse_script | snippet:"block#", "14" }}
 
 Note that we use the `rep()` function which generates a vector of length `NUM_STATES`
 with each position in the vector set to `1`. Using this function and the `NUM_STATES`
@@ -202,7 +202,7 @@ using a character with more than two states.
 
 We will use a special move for objects that are drawn from a Dirichlet distribution:
 
-{{ bisse_script | snippet:"line", "93" }}
+{{ bisse_script | snippet:"block#", "15" }}
 
 #### **The Probability of Sampling an Extant Species**
 
@@ -214,7 +214,7 @@ We know that we have sampled 233 out of 367 living described primate species. To
 account for this we can set the sampling probability as a constant node
 with a value of 233/367.
 
-{{ bisse_script | snippet:"line", "102" }}
+{{ bisse_script | snippet:"block#", "17" }}
 
 #### **Root Age**
 
@@ -222,7 +222,7 @@ The birth-death process also depends on time to the most-recent-common ancestor-
 the root. In this
 exercise we use a fixed tree and thus we know the age of the tree.
 
-{{ bisse_script | snippet:"line", "97" }}
+{{ bisse_script | snippet:"block#", "16" }}
 
 #### **The Time Tree**
 
@@ -230,22 +230,22 @@ Now we have all of the parameters we need to specify the full character
 state-dependent birth-death model. We initialize the stochastic node
 representing the time tree and we create this node using the `dnCDBDP()` function.
 
-{{ bisse_script | snippet:"line", "106-113" }}
+{{ bisse_script | snippet:"block#", "18" }}
 
 Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
 the standard `.clamp()` method to give the observed tree and branch times:
 
-{{ bisse_script | snippet:"line", "116" }}
+{{ bisse_script | snippet:"block#", "19" }}
 
 And then we use the `.clampCharData()` method to set the observed states at the tips of the tree:
 
-{{ bisse_script | snippet:"line", "117" }}
+{{ bisse_script | snippet:"block#", "20" }}
 
 Finally, we create a workspace object of our whole model. The `model()`
 function traverses all of the connections and finds all of the nodes we
 specified.
 
-{{ bisse_script | snippet:"line", "127" }}
+{{ bisse_script | snippet:"block#", "21" }}
 
 You can use the `.graph()` method of the model object to visualize the graphical model you
 have just constructed . This function writes the model DAG to a file
@@ -271,22 +271,22 @@ states of our Markov chain. The first monitor will model all numerical
 variables; we are particularly interested in the rates of speciation,
 extinction, and transition.
 
-{{ bisse_script | snippet:"line", "130" }}
+{{ bisse_script | snippet:"block#", "22" }}
 
 Optionally, we can sample ancestral states during the MCMC analysis.
 We need to add an additional monitor to record the state of each internal node in the tree.
 The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
 
-{{ bisse_script | snippet:"line", "133-139" }}
+{{ bisse_script | snippet:"block#", "23" }}
 
 Similarly, you may want to add a stochastic character map.
 
-{{ bisse_script | snippet:"line", "142-144" }}
+{{ bisse_script | snippet:"block#", "24" }}
 
 Then, we add a screen monitor showing some updates during the MCMC
 run.
 
-{{ bisse_script | snippet:"line", "146" }}
+{{ bisse_script | snippet:"block#", "25" }}
 
 
 #### **Initializing and Running the MCMC Simulation**
@@ -296,11 +296,11 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
-{{ bisse_script | snippet:"line", "154" }}
+{{ bisse_script | snippet:"block#", "26" }}
 
 Now, run the MCMC:
 
-{{ bisse_script | snippet:"line", "157" }}
+{{ bisse_script | snippet:"block#", "27" }}
 
 ## **Summarize Sampled Ancestral States**
 
@@ -310,17 +310,17 @@ First, though, we must summarize the sampled values in RevBayes.
 
 To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
 
-{{ bisse_script | snippet:"line", "166" }}
+{{ bisse_script | snippet:"block#", "28" }}
 
 Now, we can write an annotated tree to a file. This function will write a tree with each
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
 state.
 
-{{ bisse_script | snippet:"line", "169-175" }}
+{{ bisse_script | snippet:"block#", "29" }}
 
 Similarly, we compute the maximum a posteriori (MAP) stochastic character map.
 
-{{ bisse_script | snippet:"line", "178-184" }}
+{{ bisse_script | snippet:"block#", "30" }}
 
 {% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
 
