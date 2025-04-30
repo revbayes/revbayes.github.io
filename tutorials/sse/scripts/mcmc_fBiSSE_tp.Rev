@@ -13,20 +13,20 @@ loadPlugin("TensorPhylo", "/Users/petrucci/Documents/research/programs/tensorphy
 # reading the data
 
 # read the phylogenetic tree
-tree <- readTrees("data/canidae_tree_jitter.nex")[1]
-# this includes 94 canid species, with 3/36 extant species, and 89 extinct species
+tree <- readTrees("data/canidae_tree.nex")[1]
+# this includes 94 canid species, with 4/36 extant species, and 90 extinct species
 # representing all three canid subfamilies: caninae, borophaginae, and hesperocyoninae
 
 # read the character data
 data <- readCharacterData("data/canidae_diet.nex")
 # this includes diet data for the same 94 species, with 0 representing
-# hypercarnivory, 1 mesocarnivory, and 2 hypocarnivory
+# hypercarnivory, and 1 representing meso- or hypocarnivory
 
 ###
 # set up useful variables and model objects
 
 # number of states
-num_states <- 3
+num_states <- 2
 
 # taxa
 taxa <- tree.taxa()
@@ -46,15 +46,15 @@ for (i in 1:num_states) {
 
   # loguniform prior on speciation
   lambda[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvScale(lambda[i], weight = 3.0) )
+  moves.append( mvSlice(lambda[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
   # and on extinction
   mu[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvScale(mu[i], weight = 3.0) )
+  moves.append( mvSlice(mu[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
   # exponential prior on fossil sampling
   psi[i] ~ dnExp(5)
-  moves.append( mvScale(psi[i], weight = 3.0) )
+  moves.append( mvSlice(psi[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
   # set a variable to monitor diversification rates
   diversification[i] := lambda[i] - mu[i]
@@ -71,11 +71,8 @@ for ( i in 1:(num_states * (num_states - 1)) ) {
     
     # set it to an exponential prior
     q[i] ~ dnExp(rate_pr)
-    moves.append( mvScale(q[i], weight = 3.0) )
+    moves.append( mvSlice(q[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 }
-# note that the order these are assigned are first by the 
-# origin state, then target state
-# so q[1] is q_01, q[2] is q_02, q[3] is q_10, etc.
 
 # make the rate matrix Q
 Q := fnFreeK( q, rescaled = false)
@@ -91,12 +88,12 @@ moves.append( mvDirichletSimplex(pi, weight = 2) )
 # canid diet evolution, but it's good to see if the data has the signal instead
 
 # sampling at present--we know we have 3/36 extant species
-rho <- 3 / 36
+rho <- 4 / 36
 
 ###
 # make the final distribution and clamp it
 
-# use dnCDBDP to build timetree distribution under MuSSE
+# use dnGLHBDSP to build timetree distribution under BiSSE
 timetree ~ dnGLHBDSP( rootAge           = root_age,
                       lambda            = lambda,
                       mu                = mu,
