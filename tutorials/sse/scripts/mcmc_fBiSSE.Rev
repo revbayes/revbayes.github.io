@@ -1,6 +1,6 @@
 ################################################################################
 #
-# MuSSE analysis of the influence of diet on the diversification
+# BiSSE analysis of the influence of diet on the diversification
 # rates of extant and extinct canids
 #
 # author: Bruno do Rosario Petrucci
@@ -10,7 +10,7 @@
 ###
 # reading the data
 
- http://127.0.0.1:4000/# read the phylogenetic tree
+# read the phylogenetic tree
 tree <- readTrees("data/canidae_tree.nex")[1]
 # this includes 94 canid species, with 3/36 extant species, and 89 extinct species
 # representing all three canid subfamilies: caninae, borophaginae, and hesperocyoninae
@@ -18,13 +18,13 @@ tree <- readTrees("data/canidae_tree.nex")[1]
 # read the character data
 data <- readCharacterData("data/canidae_diet.nex")
 # this includes diet data for the same 94 species, with 0 representing
-# hypercarnivory, 1 mesocarnivory, and 2 hypocarnivory
+# hypercarnivory, and 1 representing meso- or hypocarnivory
 
 ###
 # set up useful variables and model objects
 
 # number of states
-num_states <- 3
+num_states <- 2
 
 # and root age
 root_age <- tree.rootAge()
@@ -41,15 +41,15 @@ for (i in 1:num_states) {
 
   # loguniform prior on speciation
   lambda[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvScale(lambda[i], weight = 3.0) )
+  moves.append( mvSlice(lambda[i], weight = 1.0) )
 
   # and on extinction
   mu[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvScale(mu[i], weight = 3.0) )
+  moves.append( mvSlice(mu[i], weight = 1.0) )
 
   # exponential prior on fossil sampling
   psi[i] ~ dnExp(5)
-  moves.append( mvScale(psi[i], weight = 3.0) )
+  moves.append( mvSlice(psi[i], weight = 1.0) )
 
   # set a variable to monitor diversification rates
   diversification[i] := lambda[i] - mu[i]
@@ -66,11 +66,8 @@ for ( i in 1:(num_states * (num_states - 1)) ) {
     
     # set it to an exponential prior
     q[i] ~ dnExp(rate_pr)
-    moves.append( mvScale(q[i], weight = 3.0) )
+    moves.append( mvSlice(q[i], weight = 1.0) )
 }
-# note that the order these are assigned are first by the 
-# origin state, then target state
-# so q[1] is q_01, q[2] is q_02, q[3] is q_10, etc.
 
 # make the rate matrix Q
 Q := fnFreeK( q, rescaled = false)
@@ -80,6 +77,8 @@ Q := fnFreeK( q, rescaled = false)
 
 # set root state frequency prior mean
 pi ~ dnDirichlet( rep(1, num_states) )
+
+# move on pi
 moves.append( mvDirichletSimplex(pi, weight = 2) )
 # a Dirichlet prior means we expect both states to be equally likely to
 # be the root state--we could modify this based on our prior knowledge about
@@ -102,6 +101,7 @@ timetree ~ dnCDBDP( rootAge           = root_age,
 
 # clamp observed tree and character data
 timetree.clamp( tree )
+
 timetree.clampCharData( data )
 
 ###
@@ -131,11 +131,14 @@ monitors.append( mnScreen(printgen = 10000) )
 mymcmc = mcmc(mymodel, monitors, moves)
 
 if ( fileExists("output/canidae_diet_musse.state") ) {
+
   mymcmc.initializeFromCheckpoint("output/canidae_diet_musse.state")
+
 }
 
 # run MCMC
 stopping_rules[1] = srMinESS(250, file = "output/canidae_diet_musse.log", freq = 10000)
+
 mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/canidae_diet_musse.state")
 
 ###

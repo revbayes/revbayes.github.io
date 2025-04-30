@@ -14,20 +14,23 @@ include_all: false
 include_files:
 - data/canidae_diet.nex
 - data/canidae_tree.nex
-- scripts/mcmc_fMuSSE.Rev
+- scripts/mcmc_fBiSSE.Rev
+- scripts/mcmc_fBiSSE_tp.Rev
 index: true
 ---
 
-{% assign musse_script = "mcmc_fMuSSE.Rev" %}
+{% assign bisse_script = "mcmc_fBiSSE.Rev" %}
+{% assign bisse_tp_script = "mcmc_fBiSSE_tp.Rev" %}
 
 {% section Introduction | introduction %}
 
 This tutorial describes how to apply state-dependent diversification models to trees including fossil data.
 To that end, `dnCDBDP` includes the option of a serial sampling rate, combining SSE models with the fossilized birth-death (FBD) process {% cite Stadler2010 Heath2014 %}.
 For more details on the theory behind these models, please see [the SSE theory tutorial]({{ base.url }}/tutorials/sse/bisse-intro), 
-[the FBD tutorial]({{ base.url }}/tutorials/fbd/fbd_specimen), or {% Beaulieu2023 %} for a full mathematical derivation.
+[the FBD tutorial]({{ base.url }}/tutorials/fbd/fbd_specimen), or {% cite Beaulieu2023 %} for a full mathematical derivation.
 
-The tutorial will explain how to build both a MuSSE {% cite Maddison2007 %} and HiSSE {% cite Beaulieu2016 %} models to investigate the effect of hipercarnivory on canid extinction rates.
+The tutorial will explain how to build both a BiSSE {% cite Maddison2007 %} and HiSSE {% cite Beaulieu2016 %} 
+models to investigate the effect of hipercarnivory on canid extinction rates.
 It was heavily based on [the BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse), and users are highly encouraged to 
 complete that tutorial before this one.
 
@@ -42,39 +45,38 @@ We provide the data files which we will use in this tutorial:
     four extant species: *Canis lupus* (grey wolf), *Canis latrans* (coyote), *Cuon alpinus*
     (dhole), and *Urocyon cinereoargenteus* (grey fox).
 -   [canidae_diet.nex](data/canidae_diet.nex):
-    A file with the coded character states for canid diet. This character has three states: 
-    `0` = hypercarnivorous, `1` = mesocarnivorous, and `2` = hypocarnivorous. These categories
-    signify the percentage of vertebrate in an animal's diet, correspoding to >70%, between 30 and
-    70%, and less than 30%, respectively (though sources differ on the exact percentages).
--   [canidae_diet_binary.nex](data/canidae_diet_binary.nex):
-    The same file as [canidae_diet.nex](data/canidae_diet.nex), but with meso- and hypocarnivorous
-    as the same state (`1`). This is used here to setup a HiSSE analysis (to avoid setting up too
-    paramater-rich an analysis for a 94 species tree), but could also be used for a an analogous
-    BiSSE model.
+    A file with the coded character states for canid diet. This character has two states: 
+    `0` = hypercarnivorous, `1` = non-hypercarnivorous, which can mean either meso- or 
+    hypocarnivorous. These categories signify the percentage of vertebrates in an animal's diet, 
+    correspoding to >70%, between 30 and 70%, and less than 30%, respectively (though sources 
+    differ on the exact percentages). We could use the MuSSE model {% cite FitzJohn 2012 %} to
+    analyze the rates for meso- and hypocarnivores separately, but given the relatively small size
+    of the tree, and our main interest on the effects of hypercarnivory specifically, we simplified
+    the dataset.
 
 > Create a new directory on your computer called `RB_fmusse_tutorial`.
 >
 > Within the `RB_fmusse_tutorial` directory, create a subdirectory called `data`.
 > Then, download the provided files and place them in the `data` folder.
+> You can then start a `scripts` folder to hold the script for this analysis, or use RevBayes interactively by running `rb` and adding the code described below one block at a time.
 {:.instruction}
 
+{% section Setting up a serially-sampled BiSSE model | sec_fBiSSE %}
 
-{% section Setting up a serially-sampled MuSSE model | fMuSSE %}
-
-To investigate the effect of diet on the diversification of Canidae, we will start by setting up a MuSSE model, which
-assumes 3 rate categories for speciation, extinction, and fossil sampling, depending on a species' diet.
+To investigate the effect of diet on the diversification of Canidae, we will start by setting up a BiSSE model, which
+assumes 2 rate categories for speciation, extinction, and fossil sampling, depending on a species' diet.
 If you open the data file [canidae_diet.nex](data/canidae_diet.nex) in your text editor, you will see the coded
-characters for each species in our tree. For example, the dire wolves ([*Canis dirus*](https://https://en.wikipedia.org/wiki/Dire_wolf)) were
-hypercarnivorous, so they are set to state `0`. Coyotes (*Canis latrans*), on the other hand, are mesocarnivores (state `1`), while
+characters for each species in our tree. For example, the dire wolf ([*Canis dirus*](https://https://en.wikipedia.org/wiki/Dire_wolf)) was
+hypercarnivorous, so it is set to state `0`. Coyotes (*Canis latrans*), on the other hand, are mesocarnivores, while
 the extinct *Archaeocyon pavidus* (a member of the extinct [Borophaginae subfamily](https://https://en.wikipedia.org/wiki/Borophaginae)) 
-and living grey foxes (*Urocyon cinereoargenteus*) are hypocarnivores (state `2`).
+and living grey foxes (*Urocyon cinereoargenteus*) are hypocarnivores (all of these set to state `1`).
 Longstanding hypotheses on the effects of extreme specialization would lead to an _a priori_ hypothesis that
 hypercarnivorous canids have higher extinction rates, which we can then test by comparing the posterior distributions of
-$\mu_0$, $\mu_1$, and $\mu_2$ under MuSSE.
+the extinction rate for each state, $\mu_0$ and $\mu_1$, under BiSSE.
 
 Note that this analysis, like most tutorials, should be seen as illustrative only. The tree used here is generally too
 small to achieve reliable SSE estimates, and the lack of sampled ancestors likely means our estimates will be
-biased ({%cite Beaulieu2023 %}). Work is already underway to estimate a more complete canid tree, which will then
+biased {%cite Beaulieu2023 %}. Work is already underway to estimate a more complete canid tree, which will then
 allow for more reliable SSE analyses. For the moment, consider this as merely illustrative as to how you can
 set up your own serially-sampled SSE analyses.
 
@@ -82,377 +84,226 @@ set up your own serially-sampled SSE analyses.
 
 Here, since we are using a fixed tree, it is considered _data_. So we first read our dated phylogeny.
 
-{{ musse_script | snippet:"block#", "1" }}
+{{ bisse_script | snippet:"block#", "1" }}
 
 Then, we read the diet data for our canids.
 
-{{ musse_script | snippet:"block#", "2" }}
+{{ bisse_script | snippet:"block#", "2" }}
 
-We then create a helper variable to record the number of states used here. In this case, 3 (hypo-, meso-, and
-hypercarnivorous).
+We then create a helper variable to record the number of states used here. In this case, 2 (hypercarnivorous and
+non-hypercarnivorous).
 
-{{ musse_script | snippet:"block#", "3" }}
+{{ bisse_script | snippet:"block#", "3" }}
 
 We also create a helper variable to hold the value of the root age of the tree.
 
-{{ musse_script | snippet:"block#", "4" }}
+{{ bisse_script | snippet:"block#", "4" }}
 
 Finally, we initialize a variable for our vector of moves and monitors.
 
-{{ musse_script | snippet:"block#", "5" }}
+{{ bisse_script | snippet:"block#", "5" }}
 
 {% subsection Specify the Model | subsec_specifymodel %}
 
-#### **Priors on the Rates**
+#### **Diversification, sampling, and transition rates**
 
-The first step for specifying our MuSSE model is creating variables to hold the priors on diversification and
+The first step for specifying our BiSSE model is creating variables to hold the priors on diversification and
 fossil-sampling rate. To keep things simple, we will set speciation and extinction priors to a log-uniform distribution,
 representing a relatively agnostic prior belief about these rates. For fossil-sampling rate, we will set an exponential
 prior, a slightly more informative distribution, since fossil-sampling is often a more difficult rate for the model
 to estimate. We will set these priors using a `for` loop on `num_states` (making the code easy to modify for a
-different character with different numbers of states), and also create nodes for the `diversification` rates.
+different character with a different number of states), and also create nodes for the `diversification` rates, for
+easy comparisons later.
 
-{{ musse_script | snippet:"block#", "6-10" }}
+{{ bisse_script | snippet:"block#", "6-10" }}
 
-&#8680; If RevBayes has trouble finding good starting values, then you can initialize the speciation and extinction rate as follows:
+Next we will specify the transition rates, $q_{01}$ and $q_{10}$. These represent the rate with which species
+transition anagenetically between hypercarnivorous and non-hypercarnivorous lifestyles. We could set up uninformative
+priors like we did for speciation and extinction, but to again keep things simple we will specify an exponential prior
+on each rate, with a mean representing 10 character state transitions throughout the tree, on average. This allows for
+reasonably frequent transitions, while also leaving a good amount of uncertainty. We will once again use a `for` loop
+in this case over `num_states * (num_states - 1)`, so that the code can be easily modified for analyses with non-binary
+characters.
 
-{{ musse_script | snippet:"line", "61-62" }}
+{{ bisse_script | snippet:"block#", "11-13" }}
 
-You can print the current values of the speciation rate vector to your screen:
-```
-speciation
-```
-```
-[ 0.267, 0.160 ]
-```
-{:.Rev-output}
+Here, `q[1]` is equivalent to $q_{01}$, the rate with which hypercarnivorous species transition to non-hypercarnivorous
+lifestyles. `q[2]` is equivalent to $q_{10}$, the rate of the opposite transition.
 
-Of course, your screen output will be different from the values shown above if your
-stochastic nodes were initialized with different values drawn from the log-uniform prior.
+To use these rates with `dnCDBDP`, we need to make a rate matrix, which we do using `fnFreeK`. Since the character in
+this case is binary, we could instead use `fnFreeBinary`, but in this way we again allow the script to be modified
+for use with other characters with minimal modifications.
 
-Next we specify the transition rates between the states `0` and `1`:
-$q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
-is drawn from an exponential distribution with a mean of 10 character
-state transitions over the entire tree. This is reasonable because we
-use this kind of model for traits that transition not-infrequently, and
-it leaves a fair bit of uncertainty.
-Note that we will actually use a `for`-loop to instantiate the transition rates
-so that our script will also work for non-binary characters.
+{{ bisse_script | snippet:"block#", "14" }}
 
-{{ musse_script | snippet:"line", "73-77" }}
+The `rescaled` argument is there to be used with DNA evolution matrices, where we want the total transition rates
+to be normalized to 1. Here, we want the rates in the same units as the diversification and sampling rates, so
+we set `rescaled = false`.
 
-Here, `rate[1]` is the rate of transition from state `0` (diurnal) to state `1` (nocturnal),
-and `rate[2]` is the rate of going from nocturnal to diurnal.
+#### **Root State**
 
-Finally, we put the rates into a matrix, because this is what's needed
-by the function for the state-dependent birth-death process.
+Next, we need to create a variable to hold the root frequency for each state, `pi` ($\pi$). `pi` is a vector of size
+`num_states`, with `pi[1]` being the probability that the root (_i.e._ the common ancestor of all species in
+the dataset) was at state `0` (hypercarnivorous), and respectively for `pi[2]` and state `1`. In this step, we
+could make use of past studies about the ancestral state of canid diets, and _e.g._ set a higher prior probability 
+for state `1` than state `0`, because it is likely that the first canids were not hypercarnivorous. However,
+to illustrate a useful prior for the case where we have no prior knowledge on the root state, we will assume
+that is the case. The [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) is a
+multi-dimensional generalization of the Beta distribution. We will set the prior to a Dirichlet with parameters
+all equal to 1, which is equivalent to setting a uniform distribution on the probability of each state at the root.
 
-{{ musse_script | snippet:"line", "84" }}
+{{ bisse_script | snippet:"block#", "15" }}
 
-Note that we do not "rescale" the rate matrix. Rate matrices for
-molecular evolution are rescaled to have an average rate of 1.0, but for
-this model we want estimates of the transition rates with the same time
-scale as the diversification rates.
+Once again, we set the number of states for our Dirichlet prior in the way to make it the most straightforward to
+modify for a character with more states, by making use of the `rep` function. In the case of our binary diet data,
+this would be equivalent to setting `dnDirichlet( v(1, 1) )`.
 
-#### **Prior on the Root State**
+We will use a special move for objects that are drawn from a Dirichlet distribution
 
-Create a variable for the root state frequencies. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
-each state. There has been some discussion about this in {% cite FitzJohn2009 %}.
-You could also fix the prior probabilities for the root states to be equal
-(generally not recommended), or use empirical state frequencies.
+{{ bisse_script | snippet:"block#", "16" }}
 
-{{ musse_script | snippet:"line", "92" }}
+#### **Extant Sampling**
 
-Note that we use the `rep()` function which generates a vector of length `NUM_STATES`
-with each position in the vector set to `1`. Using this function and the `NUM_STATES`
-variable allows us to easily use this Rev script as a template for a different analysis
-using a character with more than two states.
+All birth-death processes are conditioned on the probability a taxon is sampled at the present, usually termed
+the extant sampling rate `rho` ($\rho$). While `dnCDBDP` allows for `rho` to be dependent on states, we have no
+reason to expect it to be in this case. Furthermore, since we know the exact number of canid species alive
+today (barring some discussion on species delimitation), we know that our dataset has exactly 4 out of 36 canid
+species. We can therefore set a constant node for `rho`, equal to that proportion.
 
-We will use a special move for objects that are drawn from a Dirichlet distribution:
+{{ bisse_script | snippet:"block#", "17" }}
 
-{{ musse_script | snippet:"line", "93" }}
-
-#### **The Probability of Sampling an Extant Species**
-
-All birth-death processes are conditioned on the probability a taxon is sampled in the present.
-We can get an approximation for this parameter by calculating the _proportion_ of sampled
-species in our analysis.
-
-We know that we have sampled 233 out of 367 living described primate species. To
-account for this we can set the sampling probability as a constant node
-with a value of 233/367.
-
-{{ musse_script | snippet:"line", "102" }}
-
-#### **Root Age**
-
-The birth-death process also depends on time to the most-recent-common ancestor--*i.e.*,
-the root. In this
-exercise we use a fixed tree and thus we know the age of the tree.
-
-{{ musse_script | snippet:"line", "97" }}
+If you are unsure on the proportion of extant species present in your dataset, or if you have reason to believe
+the trait of focus in your analysis could affect `rho`, you could create stochastic nodes for it, just as we did
+for the serial sampling rate.
 
 #### **The Time Tree**
 
-Now we have all of the parameters we need to specify the full character
-state-dependent birth-death model. We initialize the stochastic node
-representing the time tree and we create this node using the `dnCDBDP()` function.
+We now have all the parameters necessary for our BiSSE model. We can initialize our time tree using the `dnCDBDP`
+function.
 
-{{ musse_script | snippet:"line", "106-113" }}
+{{ bisse_script | snippet:"block#", "18" }}
 
-Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
-the standard `.clamp()` method to give the observed tree and branch times:
+Since we are treating the tree as fixed, we need to attach this time tree node to our observed phylogeny. We do so
+using the `clamp` method.
 
-{{ musse_script | snippet:"line", "116" }}
+{{ bisse_script | snippet:"block#", "19" }}
 
-And then we use the `.clampCharData()` method to set the observed states at the tips of the tree:
+The tree is not our only data, however, and we also need to attach the observed character states. We can do so
+using the `clampCharData` method.
 
-{{ musse_script | snippet:"line", "117" }}
+{{ bisse_script | snippet:"block#", "20" }}
 
-Finally, we create a workspace object of our whole model. The `model()`
-function traverses all of the connections and finds all of the nodes we
-specified.
+This completes the model setup.
 
-{{ musse_script | snippet:"line", "127" }}
+{% subsection Running the MCMC analysis | subsec_runningmcmc %}
 
-You can use the `.graph()` method of the model object to visualize the graphical model you
-have just constructed . This function writes the model DAG to a file
-that can be viewed using the  program [Graphviz](https://www.graphviz.org/) ({% ref graphviz %}).
+#### **The model object**
 
-{% figure graphviz %}
-<img src="figures/bisse_dag.svg" width="95%">
-{% figcaption %}
-The probabilistic graphical model of the character-state-dependent diversification model.
-This image was generated by executing the `mymodel.graph("bisse.dot")` in RevBayes after specifying the full model DAG.
-Then, the resulting file can be opened in the program [Graphviz](https://www.graphviz.org/).
-{% endfigcaption %}
-{% endfigure %}
+First, we need to create a workspace object that represents our entire model. The `model` function can be used,
+taking any node in your model and traversing the entire model by finding the connections between that node and
+the others. We give it the `timetree` node for simplicity.
 
+{{ bisse_script | snippet:"block#", "21" }}
 
-{% subsection Running an MCMC analysis | subsec_runningmcmc %}
+#### **Monitors**
 
+We need to create monitors to record the important steps in our Markov Chain. First, we set up a monitor to store
+all numerical variables in our model, _e.g._ `lambda` and `mu`.
 
-#### **Specifying Monitors**
+{{ bisse_script | snippet:"block#", "22" }}
 
-For our MCMC analysis, we set up a vector of *monitors* to record the
-states of our Markov chain. The first monitor will model all numerical
-variables; we are particularly interested in the rates of speciation,
-extinction, and transition.
+If we are interested on the evolution of diet throughout our canid tree, we can set an ancestral state estimation
+monitor. This will then allow us to analyze the estimated state at each node of the tree, and provide information
+on how canids have transitioned in and out of a hypercarnivorous lifestyle throughout the tree. This monitor is
+also particularly useful for HiSSE analyses (see below), since it allows us to check the estimated hidden state for
+each species in the dataset.
 
-{{ musse_script | snippet:"line", "130" }}
+{{ bisse_script | snippet:"block#", "23" }}
 
-Optionally, we can sample ancestral states during the MCMC analysis.
-We need to add an additional monitor to record the state of each internal node in the tree.
-The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
+Finally, we add a screen monitor to monitor the progress of the MCMC run.
 
-{{ musse_script | snippet:"line", "133-139" }}
+{{ bisse_script | snippet:"block#", "24" }}
 
-Similarly, you may want to add a stochastic character map.
+#### **Creating and Running the MCMC**
 
-{{ musse_script | snippet:"line", "142-144" }}
+Armed with our full model, and vectors of monitors and moves, we can use the `mcmc` function to create our MCMC
+object.
 
-Then, we add a screen monitor showing some updates during the MCMC
-run.
+{{ bisse_script | snippet:"block#", "25" }}
 
-{{ musse_script | snippet:"line", "146" }}
+In most RevBayes tutorials, we set the MCMC to run for a certain number of generations, using the `generations`
+argument. This often requires users to have a prior idea of how long convergence will take, which could be
+challenging. 
 
+Here we present an alternative, where one can instead set the MCMC to run until a certain set of stopping rules
+have been met. Specifically, we use `srMinESS` to ensure the MCMC will run until all numerical parameters have
+reached an effective sample size of 250 (see 
+[the MCMC convergence assessment tutorial]({{ base.url }}/tutorials/convergence) for more background on ESS and
+other measures of convergence).
 
-#### **Initializing and Running the MCMC Simulation**
+{{ bisse_script | snippet:"block#", "29" }}
 
-With a fully specified model, a set of monitors, and a set of moves, we
-can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The `mcmc()` function will
-create our MCMC object:
+SSE models are time-consuming, and time-constraints when using institutional super-computers often mean you might
+need to restart analyses. To that end, we can make use of checkpointing by specifying a `checkpointFile` argument
+in the `run` method. 
 
-{{ musse_script | snippet:"line", "154" }}
+{{ bisse_script | snippet:"block#", "30" }}
 
-Now, run the MCMC:
+The MCMC can then be restarted from the checkpoint file by adding
 
-{{ musse_script | snippet:"line", "157" }}
+{{ bisse_script | snippet:"block#", "27" }}
 
-## **Summarize Sampled Ancestral States**
+before the `run` method.
 
-If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` {% cite Tribble2022 %} R package
-to plot the ancestral state reconstruction.
-First, though, we must summarize the sampled values in RevBayes.
+#### **Summarize Sampled Ancestral States**
 
-To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
+To make use of the ancestral states sampled using `mnJointConditionalAncestralState`, we first need to summarize
+the sampled values using the `readAncestralStateTrace` function.
 
-{{ musse_script | snippet:"line", "166" }}
+{{ bisse_script | snippet:"block#", "31" }}
 
-Now, we can write an annotated tree to a file. This function will write a tree with each
-node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
-state.
+Then, `ancestralStateTree` can be used to summarize the ancestral state trace as a tree with the maximum a
+posteriori (MAP) state and the posterior probabilities for each state at a given node.
 
-{{ musse_script | snippet:"line", "169-175" }}
+{{ bisse_script | snippet:"block#", "32" }}
 
-Similarly, we compute the maximum a posteriori (MAP) stochastic character map.
+To visualize the ancestral state estimation using RevGadgets {% cite Tribble2022 %}, see 
+[the BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse).
 
-{{ musse_script | snippet:"line", "178-184" }}
+Before we analyze our BiSSE results, we will take some time to set up a HiSSE analysis of the same dataset.
+This will allow us to consider whether any trait-dependent extinction signal we detect is truly due to the trait,
+or due to unobserved effects.
 
-{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
+{% aside Using TensorPhylo %}
 
-To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` {% cite Tribble2022 %} R package.
+TensorPhylo {% cite May2022 %} is a plugin that introduced an alternative general SSE function, the generalized
+lineage-heterogeneous birth-death-sampling process (`dnGLHBDSP`). `dnGLHBDSP` provides much of the same utility
+as `dnCDBDP` and other birth-death functions in RevBayes, being a generalization of BiSSE, HiSSE, and other
+SSE models, including serial-sampling. It allows for more homogeneous scripts, using the same function for
+multiple models, and it often leads to faster likelihood calculations than `dnCDBDP`. For more information on
+`dnGLHBDSP` and instructions on how to install TensorPhylo, see the Tensorphylo tutorial (need to add a link here
+when we have one).
 
+Only minor modifications are needed to use `dnGLHBDSP` in our analysis. Throughout the rest of this box, we will
+only mention lines that must be changed compared to our `dnCDBDP` script. First, we need to load the TensorPhylo
+plugin
 
->Open R.
-{:.instruction}
-
-
-`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}.
-First, install the `ggtree` and `RevGadgets` packages:
-
-<pre>
-install.packages("devtools")
-library(devtools)
-install_github("GuangchuangYu/ggtree")
-install_github("revbayes/RevGadgets")
-</pre>
-
-Run this code (or use the script `plot_anc_states_BiSSE.R`):
-
-```{R}
-library(ggplot2)
-library(RevGadgets)
-
-# read in and process the ancestral states
-bisse_file <- paste0("output/primates_BiSSE_activity_period_anc_states_results.tree")
-p_anc <- processAncStates(bisse_file)
-
-# plot the ancestral states
-plot <- plotAncStatesMAP(p_anc,
-        tree_layout = "rect",
-        tip_labels_size = 1) +
-        # modify legend location using ggplot2
-        theme(legend.position = c(0.1,0.85),
-              legend.key.size = unit(0.3, 'cm'), #change legend key size
-              legend.title = element_text(size=6), #change legend title font size
-              legend.text = element_text(size=4))
-
-ggsave(paste0("BiSSE_anc_states_activity_period.png"),plot, width=8, height=8)
+```
+loadPlugin("TensorPhylo", "/path/to/tensorphylo/build/installer/lib")
 ```
 
+Then, we need an extra helper variable representing the taxa in our tree.
 
-{% figure BiSSE_anc_states %}
-<img src="figures/BiSSE_anc_states_activity_period.png" width="75%">
-{% figcaption %}
-A visualization of the ancestral states estimated under the BiSSE model. We used the script `plot_anc_states_BiSSE.R`.
-{% endfigcaption %}
-{% endfigure %}
+{{ bisse_tp_script | snippet:"block#", "5" }}
 
+All variables defined above will be used, and we will then pass them, together with `taxa` and `num_states`, to
+`dnGLHBDSP`.
 
+{{ bisse_tp_script | snippet:"block#", "19" }}
 
+And we're done! This should run, and achieve similar results to `dnCDBDP`, while being slightly faster. Make sure
+to change the output, checkpointing, and ancestral state filenames if you run both analyses!
 
-Next, we also want to plot the stochastic character map.
-Use the script `plot_simmap_BiSSE.R`.
-
-{% figure BiSSE_simmap %}
-<img src="figures/BiSSE_simmap_activity_period.png" width="75%">
-{% figcaption %}
-A visualization of the stochastic character map estimated under the BiSSE model. We used the script `plot_simmap_BiSSE.R`.
-{% endfigcaption %}
-{% endfigure %}
-
-
-
-
-{% subsection Summarizing Parameter Estimates | subsec_summary %}
-
-Our MCMC analysis generated a tab-delimited file called `primates_BiSSE_activity_period.log` that contains
-the samples of all the numerical parameters in our model.
-Again, we will use the `RevGadgets` {% cite Tribble2022 %} R package, which allow you to generate plots and
-visually explore the posterior distributions of sampled parameters.
-
->Open R.
-{:.instruction}
-
-Run this code:
-```{R}
-library(RevGadgets)
-library(ggplot2)
-
-# read in and process the log file
-bisse_file <- paste0("output/primates_BiSSE_activity_period.log")
-pdata <- processSSE(bisse_file)
-
-# plot the rates
-plot <- plotMuSSE(pdata) +
-        theme(legend.position = c(0.875,0.915),
-              legend.key.size = unit(0.4, 'cm'), #change legend key size
-              legend.title = element_text(size=8), #change legend title font size
-              legend.text = element_text(size=6))
-
-ggsave(paste0("BiSSE_div_rates_activity_period.png"),plot, width=5, height=5)
-```
-
-{% figure BiSSE_rates %}
-<img src="figures/BiSSE_div_rates_activity_period.png" width="95%">
-{% figcaption %}
-Visualizing posterior samples of the speciation rates associated with daily activity time with the `RevGadgets` {% cite Tribble2022 %} R package. We used the script `plot_div_rates_BiSSE.R`.
-{% endfigcaption %}
-{% endfigure %}
-
-
-
-{% section Evaluate Social System under the BiSSE Model | exercise2 %}
-
-Now that you have completed the BiSSE analysis for the timing of activity for all primates,
-perform the same analysis using a different character. Your `data` directory should
-contain the file [`primates_solitariness.nex`](data/primates_solitariness.nex), which has the
-coded states for each species habitat type. This is also a _binary_ character, where the states
-are `0` = forest and `1` = savanna.
-
-> Complete the BiSSE analysis for habitat type using the same commands given above.
-> Remember it is useful to _clear_ the RevBayes console before starting another analysis. Do this
-> using the `clear()` function.
->
-> While you are setting up your new analysis, substitute the character data file name so that you read in
-> `data/primates_solitariness.nex` instead of `primates_activity_period.nex`.
->
-> It is **important** that you remember to also change the output file names.
->
-> View the parameter log file in Tracer after your MCMC is complete.
->
-> What is the rate of speciation associated with group living (`speciation[1]`)? What about
-> for solitary lineages (`speciation[2]`)?
-{:.instruction}
-
-{% aside Compare the rate estimates %}
-Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character.
-You can do this by opening _both_ files in the same tracer window. If you managed to give all the parameters the same name,
-it is possible to compare the estimates in the Tracer window by highlighting both files.
-
-Explore the estimates of the various parameters. Are any different? Are any the same?
-
-Why do you think you might be seeing this pattern?
 {% endaside %}
 
-{% section Evaluate Mating System under the MuSSE Model | exercise3 %}
-
-In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just
-binary characters. That is because the model is effectively the same, just with the variable `NUM_STATES` changed.
-For this final exercise, we will use the MuSSE model {% cite FitzJohn2012 %} to estimate the rates of speciation and extinction
-associated with the mating system state for each primate lineage.
-
-Your `data` directory should contain a file called [`primates_mating_system.nex`](/data/primates_mating_system.nex). This is a four-state
-character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
-
-> Modify the analysis you completed for the binary state characters in the [BiSSE Exercise](#sec_CDBDP) to accommodate a 4-state character.
-> This means that you must not only change the input data file (`primates_mating_system.nex`),
-> but you also need to specify `NUM_STATES = 4`. The `rate_matrix` must also be modified to accommodate 4 states.
->
-> It is **important** that you remember to also change the output file names.
->
-> View the parameter log file in Tracer after your MCMC is complete.
->
-> What is the diversification rate associated with each state (`diversification`)?
-{:.instruction}
-
-
-
-
-
->Click below to begin the next exercise!
-{:.instruction}
-
-* [Testing for state-dependent diversification with unobserved rate variation (HiSSE)]({{ base.url }}/tutorials/sse/hisse)
+{% section Setting up a serially-sampled HiSSE model | sec_fHiSSE %}
