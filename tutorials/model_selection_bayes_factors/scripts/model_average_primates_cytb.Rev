@@ -80,11 +80,11 @@ moves.append( mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE) )
 Q := Q_vec[model_indicator]
 
 
-# Alternative approch
-#Q ~ dnMixture( values=Q_vec, probabilities=simplex(rep(1,Q_vec.size())) )
-#model_indicator := Q.getAllocationIndex()
+# # Alternative approach
+# Q ~ dnMixture( values=Q_vec, probabilities=simplex( rep(1,Q_vec.size()) ) )
+# model_indicator := Q.getAllocationIndex()
 #
-#moves.append( mvGibbsMixtureAllocation(Q, weight=2.0)
+# moves.append( mvGibbsMixtureAllocation(Q, weight=2.0) )
 
 #################################################
 # Define the model of among-site rate variation #

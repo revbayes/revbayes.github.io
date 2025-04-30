@@ -67,7 +67,7 @@
 	<h1 class="maintitle">State-dependent diversification with BiSSE and MuSSE</h1>
 	<h3 class="subtitle">Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, and Emma Goldberg</h4>
-  <h5>Last modified on March 28, 2025</h5>
+  <h5>Last modified on April 30, 2025</h5>
 </div>
 
 
@@ -147,8 +147,8 @@ and for ChromoSSE please see <a href="/tutorials/chromo/">Chromosome Evolution</
   <li><a href="data/primates_tree.nex">primates_tree.nex</a>:
 Dated primate phylogeny including 233 out of 367 species. This tree
 is from <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took it from <a class="citation" href="#Vos2006">Vos and Mooers (2006)</a> and then
-randomly resolved the polytomies using the method of <a class="citation" href="#Kuhn2011">Kuhn et al. (2011)</a>.
-100000-   <a href="data/primates_activity_period.nex">primates_activity_period.nex</a>:
+randomly resolved the polytomies using the method of <a class="citation" href="#Kuhn2011">Kuhn et al. (2011)</a>.</li>
+  <li><a href="data/primates_activity_period.nex">primates_activity_period.nex</a>:
 A file with the coded character states for primate species activity time. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = diurnal and <code class="language-plaintext highlighter-rouge">1</code> = nocturnal.</li>
   <li><a href="data/primates_solitariness.nex">primates_solitariness.nex</a>:
 A file with the coded character states for primate species social system type. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = group living and <code class="language-plaintext highlighter-rouge">1</code> = solitary.</li>
@@ -176,9 +176,7 @@ One option for doing this is to move the <code class="language-plaintext highlig
 directory.</p>
 
   <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path,
-you simply have to type <code class="language-plaintext highlighter-rouge">rb</code> in your Terminal <code class="language-plaintext highlighter-rouge">
-monitors.append( mnModel(filename="output/primates_BiSSE_activity_period.log", printgen=1) )
-</code>to run the program.</p>
+you simply have to type <code class="language-plaintext highlighter-rouge">rb</code> in your Terminal to run the program.</p>
 </blockquote>
 
 <p>For this tutorial, we will specify a BiSSE model that allows for speciation and extinction
@@ -200,17 +198,14 @@ using the interactive console.</p>
 <hr class="subsection" />
 
 <p>For this tutorial, we are assuming that the tree is “observed” and considered <em>data</em>.
-Thus, <code class="language-plaintext highlighter-rouge">
-monitors.append( mnModel(filename="output/primates_BiSSE_activity_period.log", printgen=1) )
-</code>we will read in the dated phylogeny first.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_BiSSE_activity_period.log", printgen=1) )
-</code></pre></div></div>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readCharacterData("data/primates_activity_period.nex")
+Thus, we will read in the dated phylogeny first.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
 
 <p>Next, we will read in the observed character states for primate activity period.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readCharacterData("data/primates_activity_period.nex")
 </code></pre></div></div>
 
 <p>It will be convenient to get the number of sampled
@@ -261,11 +256,9 @@ character state.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
 
-    ### Create a loguniform distributed variable for the diversification rate
     speciation[i] ~ dnLoguniform( 1E-6, 1E2)
     moves.append( mvScale(speciation[i],lambda=0.20,tune=true,weight=3.0) )
 
-    ### Create a loguniform distributed variable for the turnover rate
     extinction[i] ~ dnLoguniform( 1E-6, 1E2)
     moves.append( mvScale(extinction[i],lambda=0.20,tune=true,weight=3.0) )
 
@@ -281,8 +274,10 @@ at position <code class="language-plaintext highlighter-rouge">[2]</code> of eac
 
 <p>⇨ If RevBayes has trouble finding good starting values, then you can initialize the speciation and extinction rate as follows:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation[i].setValue( ln(367.0/2.0) / observed_phylogeny.rootAge() )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
+speciation[i].setValue( ln(367.0/2.0) / observed_phylogeny.rootAge() )
 extinction[i].setValue( speciation[i]/10.0 )
+}
 </code></pre></div></div>
 
 <p>You can print the current values of the speciation rate vector to your screen:</p>

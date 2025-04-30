@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
 	<h3 class="subtitle">Rooting and time-calibrating the gene trees</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on December  2, 2024</h5>
+  <h5>Last modified on April 20, 2025</h5>
 </div>
 
 
@@ -203,10 +203,8 @@ You could also use an externally rooted tree, which might be preferred.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree = readBranchLengthTrees("output/photinus_COI_MAP.tre")[1]
 </code></pre></div></div>
 <p>Since the tree comes from a non-clock analysis, it is unrooted, which is to say it has a trifurcation at the root.
-We want to make its root bifurcating, but it is not important to us exactly how we do it. Therefore, we will just grab the first of the three children of the root node and make it the outgroup:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_index = 2*unrooted_MAP_tree.ntips() - 2
-first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
-unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+We want to make its root bifurcating, but it is not important to us exactly how we do it, so we will just resolve the trifurcation randomly:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unrooted_MAP_tree.resolveMultifurcations(resolveRoot=TRUE)
 </code></pre></div></div>
 <p>We also need to make the tree ultrametric:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()
