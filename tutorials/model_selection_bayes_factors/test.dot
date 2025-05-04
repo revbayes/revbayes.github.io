@@ -1,0 +1,31 @@
+/* Graphical model description in DOT language                                    */
+/*    To view graph:                                                              */
+/*       open this file in the program Graphviz: http://www.graphviz.org          */
+/*       or paste contents into an online viewer: http://stamm-wilbrandt.de/GraphvizFiddle */
+
+digraph REVDAG {
+   n_u [shape=oval, style=filled, fillcolor=white, label="u"]
+   n_0x55d35faf6620 [shape=box, style=filled, fillcolor=white, label="0"]
+   n_0x55d35faf67e0 [shape=box, style=filled, fillcolor=white, label="4"]
+   n_0x55d35faf69e0 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ trunc(RealPos<any>) ]"]
+   n_v [shape=oval, style="dashed,filled", fillcolor=white, label="v\n[ add(Natural<any>) ]"]
+   n_0x55d35faf7180 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_y [shape=oval, style="dashed,filled", fillcolor=white, label="y\n[ <0x55d35faf6d30>) ]"]
+   n_x_2 [shape=record, style=filled, fillcolor=white, label="{x[2]|2}"]
+   n_x [shape=oval, style="dashed,filled", fillcolor=white, label="x\n[ v(Natural<any>) ]"]
+   n_x_1 [shape=record, style=filled, fillcolor=white, label="{x[1]|1}"]
+   n_x_2 [shape=record, style=filled, fillcolor=white, label="{x[2]|2}"]
+   n_x_3 [shape=record, style=filled, fillcolor=white, label="{x[3]|3}"]
+   n_x_4 [shape=record, style=filled, fillcolor=white, label="{x[4]|4}"]
+   n_u -> n_0x55d35faf69e0[style=dashed]
+   n_0x55d35faf6620 -> n_u
+   n_0x55d35faf67e0 -> n_u
+   n_0x55d35faf69e0 -> n_v[style=dashed]
+   n_0x55d35faf7180 -> n_v[style=dashed]
+   n_x_2 -> n_y[style=dashed]
+   n_x_1 -> n_x[style=dashed]
+   n_x_2 -> n_x[style=dashed]
+   n_x_3 -> n_x[style=dashed]
+   n_x_4 -> n_x[style=dashed]
+   graph [bgcolor=lavenderblush2, pad=0.25]
+}

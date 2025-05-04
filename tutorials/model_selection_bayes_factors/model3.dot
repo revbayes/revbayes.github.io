@@ -1,0 +1,57 @@
+/* Graphical model description in DOT language                                    */
+/*    To view graph:                                                              */
+/*       open this file in the program Graphviz: http://www.graphviz.org          */
+/*       or paste contents into an online viewer: http://stamm-wilbrandt.de/GraphvizFiddle */
+
+digraph REVDAG {
+   n_Q [shape=oval, style="dashed,filled", fillcolor=white, label="Q\n[ <0x5561bf66fdd0>) ]"]
+   n_Q_vec_4 [shape=oval, style="dashed,filled", fillcolor=white, label="Q_vec[4]\n[ [](RateGenerator[]<any>) ]"]
+   n_Q_vec [shape=oval, style="dashed,filled", fillcolor=white, label="Q_vec\n[ v(RateGenerator<any>) ]"]
+   n_Q_JC [shape=record, style=filled, fillcolor=white, label="{Q_JC|...}"]
+   n_Q_K80 [shape=oval, style="dashed,filled", fillcolor=white, label="Q_K80\n[ fnK80(RealPos<any>) ]"]
+   n_kappa [shape=oval, style=filled, fillcolor=white, label="kappa"]
+   n_0x5561bf66f5d0 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_kappa_offset [shape=record, style=filled, fillcolor=white, label="{kappa.offset|0}"]
+   n_Q_HKY [shape=oval, style="dashed,filled", fillcolor=white, label="Q_HKY\n[ fnHKY(RealPos<any>) ]"]
+   n_pi [shape=oval, style=filled, fillcolor=white, label="pi"]
+   n_0x5561bf6758d0 [shape=box, style=filled, fillcolor=white, label="[ 1.000, 1.000, 1.000, 1.000 ]"]
+   n_Q_F81 [shape=oval, style="dashed,filled", fillcolor=white, label="Q_F81\n[ fnF81(Simplex<any>) ]"]
+   n_Q_GTR [shape=oval, style="dashed,filled", fillcolor=white, label="Q_GTR\n[ fnGTR(Simplex<any>) ]"]
+   n_er [shape=oval, style=filled, fillcolor=white, label="er"]
+   n_0x5561bf678b50 [shape=box, style=filled, fillcolor=white, label="[ 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 ]"]
+   n_model_indicator [shape=oval, style=filled, fillcolor=white, label="model_indicator"]
+   n_0x5561bf67a410 [shape=box, style=filled, fillcolor=white, label="[ 0.200, 0.200, 0.200, 0.200, 0.200 ]"]
+   n_0x5561bf67a690 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ add(Natural<any>) ]"]
+   n_0x5561bf67a9c0 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_0x5561bf67abc0 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ sub(Integer<any>) ]"]
+   n_0x5561bf67af10 [shape=box, style=filled, fillcolor=white, label="1"]
+   n_0x5561bf67b0f0 [shape=oval, style="dashed,filled", fillcolor=white, label="function\n[ Integer2Natural(Integer<any>) ]"]
+   n_Q2 [shape=oval, style="dashed,filled", fillcolor=white, label="Q2\n[ <0x5561bf6774d0>) ]"]
+   n_Q_vec_4 [shape=record, style=filled, fillcolor=white, label="{Q_vec[4]|...}"]
+   n_Q_vec_4 -> n_Q[style=dashed]
+   n_Q_vec -> n_Q_vec_4[style=dashed]
+   n_Q_JC -> n_Q_vec[style=dashed]
+   n_Q_K80 -> n_Q_vec[style=dashed]
+   n_kappa -> n_Q_HKY[style=dashed]
+   n_kappa -> n_Q_K80[style=dashed]
+   n_0x5561bf66f5d0 -> n_kappa
+   n_kappa_offset -> n_kappa
+   n_Q_HKY -> n_Q_vec[style=dashed]
+   n_pi -> n_Q_F81[style=dashed]
+   n_pi -> n_Q_GTR[style=dashed]
+   n_pi -> n_Q_HKY[style=dashed]
+   n_0x5561bf6758d0 -> n_pi
+   n_Q_F81 -> n_Q_vec[style=dashed]
+   n_Q_GTR -> n_Q_vec[style=dashed]
+   n_er -> n_Q_GTR[style=dashed]
+   n_0x5561bf678b50 -> n_er
+   n_model_indicator -> n_0x5561bf67a690[style=dashed]
+   n_model_indicator -> n_Q_vec_4[style=dashed]
+   n_0x5561bf67a410 -> n_model_indicator
+   n_0x5561bf67a690 -> n_0x5561bf67abc0[style=dashed]
+   n_0x5561bf67a9c0 -> n_0x5561bf67a690[style=dashed]
+   n_0x5561bf67abc0 -> n_0x5561bf67b0f0[style=dashed]
+   n_0x5561bf67af10 -> n_0x5561bf67abc0[style=dashed]
+   n_Q_vec_4 -> n_Q2[style=dashed]
+   graph [bgcolor=lavenderblush2, pad=0.25]
+}
