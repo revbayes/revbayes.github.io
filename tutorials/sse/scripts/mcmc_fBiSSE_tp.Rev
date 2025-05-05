@@ -115,7 +115,7 @@ timetree.clampCharData( data )
 mymodel = model(timetree)
 
 # add a monitor for the log
-monitors.append( mnModel(filename="output_tp/canidae_diet_musse.log", printgen = 1000) )
+monitors.append( mnModel(filename="output_tp/canidae_diet_bisse.log", printgen = 1000) )
 
 # ancestral states monitor to check ancestral state estimation
 monitors.append( mnJointConditionalAncestralState(tree            = timetree, 
@@ -134,13 +134,13 @@ monitors.append( mnScreen(printgen = 10000) )
 # create mcmc object
 mymcmc = mcmc(mymodel, monitors, moves)
 
-if ( fileExists("output_tp/canidae_diet_musse.state") ) {
-  mymcmc.initializeFromCheckpoint("output_tp/canidae_diet_musse.state")
+if ( fileExists("output_tp/canidae_diet_bisse.state") ) {
+  mymcmc.initializeFromCheckpoint("output_tp/canidae_diet_bisse.state")
 }
 
 # run MCMC
-stopping_rules[1] = srMinESS(250, file = "output_tp/canidae_diet_musse.log", freq = 10000)
-mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_tp/canidae_diet_musse.state")
+stopping_rules[1] = srMinESS(250, file = "output_tp/canidae_diet_bisse.log", freq = 10000)
+mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_tp/canidae_diet_bisse.state")
 
 ###
 # summarize ancestral states
