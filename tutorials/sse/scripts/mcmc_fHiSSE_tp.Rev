@@ -1,18 +1,20 @@
 ################################################################################
 #
-# BiSSE analysis of the influence of diet on the diversification
+# MuSSE analysis of the influence of diet on the diversification
 # rates of extant and extinct canids
 #
 # author: Bruno do Rosario Petrucci
 #
 ################################################################################
 
+loadPlugin("TensorPhylo", "/Users/petrucci/Documents/research/programs/tensorphylo/build/installer/lib")
+
 ###
 # reading the data
 
 # read the phylogenetic tree
 tree <- readTrees("data/canidae_tree.nex")[1]
-# this includes 94 canid species, with 3/36 extant species, and 89 extinct species
+# this includes 94 canid species, with 4/36 extant species, and 90 extinct species
 # representing all three canid subfamilies: caninae, borophaginae, and hesperocyoninae
 
 # read the character data
@@ -26,6 +28,15 @@ data <- readCharacterData("data/canidae_diet.nex")
 # number of states
 num_states <- 2
 
+# number of hidden states
+num_hidden <- 2
+
+# total number of rates
+num_rates <- num_states * num_hidden
+
+# taxa
+taxa <- tree.taxa()
+
 # and root age
 root_age <- tree.rootAge()
 
@@ -33,11 +44,14 @@ root_age <- tree.rootAge()
 moves    = VectorMoves()
 monitors = VectorMonitors()
 
+# expand data to include the hidden characters
+data_exp <- data.expandCharacters( num_hidden )
+
 ###
 # create parameters for the diversification and serial sampling rates
 
-# loop through number of states, setting speciation, extinction, and fossil sampling rate for each
-for (i in 1:num_states) {
+# loop through number of rates, setting speciation, extinction, and fossil sampling rate for each
+for (i in 1:num_rates) {
 
   # loguniform prior on speciation
   lambda[i] ~ dnLoguniform( 1E-6, 1E2)
@@ -62,47 +76,51 @@ for (i in 1:num_states) {
 rate_pr := tree.treeLength() / 10
 
 # loop through number of transition rates (3 * 2 = 6 in this case)
+# we set hidden and observed rates separately
 for ( i in 1:(num_states * (num_states - 1)) ) {
     
     # set it to an exponential prior
-    q[i] ~ dnExp(rate_pr)
-    moves.append( mvSlice(q[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+    q_obs[i] ~ dnExp(rate_pr)
+    moves.append( mvSlice(q_obs[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+
+    # same for hidden rates
+    q_hidden[i] ~ dnExp(rate_pr)
+    moves.append( mvSlice(q_hidden[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 }
 
 # make the rate matrix Q
-Q := fnFreeK( q, rescaled = false)
+Q := fnHiddenStateRateMatrix(q_obs, q_hidden, rescaled = false)
 
 ###
 # set up last variables
 
-# set root state frequency prior mean
-pi ~ dnDirichlet( rep(1, num_states) )
-
-# move on pi
+# set root state frequency 
+pi ~ dnDirichlet( rep(1, num_rates) )
 moves.append( mvDirichletSimplex(pi, weight = 2) )
 # a Dirichlet prior means we expect both states to be equally likely to
 # be the root state--we could modify this based on our prior knowledge about
 # canid diet evolution, but it's good to see if the data has the signal instead
 
-# sampling at present--we know we have 4/36 extant species
+# sampling at present--we know we have 3/36 extant species
 rho <- 4 / 36
 
 ###
 # make the final distribution and clamp it
 
-# use dnCDBDP to build timetree distribution under MuSSE
-timetree ~ dnCDBDP( rootAge           = root_age,
-                    lambda            = lambda,
-                    mu                = mu,
-                    psi               = psi,
-                    Q                 = Q,
-                    pi                = pi,
-                    rho               = rho)
+# use dnGLHBDSP to build timetree distribution under BiSSE
+timetree ~ dnGLHBDSP( rootAge           = root_age,
+                      lambda            = lambda,
+                      mu                = mu,
+                      phi               = psi,
+                      eta               = Q,
+                      pi                = pi,
+                      rho               = rho,
+                      taxa              = taxa,
+                      nStates           = num_rates)
 
 # clamp observed tree and character data
 timetree.clamp( tree )
-
-timetree.clampCharData( data )
+timetree.clampCharData( data_exp )
 
 ###
 # final adjustments
@@ -111,15 +129,15 @@ timetree.clampCharData( data )
 mymodel = model(timetree)
 
 # add a monitor for the log
-monitors.append( mnModel(filename="output/canidae_diet_bisse.log", printgen = 1000) )
+monitors.append( mnModel(filename="output_tp/canidae_diet_hisse.log", printgen = 1000) )
 
 # ancestral states monitor to check ancestral state estimation
 monitors.append( mnJointConditionalAncestralState(tree            = timetree, 
                                                   cdbdp           = timetree, 
-                                                  type            = "Standard", 
+                                                  type            = "NaturalNumbers", 
                                                   withStartStates = false,
                                                   printgen        = 100, 
-                                                  filename        = "output/canidae_diet_anc_states.log") )
+                                                  filename        = "output_tp/canidae_diet_anc_states_hisse.log") )
 
 # and screen monitor
 monitors.append( mnScreen(printgen = 10000) )
@@ -130,28 +148,25 @@ monitors.append( mnScreen(printgen = 10000) )
 # create mcmc object
 mymcmc = mcmc(mymodel, monitors, moves)
 
-if ( fileExists("output/canidae_diet_bisse.state") ) {
-
-  mymcmc.initializeFromCheckpoint("output/canidae_diet_bisse.state")
-
+if ( fileExists("output_tp/canidae_diet_hisse.state") ) {
+  mymcmc.initializeFromCheckpoint("output_tp/canidae_diet_hisse.state")
 }
 
 # run MCMC
-stopping_rules[1] = srMinESS(250, file = "output/canidae_diet_bisse.log", freq = 10000)
-
-mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/canidae_diet_bisse.state")
+stopping_rules[1] = srMinESS(250, file = "output_tp/canidae_diet_hisse.log", freq = 10000)
+mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_tp/canidae_diet_hisse.state")
 
 ###
 # summarize ancestral states
 
 # read ancestral states file
-anc_states = readAncestralStateTrace("output/canidae_diet_anc_states.log")
+anc_states = readAncestralStateTrace("output_tp/canidae_diet_anc_states_hisse.log")
 
 # get ancestral state tree
 anc_tree = ancestralStateTree(tree                         = tree,
                               ancestral_state_trace_vector = anc_states,
                               include_start_states         = false,
-                              file                         = "output/canidae_diet_anc_states_results.tree",
+                              file                         = "output_tp/canidae_diet_anc_states_hisse_results.tree",
                               burnin                       = 0.1,
                               summary_statistic            = "MAP",
                               site                         = 1)

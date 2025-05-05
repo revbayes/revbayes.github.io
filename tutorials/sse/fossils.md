@@ -117,6 +117,10 @@ easy comparisons later.
 
 {{ bisse_script | snippet:"block#", "6-10" }}
 
+Note that we are using `mvSlice` instead of the more popular `mvScale` move. `mvSlice` is a relatively new addition
+to RevBayes that functions as an `mvScale` move that searches for an optimal jump size to improve mixing. This allows,
+on average, faster convergence with a lower number of moves.
+
 Next we will specify the transition rates, $q_{01}$ and $q_{10}$. These represent the rate with which species
 transition anagenetically between hypercarnivorous and non-hypercarnivorous lifestyles. We could set up uninformative
 priors like we did for speciation and extinction, but to again keep things simple we will specify an exponential prior
