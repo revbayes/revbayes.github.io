@@ -246,31 +246,43 @@ with more than two states.</p>
 </ul>
 </blockquote>
 
-<blockquote class="aside"><h2>Biogeography</h2><p>This module is for researchers interested in modeling how species disperse, go extinct
-and speciate over geological time. It includes examples for how to use biogeographic
-models to reconstruct ancestral species ranges, test relationships between regional
-features and biogeographic rates, and use paleogeographic information to time-calibrate
-phylogenetic divergence times. Biogeographic models explored are Dispersal-Extinction-Cladogenesis (DEC),
-Geographic State-dependent Speciation Extinction (GeoSSE), and Feature-Informed GeoSSE (FIG) models.</p>
+<blockquote class="aside"><h2>Ancestral-state estimation</h2><p>This module is intended for users looking to estimate the ancestral state of species in a fixed phylogenetic tree. Tutorials assume a fixed tree, and no diversification-rate estimation, but tips in that direction are provided.</p>
 
 <ul>
-  <li>Pre-requisites: <strong>RevBayes fundamentals</strong>, <strong>Molecular phylogenetic analysis</strong>, and <strong>Background on state-dependent diversification-rate estimation</strong>.</li>
+  <li>Pre-requisites: <strong>RevBayes fundamentals</strong>.</li>
 </ul>
 
-<p>Those interested in Dispersal-Extinction-Cladogenesis models should read:</p>
+<ol>
+  <li>Theoretical background: <a href="/tutorials/morph_ase">Introduction to Discrete Morphology Evolution</a>. This tutorial will introduce you to the ancestral-state estimation (ASE) exercises in RevBayes.</li>
+  <li><a href="/tutorials/morph_ase/ase">Simple ASE</a>. This tutorial will walk you through the set up and analysis of a simple ASE model, with equal transition rates between all states.</li>
+  <li>Independent rates: <a href="/tutorials/morph_ase/ase_free">ASE with the independent-rates model</a>. This tutorial builds on the previous one by including the possibility that rates are independent, providing more biological realism to your model. You can easily modify this model to allow only a subset of the rates to be free to vary.</li>
+  <li>Irreversibility: <a href="/tutorials/morph_ase/ase_irreversible">ASE and irreversibility</a>. This tutorial adds one more piece of complexity that is often useful in ASE models–irreversibility, <em>i.e.</em> ensuring some state transitions are not reversible.</li>
+  <li>Worked example: <a href="/tutorials/morph_ase/ase_mammals">Mammals and placenta type</a>. This tutorial provides an example of ASE with irreversibility for the estimation of placenta types in mammals. As an exercise, try modifying the script to allow to make the free-rates model into an independent-rates model.</li>
+</ol>
+
 <ul>
-  <li><a href="/tutorials/biogeo/biogeo_intro">Introduction to DEC models</a></li>
-  <li><a href="/tutorials/biogeo/biogeo_simple">Simple DEC</a></li>
-  <li><a href="/tutorials/biogeo/biogeo_epoch">Epoch DEC</a></li>
-  <li><a href="/tutorials/biogeo/biogeo_dating">Biogeographic Dating with DEC</a></li>
+  <li>If interested in testing for hidden effects in your model and/or estimating the timing of transitions: <a href="/tutorials/morph_ase/scm_hrm">Stochastic character mapping and hidden rates</a>.</li>
+  <li>If interested in testing for correlations between characters: <a href="/tutorials/morph_ase/corr">Correlations among characters</a>.</li>
+  <li>If interested in jointly estimating diversification rates and ancestral states, see the <strong>State-dependent diversification-rate estimation</strong> module. If interested in jointly estimating the topology, see the last bullet point in that module.</li>
+</ul>
+</blockquote>
+
+<blockquote class="aside"><h2>Continuous trait evolution</h2><p>This module is intended for users looking to estimate rates of evolution for continuous traits. The tutorials assume a fixed phylogenetic tree. While ways to jointly estimate diversification-rates and/or topology with evolutionary rates are possible, there is no current tutorial that applies that in a straightforward manner. If you are interested in setting up such an analysis, please start a discussion at our <a href="https://github.com/revbayes/revbayes/discussions">GitHub Discussions</a> page for guidance.</p>
+
+<ul>
+  <li>Pre-requisites: <strong>RevBayes fundamentals</strong>.</li>
 </ul>
 
-<p>Those interested in GeoSSE/FIG models should read:</p>
+<ol>
+  <li>Theoretical background: <a href="/tutorials/cont_traits/cont_trait_intro">Introduction to Models of Continuous-Character Evolution</a>. This tutorial will introduce you to the continuous-trait evolutionary-rate estimation exercises in RevBayes.</li>
+  <li><a href="/tutorials/cont_traits/simple_bm">Simple Brownian rate estimation</a>. This tutorial will walk you through a simple analysis of continuous-trait rate estimation assuming Brownian motion, <em>i.e.</em> assuming the trait is evolving randomly, with no directional trend.</li>
+  <li><a href="/tutorials/cont_traits/simple_ou">Ornstein-Uhlenbeck models</a>. This tutorial will walk you through a slightly more complicated example, using an Ornstein-Uhlenbeck (OU) model instead of a Brownian motion model. OU models expand Brownian motion models in assuming an optimal trait value, such that evolution towards that optimum is more likely than evolution away from it.</li>
+</ol>
+
 <ul>
-  <li><a href="/tutorials/geosse">Simple GeoSSE</a></li>
-  <li><a href="/tutorials/multifig">MultiFIG</a></li>
-  <li><a href="/tutorials/timefig">TimeFIG</a></li>
-  <li><a href="/tutorials/timefig_dating">Biogeographic Dating with TimeFIG</a></li>
+  <li>If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: <a href="/tutorials/cont_traits/relaxed_bm">Relaxed Brownian rate estimation</a> and <a href="/tutorials/cont_traits/relaxed_ou">Relaxed OU models</a>.</li>
+  <li>If interested in multiple continuous traits: <a href="/tutorials/cont_traits/multivariate_bm">Multivariate Brownian motion</a>.</li>
+  <li>If interested in making Brownian rates state-dependent: <a href="/tutorials/cont_traits/state_dependent_bm">State-dependent Brownian rate estimation</a>.</li>
 </ul>
 </blockquote>
 
