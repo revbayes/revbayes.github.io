@@ -11,6 +11,12 @@
 #
 ################################################################################
 
+######
+## WARNING: the tutorial associated with this script uses code snippets
+## This means any changes made here can affect the tutorial's text, so 
+## please update tutorial markdown (bisse.md) if you make any changes to text
+######
+
 #######################
 # Reading in the Data #
 #######################
@@ -90,6 +96,7 @@ rate_matrix := fnFreeBinary( transition_rates, rescaled=false)
 
 ### Create a constant variable with the prior probabilities of each rate category at the root.
 root_state_freq ~ dnDirichlet( rep(1,NUM_STATES) )
+
 moves.append( mvDirichletSimplex(root_state_freq,tune=true,weight=2) )
 
 
@@ -114,6 +121,7 @@ timetree ~ dnCDBDP( rootAge           = root_age,
 
 ### clamp the model with the "observed" tree
 timetree.clamp( observed_phylogeny )
+
 timetree.clampCharData( data )
 
 
