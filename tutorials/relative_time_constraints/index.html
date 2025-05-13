@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Dating with Relative Constraints</h1>
 	<h3 class="subtitle">Constraining the relative order of nodes when dating a phylogeny</h3>
 	<h4 class="authors">Dominik Schrempf, Gergely Szöllősi, and Bastien Boussau</h4>
-  <h5>Last modified on January 21, 2021</h5>
+  <h5>Last modified on May 10, 2025</h5>
 </div>
 
 
@@ -536,8 +536,8 @@ and variances. Internally, it is ensured that the indices are shared correctly.<
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Reroot and make bifurcating.
 rootId &lt;- tree.getRootIndex()
 outgroup &lt;- tree.getDescendantTaxa(rootId)
-mean_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
-var_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+mean_tree.reroot(outgroup=clade(outgroup), make_bifurcating=TRUE)
+var_tree.reroot(outgroup=clade(outgroup), make_bifurcating=TRUE)
 
 # Renumber nodes.
 mean_tree.renumberNodes(tree)
