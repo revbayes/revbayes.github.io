@@ -70,7 +70,7 @@ extinction_corr_pos_prob := ifelse(beta_extinction > 0.0, 1, 0)
 moves.append( mvSlide(beta_speciation, delta=0.01, weight=5) )
 moves.append( mvSlide(beta_extinction, delta=0.01, weight=5) )
 
-move_up_down_beta = mvUpDownSlide(lambda=0.01, tune=TRUE, weight=5.0)
+move_up_down_beta = mvUpDownSlide(delta=0.01, tune=TRUE, weight=5.0)
 move_up_down_beta.addVariable( beta_speciation, up=TRUE )
 move_up_down_beta.addVariable( beta_extinction, up=TRUE )
 moves.append( move_up_down_beta )
