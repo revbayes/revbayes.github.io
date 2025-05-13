@@ -81,7 +81,7 @@ extinction_corr_pos_prob := ifelse(beta_extinction > 0.0, 1, 0)
 moves.append( mvSlide(beta_speciation, delta=0.1, weight=5) )
 moves.append( mvSlide(beta_extinction, delta=0.1, weight=5) )
 
-move_up_down_beta = mvUpDownSlide(lambda=0.001, tune=TRUE, weight=5.0)
+move_up_down_beta = mvUpDownSlide(delta=0.001, tune=TRUE, weight=5.0)
 move_up_down_beta.addVariable( beta_speciation, up=TRUE )
 move_up_down_beta.addVariable( beta_extinction, up=TRUE )
 moves.append( move_up_down_beta )
@@ -128,7 +128,7 @@ for (i in 1:NUM_INTERVALS ) {
     ln_speciation_error[i] ~ dnNormal( 0.0, speciation_sd )
     ln_extinction_error[i] ~ dnNormal( 0.0, extinction_sd )
 
-    move_up_down_spec_ext[i] = mvUpDownSlide(lambda=0.1, tune=TRUE, weight=2.0)
+    move_up_down_spec_ext[i] = mvUpDownSlide(delta=0.1, tune=TRUE, weight=2.0)
     move_up_down_spec_ext[i].addVariable( ln_speciation_error[i], up=TRUE )
     move_up_down_spec_ext[i].addVariable( ln_extinction_error[i], up=TRUE )
     moves.append( move_up_down_spec_ext[i] )

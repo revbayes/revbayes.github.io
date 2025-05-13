@@ -151,6 +151,40 @@ This module is intended for users looking to infer trait-dependent diversificati
 
 {% endaside %}
 
+{% aside Ancestral-state estimation %}
+
+This module is intended for users looking to estimate the ancestral state of species in a fixed phylogenetic tree. Tutorials assume a fixed tree, and no diversification-rate estimation, but tips in that direction are provided.
+
+- Pre-requisites: **RevBayes fundamentals**.
+
+1. Theoretical background: [Introduction to Discrete Morphology Evolution]({{ base.url }}/tutorials/morph_ase). This tutorial will introduce you to the ancestral-state estimation (ASE) exercises in RevBayes.
+2. [Simple ASE]({{ base.url }}/tutorials/morph_ase/ase). This tutorial will walk you through the set up and analysis of a simple ASE model, with equal transition rates between all states.
+3. Independent rates: [ASE with the independent-rates model]({{ base.url }}/tutorials/morph_ase/ase_free). This tutorial builds on the previous one by including the possibility that rates are independent, providing more biological realism to your model. You can easily modify this model to allow only a subset of the rates to be free to vary.
+4. Irreversibility: [ASE and irreversibility]({{ base.url }}/tutorials/morph_ase/ase_irreversible). This tutorial adds one more piece of complexity that is often useful in ASE models--irreversibility, _i.e._ ensuring some state transitions are not reversible. 
+5. Worked example: [Mammals and placenta type]({{ base.url }}/tutorials/morph_ase/ase_mammals). This tutorial provides an example of ASE with irreversibility for the estimation of placenta types in mammals. As an exercise, try modifying the script to allow to make the free-rates model into an independent-rates model.
+
+- If interested in testing for hidden effects in your model and/or estimating the timing of transitions: [Stochastic character mapping and hidden rates]({{ base.url }}/tutorials/morph_ase/scm_hrm).
+- If interested in testing for correlations between characters: [Correlations among characters]({{ base.url }}/tutorials/morph_ase/corr).
+- If interested in jointly estimating diversification rates and ancestral states, see the **State-dependent diversification-rate estimation** module. If interested in jointly estimating the topology, see the last bullet point in that module.
+
+{% endaside %}
+
+{% aside Continuous trait evolution %}
+
+This module is intended for users looking to estimate rates of evolution for continuous traits. The tutorials assume a fixed phylogenetic tree. While ways to jointly estimate diversification-rates and/or topology with evolutionary rates are possible, there is no current tutorial that applies that in a straightforward manner. If you are interested in setting up such an analysis, please start a discussion at our [GitHub Discussions](https://github.com/revbayes/revbayes/discussions) page for guidance. 
+
+- Pre-requisites: **RevBayes fundamentals**.
+
+1. Theoretical background: [Introduction to Models of Continuous-Character Evolution]({{ base.url }}/tutorials/cont_traits/cont_trait_intro). This tutorial will introduce you to the continuous-trait evolutionary-rate estimation exercises in RevBayes.
+2. [Simple Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/simple_bm). This tutorial will walk you through a simple analysis of continuous-trait rate estimation assuming Brownian motion, _i.e._ assuming the trait is evolving randomly, with no directional trend.
+3. [Ornstein-Uhlenbeck models]({{ base.url }}/tutorials/cont_traits/simple_ou). This tutorial will walk you through a slightly more complicated example, using an Ornstein-Uhlenbeck (OU) model instead of a Brownian motion model. OU models expand Brownian motion models in assuming an optimal trait value, such that evolution towards that optimum is more likely than evolution away from it.
+
+- If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: [Relaxed Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/relaxed_bm) and [Relaxed OU models]({{ base.url }}/tutorials/cont_traits/relaxed_ou).
+- If interested in multiple continuous traits: [Multivariate Brownian motion]({{ base.url }}/tutorials/cont_traits/multivariate_bm). 
+- If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
+
+{% endaside %}
+
 {% aside Biogeography %}
 
 This module is for researchers interested in modeling how species disperse, go extinct
