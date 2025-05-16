@@ -416,7 +416,7 @@ We will assume that rates vary among characters in our data matrix according to 
 For this model, we create a vector of rates named `rates_morpho` which is the product
 of a function `fnDiscretizeGamma()` that
 divides up a gamma distribution into a set of equal-probability bins ($\mathbf{R}$ in Figure {% ref fig_full_model_gm %}). 
-Here, our only stochastic node is `alpha_morpho` ($\alpha$ in {% ref fig_full_model_gm %}, which is the shape
+Here, our only stochastic node is `alpha_morpho` ($\alpha$ in {% ref fig_full_model_gm %}), which is the shape
 parameter of the discretized gamma distribution.
 
 
