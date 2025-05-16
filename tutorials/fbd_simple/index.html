@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data</h1>
 	<h3 class="subtitle">A simplified analysis under the fossilized birth-death model for joint inference of divergence times and phylogenetic relationships</h3>
 	<h4 class="authors">Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, June Walker, and Tracy A. Heath</h4>
-  <h5>Last modified on March 17, 2025</h5>
+  <h5>Last modified on May 16, 2025</h5>
 </div>
 
 
@@ -579,7 +579,7 @@ The constant node <code class="language-plaintext highlighter-rouge">Q_morpho</c
 For this model, we create a vector of rates named <code class="language-plaintext highlighter-rouge">rates_morpho</code> which is the product
 of a function <code class="language-plaintext highlighter-rouge">fnDiscretizeGamma()</code> that
 divides up a gamma distribution into a set of equal-probability bins ($\mathbf{R}$ in Figure <a href="#fig_full_model_gm"></a>). 
-Here, our only stochastic node is <code class="language-plaintext highlighter-rouge">alpha_morpho</code> ($\alpha$ in (missing reference), which is the shape
+Here, our only stochastic node is <code class="language-plaintext highlighter-rouge">alpha_morpho</code> ($\alpha$ in <a href="#fig_full_model_gm"></a>, which is the shape
 parameter of the discretized gamma distribution.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
@@ -662,8 +662,6 @@ The function <code class="language-plaintext highlighter-rouge">mnModel()</code>
 This file is useful for summarizing marginal posteriors in statistical plotting tools like Tracer <a class="citation" href="#Rambaut2018">(Rambaut et al. 2018)</a> or R <a class="citation" href="#R2020">(R Core Team 2020)</a>. 
 We will exclude the <code class="language-plaintext highlighter-rouge">F</code> vector from logging, as it is purely used as an auxiliary variable for estimating fossil ages, and is clamped to 0.
 Additionally, we also specify how frequently we sample our Markov chain by setting the <code class="language-plaintext highlighter-rouge">printgen</code> option.
-We will sample every <code class="language-plaintext highlighter-rouge">10</code> cycles of our MCMC.
-Importantly, we also specify how frequently we sample our Markov chain by setting the <code class="language-plaintext highlighter-rouge">printgen</code> option.
 We will sample every <code class="language-plaintext highlighter-rouge">10</code> cycles of our MCMC.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears.log", printgen=10, exclude = ["F"]) )
@@ -671,8 +669,8 @@ We will sample every <code class="language-plaintext highlighter-rouge">10</code
 
 <p>You may think that sampling every 10 generations may be too frequent to avoid correlation between samples in our MCMC.
 However, recall that a single “generation” in RevBayes performs a schedule of moves that is determined by the number of moves in the <code class="language-plaintext highlighter-rouge">moves</code> vector and the weights assigned to those moves (see the <a href="#FBD-SpeciationExtinction"></a> section).
-Thus, a single generation in this analysis will involve 26 moves, so if we record every 10 generations, there will be
-260 moves between each sample.</p>
+Thus, a single generation in this analysis will involve 84 moves (i.e., the sum of the weight of all moves), so if we record every 10 generations, there will be
+840 moves between each sample.</p>
 
 <p>We want to create a separate file containing samples of
 the tree and branch lengths since these will not be
@@ -750,7 +748,7 @@ in RevBayes.</p>
 
    Running MCMC simulation
    This simulation runs 1 independent replicate.
-   The simulator uses 11 different moves in a random move schedule with 26 moves per iteration
+   The simulator uses 11 different moves in a random move schedule with 84 moves per iteration
    ...
 </code></pre></div></div>
 
@@ -838,7 +836,6 @@ The MCC tree is the tree with the maximum product of the posterior clade probabi
 </code></pre></div></div>
 
 <p>When there are sampled ancestors present, visualizing the tree can be fairly difficult in traditional tree viewers. 
-When there are sampled ancestors present, visualizing the tree can be fairly difficult in traditional tree viewers. 
 We will make use of a browser-based tree visualization tool called IcyTree <a class="citation" href="#Vaughan2017">(Vaughan 2017)</a>, which can be accessed at <a href="https://icytree.org">https://icytree.org</a>. 
 IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant (<a href="#icytree_fig"></a>).</p>
 
