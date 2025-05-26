@@ -79,7 +79,7 @@ From your script, you'll recall that we previously defined the Ursinae clade and
 
 To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.
 
-{{ nodedate_script | snippet:"block#", "13-14" }}
+{{ nodedate_script | snippet:"block#", "14" }}
 
 ### The master Rev script
 
