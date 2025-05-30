@@ -62,7 +62,12 @@ for t in */tests.txt; do
     do
         (
         cd scripts
-        sed 's/generations=[0-9]*/generations=1/g' "$script" | sed 's/checkpointInterval=[0-9]*/checkpointInterval=1/g'  > "cp_$script"
+        cat "$script" |
+            sed 's/generations=[0-9]*/generations=1/g' |
+            sed 's/^n_gen *= *[0-9]*/n_gen = 1/' |
+            sed 's/\.burnin([0-9][0-9]*/.burnin(1/' |
+            sed 's/\.run([0-9][0-9]*/.run(1/' |
+            sed 's/checkpointInterval=[0-9]*/checkpointInterval=1/g'  > "cp_$script"
         )
         ${rb_exec} -b scripts/cp_$script
         res="$?"
