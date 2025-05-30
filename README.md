@@ -26,7 +26,7 @@ When making changes to the site:
 1. Start from the lastest version of the source branch with `git checkout source ; git pull`.
 2. Create a new branch for your changes with `git checkout -b <mybranchname>`.
 3. Commit your changes to the branch.
-4. Push the changes to github using `git push origin <mybranchname>`.
+4. Push the changes to github using `git push --set-upstream origin <mybranchname>`.
 5. Open a pull request (PR) for the branch on github at https://github.com/revbayes/revbayes.github.io
 6. After the pull request is merged to the `source` branch on github, move back to the source branch locally with `git checkout source` and fetch the latest version with `git pull`.
 7. Now you can run the `deploy.sh` script to update the `master` branch.
