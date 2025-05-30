@@ -93,6 +93,7 @@ fi
 echo "Checking out master in _site"
 (
     cd _site
+    git fetch --quiet origin
     git checkout --quiet master
     git reset --quiet --hard origin/master
 
