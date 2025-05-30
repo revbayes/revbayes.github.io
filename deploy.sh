@@ -63,22 +63,30 @@ then
     exit 1
 fi
 
-msg=`git log -1 --pretty=%B`
+# make sure the source branch is up-to-date with origin/source
+echo "Fetching content from remote"
+git fetch --quiet origin
 
-echo "Checking out source"
-git checkout source
-echo
+COUNT_MISSING="$(git rev-list --count source..origin/source)"
+if [ "${COUNT_MISSING}" != 0 ] ; then
+    echo "Error: the 'source' branch is not up-to-date.  Please do a 'git pull'"
+    exit 1
+fi
 
-echo "Pulling updates to the source"
-git pull --quiet origin source
-echo
+COUNT_EXTRA="$(git rev-list --count origin/source..source)"
+if [ "${COUNT_EXTRA}" != 0 ] ; then
+    echo "Error: the 'source' branch contains changes that have not been merged!"
+    echo
+    echo "    Please create a PR for these changes. After the PR is merged, "
+    echo "    please pull from the source branch and run the ./deploy.sh script again."
+    exit 1
+fi
 
-# fetch master
-echo "Pulling master"
+# Check out master in _site
+echo "Checking out master in _site"
 (
     cd _site
     git checkout --quiet master
-    git fetch --quiet origin
     git reset --quiet --hard origin/master
 
     # update the documentation?
@@ -106,6 +114,7 @@ echo
 # deploy master
 (
     cd _site
+    msg=`git log -1 --pretty=%B`
 
     # check if there are any changes on master
     untracked=`git ls-files --other --exclude-standard --directory`
