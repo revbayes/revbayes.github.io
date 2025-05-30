@@ -63,6 +63,13 @@ then
     exit 1
 fi
 
+# make sure there aren't untracked files that will get uploaded to the website
+UNTRACKED_FILES=$(git ls-files --others --exclude-standard)
+if [ -n "${UNTRACKED_FILES}" ] ; then
+    echo "Error: Untracked files.  Please commit or stash before updating master."
+    exit 1
+fi
+
 # make sure the source branch is up-to-date with origin/source
 echo "Fetching content from remote"
 git fetch --quiet origin
