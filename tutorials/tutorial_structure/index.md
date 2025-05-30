@@ -17,7 +17,7 @@ include_files:
 
 {% section Overview %}
 
-This tutorial covers how to set up files and directories to work effectively in RevBayes {% cite Hoehna2014a Hoehna2016b %}.
+This tutorial covers how to set up files and directories to work effectively in RevBayes {% cite Hoehna2014b Hoehna2016b %}.
 This workshop assumes no familiarity with the command line, or programming in general.
 The themes of good directory structuring shown in this tutorial will be used in many other RevBayes tutorials.  
 
@@ -54,18 +54,18 @@ For example, mine is in my computer's user home, in a directory called `Tutorial
 A graphic of this is shown in Fig. 1.
 
 
-Computers do not understand the visual information of the directory structure.
+Computers do not understand the visual representation of the directory structure.
 Instead, we will translate this information into text.
 
 {% figure example %}
 <img src="figures/Directory.png" width="600">
 {% figcaption %}
-This is an example of the Macintosh File Viewer. In this instance, I have a directoy, `Tutorials` with a subdirectory for this specific tutorial.
+This is an example of the macOS file viewer (Finder). In this instance, I have a directory `Tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
 
-{% subsubsection Macintosh %}
+{% subsubsection macOS %}
 
 The home directory on a computer on a Mac is labeled with a `~/`.
 Each contained directory is separated by a `/` character.
@@ -98,19 +98,22 @@ Finally, test your working directory like so:
  source("scripts/test.Rev")
 ```
 
-If everything has suceeded, you will see the following output:
+If everything has succeeded, you will see the following output:
 
 
 ```
    Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 ```
 {:.Rev-output}
 
+At this point, you can quit RevBayes by typing the `q()` command, and close the window opened by the program.
+
 {% aside If something goes wrong %}
-If you were not able to successfully execute the script, the most common culprit is that RevBayes is not executing from where you think. Try running getwd() and making sure that your starting working directory is what you think it is.
+If you were not able to successfully execute the script, the most common culprit is that RevBayes is not executing from where you think. Try running `getwd()` and making sure that your starting working directory is what you think it is.
 {% endaside %}
 
 {% subsubsection Windows %}
@@ -149,10 +152,13 @@ If everything has suceeded, you will see the following output:
 ```
    Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 ```
 {:.Rev-output}
+
+At this point, you can quit RevBayes by typing the `q()` command. This will automatically close the window opened by the program.
 
 {% subsubsection Linux %}
 
@@ -161,12 +167,12 @@ Linux users must access RevBayes via the command line interface.
 
 {% section Using your computer's terminal interface %}
 
-Many RevBayes users may want to use RevBayes from the `command-line interface`.
+Many RevBayes users may want to use RevBayes from the command-line interface.
 This technology allows users to interact directly with the computer's file system.
 It is the predominant way many remote servers and supercomputers are used.
 
 {% aside Command Line on Windows %}
-Linux and Macintosh users have a command line interface by default on their machines. Windows users will have to install one. A common command line interface is [Git For Windows](https://gitforwindows.org/).
+Linux and macOS users have a command line interface by default on their machines. Windows users will have to install one. A common command line interface is [Git For Windows](https://gitforwindows.org/).
 {% endaside %}
 
 
@@ -179,13 +185,13 @@ Since we are doing the `tutorial_structure` tutorial, please title your director
 In this new directory, create two more directories, one called _data_ and one called _scripts_.
 
 {% aside Spaces in filenames %}
-Most scientific programming languages and software does not deal well with spaces in file names.
+Most scientific programming languages and software do not deal well with spaces in file names.
 If you will be doing much scientific computing, it will be best to get in the habit of not using spaces in file and folder names.
 {% endaside %}
 
 You will note a box called `Data files and scripts` in the upper left-hand corner of this webapge.
 Please download the files listed in this directory.
-Drag and drop `primates_and_galeopterus_cytb.nex` into your `data` directory.
+Drag and drop `example_file.nex` into your `data` directory.
 Then, move `test.Rev` into your `scripts` directory.
 
 Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice.
@@ -198,18 +204,18 @@ First, note down the location of your tutorial directory.
 For example, mine is in my laptop's shared drive, in a directory called `tutorials`.
 This can be seen in {% ref Directory %}
 
-Computers do not understand the visual information of the directory structure.
+Computers do not understand the visual representation of the directory structure.
 Instead, we will translate this information into text.
 
 {% figure Directory %}
 <img src="figures/Directory.png" width="600">
 {% figcaption %}
-This is an example of the Macintosh File Viewer. In this instance, I have a directoy, `tutorials` with a subdirectory for this specific tutorial.
+This is an example of the macOS file viewer (Finder). In this instance, I have a directory `tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
 
-{% subsubsection Macintosh and Linux %}
+{% subsubsection macOS and Linux %}
 
 The home directory on a computer on in a terminal is labeled with a `~/`.
 Each contained directory is separated by a `/` character.
@@ -220,7 +226,7 @@ The above directory structure would be written out like so:
 ```
 {:.bash}
 
-Open your terminal application. Change directories into the tutorial directory with  the terminal's `cd` command. For example, my command will be:
+Open your terminal application. Change directories to the tutorial directory with the terminal's `cd` command. For example, my command will be:
 
 ```
 cd ~/Tutorials/tutorial_structure/
@@ -229,7 +235,7 @@ cd ~/Tutorials/tutorial_structure/
 
 Next, we will launch RevBayes. First, note where RevBayes is stored on your computer.
 
-For example, my copy of RevBayes is stored a software directory in my user home.
+For example, my copy of RevBayes is stored in a `software` directory in my user home.
 Therefore, to launch my RevBayes, I will type:
 ```
 ~/software/rb
@@ -241,17 +247,19 @@ Finally, test your working directory like so:
  source("scripts/test.Rev")
 ```
 
-If everything has suceeded, you will see the following output:
+If everything has succeeded, you will see the following output:
 
 
 ```
    Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 ```
 {:.Rev-output}
 
+At this point, you can quit RevBayes by typing the `q()` command.
 
 {% aside The System Path %}
 The `System Path` tells your computer default locations to look for pieces of software.
@@ -267,7 +275,7 @@ Open your terminal application.
 See the aside `Command Line on Windows` for more information on this point.
 Note where RevBayes is stored on your computer.
 
-For example, my copy of RevBayes is stored a software directory in my user home.
+For example, my copy of RevBayes is stored in a `software` directory in my user home.
 Therefore, to launch my RevBayes, I will type:
 ```
 ~/software/rb
@@ -295,21 +303,23 @@ If everything has succeeded, you will see the following output:
 ```
    Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 ```
 {:.Rev-output}
 
+At this point, you can quit RevBayes by typing the `q()` command.
 
 {% section Using RevBayes with R and RStudio %}
 
 R is a fairly common computing language in biology.
 RevBayes users may want to use RevBayes through RStudio {% cite RStudio %}, a popular graphical interface for R.
-In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [interfaces page](https://revbayes.github.io/interfaces), you can run use Rev language as you would in a standard RMarkown document.
+In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [interfaces page](https://revbayes.github.io/interfaces), you can run use Rev language as you would in a standard RMarkdown document.
 
 {% subsection Installation %}
 
-Revticulate can be installed in two ways.
+To do so, we will first need to install the Revticulate package. Revticulate can be installed in two ways.
 Both will assume a working installation of R and (optionally) RStudio.
 The first is via CRAN, using the default `install.packages` function in R:
 
@@ -335,9 +345,9 @@ remotes::install_github("revbayes/Revticulate")
  ```
 
 When you execute this chunk, Revticulate will run a package check.
-This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
+This check searches for an `.Renviron` file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the `.Renviron` file, and the user will enter `rb=/absolute/path/to/revbayes`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
-First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to `rb` instead of `r`. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
+First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to `rb` instead of `r`. If you are unsure how to edit a chunk to have the proper type, the `test.Rmd` file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your `.Renviron` goes to RevBayes, and restart.
 
 ````
 ```{rb}
@@ -350,7 +360,6 @@ Next, we will attempt to read in some data. Use the `setwd()` command to ensure 
 ````
 ```{rb}
 molecular_data <- readDiscreteCharacterData("data/example_file.nex")
-molecular_data
 ```
 ````
 If you get an error such as `rb not found`, make sure you executed this block:
@@ -365,7 +374,7 @@ knitRev()
 
 {% section Using Jupyter %}
 
-Jupyter {% cite Jupyter %} is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the [interfaces page](https://revbayes.github.io/interfaces), you will be able to choose RevBayes as a possible language. An example of this is below.
+Jupyter is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the [interfaces page](https://revbayes.github.io/interfaces), you will be able to choose RevBayes as a possible language. An example of this is below.
 
 {% figure mistake %}
 <img src="figures/Jupyter.png" width="800">
