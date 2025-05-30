@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Setting Up RevBayes</h1>
 	<h3 class="subtitle">Preparing your computer to work with phylogenetic data in RevBayes</h3>
 	<h4 class="authors">April Wright</h4>
-  <h5>Last modified on March 20, 2025</h5>
+  <h5>Last modified on April 20, 2025</h5>
 </div>
 
 
@@ -124,7 +124,7 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial covers how to set up files and directories to work effectively in RevBayes <a class="citation" href="#Hoehna2014a">(Höhna 2014; Höhna et al. 2016)</a>.
+<p>This tutorial covers how to set up files and directories to work effectively in RevBayes <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014; Höhna et al. 2016)</a>.
 This workshop assumes no familiarity with the command line, or programming in general.
 The themes of good directory structuring shown in this tutorial will be used in many other RevBayes tutorials.</p>
 
@@ -159,14 +159,14 @@ First, note down the location of your tutorial directory.
 For example, mine is in my computer’s user home, in a directory called <code class="language-plaintext highlighter-rouge">Tutorials</code>.
 A graphic of this is shown in Fig. 1.</p>
 
-<p>Computers do not understand the visual information of the directory structure.
+<p>Computers do not understand the visual representation of the directory structure.
 Instead, we will translate this information into text.</p>
 
 <figure id="example"><p><img src="figures/Directory.png" width="600" /></p>
-<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have a directoy, <code class="language-plaintext highlighter-rouge">Tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
+<figcaption>This is an example of the macOS file viewer (Finder). In this instance, I have a directory <code class="language-plaintext highlighter-rouge">Tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
 </figure>
 
-<h4 class="subsubsection" id="macintosh">Macintosh</h4>
+<h4 class="subsubsection" id="macos">macOS</h4>
 <hr class="subsubsection" />
 
 <p>The home directory on a computer on a Mac is labeled with a <code class="language-plaintext highlighter-rouge">~/</code>.
@@ -195,15 +195,18 @@ For example, my command will look like so:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> source("scripts/test.Rev")
 </code></pre></div></div>
 
-<p>If everything has suceeded, you will see the following output:</p>
+<p>If everything has succeeded, you will see the following output:</p>
 
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 </code></pre></div></div>
 
-<blockquote class="aside"><h2>If something goes wrong</h2><p>If you were not able to successfully execute the script, the most common culprit is that RevBayes is not executing from where you think. Try running getwd() and making sure that your starting working directory is what you think it is.</p>
+<p>At this point, you can quit RevBayes by typing the <code class="language-plaintext highlighter-rouge">q()</code> command, and close the window opened by the program.</p>
+
+<blockquote class="aside"><h2>If something goes wrong</h2><p>If you were not able to successfully execute the script, the most common culprit is that RevBayes is not executing from where you think. Try running <code class="language-plaintext highlighter-rouge">getwd()</code> and making sure that your starting working directory is what you think it is.</p>
 </blockquote>
 
 <h4 class="subsubsection" id="windows">Windows</h4>
@@ -237,9 +240,12 @@ For example, my command will look like so:</p>
 
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 </code></pre></div></div>
+
+<p>At this point, you can quit RevBayes by typing the <code class="language-plaintext highlighter-rouge">q()</code> command. This will automatically close the window opened by the program.</p>
 
 <h4 class="subsubsection" id="linux">Linux</h4>
 <hr class="subsubsection" />
@@ -249,11 +255,11 @@ For example, my command will look like so:</p>
 <h2 class="section" id="using-your-computers-terminal-interface">Using your computer’s terminal interface</h2>
 <hr class="section" />
 
-<p>Many RevBayes users may want to use RevBayes from the <code class="language-plaintext highlighter-rouge">command-line interface</code>.
+<p>Many RevBayes users may want to use RevBayes from the command-line interface.
 This technology allows users to interact directly with the computer’s file system.
 It is the predominant way many remote servers and supercomputers are used.</p>
 
-<blockquote class="aside"><h2>Command Line on Windows</h2><p>Linux and Macintosh users have a command line interface by default on their machines. Windows users will have to install one. A common command line interface is <a href="https://gitforwindows.org/">Git For Windows</a>.</p>
+<blockquote class="aside"><h2>Command Line on Windows</h2><p>Linux and macOS users have a command line interface by default on their machines. Windows users will have to install one. A common command line interface is <a href="https://gitforwindows.org/">Git For Windows</a>.</p>
 </blockquote>
 
 <h3 class="subsection" id="downloading-and-storing-data-and-scripts">Downloading and storing data and scripts</h3>
@@ -265,13 +271,13 @@ For each tutorial that you do, you should create a <em>directory</em>, sometimes
 Since we are doing the <code class="language-plaintext highlighter-rouge">tutorial_structure</code> tutorial, please title your directory <code class="language-plaintext highlighter-rouge">tutorial_structure</code>.
 In this new directory, create two more directories, one called <em>data</em> and one called <em>scripts</em>.</p>
 
-<blockquote class="aside"><h2>Spaces in filenames</h2><p>Most scientific programming languages and software does not deal well with spaces in file names.
+<blockquote class="aside"><h2>Spaces in filenames</h2><p>Most scientific programming languages and software do not deal well with spaces in file names.
 If you will be doing much scientific computing, it will be best to get in the habit of not using spaces in file and folder names.</p>
 </blockquote>
 
 <p>You will note a box called <code class="language-plaintext highlighter-rouge">Data files and scripts</code> in the upper left-hand corner of this webapge.
 Please download the files listed in this directory.
-Drag and drop <code class="language-plaintext highlighter-rouge">primates_and_galeopterus_cytb.nex</code> into your <code class="language-plaintext highlighter-rouge">data</code> directory.
+Drag and drop <code class="language-plaintext highlighter-rouge">example_file.nex</code> into your <code class="language-plaintext highlighter-rouge">data</code> directory.
 Then, move <code class="language-plaintext highlighter-rouge">test.Rev</code> into your <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
 <p>Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice.
@@ -285,14 +291,14 @@ First, note down the location of your tutorial directory.
 For example, mine is in my laptop’s shared drive, in a directory called <code class="language-plaintext highlighter-rouge">tutorials</code>.
 This can be seen in <a href="#Directory"></a></p>
 
-<p>Computers do not understand the visual information of the directory structure.
+<p>Computers do not understand the visual representation of the directory structure.
 Instead, we will translate this information into text.</p>
 
 <figure id="Directory"><p><img src="figures/Directory.png" width="600" /></p>
-<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have a directoy, <code class="language-plaintext highlighter-rouge">tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
+<figcaption>This is an example of the macOS file viewer (Finder). In this instance, I have a directory <code class="language-plaintext highlighter-rouge">tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
 </figure>
 
-<h4 class="subsubsection" id="macintosh-and-linux">Macintosh and Linux</h4>
+<h4 class="subsubsection" id="macos-and-linux">macOS and Linux</h4>
 <hr class="subsubsection" />
 
 <p>The home directory on a computer on in a terminal is labeled with a <code class="language-plaintext highlighter-rouge">~/</code>.
@@ -302,14 +308,14 @@ The above directory structure would be written out like so:</p>
 <div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/Tutorials/tutorial_structure/
 </code></pre></div></div>
 
-<p>Open your terminal application. Change directories into the tutorial directory with  the terminal’s <code class="language-plaintext highlighter-rouge">cd</code> command. For example, my command will be:</p>
+<p>Open your terminal application. Change directories to the tutorial directory with the terminal’s <code class="language-plaintext highlighter-rouge">cd</code> command. For example, my command will be:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~/Tutorials/tutorial_structure/
 </code></pre></div></div>
 
 <p>Next, we will launch RevBayes. First, note where RevBayes is stored on your computer.</p>
 
-<p>For example, my copy of RevBayes is stored a software directory in my user home.
+<p>For example, my copy of RevBayes is stored in a <code class="language-plaintext highlighter-rouge">software</code> directory in my user home.
 Therefore, to launch my RevBayes, I will type:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/software/rb
 </code></pre></div></div>
@@ -319,13 +325,16 @@ Therefore, to launch my RevBayes, I will type:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> source("scripts/test.Rev")
 </code></pre></div></div>
 
-<p>If everything has suceeded, you will see the following output:</p>
+<p>If everything has succeeded, you will see the following output:</p>
 
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 </code></pre></div></div>
+
+<p>At this point, you can quit RevBayes by typing the <code class="language-plaintext highlighter-rouge">q()</code> command.</p>
 
 <blockquote class="aside"><h2>The System Path</h2><p>The <code class="language-plaintext highlighter-rouge">System Path</code> tells your computer default locations to look for pieces of software.
 If a piece of software is added to the path, it can be found and launched from anywhere on the computer.
@@ -340,7 +349,7 @@ Open your terminal application.
 See the aside <code class="language-plaintext highlighter-rouge">Command Line on Windows</code> for more information on this point.
 Note where RevBayes is stored on your computer.</p>
 
-<p>For example, my copy of RevBayes is stored a software directory in my user home.
+<p>For example, my copy of RevBayes is stored in a <code class="language-plaintext highlighter-rouge">software</code> directory in my user home.
 Therefore, to launch my RevBayes, I will type:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/software/rb
 </code></pre></div></div>
@@ -362,21 +371,24 @@ My tutorial directory, as shown in Figure 1, will be written out as:</p>
 
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Successfully read one character matrix from file 'data/example_file.nex'
    Congratulations, you set up your scripts and code directories correctly.
+   Processing of file "scripts/test.Rev" completed
 </code></pre></div></div>
+
+<p>At this point, you can quit RevBayes by typing the <code class="language-plaintext highlighter-rouge">q()</code> command.</p>
 
 <h2 class="section" id="using-revbayes-with-r-and-rstudio">Using RevBayes with R and RStudio</h2>
 <hr class="section" />
 
 <p>R is a fairly common computing language in biology.
-RevBayes users may want to use RevBayes through RStudio (missing reference), a popular graphical interface for R.
-In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you’ve followed the RStudio instructions on the <a href="https://revbayes.github.io/interfaces">interfaces page</a>, you can run use Rev language as you would in a standard RMarkown document.</p>
+RevBayes users may want to use RevBayes through RStudio <a class="citation" href="#RStudio">(RStudio Team 2025)</a>, a popular graphical interface for R.
+In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you’ve followed the RStudio instructions on the <a href="https://revbayes.github.io/interfaces">interfaces page</a>, you can run use Rev language as you would in a standard RMarkdown document.</p>
 
 <h3 class="subsection" id="installation">Installation</h3>
 <hr class="subsection" />
 
-<p>Revticulate can be installed in two ways.
+<p>To do so, we will first need to install the Revticulate package. Revticulate can be installed in two ways.
 Both will assume a working installation of R and (optionally) RStudio.
 The first is via CRAN, using the default <code class="language-plaintext highlighter-rouge">install.packages</code> function in R:</p>
 
@@ -397,9 +409,9 @@ The first is via CRAN, using the default <code class="language-plaintext highlig
 </code></pre>
 
 <p>When you execute this chunk, Revticulate will run a package check.
-This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use <code class="language-plaintext highlighter-rouge">usethis::edit_r_environ()</code>. This opens the .Renviron file, and the user will enter <code class="language-plaintext highlighter-rouge">rb={absolute path to revbayes}</code>. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.</p>
+This check searches for an <code class="language-plaintext highlighter-rouge">.Renviron</code> file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use <code class="language-plaintext highlighter-rouge">usethis::edit_r_environ()</code>. This opens the <code class="language-plaintext highlighter-rouge">.Renviron</code> file, and the user will enter <code class="language-plaintext highlighter-rouge">rb=/absolute/path/to/revbayes</code>. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.</p>
 
-<p>First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to <code class="language-plaintext highlighter-rouge">rb</code> instead of <code class="language-plaintext highlighter-rouge">r</code>. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.</p>
+<p>First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to <code class="language-plaintext highlighter-rouge">rb</code> instead of <code class="language-plaintext highlighter-rouge">r</code>. If you are unsure how to edit a chunk to have the proper type, the <code class="language-plaintext highlighter-rouge">test.Rmd</code> file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your <code class="language-plaintext highlighter-rouge">.Renviron</code> goes to RevBayes, and restart.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{rb}
 variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
@@ -410,7 +422,6 @@ variable
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{rb}
 molecular_data &lt;- readDiscreteCharacterData("data/example_file.nex")
-molecular_data
 ```
 </code></pre></div></div>
 <p>If you get an error such as <code class="language-plaintext highlighter-rouge">rb not found</code>, make sure you executed this block:</p>
@@ -424,7 +435,7 @@ knitRev()
 <h2 class="section" id="using-jupyter">Using Jupyter</h2>
 <hr class="section" />
 
-<p>Jupyter (missing reference) is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the <a href="https://revbayes.github.io/interfaces">interfaces page</a>, you will be able to choose RevBayes as a possible language. An example of this is below.</p>
+<p>Jupyter is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the <a href="https://revbayes.github.io/interfaces">interfaces page</a>, you will be able to choose RevBayes as a possible language. An example of this is below.</p>
 
 <figure id="mistake"><p><img src="figures/Jupyter.png" width="800" /></p>
 <figcaption>This is a Jupyter notebook with the language set to Rev.</figcaption>
@@ -437,9 +448,14 @@ knitRev()
 <a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li>
-<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
-<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="RStudio">RStudio Team. 2025. RStudio: integrated development environment for R. Boston, MA: Posit Software, PBC.</span>
+
+<a href="https://www.rstudio.com/">https://www.rstudio.com/</a>
 
 </li></ol>
 
