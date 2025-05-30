@@ -416,7 +416,7 @@ We will assume that rates vary among characters in our data matrix according to 
 For this model, we create a vector of rates named `rates_morpho` which is the product
 of a function `fnDiscretizeGamma()` that
 divides up a gamma distribution into a set of equal-probability bins ($\mathbf{R}$ in Figure {% ref fig_full_model_gm %}). 
-Here, our only stochastic node is `alpha_morpho` ($\alpha$ in {% cite fig_full_model_gm %}, which is the shape
+Here, our only stochastic node is `alpha_morpho` ($\alpha$ in {% ref fig_full_model_gm %}), which is the shape
 parameter of the discretized gamma distribution.
 
 
@@ -491,15 +491,13 @@ This file is useful for summarizing marginal posteriors in statistical plotting 
 We will exclude the `F` vector from logging, as it is purely used as an auxiliary variable for estimating fossil ages, and is clamped to 0.
 Additionally, we also specify how frequently we sample our Markov chain by setting the `printgen` option.
 We will sample every `10` cycles of our MCMC.
-Importantly, we also specify how frequently we sample our Markov chain by setting the `printgen` option.
-We will sample every `10` cycles of our MCMC.
 
 {{ mcmc_script | snippet:"block#","31" }}
 
 You may think that sampling every 10 generations may be too frequent to avoid correlation between samples in our MCMC.
 However, recall that a single "generation" in RevBayes performs a schedule of moves that is determined by the number of moves in the `moves` vector and the weights assigned to those moves (see the {% ref FBD-SpeciationExtinction %} section).
-Thus, a single generation in this analysis will involve 26 moves, so if we record every 10 generations, there will be
-260 moves between each sample.
+Thus, a single generation in this analysis will involve 84 moves (i.e., the sum of the weight of all moves), so if we record every 10 generations, there will be
+840 moves between each sample.
 
 We want to create a separate file containing samples of
 the tree and branch lengths since these will not be
@@ -574,7 +572,7 @@ source("FBD_tutorial.Rev")
 
    Running MCMC simulation
    This simulation runs 1 independent replicate.
-   The simulator uses 11 different moves in a random move schedule with 26 moves per iteration
+   The simulator uses 11 different moves in a random move schedule with 84 moves per iteration
    ...
 ```
 {:.Rev-output}
@@ -667,7 +665,6 @@ The MCC tree is the tree with the maximum product of the posterior clade probabi
 mccTree(trace, file="output/bears.mcc.tre" )
 ```
 
-When there are sampled ancestors present, visualizing the tree can be fairly difficult in traditional tree viewers. 
 When there are sampled ancestors present, visualizing the tree can be fairly difficult in traditional tree viewers. 
 We will make use of a browser-based tree visualization tool called IcyTree {% cite Vaughan2017 %}, which can be accessed at [https://icytree.org](https://icytree.org). 
 IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant ({% ref icytree_fig %}).

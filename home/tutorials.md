@@ -184,3 +184,28 @@ This module is intended for users looking to estimate rates of evolution for con
 - If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
 
 {% endaside %}
+
+{% aside Biogeography %}
+
+This module is for researchers interested in modeling how species disperse, go extinct
+and speciate over geological time. It includes examples for how to use biogeographic
+models to reconstruct ancestral species ranges, test relationships between regional
+features and biogeographic rates, and use paleogeographic information to time-calibrate
+phylogenetic divergence times. Biogeographic models explored are Dispersal-Extinction-Cladogenesis (DEC),
+Geographic State-dependent Speciation Extinction (GeoSSE), and Feature-Informed GeoSSE (FIG) models.
+
+- Pre-requisites: **RevBayes fundamentals**, **Molecular phylogenetic analysis**, and **Background on state-dependent diversification-rate estimation**.
+
+Those interested in Dispersal-Extinction-Cladogenesis models should read:
+- [Introduction to DEC models]({{ base.url }}/tutorials/biogeo/biogeo_intro)
+- [Simple DEC]({{ base.url }}/tutorials/biogeo/biogeo_simple)
+- [Epoch DEC]({{ base.url }}/tutorials/biogeo/biogeo_epoch)
+- [Biogeographic Dating with DEC]({{ base.url }}/tutorials/biogeo/biogeo_dating)
+
+Those interested in GeoSSE/FIG models should read:
+- [Simple GeoSSE]({{ base.url }}/tutorials/geosse)
+- [MultiFIG]({{ base.url }}/tutorials/multifig)
+- [TimeFIG]({{ base.url }}/tutorials/timefig)
+- [Biogeographic Dating with TimeFIG]({{ base.url }}/tutorials/timefig_dating)
+
+{% endaside %}
