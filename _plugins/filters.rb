@@ -119,6 +119,54 @@ Unknown option '#{type}' for 'snippet' filter
 MSG
         end
       end
+
+      def tagged_snippet(file, tag, number)
+        site = @context.registers[:site]
+
+        if not file.instance_of? Jekyll::Drops::StaticFileDrop
+          file = match_file(file)
+        end
+
+        content = File.read(site.in_source_dir(file.path))
+
+        ret = ""
+
+        # split on '-'.
+        from,to = number.split('-')
+        # if a single number n is given, treat it as 1-n.
+        from,to = 1,from if to == nil
+        # convert the strings to integers.
+        from,to = from.to_i,to.to_i
+        # complain if the beginning is after the start.
+        if from > to
+          raise ArgumentError, <<-MSG
+Line number from > to in 'snippet' filter
+MSG
+        end
+
+        range = from..to
+
+        tag_pattern = Regexp.new('^\s*' + Regexp.escape(tag))
+
+        if content.scan(tag_pattern).size > 1
+          raise "Error: tag '#{tag}' occurred more than once in file '#{file}'"
+        elsif content.scan(tag_pattern).size < 1
+          raise "Error: tag '#{tag}' not found in file '#{file}'"
+        end
+
+        # remove content from the string before the pattern
+        content = content.sub(/.*?(#{tag_pattern})/m, '\1')
+        content = content.sub(/\A\n+/, '')
+
+        i = 0
+        for line in content.each_line do
+          ret += line if range.include? i
+          i += 1
+        end
+
+        # strip final newlines and put the content between backticks
+        "```\n"+ret.sub(/\n*\z/,'')+"\n```"
+      end
   end
 end
 
