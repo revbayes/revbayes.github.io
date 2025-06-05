@@ -656,7 +656,7 @@ Note that we are adding two new variables to our model. We can define a
 variable `pi` for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by
 
-{{ hky_script | snippet:"block#", "4" }}
+{{ hky_script | tagged_snippet: "# prior for the stationary frequencies", "2" }}
 
 Since `pi` is a stochastic variable, we need to specify a move to
 propose updates to it. A good move on variables drawn from a Dirichlet
