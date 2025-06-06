@@ -14,7 +14,7 @@ redirect: false
 
 <!-- category: Standard -->
 
-
+{% assign BDP_script = "m_BDP_bears.Rev" %}
 
 Introduction
 ------------
@@ -163,21 +163,17 @@ Sometimes it is convienent to read in a tree from a previous study. This
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by {% cite DosReis2012 %}.
-```
-T <- readTrees("data/bears_dosReis.tre")[1]
-```
+
+{{ BDP_script | tagged_snippet: "## read in the tree", "1" }}
+
 From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)
-```
-n_taxa <- T.ntips()
-taxa <- T.taxa()
-```
-Finally, we initialize a variable for our vector of moves and monitors.
-```
-moves    = VectorMoves()
-monitors = VectorMonitors()
-```
 
+{{ BDP_script | tagged_snippet: "### get helpful variables from the tree", "2" }}
+
+Finally, we initialize a variable for our vector of moves and monitors.
+
+{{ BDP_script | tagged_snippet: "## Initialize move and monitor vectors", "2" }}
 
 ### Birth-Death Parameters
 
@@ -191,18 +187,14 @@ tutorial.
 
 Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
-```
-diversification ~ dnExponential(10.0) 
-moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
-```
+
+{{ BDP_script | tagged_snippet: "### diversification = birth_rate - death_rate", "2-3" }}
 
 ***Turnover***
 
 Turnover is: $r = \mu / \lambda$.
-```
-turnover ~ dnBeta(2.0, 2.0) 
-moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
-```
+
+{{ BDP_script | tagged_snippet: "### turnover", "3-4" }}
 
 ***Deterministic Nodes for Birth and Death Rates***
 
