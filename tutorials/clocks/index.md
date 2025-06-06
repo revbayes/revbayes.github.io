@@ -169,11 +169,11 @@ read in the tree estimated by {% cite DosReis2012 %}.
 From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)
 
-{{ BDP_script | tagged_snippet: "### get helpful variables from the tree", "2" }}
+{{ BDP_script | tagged_snippet: "### get helpful variables from the tree", "1-2" }}
 
 Finally, we initialize a variable for our vector of moves and monitors.
 
-{{ BDP_script | tagged_snippet: "## Initialize move and monitor vectors", "2" }}
+{{ BDP_script | tagged_snippet: "## Initialize move and monitor vectors", "1-2" }}
 
 ### Birth-Death Parameters
 
