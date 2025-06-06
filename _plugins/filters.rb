@@ -156,7 +156,7 @@ MSG
 
         # remove content from the string before the pattern
         content = content.sub(/.*?(#{tag_pattern})/m, '\1')
-        content = content.sub(/\A\n+/, '')
+        content = content.sub(/\A\s*\n*/, '')
 
         i = 0
         for line in content.each_line do
