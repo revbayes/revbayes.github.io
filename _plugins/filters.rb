@@ -60,6 +60,22 @@ Could not find page '#{page_identifier}' in #{tag_string}
 MSG
       end
 
+      def parse_range_string(str)
+        str.split(',').flat_map do |chunk|
+          if chunk.include?('-')
+            start_str, end_str = chunk.split('-', 2)
+            starti = Integer(start_str)
+            endi = Integer(end_str)
+            if starti > endi
+              raise ArgumentError, "Line number #{starti} > #{endi} in 'snippet' filter"
+            end
+            (starti..endi).to_a
+          else
+            [Integer(chunk)]
+          end
+        end
+      end
+
       def snippet(file,type,number)
         site = @context.registers[:site]
 
@@ -76,13 +92,7 @@ MSG
 
         from,to = from.to_i,to.to_i
 
-        if from > to
-          raise ArgumentError, <<-MSG
-Line number from > to in 'snippet' filter
-MSG
-        end
-
-        range = from..to
+        range = parse_range_string(number)
 
         if type =~ /^line/
           if to > content.lines.count
@@ -120,7 +130,7 @@ MSG
         end
       end
 
-      def tagged_snippet(file, tag, number)
+      def tagged_snippet(file, tag, range)
         site = @context.registers[:site]
 
         if not file.instance_of? Jekyll::Drops::StaticFileDrop
@@ -131,20 +141,7 @@ MSG
 
         ret = ""
 
-        # split on '-'.
-        from,to = number.split('-')
-        # if a single number n is given, treat it as 1-n.
-        from,to = 1,from if to == nil
-        # convert the strings to integers.
-        from,to = from.to_i,to.to_i
-        # complain if the beginning is after the start.
-        if from > to
-          raise ArgumentError, <<-MSG
-Line number from > to in 'snippet' filter
-MSG
-        end
-
-        range = from..to
+        range = parse_range_string(range)
 
         tag_pattern = Regexp.new('^\s*' + Regexp.escape(tag))
 
