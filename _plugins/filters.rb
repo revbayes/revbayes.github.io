@@ -92,7 +92,13 @@ MSG
 
         from,to = from.to_i,to.to_i
 
-        range = parse_range_string(number)
+        if from > to
+          raise ArgumentError, <<-MSG
+Line number from > to in 'snippet' filter
+MSG
+        end
+
+        range = from..to
 
         if type =~ /^line/
           if to > content.lines.count
