@@ -188,7 +188,7 @@ tutorial.
 Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
 
-{{ BDP_script | tagged_snippet: "### diversification = birth_rate - death_rate", "2-3" }}
+{{ BDP_script | tagged_snippet: "### diversification", "2-3" }}
 
 ***Turnover***
 
@@ -201,15 +201,13 @@ Turnover is: $r = \mu / \lambda$.
 The birth rate and death rate are deterministic functions of the
 diversification and turnover. First, create a deterministic node for
 $1 - r$, which is the denominator for each formula.
-```
-denom := abs(1.0 - turnover) 
-```
+
+{{ BDP_script | tagged_snippet: "##### create a variable to ensure the rates are always positive", "1" }}
+
 Now, the rates will both be positive real numbers that are variable
 transformations of the stochastic variables.
-```
-birth_rate := diversification / denom
-death_rate := (turnover * diversification) / denom
-```
+
+{{ BDP_script | tagged_snippet: "##### birth_rate = div", "1,3" }}
 
 
 ***Sampling Probability***
@@ -217,9 +215,9 @@ death_rate := (turnover * diversification) / denom
 Fix the probability of sampling to a known value. Since there are
 approximately 147 described caniform species, we will create a constant
 node for this parameter that is equal to 10/147.
-```
-rho <- 0.068
-```
+
+{{ BDP_script | tagged_snippet: "### and we have sampled 10", "1" }}
+
 
 
 ### Prior on the Root Node
