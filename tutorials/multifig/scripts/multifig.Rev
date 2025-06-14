@@ -1,6 +1,6 @@
 # load Tensorphylo plugin
-loadPlugin("TensorPhylo")
-# loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
+#loadPlugin("TensorPhylo")
+loadPlugin("TensorPhylo", "/Users/mlandis/.local/lib/tensorphylo")
 
 ##################
 # ANALYSIS SETUP #
@@ -19,7 +19,8 @@ out_fn        = "./output/" + analysis
 # MCMC variables
 num_proc  = 6
 num_gen   = 5000
-print_gen = 20
+print_gen = 1
+save_gen  = 10
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 
@@ -122,60 +123,60 @@ m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
 # initialize categorical feature effects, create moves, add monitor variables
 for (i in 1:feature_CW.size()) {
     sigma_w[i].setValue(0)
-    moves.append( mvScale(sigma_w[i], weight=2) )
-    moves.append( mvSlide(sigma_w[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    moves.append( mvScale(sigma_w[i], weight=1) )
+    moves.append( mvSlide(sigma_w[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=2) )
     use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CW.size()) {
     sigma_e[i].setValue(0)
-    moves.append( mvScale(sigma_e[i], weight=2) )
-    moves.append( mvSlide(sigma_e[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    moves.append( mvScale(sigma_e[i], weight=1) )
+    moves.append( mvSlide(sigma_e[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=2) )
     use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_d[i].setValue(0)
-    moves.append( mvScale(sigma_d[i], weight=2) )
-    moves.append( mvSlide(sigma_d[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    moves.append( mvScale(sigma_d[i], weight=1) )
+    moves.append( mvSlide(sigma_d[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=2) )
     use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_b[i].setValue(0)
-    moves.append( mvScale(sigma_b[i], weight=2) )
-    moves.append( mvSlide(sigma_b[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    moves.append( mvScale(sigma_b[i], weight=1) )
+    moves.append( mvSlide(sigma_b[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=2) )
     use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
 }
 
 # initialize quantitative feature effects, create moves, add monitor variables
 for (i in 1:feature_QW.size()) {
     phi_w[i].setValue(0)
-    moves.append( mvScale(phi_w[i], weight=2) )
-    moves.append( mvSlide(phi_w[i], weight=2) )
-    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    moves.append( mvScale(phi_w[i], weight=1) )
+    moves.append( mvSlide(phi_w[i], weight=1) )
+    moves.append( mvRJSwitch(phi_w[i], weight=2) )
     use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QW.size()) {
     phi_e[i].setValue(0)
-    moves.append( mvScale(phi_e[i], weight=2) )
-    moves.append( mvSlide(phi_e[i], weight=2) )
-    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    moves.append( mvScale(phi_e[i], weight=1) )
+    moves.append( mvSlide(phi_e[i], weight=1) )
+    moves.append( mvRJSwitch(phi_e[i], weight=2) )
     use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_d[i].setValue(0)
-    moves.append( mvScale(phi_d[i], weight=2) )
-    moves.append( mvSlide(phi_d[i], weight=2) )
-    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    moves.append( mvScale(phi_d[i], weight=1) )
+    moves.append( mvSlide(phi_d[i], weight=1) )
+    moves.append( mvRJSwitch(phi_d[i], weight=2) )
     use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_b[i].setValue(0)
-    moves.append( mvScale(phi_b[i], weight=2) )
-    moves.append( mvSlide(phi_b[i], weight=2) )
-    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    moves.append( mvScale(phi_b[i], weight=1) )
+    moves.append( mvSlide(phi_b[i], weight=1) )
+    moves.append( mvRJSwitch(phi_b[i], weight=2) )
     use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
 }
 
@@ -347,20 +348,20 @@ timetree.clampCharData(dat_nn)
 monitors.append( mnScreen(rho_d, rho_e, rho_w, rho_b, printgen=print_gen) )
 
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+monitors.append( mnModel(printgen=save_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+monitors.append( mnFile(timetree, printgen=save_gen, file=out_fn + ".tre") )
 
 # monitor ancestral ranges at internal nodes
 monitors.append( mnJointConditionalAncestralState(
-    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    tree=timetree, glhbdsp=timetree, printgen=save_gen,
     filename=out_fn+".states.txt",
     withTips=true, withStartStates=true, type="NaturalNumbers") )
 
 # file monitor for biogeographic rates
 bg_mon_fn = out_fn + ".bg.txt"
-monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+monitors.append( mnFile( filename = bg_mon_fn, printgen=save_gen,
                          rho_e, rho_w, rho_d, rho_b,
                          r_e, r_w,
                          r_d[1], r_d[2], r_d[3], r_d[4],
