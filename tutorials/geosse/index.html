@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Geographic state-dependent speciation-extinction (GeoSSE) model</h1>
 	<h3 class="subtitle">A phylogenetic model of biogeographic dispersal, extinction, and speciation</h3>
 	<h4 class="authors">Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata</h4>
-  <h5>Last modified on June  2, 2024</h5>
+  <h5>Last modified on June 14, 2025</h5>
 </div>
 
 
@@ -460,9 +460,9 @@ mv[mvi++] = mvSimplex(m_d_simplex, weight=m_d_simplex.size())
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.txt")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
 </code></pre></div></div>
 
 <p>Let’s also store information for how the integer-valued ranges (0, 1, 2) relate to the regional presence-absence representation of ranges (A=10, B=01, AB=11).</p>
@@ -478,15 +478,15 @@ for (i in 1:state_labels.size()) {
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mdl = model(m_w)
 ch = mcmc(mv, mn, mdl)
-ch.burnin(n_burn, tuningInterval=10)
+ch.burnin(n_burn, tuningInterval=50)
 ch.run(n_gen)
 </code></pre></div></div>
 
 <p>After the MCMC analysis has concluded, we can summarize the ancestral states we obtained, creating an ancestral state tree. This tree will be written to the file <code class="language-plaintext highlighter-rouge">ase.tre</code>. It may take a little while.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fp+"stoch.txt")
-x_states = readAncestralStateTrace(file=out_fp+"states.txt")
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+x_states = readAncestralStateTrace(file=out_fp+"states.log")
 summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,

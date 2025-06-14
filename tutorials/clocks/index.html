@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
 	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on September  3, 2021</h5>
+  <h5>Last modified on June  6, 2025</h5>
 </div>
 
 
@@ -285,14 +285,19 @@ the <code class="language-plaintext highlighter-rouge">scripts</code> directory.
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by <a class="citation" href="#DosReis2012">(dos Reis et al. 2012)</a>.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
 </code></pre></div></div>
+
 <p>From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- T.ntips()
 taxa &lt;- T.taxa()
 </code></pre></div></div>
+
 <p>Finally, we initialize a variable for our vector of moves and monitors.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
@@ -309,6 +314,7 @@ tutorial.</p>
 
 <p>Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
 moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
 </code></pre></div></div>
@@ -316,8 +322,9 @@ moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
 <p><strong><em>Turnover</em></strong></p>
 
 <p>Turnover is: $r = \mu / \lambda$.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover ~ dnBeta(2.0, 2.0) 
-moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
+moves.append( mvSlide(turnover, delta=1.0, tune=true, weight=3.0) )
 </code></pre></div></div>
 
 <p><strong><em>Deterministic Nodes for Birth and Death Rates</em></strong></p>
@@ -325,10 +332,13 @@ moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
 <p>The birth rate and death rate are deterministic functions of the
 diversification and turnover. First, create a deterministic node for
 $1 - r$, which is the denominator for each formula.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>denom := abs(1.0 - turnover) 
 </code></pre></div></div>
+
 <p>Now, the rates will both be positive real numbers that are variable
 transformations of the stochastic variables.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification / denom
 death_rate := (turnover * diversification) / denom
 </code></pre></div></div>
@@ -338,6 +348,7 @@ death_rate := (turnover * diversification) / denom
 <p>Fix the probability of sampling to a known value. Since there are
 approximately 147 described caniform species, we will create a constant
 node for this parameter that is equal to 10/147.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0.068
 </code></pre></div></div>
 
