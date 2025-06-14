@@ -20,7 +20,8 @@ out_fn        = "./output/" + analysis
 # MCMC variables
 num_proc  = 6
 num_gen   = 5000
-print_gen = 20
+print_gen = 1
+save_gen  = 20
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 
@@ -127,21 +128,21 @@ moves.append(rate_age_proposal)
 monitors.append( mnScreen(root_age, printgen=print_gen) )
 
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+monitors.append( mnModel(printgen=save_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+monitors.append( mnFile(timetree, printgen=save_gen, file=out_fn + ".tre") )
 
 # monitor ancestral ranges at internal nodes
 monitors.append( mnJointConditionalAncestralState(
-    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    tree=timetree, glhbdsp=timetree, printgen=save_gen,
     filename=out_fn+".states.txt",
     withTips=true, withStartStates=true, type="NaturalNumbers") )
 
 # file monitor for biogeographic rates
 for (k in 1:num_times) {
     bg_mon_fn = out_fn + ".time" + k + ".bg.txt"
-    monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+    monitors.append( mnFile( filename = bg_mon_fn, printgen=save_gen,
                              rho_e, rho_w, rho_d, rho_b,
                              r_e[k], r_w[k],
                              r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4],
