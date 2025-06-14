@@ -15,7 +15,7 @@ prerequisites:
 
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the Hawaiian *Kadua*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant islands, or go extinct at a higher rate on smaller islands.
 
-The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} attempt to model this expectation. Rather than giving each region its own evolutionary rate parameters, FIG models use functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions without suffering an explosion in the number of model parameters. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features. Later tutorials will explore how to adapt FIG to allow for regional features, and their linked biogeographic rates, to change over time.
+The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2025 %} attempt to model this expectation. Rather than giving each region its own evolutionary rate parameters, FIG models use functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions without suffering an explosion in the number of model parameters. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features. Later tutorials will explore how to adapt FIG to allow for regional features, and their linked biogeographic rates, to change over time.
 
 {% subsection The MultiFIG model %}
 
@@ -68,7 +68,7 @@ $$
 
 and behaves similarly to the quantitative effect variable. (In this example, we assume categorical variables take values 0 or 1 and treat them numerically to simplify notation. More complex relationships are written with more complex notation.)
 
-Each individual effect variable can be $<1$, $>1$, or $=1$, and so can the product of all effect variables. All relative rates are eventually rescaled by the same base rate (e.g. $\rho_w$). If the relative rates for regions $i$ and $j$ have the relationship $m_w(i) > m_w(j)$ then the absolute rates also follow $r_w(i) > r_w(j)$. Other $m$ functions behave in a similar manner. More details on the design of the $m$ functions are provided in {% cite Swiston2023 %}.
+Each individual effect variable can be $<1$, $>1$, or $=1$, and so can the product of all effect variables. All relative rates are eventually rescaled by the same base rate (e.g. $\rho_w$). If the relative rates for regions $i$ and $j$ have the relationship $m_w(i) > m_w(j)$ then the absolute rates also follow $r_w(i) > r_w(j)$. Other $m$ functions behave in a similar manner. More details on the design of the $m$ functions are provided in {% cite Swiston2025 %}.
 
 In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strength parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
 
@@ -139,8 +139,9 @@ Eventually, we will be running an MCMC analysis at the end of the tutorial. This
 ```
 # MCMC variables
 num_proc  = 6
-num_gen   = 500             # set num_gen = 5000 for full analysis
-print_gen = 20
+num_gen   = 50             # set num_gen = 5000 for full analysis
+print_gen = 1
+save_gen  = 10
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 ```
@@ -285,30 +286,30 @@ First, we will address the categorical feature effects for each process (w, e, d
 # initialize categorical feature effects, create moves, add monitor variables
 for (i in 1:feature_CW.size()) {
     sigma_w[i].setValue(0)
-    moves.append( mvScale(sigma_w[i], weight=2) )
-    moves.append( mvSlide(sigma_w[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    moves.append( mvScale(sigma_w[i], weight=1) )
+    moves.append( mvSlide(sigma_w[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=2) )
     use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CW.size()) {
     sigma_e[i].setValue(0)
-    moves.append( mvScale(sigma_e[i], weight=2) )
-    moves.append( mvSlide(sigma_e[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    moves.append( mvScale(sigma_e[i], weight=1) )
+    moves.append( mvSlide(sigma_e[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=2) )
     use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_d[i].setValue(0)
-    moves.append( mvScale(sigma_d[i], weight=2) )
-    moves.append( mvSlide(sigma_d[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    moves.append( mvScale(sigma_d[i], weight=1) )
+    moves.append( mvSlide(sigma_d[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=2) )
     use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_b[i].setValue(0)
-    moves.append( mvScale(sigma_b[i], weight=2) )
-    moves.append( mvSlide(sigma_b[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    moves.append( mvScale(sigma_b[i], weight=1) )
+    moves.append( mvSlide(sigma_b[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=2) )
     use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
 }
 ```
@@ -319,30 +320,30 @@ Similarly, we will address the quantitative features for each process. These are
 # initialize quantitative feature effects, create moves, add monitor variables
 for (i in 1:feature_QW.size()) {
     phi_w[i].setValue(0)
-    moves.append( mvScale(phi_w[i], weight=2) )
-    moves.append( mvSlide(phi_w[i], weight=2) )
-    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    moves.append( mvScale(phi_w[i], weight=1) )
+    moves.append( mvSlide(phi_w[i], weight=1) )
+    moves.append( mvRJSwitch(phi_w[i], weight=2) )
     use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QW.size()) {
     phi_e[i].setValue(0)
-    moves.append( mvScale(phi_e[i], weight=2) )
-    moves.append( mvSlide(phi_e[i], weight=2) )
-    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    moves.append( mvScale(phi_e[i], weight=1) )
+    moves.append( mvSlide(phi_e[i], weight=1) )
+    moves.append( mvRJSwitch(phi_e[i], weight=2) )
     use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_d[i].setValue(0)
-    moves.append( mvScale(phi_d[i], weight=2) )
-    moves.append( mvSlide(phi_d[i], weight=2) )
-    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    moves.append( mvScale(phi_d[i], weight=1) )
+    moves.append( mvSlide(phi_d[i], weight=1) )
+    moves.append( mvRJSwitch(phi_d[i], weight=2) )
     use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_b[i].setValue(0)
-    moves.append( mvScale(phi_b[i], weight=2) )
-    moves.append( mvSlide(phi_b[i], weight=2) )
-    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    moves.append( mvScale(phi_b[i], weight=1) )
+    moves.append( mvSlide(phi_b[i], weight=1) )
+    moves.append( mvRJSwitch(phi_b[i], weight=2) )
     use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
 }
 ```
@@ -513,20 +514,20 @@ Monitors are instructions for RevBayes to record MCMC output. Since we want RevB
 monitors.append( mnScreen(rho_d, rho_e, rho_w, rho_b, printgen=print_gen) )
 
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+monitors.append( mnModel(printgen=save_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+monitors.append( mnFile(timetree, printgen=save_gen, file=out_fn + ".tre") )
 
 # monitor ancestral ranges at internal nodes
 monitors.append( mnJointConditionalAncestralState(
-    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    tree=timetree, glhbdsp=timetree, printgen=save_gen,
     filename=out_fn+".states.txt",
     withTips=true, withStartStates=true, type="NaturalNumbers") )
 
 # file monitor for biogeographic rates
 bg_mon_fn = out_fn + ".bg.txt"
-monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+monitors.append( mnFile( filename = bg_mon_fn, printgen=save_gen,
                          rho_e, rho_w, rho_d, rho_b,
                          r_e, r_w,
                          r_d[1], r_d[2], r_d[3], r_d[4],
