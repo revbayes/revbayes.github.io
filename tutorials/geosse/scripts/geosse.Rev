@@ -1,5 +1,6 @@
 # load TensorPhylo plugin
-loadPlugin("TensorPhylo")
+#loadPlugin("TensorPhylo")
+loadPlugin("TensorPhylo","/Users/mlandis/.local/lib/tensorphylo")
 
 # FILESYSTEM
 fp          = "./"
@@ -196,7 +197,7 @@ for (i in 1:state_labels.size()) {
 # MCMC START
 mdl = model(m_w)
 ch = mcmc(mv, mn, mdl)
-ch.burnin(n_burn, tuningInterval=10)
+ch.burnin(n_burn, tuningInterval=50)
 ch.run(n_gen)
 
 # ANCESTRAL STATES
