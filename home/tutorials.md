@@ -195,16 +195,16 @@ Geographic State-dependent Speciation Extinction (GeoSSE), and Feature-Informed 
 
 - Pre-requisites: **RevBayes fundamentals**, **Molecular phylogenetic analysis**, and **Background on state-dependent diversification-rate estimation**.
 
-Those interested in Dispersal-Extinction-Cladogenesis models should read:
-- [Introduction to DEC models]({{ base.url }}/tutorials/biogeo/biogeo_intro)
-- [Simple DEC]({{ base.url }}/tutorials/biogeo/biogeo_simple)
-- [Epoch DEC]({{ base.url }}/tutorials/biogeo/biogeo_epoch)
-- [Biogeographic Dating with DEC]({{ base.url }}/tutorials/biogeo/biogeo_dating)
+These tutorials are for those interested in DEC models:
+- Provides a basic background for discrete biogeography models, with an emphasis on DEC: [Introduction to DEC models]({{ base.url }}/tutorials/biogeo/biogeo_intro)
+- A simple time-constant DEC analysis on a fixed phylogeny within a 4-region system: [Simple DEC]({{ base.url }}/tutorials/biogeo/biogeo_simple)
+- A paleogeography-informed DEC analysis on a fixed phylogeny within a 6-region system: [Epoch DEC]({{ base.url }}/tutorials/biogeo/biogeo_epoch)
+- A paleogeography-informed DEC analysis on a jointly inferred phylogeny (topology, divergence times) within a 6-region system: [Biogeographic Dating with DEC]({{ base.url }}/tutorials/biogeo/biogeo_dating)
 
-Those interested in GeoSSE/FIG models should read:
-- [Simple GeoSSE]({{ base.url }}/tutorials/geosse)
-- [MultiFIG]({{ base.url }}/tutorials/multifig)
-- [TimeFIG]({{ base.url }}/tutorials/timefig)
-- [Biogeographic Dating with TimeFIG]({{ base.url }}/tutorials/timefig_dating)
+These tutorials are for those interested in GeoSSE/FIG models:
+- A simple GeoSSE analysis using a 2-region system: [Simple GeoSSE]({{ base.url }}/tutorials/geosse)
+- A time-constant FIG analysis in a 7-region system with multiple regional features:  [MultiFIG]({{ base.url }}/tutorials/multifig)
+- A paleogeography-informed FIG analysis on a fixed phylogeny in a 7-region system with multiple regional features:  [TimeFIG]({{ base.url }}/tutorials/timefig_simple)
+- A paleogeography-informed FIG analysis on a jointly inferred phylogeny (topology, divergence times) within a 7-region system with multiple regional features [Biogeographic Dating with TimeFIG]({{ base.url }}/tutorials/timefig_dating)
 
 {% endaside %}
