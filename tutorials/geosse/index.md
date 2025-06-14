@@ -338,7 +338,7 @@ Then we can start up the MCMC. It doesn't matter which model parameter you use t
 ```
 mdl = model(m_w)
 ch = mcmc(mv, mn, mdl)
-ch.burnin(n_burn, tuningInterval=10)
+ch.burnin(n_burn, tuningInterval=50)
 ch.run(n_gen)
 ```
 
