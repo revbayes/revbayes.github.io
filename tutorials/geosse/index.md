@@ -317,9 +317,9 @@ We also want MCMC to keep track of certain things while it runs. We want it to p
 ```
 mni = 1
 mn[mni++] = mnScreen(printgen=printgen)
-mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.txt")
-mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.txt", withTips=true, withStartStates=true, type="NaturalNumbers")
-mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.txt")
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
 ```
 
 Let's also store information for how the integer-valued ranges (0, 1, 2) relate to the regional presence-absence representation of ranges (A=10, B=01, AB=11).
@@ -338,7 +338,7 @@ Then we can start up the MCMC. It doesn't matter which model parameter you use t
 ```
 mdl = model(m_w)
 ch = mcmc(mv, mn, mdl)
-ch.burnin(n_burn, tuningInterval=10)
+ch.burnin(n_burn, tuningInterval=50)
 ch.run(n_gen)
 ```
 
@@ -346,8 +346,8 @@ After the MCMC analysis has concluded, we can summarize the ancestral states we 
 
 ```
 f_burn = 0.2
-x_stoch = readAncestralStateTrace(file=out_fp+"stoch.txt")
-x_states = readAncestralStateTrace(file=out_fp+"states.txt")
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+x_states = readAncestralStateTrace(file=out_fp+"states.log")
 summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
 state_tree = ancestralStateTree(tree=timetree,
                    ancestral_state_trace_vector=x_states,
