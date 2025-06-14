@@ -59,7 +59,7 @@ In this tutorial, we will model the evolution and biogeography of *Kadua* using 
 
 The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to the Hawaiian radiation of *Kadua* (26 spp. including non-Hawaiian outgroups) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas.
 
-The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago ([link](https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua)). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a "conveyor belt" system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoaltitude, to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).
+The introduction to this tutorial series describes the complex palegeological history of the Hawaiian Archipelago ([link](https://revbayes.github.io/tutorials/fig_intro/#empirical-system-hawaiian-kadua)). Briefly, each Hawaiian island formed in the soutwest through seamount vulcanism and then drifted to the northwest with tectonic movements of the Pacific Plate. This creates a "conveyor belt" system, where taller but younger islands reside in the southeast while flatter but older islands extend to the northwest. This tutorial makes use of various paleogeographic measurements, such as island age, and estimates, such as paleoarea (size), to help shape biogeographic rates over time. For example, we might expect that terrestrial plants have higher extinction rates the oldest (barren) islands or that the plants cannot colonize islands below sea level (impossible).
 
 {% figure features %}
 <img src="figures/features.png" width="65%">
@@ -88,7 +88,7 @@ index,mean_age,start_age,end_age,feature_dir
 6,18,18.15,17.75,time6
 ```
 
-Paleogeographic features are further organized into subdirectories named `time1`, `time2`, etc. For example, to view quantitative within-region features for layer 1 (max. altitude) at time slice 4, type:
+Paleogeographic features are further organized into subdirectories named `time1`, `time2`, etc. For example, to view quantitative within-region features for layer 1 (size, km^2) at time slice 4, type:
 ```
 $ # from command line
 $ cat ./data/hawaii/time4/qw_feature1.csv
@@ -96,12 +96,12 @@ G,N,K,O,M,H,Z
 50,500,3787,nan,nan,nan,1500
 ```
 
-Below is a visualization of maximum island altitude across regions and epoch, made by summarizing the feature files across the different `time` directories:
+Below is a visualization of island size (km^2) across regions and epoch, made by summarizing the feature files across the different `time` directories:
 
 {% figure feature_times %}
 <img src="figures/plot_features_vs_time.feat_qw1.png" width="40%">
 {% figcaption %}
-Maximum altitude values for seven regions across seven epochs. This quantitative within-region feature may influence within-region speciation and extinction rates through the sign and magnitude of the estimated $\phi_w^{(1)}$ and $\phi_e^{(1)}$ parameters. Light colors are small values, dark colors are large values, and gray indicates the region was absent (missing feature).
+Region size values for seven regions across seven epochs. This quantitative within-region feature may influence within-region speciation and extinction rates through the sign and magnitude of the estimated $\phi_w^{(1)}$ and $\phi_e^{(1)}$ parameters. Light colors are small values, dark colors are large values, and gray indicates the region was absent (missing feature).
 {% endfigcaption %}
 {% endfigure %}
 
