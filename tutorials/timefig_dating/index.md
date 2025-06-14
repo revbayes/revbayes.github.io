@@ -626,7 +626,8 @@ num_proc = 6
 num_gen = 500         # set num_gen = 5000 for full analysis
 
 # number of interations between MCMC samples
-print_gen = 20
+print_gen = 1
+save_gen  = 20
 
 # empty vector for MCMC moves
 moves = VectorMoves()
@@ -808,10 +809,10 @@ We also create the same original set of monitors.
 monitors.append( mnScreen(root_age, printgen=print_gen) )
 
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+monitors.append( mnModel(printgen=save_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+monitors.append( mnFile(timetree, printgen=save_gen, file=out_fn + ".tre") )
 ```
 
 We also create monitors to track the biogeographic rates per region per time interval.
@@ -819,7 +820,7 @@ We also create monitors to track the biogeographic rates per region per time int
 # file monitor for biogeographic rates
 for (k in 1:num_times) {
     bg_mon_fn = out_fn + ".time" + k + ".bg.txt"
-    monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+    monitors.append( mnFile( filename = bg_mon_fn, printgen=save_gen,
                              rho_e, rho_w, rho_d, rho_b,
                              r_e[k], r_w[k],
                              r_d[k][1], r_d[k][2], r_d[k][3], r_d[k][4],
@@ -839,7 +840,7 @@ You can also create a ancestral state monitor to sample ancestral ranges that ar
 ```
 # monitor ancestral ranges at internal nodes
 monitors.append( mnJointConditionalAncestralState(
-    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    tree=timetree, glhbdsp=timetree, printgen=save_gen,
     filename=out_fn+".states.txt",
     withTips=true, withStartStates=true, type="NaturalNumbers") )
 ```
@@ -852,7 +853,7 @@ Similarly, you can construct a monitor to generate stochastic mappings that repr
 # NOTE: uncomment if needed, but can cause performance issues
 
 # monitors.append( mnStochasticCharacterMap(
-#    glhbdsp=timetree, printgen=print_gen*10,
+#    glhbdsp=timetree, printgen=save_gen*10,
 #    filename=out_fn+".stoch.txt",
 #    use_simmap_default=false) )
 ```
