@@ -294,7 +294,7 @@ For this analysis, we will perform a short MCMC of 1000 generations, with 100 ge
 
 ```
 n_gen = 1000
-n_burn = n_gen/10
+n_burn = 100
 printgen = 10
 ```
 
