@@ -280,7 +280,7 @@ m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
 
 Because we are going to do an MCMC analysis later in the tutorial, we want MCMC to update all of the $\sigma$ and $\phi$ parameters. Each move is assigned a 'weight' that tells RevBayes how often to do this move. We will assign a different list of moves depending on if we are using reversible jump (adding `mvRJSwitch` moves) or ignoring features (adding no moves on feature effects and fixing their values to 0). We may also want to initialize the MCMC to reasonable values for these feature effect parameters. We will set the values of our distributions to be (temporarily) equal to those initial values to start the MCMC.
 
-First, we will address the categorical feature effects for each process (w, e, d, and b). These are our $\sigma$ parameters. The logic is the same for each process. First, we find the container of features which impact that process (within-region features for within-region speciation and extinction, between-region features for between-region speciation and dispersal). Then we loop over the different features inside that container. For each feature, we initialize the value of the parameter, and add appropriate moves for the MCMC. We also include a `use_` line that allows us to turn off certain features if we want to perform analyses without them.
+First, we will address the categorical feature effects for each process (w, e, d, and b). These are our $\sigma$ parameters. The logic is the same for each process. First, we find the container of features which impact that process (within-region features for within-region speciation and extinction, between-region features for between-region speciation and dispersal). Then we loop over the different features inside that container. For each feature, we initialize the value of the parameter, and add appropriate moves for the MCMC. We also include variables, with names beginning with `use_`, to monitor which feature effect parameters are on or off across MCMC samples.
 
 ```
 # initialize categorical feature effects, create moves, add monitor variables
@@ -314,7 +314,7 @@ for (i in 1:feature_CB.size()) {
 }
 ```
 
-Similarly, we will address the quantitative features for each process. These are our `\phi` parameters.
+Similarly, we will address the quantitative features for each process. These are our $\phi$ parameters.
 
 ```
 # initialize quantitative feature effects, create moves, add monitor variables
@@ -505,7 +505,7 @@ timetree.clampCharData(dat_nn)
 
 {% subsection MCMC %}
 
-For this analysis, we will perform an MCMC of 10000 generations. This may seem like a low number of generations (compared to other programs), but this is because RevBayes performs multiple moves per iteration under the `random` move scheduler (a setting from the start of the tutorial). You can alter this MCMC by changing the number of iterations, the move schedule, or how frequently the MCMC prints output. You can even add a period of burnin that tunes hyperparameters for moves. We have already created all of our moves for this MCMC, so we can move on to monitors!
+For the purposes of demonstrating, we will perform a short MCMC analysis with only 50 generations. For a proper analysis, you will want to use more e.g. 10000 generations. This may seem like a low number of generations (compared to other programs), but this is because RevBayes performs multiple moves per iteration under the `random` move scheduler (a setting from the start of the tutorial). You can alter this MCMC by changing the number of iterations, the move schedule, or how frequently the MCMC prints output. You can even add a period of burnin that tunes hyperparameters for moves. We have already created all of our moves for this MCMC, so we can move on to monitors!
 
 Monitors are instructions for RevBayes to record MCMC output. Since we want RevBayes to record every iteration, we have set the `printgen` argument to 1 (one of those settings from the beginning of the tutorial). We want it to print some output to the screen so we can see how it is running (`mnScreen`). We also want it to save model parameters to a file (`mnModel` and both `mnFile`). Finally, if we want to use the output for ancestral state reconstruction, we want to save states (`mnJointConditionalAncestralStates`) and stochastic mappings (`mnStochasticCharacterMap`). All of the output files will be saved in the `output` directory so that it can be accessed later.
 
@@ -615,7 +615,7 @@ cp -R ./fig_tools/scripts ./multifig/plot
 
 These scripts assume you are in the base of your analysis directory:
 ```
-cd ~/multifig
+cd ./multifig
 ```
 
 Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:
