@@ -428,7 +428,7 @@ suitable for publication using the `R` package
 To create build this figure, open an `R` session and load the plotting
 script with the source function
 
-    source("scripts/plot_anc_state.simple.R")
+    source("scripts/plot_anc_range.simple.R")
 
 {% figure simple_RevGadgets_ase %}
 <img src="figures/fig_simple.range.png" >
