@@ -281,16 +281,20 @@ model, run the MCMC analysis, and summarize the results.
 First, we'll read in the phylogeny. In this example the phylogeny is
 assumed known. In further examples we'll jointly estimate chromosome
 evolution and the phylogeny.
-```
+
+{% snippet scripts/ChromEvol_simple.Rev %}
 phylogeny <- readBranchLengthTrees("data/aristolochia.tree")[1]
-```
+{% endsnippet %}
+
 We need to limit the maximum number of chromosomes allowed in our model,
 so here we use the largest observed chromosome count plus 10. This is an
 arbitrary limit on the size of the state space that could be increased
 if necessary.
-```
+
+{% snippet scripts/ChromEvol_simple.Rev %}
 max_chromo = 26
-```
+{% endsnippet %}
+
 Now we get the observed chromosome counts from a tab-delimited file.
 ```
 chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
