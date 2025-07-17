@@ -1,3 +1,15 @@
+def lines_match_in_order?(snippet_lines, file_lines)
+  i = 0
+  snippet_lines.each do |snippet_line|
+    while i < file_lines.length && file_lines[i].strip != snippet_line.strip
+      i += 1
+    end
+    return false if i == file_lines.length
+    i += 1
+  end
+  true
+end
+
 module Liquid
 	class Snippet < Block
 		def initialize(tag_name, markup, options)
@@ -6,7 +18,8 @@ module Liquid
 		end
 
 		def render(context)
-                        code_block = super.strip
+                        code_block = super
+
                         code_lines = code_block.lines.map{ |l| l.strip }
 
                         # Site source directory (so we don't need absolute paths)
@@ -18,32 +31,21 @@ module Liquid
                         file_path = File.expand_path(File.join(site_source, page_dir, @filename))
   
                         unless File.exist?(file_path)
-#                          return "❌ Error: File '#{@filename}' not found at #{file_path}."
                           raise IOError, "❌ Error: File '#{@filename}' not found at #{file_path}."
                         end
 
                         file_lines = File.readlines(file_path).map{ |l| l.strip }
 
                         # Search for exact match of code_lines in file_lines
-                        match_found = false
-                        (0..(file_lines.length - code_lines.length)).each do |start_idx|
-                          if file_lines[start_idx, code_lines.length] == code_lines
-                            match_found = true
-                            break
-                          end
-                        end
+                        match_found = lines_match_in_order?(code_lines, file_lines)
 
                         unless match_found
-#                          return "❌ Error: Code block not found in file `#{@filename}`:\n\n#{code_block}"
                           raise RuntimeError, "❌ Error: Code block not found in file `#{@filename}`:\n\n#{code_block}"
                         end
 
                         <<~MARKDOWN
 
-
-                        ```
                         #{code_block}
-                        ```
 
                         MARKDOWN
 		end

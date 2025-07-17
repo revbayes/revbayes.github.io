@@ -283,7 +283,7 @@ assumed known. In further examples we'll jointly estimate chromosome
 evolution and the phylogeny.
 
 {% snippet scripts/ChromEvol_simple.Rev %}
-phylogeny <- readBranchLengthTrees("data/aristolochia.tree")[1]
+    phylogeny <- readBranchLengthTrees("data/aristolochia.tree")[1]
 {% endsnippet %}
 
 We need to limit the maximum number of chromosomes allowed in our model,
@@ -292,17 +292,17 @@ arbitrary limit on the size of the state space that could be increased
 if necessary.
 
 {% snippet scripts/ChromEvol_simple.Rev %}
-max_chromo = 26
+    max_chromo = 26
 {% endsnippet %}
 
 Now we get the observed chromosome counts from a tab-delimited file.
 {% snippet scripts/ChromEvol_simple.Rev %}
-chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", header=FALSE)
+    chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", header=FALSE)
 {% endsnippet %}
 Finally, we initialize a variable for our vector of moves and monitors.
 {% snippet scripts/ChromEvol_simple.Rev %}
-moves    = VectorMoves()
-monitors = VectorMonitors()
+    moves    = VectorMoves()
+    monitors = VectorMonitors()
 {% endsnippet %}
 
 ### The Chromosome Evolution Model
