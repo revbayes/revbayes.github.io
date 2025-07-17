@@ -60,6 +60,11 @@ for t in */tests.txt; do
     
     for script in $(cat tests.txt); 
     do
+        if [ ! -e "scripts/${script}" ] ; then
+            echo "script '${script}' from ${t} is missing!"
+            exit 1
+        fi
+
         (
         cd scripts
         cat "$script" |
