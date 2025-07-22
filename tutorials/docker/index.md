@@ -21,7 +21,7 @@ This tutorial explains how to install Docker on your computer, how to obtain a R
 
 {% subsection Basic example %}
 
-This tutorial includes a test script called `test.Rev` so that you can assess whether the RevBayes Docker container is functioning properly after being installed. The test script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial, download the test script, and put the test script inside the directory. You can put this directory anywhere you want on your computer, but you will need to know the filepath to the directory in order to access it from the Docker container.
+This tutorial includes a test script called `test.Rev` so that you can assess whether the RevBayes Docker container is functioning properly after being installed. The test script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial, download the test script, and put the test script inside the directory. You can put this directory anywhere you want on your computer, but you will need to know the filepath to the directory in order to access it from the Docker container. Here, we assume the working directory will be `/Users/mlandis/projects/docker_test`.
 
 Create and run a new Docker container, and start with an interactive shell session:
 
