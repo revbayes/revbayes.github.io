@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Chromosome Evolution</h1>
 	<h3 class="subtitle">Modeling chromosome evolution with ChromEvol, BiChroM, and ChromoSSE</h3>
 	<h4 class="authors">William A. Freyman and Sebastian Höhna</h4>
-  <h5>Last modified on February 27, 2022</h5>
+  <h5>Last modified on July 17, 2025</h5>
 </div>
 
 
@@ -414,18 +414,25 @@ model, run the MCMC analysis, and summarize the results.</p>
 <p>First, we’ll read in the phylogeny. In this example the phylogeny is
 assumed known. In further examples we’ll jointly estimate chromosome
 evolution and the phylogeny.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny &lt;- readBranchLengthTrees("data/aristolochia.tree")[1]
 </code></pre></div></div>
+
 <p>We need to limit the maximum number of chromosomes allowed in our model,
 so here we use the largest observed chromosome count plus 10. This is an
 arbitrary limit on the size of the state space that could be increased
 if necessary.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max_chromo = 26
 </code></pre></div></div>
+
 <p>Now we get the observed chromosome counts from a tab-delimited file.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", header=FALSE)
 </code></pre></div></div>
+
 <p>Finally, we initialize a variable for our vector of moves and monitors.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>

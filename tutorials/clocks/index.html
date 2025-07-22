@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
 	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on June  6, 2025</h5>
+  <h5>Last modified on July 17, 2025</h5>
 </div>
 
 
@@ -361,8 +361,10 @@ age being younger than 38 Mya is equal to 0, using this value to offset
 a prior distribution on the root-age.</p>
 
 <p>First specify the occurrence-time of the fossil.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tHesperocyon &lt;- 38.0
 </code></pre></div></div>
+
 <p>We will assume a lognormal prior on the root age that is offset by the
 observed age of <em>Hesperocyon gregarius</em>. We can use the previous
 analysis by <a class="citation" href="#DosReis2012">(dos Reis et al. 2012)</a> to parameterize the lognormal prior on the root
@@ -401,7 +403,7 @@ taxa using the <code class="language-plaintext highlighter-rouge">clade()</code>
 be monophyletic, but just create a node that is the MRCA of the taxa
 listed (even if that node has descendants that are not named).</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_Ursidae &lt;- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus", "Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_Ursidae &lt;- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus","Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
 </code></pre></div></div>
 
 <p>Once we have defined the node, we can create a deterministic node to
@@ -414,7 +416,7 @@ monitor its age.</p>
 
 <p>Next, create the vector of moves. These tree moves act on node ages:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) ) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0 ) )
 moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
 moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
 moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
