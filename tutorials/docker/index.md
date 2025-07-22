@@ -13,16 +13,34 @@ redirect: false
 
 Docker is a way to share pre-built, pre-configured, and platform-independent sets of programs and files. The PhyloDocker image described below comes pre-configured with RevBayes, the TensorPhylo library, and other useful software.
 
-As a user, you download and a build a Docker image. Once built, you can create a Docker container from that image. Each Docker image lives on your computer and uses its resources for work. In this way, you can think of Docker as a program that runs a miniature "virtual" computer through your actual computer. A container built from PhyloDocker can be used to run RevBayes, just like you would through the terminal, but without needing to install and configure RevBayes yourself. For example:
+As a user, you download and a build a Docker image. Once built, you can create a Docker container from that image. Each Docker image lives on your computer and uses its resources for work. In this way, you can think of Docker as a program that runs a miniature "virtual" computer through your actual computer. A container built from PhyloDocker can be used to run RevBayes, just like you would through the terminal, but without needing to install and configure RevBayes yourself.
+
+On the development side, a **Dockerfile** (a list of commands for building and configuring programs/files) is used to build an **image**, which can then be shared with others. On the user side, the image can be downloaded and run to create a **container**. Inside the container, you have access to all of the programs contained in the image, as well as any files you **mount** to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. A Docker image containing RevBayes, TensorPhylo, Python, R, Julia, and several other programs can be found on [Docker Hub](https://hub.docker.com/r/sswiston/phylo_docker).
+
+This tutorial explains how to install Docker on your computer, how to obtain a RevBayes Docker image, and how to use the image to run scripts on your computer or a computing cluster. This will require a basic familiarity with command line (navigating directories and entering basic commands), but does not require much programming.
+
+{% subsection Basic example %}
+
+This tutorial includes a test script called `test.Rev` so that you can assess whether the RevBayes Docker container is functioning properly after being installed. The test script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial, download the test script, and put the test script inside the directory. You can put this directory anywhere you want on your computer, but you will need to know the filepath to the directory in order to access it from the Docker container.
+
+Create and run a new Docker container, and start with an interactive shell session:
 
 ```
 ~ $ ### from terminal on my Mac laptop (host)
-~ $ docker run --name phylodocker_demo --volume /Users/mlandis/projects/docker_test:/docker_test -it sswiston/phylo_docker:slim_amd64
+~ $ # create and run new Docker container
+~ $ docker run --name phylodocker_demo \
+               --volume /Users/mlandis/projects/docker_test:/docker_test \
+               -it sswiston/phylo_docker:slim_amd64 \
+               /bin/sh
+```
 
+You should now be at the shell prompt within the Docker container! Try running the test script that is bundled with PhyloDocker.
+
+```
 ~ # ### from terminal inside Docker container
 ~ # cd docker_test/
 /docker_test # ls
-history.txt  test.Rev
+test.Rev
 /docker_test # rb test.Rev
 
 RevBayes version (1.2.2)
@@ -44,25 +62,57 @@ Congrats! RevBayes is working!
 /docker_test # ls
 new_file.txt  test.Rev
 /docker_test # exit
+```
 
-~ $ ### back on my laptop (host)
+You have closed the Docker session and returned to your computer (the host machine). Make sure the file is there. After that, find your old Docker container, resume the session, tell the world hello, then exit when done:
+
+```
+~ $ ### from terminal on laptop (host)
+~ $ # show new files are present
 ~ $ ls /Users/mlandis/projects/docker_test
 new_file.txt  test.Rev
 
-~ $ ### reconnect to Docker container
+~ $ # show active Docker containers
+~ docker ps -a
+CONTAINER ID   IMAGE                              COMMAND     CREATED          STATUS                     PORTS     NAMES
+fb19b94184ac   sswiston/phylo_docker:slim_amd64   "/bin/sh"   5 minutes ago    Exited (0) 4 minutes ago             phylodocker_demo
+
+~ $ # resume active Docker container using start
 ~ $ docker start -ai phylodocker_demo
-~ # 
+
+  --> Enters the Docker container <--
+
+~ # ### back in the Docker container
+~ # echo Hello, world!
+Hello, world!
+~ # exit
 ```
 
-On the development side, a **Dockerfile** (a list of commands for building and configuring programs/files) is used to build an **image**, which can then be shared with others. On the user side, the image can be downloaded and run to create a **container**. Inside the container, you have access to all of the programs contained in the image, as well as any files you **mount** to the container when you run the image. It works a bit like a virtual machine, except it runs on top of the host operating system. A Docker image containing RevBayes, TensorPhylo, Python, R, Julia, and several other programs can be found on [Docker Hub](https://hub.docker.com/r/sswiston/phylo_docker).
+Delete your Docker container when it's done. Note, files saved to the mounted directory `/docker_test` also exist on your host computer's filesystem, so they will not be deleted:
 
-This tutorial explains how to install Docker on your computer, how to obtain a RevBayes Docker image, and how to use the image to run scripts on your computer or a computing cluster. This will require a basic familiarity with command line (navigating directories and entering basic commands), but does not require much programming.
+```
+~ $ ### back on my laptop again (host)
+~ $ # remove old Docker container once done with it
+~ $ docker rm phylodocker_demo
+phylodocker_demo
+~ $ # files continue to exist
+~ $ ls /Users/mlandis/projects/docker_test
+new_file.txt  test.Rev
+```
+{% subsection Useful Docker commands %}
 
-{% section Setting up the tutorial %}
+Docker supports a large number of commands to manage images and containers (see [Docker CLI Documentation](https://docs.docker.com/reference/cli/docker/)). These six commands will cover the needs for most RevBayes users:
 
-{% subsection Downloading a test script %}
-
-This tutorial includes a test script called `test.Rev` so that you can assess whether the RevBayes Docker container is functioning properly after being installed. The test script can be found in the `Data files and scripts` box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial, download the test script, and put the test script inside the directory. You can put this directory anywhere you want on your computer, but you will need to know the filepath to the directory in order to access it from the Docker container.
+|---------|--------------------------------------------------------------------|
+| command | description                                                        |
+|---------|--------------------------------------------------------------------|
+|`docker ps -a`                                   | lists all containers and their statuses |
+|`docker run --name <my_container>  [ ... ]`      | creates a container from the image and sets container to active; see above |
+|`docker start -ai <container_name>`              | sets a container to active |
+|`docker exec -it <container_name> /bin/sh`       | executes command (shell, in this case) on an active container |
+|`docker stop <container_name>`                   | sets a container to inactive |
+|`docker rm <container_name>`                     | deletes an inactive container (be sure all saved work has been transferred to the mounted directory!) |
+|---------|--------------------------------------------------------------------|
 
 {% section Setting up Docker %}
 
@@ -83,7 +133,7 @@ Example view of containers in Docker Desktop.
 
 This is a reference to {% ref example %}
 
-{% subsection Downloading the image %}
+{% subsection Downloading the Docker image %}
 
 A Docker image containing RevBayes, TensorPhylo, Python, R, and other dependencies can be found at [hub.docker.com/r/sswiston/phylo_docker](https://hub.docker.com/r/sswiston/phylo_docker). The easiest way to obtain this image is with a `docker pull` command.
 
@@ -133,10 +183,10 @@ You can also run the RevBayes Docker image directly from command line. This will
 
     ```
     # For Intel/AMD computers
-    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_amd64
+    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_amd64 /bin/sh
    
     # For Apple Silicon (M1, M2, etc.) computers
-    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_arm64
+    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_arm64 /bin/sh
     ```
 
     Some parts of this command are directly analogous to the optional settings from the RevBayes GUI. 
@@ -150,6 +200,8 @@ You can also run the RevBayes Docker image directly from command line. This will
     - `-it` is for opening an interactive container. Docker containers can also be used to automatically run scripts and terminate when they are completed, but you will need an interactive container for this tutorial.
 
     - `sswiston/phylo_docker:slim_amd64` or `sswiston/phylo_docker:slim_arm64` (hardware-dependent, see above) is the name of the Docker image you want to use.
+
+    - `/bin/sh` tells the Docker container to open a new terminal (shell) session when it starts.
 
     Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.
 
@@ -190,7 +242,7 @@ You can use the Docker Desktop GUI to run the RevBayes Docker image (but see cav
 
 9. Another tab on the lefthand side of the screen should be called `containers`. Clicking this option should bring you to a screen showing all of the containers you currently have running.
 
-10. There are two ways to access the container as it is running. The first way is to click on the running container inside the Containers panel, and then click on the Exec tab from the list of tabs at the top of the container menu. The second way is to find the running container inside the Containers panel, and then click on the icon with three vertical dots to the right of the container name. This will open a menu of options. Click on the "Open in terminal" menu item. Clicking this option will take you to the Exec tab, as in the first option. Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.
+10. There are two ways to access the container as it is running. The first way is to click on the running container inside the Containers panel, and then click on the `Exec` tab from the list of tabs at the top of the container menu. The second way is to find the running container inside the Containers panel, and then click on the icon with three vertical dots to the right of the container name. This will open a menu of options. Click on the "Open in terminal" menu item. Clicking this option will take you to the `Exec` tab, as in the first option. Within the `Exec` tab, there is a blue link that says *"Open in external terminal"*, which allows you to use your own terminal program to control the Docker session. Congrats, you are inside the Docker container! You should be able to access all of the programs and files in the container, and also the directory you mounted from your host machine.
 
 11. Navigate to the location of your test script with `cd [filepath]`, using the filepath that you mounted your directory to in Step 7.
 
