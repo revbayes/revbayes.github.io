@@ -30,7 +30,7 @@ Create and run a new Docker container, and start with an interactive shell sessi
 ~ $ # create and run new Docker container
 ~ $ docker run --name phylodocker_demo \
                --volume /Users/mlandis/projects/docker_test:/docker_test \
-               -it sswiston/phylo_docker:slim_amd64 \
+               -it sswiston/phylo_docker:full_amd64 \
                /bin/sh
 ```
 
@@ -75,7 +75,7 @@ new_file.txt  test.Rev
 ~ $ # show active Docker containers
 ~ docker ps -a
 CONTAINER ID   IMAGE                              COMMAND     CREATED          STATUS                     PORTS     NAMES
-fb19b94184ac   sswiston/phylo_docker:slim_amd64   "/bin/sh"   5 minutes ago    Exited (0) 4 minutes ago             phylodocker_demo
+fb19b94184ac   sswiston/phylo_docker:full_amd64   "/bin/sh"   5 minutes ago    Exited (0) 4 minutes ago             phylodocker_demo
 
 ~ $ # resume active Docker container using start
 ~ $ docker start -ai phylodocker_demo
@@ -139,24 +139,24 @@ A Docker image containing RevBayes, TensorPhylo, Python, R, and other dependenci
 
 First, open Docker Desktop. This starts the Docker daemon so that you can run `docker` commands. If you do not open Docker Desktop first, you will receive an error when you try to run a `docker` command. Then, in the desktop app, sign into your Docker Hub account.
 
-Next, you will need to pull a `phylo_docker` image with a tag that matches your computer's hardware architecture. The two tagged versions currently supported are `phylo_docker:slim_amd64` and `phylo_docker:slim_arm64`. Consult the table below if you are unsure which tagged image to use.
+Next, you will need to pull a `phylo_docker` image with a tag that matches your computer's hardware architecture. The two tagged versions currently supported are `phylo_docker:full_amd64` and `phylo_docker:full_arm64`. Consult the table below if you are unsure which tagged image to use.
 
 
 | OS               | CPU | Manufacture date | Tagged image |
 |------------------|-----|------------------|--------------|
-| Windows or Linux | Intel or AMD | -- | `phylo_docker:slim_amd64` |
-| Mac OS X | Intel | 2019 or earlier |  `phylo_docker:slim_amd64` |
-| Mac OS X | Silicon M1, M2, etc. | after 2019 | `phylo_docker:slim_arm64` |
+| Windows or Linux | Intel or AMD | -- | `phylo_docker:full_amd64` |
+| Mac OS X | Intel | 2019 or earlier |  `phylo_docker:full_amd64` |
+| Mac OS X | Silicon M1, M2, etc. | after 2019 | `phylo_docker:full_arm64` |
 
 
 Next, open your command line and enter the appropriate pull command:
 
 ```
 # For Intel/AMD computers
-docker pull sswiston/phylo_docker:slim_amd64
+docker pull sswiston/phylo_docker:full_amd64
 
 # For Apple Silicon (M1, M2, etc.) computers
-docker pull sswiston/phylo_docker:slim_arm64
+docker pull sswiston/phylo_docker:full_arm64
 ```
 
 Docker will automatically store the image on your computer in a directory reserved for Docker images. You will not have to manually locate this image; Docker will be able to find it.
@@ -183,10 +183,10 @@ You can also run the RevBayes Docker image directly from command line. This will
 
     ```
     # For Intel/AMD computers
-    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_amd64 /bin/sh
+    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:full_amd64 /bin/sh
    
     # For Apple Silicon (M1, M2, etc.) computers
-    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:slim_arm64 /bin/sh
+    docker run --name [my_container] --volume [local_directory]:[container_directory] -it sswiston/phylo_docker:full_arm64 /bin/sh
     ```
 
     Some parts of this command are directly analogous to the optional settings from the RevBayes GUI. 
@@ -199,7 +199,7 @@ You can also run the RevBayes Docker image directly from command line. This will
 
     - `-it` is for opening an interactive container. Docker containers can also be used to automatically run scripts and terminate when they are completed, but you will need an interactive container for this tutorial.
 
-    - `sswiston/phylo_docker:slim_amd64` or `sswiston/phylo_docker:slim_arm64` (hardware-dependent, see above) is the name of the Docker image you want to use.
+    - `sswiston/phylo_docker:full_amd64` or `sswiston/phylo_docker:full_arm64` (hardware-dependent, see above) is the name of the Docker image you want to use.
 
     - `/bin/sh` tells the Docker container to open a new terminal (shell) session when it starts.
 
@@ -277,7 +277,7 @@ bsub \
 -cwd $PROJECTDIR \
 -J $NAME \
 -o $OUTDIR$NAME.stdout.txt \
--a 'docker(sswiston/phylo_docker:slim_amd64)' /bin/bash /project/rev_shell.sh
+-a 'docker(sswiston/phylo_docker:full_amd64)' /bin/bash /project/rev_shell.sh
 ```
 
 Let's pick apart the elements of this script. There is a section at the top for defining variables, and then a `bsub` command using those variables.
@@ -306,7 +306,7 @@ After defining important variables, there is a multi-line `bsub` command that ac
 
 - `-a` is the most important part of the `bsub` command. There are 3 parts.
 
-   - `'docker(sswiston/phylo_docker:slim_amd64)'` is the Docker image being used. The image will be pulled from Docker Hub.
+   - `'docker(sswiston/phylo_docker:full_amd64)'` is the Docker image being used. The image will be pulled from Docker Hub.
 
    - `/bin/bash` is the initial command that will run once the container is open.
 
