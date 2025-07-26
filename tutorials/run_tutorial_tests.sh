@@ -53,6 +53,7 @@ status=()
 RED="\033[31;1m" #bold red
 GREEN="\033[32;1m" #bold green
 BLUE="\033[34;1m" # bold blue
+MAGENTA="\033[35;1m" # bold blue
 BOLD="\033[1m"
 CLEAR="\033[0m"
 UNDERLINE="\033[4m"
@@ -71,7 +72,7 @@ for t in */tests.txt; do
 
     test_result=0
     for script in $(cat tests.txt); do
-        printf "   ${script}: "
+        printf "   ${script}: ${MAGENTA}"
 
         if [ ! -e "scripts/${script}" ] ; then
             echo "script '${script}' from ${t} is missing!"
@@ -90,15 +91,18 @@ for t in */tests.txt; do
         )
         ${rb_exec} -b scripts/cp_$script &> "output/${script%.[Rr]ev}.errout"
         script_result="$?"
-
+        printf "${CLEAR}"
         if [ "${script_result}" = 139 ]; then
             script_result="SEGFAULT"
+        elif [ "${script_result}" = 134 ]; then
+            script_result="Aborted"
         elif [ "${script_result}" != 0 ]; then
             script_result="error ${script_result}"
         fi
 
         if [ "${script_result}" != 0 ] ; then
-            script_result="${script}=${script_result}"
+            script_result="${script}: ${script_result}"
+            echo
             tail -n 5 "output/${script%.[Rr]ev}.errout" | sed "s/^/       ${BLUE2}|${CLEAR2}  /g"
             printf "\n   ${RED}FAIL${CLEAR}: ${script_result}\n"
             echo
@@ -120,7 +124,7 @@ for t in */tests.txt; do
 
 done
 
-printf "\n\n#### Checking output from tests... \n"
+printf "\n\n${BOLD}#### Checking output from tests... ${CLEAR}\n"
 xfailed=0
 failed=0
 pass=0
@@ -132,15 +136,15 @@ while [  $i -lt ${#tests[@]} ]; do
     if [ "${status[$i]}" != 0 ]; then
         if [ -f XFAIL ] ; then
             ((xfailed++))
-            printf ">>>> Test ${RED}failed${CLEAR}: $t (expected)\n"
+            printf ">>>> Test ${RED}failed${CLEAR}: ${UNDERLINE}$t${CLEAR} (expected)\n"
         else
             ((failed++))
-            printf ">>>> Test ${RED}failed${CLEAR}: $t\n"
+            printf ">>>> Test ${RED}failed${CLEAR}: ${UNDERLINE}$t${CLEAR}\n"
         fi
         printf "${status[$i]}"
     else
         ((pass++))
-        printf "#### Test passed: $t\n"
+        printf "#### Test ${GREEN}passed${CLEAR}: ${UNDERLINE}$t${CLEAR}\n"
     fi
 
     ((i++))
@@ -148,9 +152,9 @@ done
 
 
 if [ $failed -gt 0 ]; then
-    printf "\n\n#### Warning! unexpected failures: $failed   expected failures: $xfailed   total tests: $i\n\n"
+    printf "${BOLD}\n\n#### ${MAGENTA}Warning!${CLEAR}${BOLD} unexpected failures: ${RED}$failed${CLEAR}${BOLD}   expected failures: $xfailed   total tests: $i\n\n${CLEAR}"
     exit 113
 else
-    printf "\n\n#### Success! unexpected failures: $failed   expected failures: $xfailed   total tests: $i\n\n"
-    printf "\n\n#### All tests passed.\n\n"
+    printf "${BOLD}\n\n#### ${GREEN}Success!${CLEAR}${BOLD} unexpected failures: $failed   expected failures: $xfailed   total tests: $i\n\n${CLEAR}"
+    printf "${BOLD}\n\n#### All tests passed.\n\n${CLEAR}"
 fi
