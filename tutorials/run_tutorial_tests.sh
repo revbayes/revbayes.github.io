@@ -50,52 +50,74 @@ fi
 tests=()
 status=()
 
+RED="\033[31;1m" #bold red
+GREEN="\033[32;1m" #bold green
+BLUE="\033[34;1m" # bold blue
+BOLD="\033[1m"
+CLEAR="\033[0m"
+UNDERLINE="\033[4m"
+
+BLUE2=$'\033[34;1m'
+CLEAR2=$'\033[0m'
+
+
 for t in */tests.txt; do
     testname=`echo $t | cut -d '/' -f 1`;
 
     cd $testname
     tests+=($testname)
 
-    printf "\n\n#### Running test: $testname\n\n"
-    
-    for script in $(cat tests.txt); 
-    do
+    printf "\n${BOLD}#### Running tests for tutorial ${CLEAR}${UNDERLINE}$testname${CLEAR}\n"
+
+    test_result=0
+    for script in $(cat tests.txt); do
+        printf "   ${script}: "
+
         if [ ! -e "scripts/${script}" ] ; then
             echo "script '${script}' from ${t} is missing!"
             exit 1
         fi
 
+        mkdir -p output
         (
-        cd scripts
-        cat "$script" |
+            cd scripts
+            cat "$script" |
             sed 's/generations=[0-9]*/generations=1/g' |
             sed 's/^n_gen *= *[0-9]*/n_gen = 1/' |
             sed 's/\.burnin([0-9][0-9]*/.burnin(1/' |
             sed 's/\.run([0-9][0-9]*/.run(1/' |
             sed 's/checkpointInterval=[0-9]*/checkpointInterval=1/g'  > "cp_$script"
         )
-        ${rb_exec} -b scripts/cp_$script
-        res="$?"
-        if [ $res = 1 ]; then
-            res="error: $f"
-            break
-        elif [ $res = 139 ]; then
-            res="segfault: $f"
-            break
-        elif [ $res != 0 ]; then
-            res="error $res: $f"
-            break
+        ${rb_exec} -b scripts/cp_$script &> "output/${script%.[Rr]ev}.errout"
+        script_result="$?"
+
+        if [ "${script_result}" = 139 ]; then
+            script_result="SEGFAULT"
+        elif [ "${script_result}" != 0 ]; then
+            script_result="error ${script_result}"
         fi
-        if [ $res != 0 ] ; then
-            echo "${testname} ==> error $res"
+
+        if [ "${script_result}" != 0 ] ; then
+            script_result="${script}=${script_result}"
+            tail -n 5 "output/${script%.[Rr]ev}.errout" | sed "s/^/       ${BLUE2}|${CLEAR2}  /g"
+            printf "\n   ${RED}FAIL${CLEAR}: ${script_result}\n"
+            echo
+            if [ "${test_result}" = 0 ] ; then
+                test_result="\t${script_result}\n"
+            else
+                test_result="${test_result}\t${script_result}\n"
+            fi
+        else
+            printf "${GREEN}done${CLEAR}.\n"
         fi
         rm scripts/cp_$script
         rm -rf output
     done
 
-    status+=("$res")
+    status+=("${test_result}")
 
-    cd -
+    cd $OLDPWD
+
 done
 
 printf "\n\n#### Checking output from tests... \n"
@@ -106,74 +128,16 @@ i=0
 while [  $i -lt ${#tests[@]} ]; do
     t=${tests[$i]}
 
-    if [ -d test_$t ]; then
-        cd test_$t
-
-        # check if output matches expected output
-        errs=()
-        exp_out_dir="output_expected"
-        # Sebastian: For now we only use single cores until we fix Travis mpirun
-    #    if [ "${mpi}" = "true" ]; then
-    #        if [ -d "output_expected_mpi" ]; then
-    #            exp_out_dir="output_expected_mpi"
-    #        fi
-    #    fi
-        if [ "$windows" = "true" ]; then
-            find output -type f -exec dos2unix {} \;
-            find output -type f -exec sed -i 's/e-00/e-0/g' {} \;
-            find output -type f -exec sed -i 's/e+00/e+0/g' {} \;
-        fi
-        
-        # some special handling for the *.errout files
-        for f in scripts/*.[Rr]ev ; do
-            tmp0=${f#scripts/}
-            tmp1=${tmp0%.[Rr]ev}
-            
-            # Delete all before the 1st occurrence of the string '   Processing file' (inclusive)
-            # Use a temporary intermediate file to make this work w/ both GNU and BSD sed
-            sed '1,/   Processing file/d' output/${tmp1}.errout > output/${tmp1}.errout.tmp
-            mv output/${tmp1}.errout.tmp output/${tmp1}.errout
-            
-            # Also delete the final line of failing tests, which reprints the path to the script
-            # that differs between Windows and Unix (has no effect if the line is absent)
-            sed '/   Error:\tProblem processing/d' output/${tmp1}.errout > output/${tmp1}.errout.tmp
-            mv output/${tmp1}.errout.tmp output/${tmp1}.errout
-            
-            # Account for OS-specific differences in path separators
-            if [ "$windows" = "true" ]; then
-                sed 's/\\/\//g' output/${tmp1}.errout > output/${tmp1}.errout.tmp
-                mv output/${tmp1}.errout.tmp output/${tmp1}.errout
-            fi
-        done
-        
-        for f in $(ls ${exp_out_dir}); do
-            if [ ! -e output/$f ]; then
-                errs+=("missing:  $f")
-            elif ! diff output/$f ${exp_out_dir}/$f > /dev/null; then
-                errs+=("mismatch: $f")
-            fi
-        done
-
-        cd ..
-    fi
-    
-    # check if a script exited with an error
-    if [ "${status[$i]}" != 0 ]; then
-        errs=("${status[$i]}")
-    fi
-
     # failure if we have an error message
-    if [ ${#errs[@]} -gt 0 ]; then
+    if [ "${status[$i]}" != 0 ]; then
         if [ -f XFAIL ] ; then
             ((xfailed++))
-            printf ">>>> Test failed: $t (expected)\n"
+            printf ">>>> Test ${RED}failed${CLEAR}: $t (expected)\n"
         else
             ((failed++))
-            printf ">>>> Test failed: $t\n"
+            printf ">>>> Test ${RED}failed${CLEAR}: $t\n"
         fi
-        for errmsg in "${errs[@]}"; do
-            printf "\t$errmsg\n"
-        done
+        printf "${status[$i]}"
     else
         ((pass++))
         printf "#### Test passed: $t\n"
