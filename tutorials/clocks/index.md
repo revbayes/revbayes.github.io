@@ -14,7 +14,7 @@ redirect: false
 
 <!-- category: Standard -->
 
-
+{% assign BDP_script = "m_BDP_bears.Rev" %}
 
 Introduction
 ------------
@@ -163,21 +163,17 @@ Sometimes it is convienent to read in a tree from a previous study. This
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by {% cite DosReis2012 %}.
-```
-T <- readTrees("data/bears_dosReis.tre")[1]
-```
+
+{{ BDP_script | tagged_snippet: "## read in the tree", "1" }}
+
 From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)
-```
-n_taxa <- T.ntips()
-taxa <- T.taxa()
-```
-Finally, we initialize a variable for our vector of moves and monitors.
-```
-moves    = VectorMoves()
-monitors = VectorMonitors()
-```
 
+{{ BDP_script | tagged_snippet: "### get helpful variables from the tree", "1-2" }}
+
+Finally, we initialize a variable for our vector of moves and monitors.
+
+{{ BDP_script | tagged_snippet: "## Initialize move and monitor vectors", "1-2" }}
 
 ### Birth-Death Parameters
 
@@ -191,33 +187,27 @@ tutorial.
 
 Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
-```
-diversification ~ dnExponential(10.0) 
-moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
-```
+
+{{ BDP_script | tagged_snippet: "### diversification", "2-3" }}
 
 ***Turnover***
 
 Turnover is: $r = \mu / \lambda$.
-```
-turnover ~ dnBeta(2.0, 2.0) 
-moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
-```
+
+{{ BDP_script | tagged_snippet: "### turnover", "3-4" }}
 
 ***Deterministic Nodes for Birth and Death Rates***
 
 The birth rate and death rate are deterministic functions of the
 diversification and turnover. First, create a deterministic node for
 $1 - r$, which is the denominator for each formula.
-```
-denom := abs(1.0 - turnover) 
-```
+
+{{ BDP_script | tagged_snippet: "##### create a variable to ensure the rates are always positive", "1" }}
+
 Now, the rates will both be positive real numbers that are variable
 transformations of the stochastic variables.
-```
-birth_rate := diversification / denom
-death_rate := (turnover * diversification) / denom
-```
+
+{{ BDP_script | tagged_snippet: "##### birth_rate = div", "1,3" }}
 
 
 ***Sampling Probability***
@@ -225,9 +215,9 @@ death_rate := (turnover * diversification) / denom
 Fix the probability of sampling to a known value. Since there are
 approximately 147 described caniform species, we will create a constant
 node for this parameter that is equal to 10/147.
-```
-rho <- 0.068
-```
+
+{{ BDP_script | tagged_snippet: "### and we have sampled 10", "1" }}
+
 
 
 ### Prior on the Root Node
@@ -239,9 +229,11 @@ age being younger than 38 Mya is equal to 0, using this value to offset
 a prior distribution on the root-age.
 
 First specify the occurrence-time of the fossil.
-```
-tHesperocyon <- 38.0
-```
+
+{% snippet scripts/m_BDP_bears.Rev %}
+    tHesperocyon <- 38.0
+{% endsnippet %}
+
 We will assume a lognormal prior on the root age that is offset by the
 observed age of *Hesperocyon gregarius*. We can use the previous
 analysis by {% cite DosReis2012 %} to parameterize the lognormal prior on the root
@@ -251,14 +243,18 @@ distribution to equal $49 - 38 = 11$ Mya. Given the expected value of
 the lognormal (`mean_ra`) and a standard deviation (`stdv_ra`), we can
 also compute the location parameter of the lognormal (`mu_ra`).
 
+{% snippet scripts/m_BDP_bears.Rev %}
     mean_ra <- 11.0
     stdv_ra <- 0.25
     mu_ra <- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
+{% endsnippet %}
 
 With these parameters we can instantiate the root age stochastic node
 with the offset value.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     root_time ~ dnLognormal(mu_ra, stdv_ra, offset=tHesperocyon)
+{% endsnippet %}
 
 ### Time Tree Stochastic Node
 
@@ -266,7 +262,9 @@ Now that we have specified all of the parameters of the birth-death
 process, we can create our stochastic node representing the tree
 topology and divergence times.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
+{% endsnippet %}
 
 ### Creating a Node-Age Variable
 
@@ -277,27 +275,35 @@ taxa using the `clade()` function. This will not restrict this node to
 be monophyletic, but just create a node that is the MRCA of the taxa
 listed (even if that node has descendants that are not named).
 
-    clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus", "Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+{% snippet scripts/m_BDP_bears.Rev %}
+    clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus","Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+{% endsnippet %}
 
 Once we have defined the node, we can create a deterministic node to
 monitor its age.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     tmrca_Ursidae := tmrca(timetree,clade_Ursidae)
+{% endsnippet %}
 
 ### Proposals on the Time Tree
 
 Next, create the vector of moves. These tree moves act on node ages:
 
-    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) ) )
+{% snippet scripts/m_BDP_bears.Rev %}
+    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0 ) )
     moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
     moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
     moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
+{% endsnippet %}
 
 Then, we will add moves that will propose changes to the tree topology.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     moves.append( mvNNI(timetree, weight=8.0) )
     moves.append( mvNarrow(timetree, weight=8.0) )
     moves.append( mvFNPR(timetree, weight=8.0) )
+{% endsnippet %}
 
 Now save and close the file. This file, with all the model
 specifications will be loaded by other `Rev` files.

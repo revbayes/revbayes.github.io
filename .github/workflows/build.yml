@@ -1,0 +1,75 @@
+name: Check that website builds 
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        name: [ubuntu-gcc-12]
+
+        include:
+
+          - name: ubuntu-gcc-12
+            os: ubuntu-latest
+            compiler: gcc
+            version: "12"
+            mpi: false
+            arch: linux64
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ccache meson
+        if [ "${{ matrix.compiler }}" = "gcc" ]; then
+          sudo apt-get install -y g++-${{ matrix.version }}
+          echo "C_COMPILER=gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX_COMPILER=g++-${{ matrix.version }}" >> $GITHUB_ENV
+
+          echo "CC=ccache gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=ccache g++-${{ matrix.version }}" >> $GITHUB_ENV
+        else
+          sudo apt-get install -y clang-${{ matrix.version }}
+          echo "C_COMPILER=clang-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX_COMPILER=clang++-${{ matrix.version }}" >> $GITHUB_ENV
+
+          echo "CC=ccache clang-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=ccache clang++-${{ matrix.version }}" >> $GITHUB_ENV
+        fi
+
+    - name: Install Ruby (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      shell: bash
+      run: |
+        sudo apt-get install -y rubygems
+        echo "/home/runner/.local/share/gem/ruby/3.2.0/bin" >> "$GITHUB_PATH"
+        sudo chmod -R a+rwx /var/lib/gems/3.2.0
+        
+    - name: Install Jekyll (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      shell: bash
+      run: |
+        gem install jekyll bundler --user-install
+        bundle install
+
+    - name: Check that website builds (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        # build the site
+        echo "Running jekyll to build the static site."
+        if ! bundle exec jekyll build; then
+          echo "Jekyll build failed. Master not updated."
+          exit 1
+        fi
+        echo
+

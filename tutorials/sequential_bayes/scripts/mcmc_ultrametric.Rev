@@ -93,9 +93,7 @@ time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, ta
 unrooted_MAP_tree = readBranchLengthTrees("output/photinus_"+GENE+"_MAP.tre")[1]
 
 ## resolve the trifurcation at the root
-root_index = 2*unrooted_MAP_tree.ntips() - 2
-first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
-unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+unrooted_MAP_tree.resolveMultifurcations(resolveRoot=TRUE)
 
 ## make the tree ultrametric and restore node indices
 ultrametric_MAP_tree = unrooted_MAP_tree.makeUltrametric()

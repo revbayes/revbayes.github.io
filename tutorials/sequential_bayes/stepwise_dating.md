@@ -132,11 +132,9 @@ You could also use an externally rooted tree, which might be preferred.
 unrooted_MAP_tree = readBranchLengthTrees("output/photinus_COI_MAP.tre")[1]
 ```
 Since the tree comes from a non-clock analysis, it is unrooted, which is to say it has a trifurcation at the root.
-We want to make its root bifurcating, but it is not important to us exactly how we do it. Therefore, we will just grab the first of the three children of the root node and make it the outgroup:
+We want to make its root bifurcating, but it is not important to us exactly how we do it, so we will just resolve the trifurcation randomly:
 ```
-root_index = 2*unrooted_MAP_tree.ntips() - 2
-first_child = unrooted_MAP_tree.getDescendantTaxa( unrooted_MAP_tree.child( root_index, 1 ) )
-unrooted_MAP_tree.reroot( clade(first_child), makeBifurcating=TRUE)
+unrooted_MAP_tree.resolveMultifurcations(resolveRoot=TRUE)
 ```
 We also need to make the tree ultrametric:
 ```

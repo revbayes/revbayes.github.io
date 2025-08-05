@@ -15,7 +15,7 @@ prerequisites:
 
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the Hawaiian *Kadua*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant islands, or go extinct at a higher rate on smaller islands.
 
-The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} attempt to model this expectation. Rather than giving each region its own evolutionary rate parameters, FIG models use functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions without suffering an explosion in the number of model parameters. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features. Later tutorials will explore how to adapt FIG to allow for regional features, and their linked biogeographic rates, to change over time.
+The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2025 %} attempt to model this expectation. Rather than giving each region its own evolutionary rate parameters, FIG models use functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions without suffering an explosion in the number of model parameters. In this tutorial, we will model the evolution and biogeography of *Kadua* using seven regions and eight regional features. Later tutorials will explore how to adapt FIG to allow for regional features, and their linked biogeographic rates, to change over time.
 
 {% subsection The MultiFIG model %}
 
@@ -30,7 +30,7 @@ Graphical model of MultiFIG. Square nodes represent constant values (data). Circ
 
 The FIG model incorporates geographical features with two value types as model variables: quantitative features and categorical features. Quantitative features have continuous real values while categorical features have discrete values. MultiFIG also separates data by dimensionality type, incorporating one-dimensional within-region data and two-dimensional between-region data. We use four containers to store this data: $w_c$, $w_q$, $b_c$, and $b_q$.
 
-Each regional feature is assigned a "feature effect" parameter that measures the strength and direction of the effect of a particular feature on a particular process. Note that "effect" refers to a mathematical relationship here, but does *not* indicate causality. These strength parameters are referred to as $\sigma$ and $\phi$, representing the effects of categorical and quantitative features respectively. There is one $\sigma$ or $\phi$ parameter per feature per process. For example, $\phi_w^{Altitude}$ would represent the relationship between region altitude and within-region speciation.
+Each regional feature is assigned a "feature effect" parameter that measures the strength and direction of the effect of a particular feature on a particular process. Note that "effect" refers to a mathematical relationship here, but does *not* indicate causality. These strength parameters are referred to as $\sigma$ and $\phi$, representing the effects of categorical and quantitative features respectively. There is one $\sigma$ or $\phi$ parameter per feature per process. For example, $\phi_w^{Size}$ would represent the relationship between region size and within-region speciation.
 
 For each process, the categorical and quantitative feature effects (with feature data modified by strength parameters) are gathered into $c$ and $q$ vectors, then ultimately combined into an $m$ vector. The $m$ vector represents the total effects of all regional features on a particular process, with entries representing each region (or region pair for between-region processes). The $m$ vector represents relative rates among regions, but to obtain absolute rates, the $m$ vector for each process is multiplied by a process-specific base rate parameter $\rho$. This constructs the $r$ vectors that are analogous to GeoSSE rates: $r_w$ for within-region speciation rates, $r_e$ for extinction rates, and $r_d$ for dispersal rates. Calculating $r_b$ for between-region speciation rates also requires the use of a range split score, as in {% cite Landis2022 %}. 
 
@@ -68,16 +68,16 @@ $$
 
 and behaves similarly to the quantitative effect variable. (In this example, we assume categorical variables take values 0 or 1 and treat them numerically to simplify notation. More complex relationships are written with more complex notation.)
 
-Each individual effect variable can be $<1$, $>1$, or $=1$, and so can the product of all effect variables. All relative rates are eventually rescaled by the same base rate (e.g. $\rho_w$). If the relative rates for regions $i$ and $j$ have the relationship $m_w(i) > m_w(j)$ then the absolute rates also follow $r_w(i) > r_w(j)$. Other $m$ functions behave in a similar manner. More details on the design of the $m$ functions are provided in {% cite Swiston2023 %}.
+Each individual effect variable can be $<1$, $>1$, or $=1$, and so can the product of all effect variables. All relative rates are eventually rescaled by the same base rate (e.g. $\rho_w$). If the relative rates for regions $i$ and $j$ have the relationship $m_w(i) > m_w(j)$ then the absolute rates also follow $r_w(i) > r_w(j)$. Other $m$ functions behave in a similar manner. More details on the design of the $m$ functions are provided in {% cite Swiston2025 %}.
 
-In this analysis, we are examining eight regional features. The first 4 are quantitative: maximum altitude (m), log maximum altitude (m), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strength parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
+In this analysis, we are examining eight regional features. The first 4 are quantitative: size (km^2), log size (km^2), distance (km), and log distance (km). We include the log features because they will allow us to better understand the *shape* of the relationship between features and processes. For example, it may be that intermediate values of a particular feature are related to the highest rates of a particular process, so we would expect the feature strength parameter to be positive and the log-feature strength parameter to be negative. The other 4 features are categorical: age class (old/young), growth class (decay/growth), dispersal class (short/long), and relative age class (older/younger).
 
 {% figure features %}
 <img src="figures/plot_features_vs_time.feat_qw1.png" width="40%"><br>
 <img src="figures/plot_features_vs_time.feat_qb1.png" width="40%"><br>
 <img src="figures/plot_features_vs_time.feat_cb2.png" width="40%">
 {% figcaption %}
-Examples of a within-region quantitative feature (max. altitude), a between-region quantitative feature (distance), and a categorical quantitative feature (relative island age). These features (and others) may shape core biogeographic rates depending on which regions are involved in an event.
+Examples of a within-region quantitative feature (area), a between-region quantitative feature (distance), and a categorical quantitative feature (relative island age). These features (and others) may shape core biogeographic rates depending on which regions are involved in an event.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -139,8 +139,9 @@ Eventually, we will be running an MCMC analysis at the end of the tutorial. This
 ```
 # MCMC variables
 num_proc  = 6
-num_gen   = 500             # set num_gen = 5000 for full analysis
-print_gen = 20
+num_gen   = 50             # set num_gen = 5000 for full analysis
+print_gen = 1
+save_gen  = 10
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 ```
@@ -279,70 +280,70 @@ m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
 
 Because we are going to do an MCMC analysis later in the tutorial, we want MCMC to update all of the $\sigma$ and $\phi$ parameters. Each move is assigned a 'weight' that tells RevBayes how often to do this move. We will assign a different list of moves depending on if we are using reversible jump (adding `mvRJSwitch` moves) or ignoring features (adding no moves on feature effects and fixing their values to 0). We may also want to initialize the MCMC to reasonable values for these feature effect parameters. We will set the values of our distributions to be (temporarily) equal to those initial values to start the MCMC.
 
-First, we will address the categorical feature effects for each process (w, e, d, and b). These are our $\sigma$ parameters. The logic is the same for each process. First, we find the container of features which impact that process (within-region features for within-region speciation and extinction, between-region features for between-region speciation and dispersal). Then we loop over the different features inside that container. For each feature, we initialize the value of the parameter, and add appropriate moves for the MCMC. We also include a `use_` line that allows us to turn off certain features if we want to perform analyses without them.
+First, we will address the categorical feature effects for each process (w, e, d, and b). These are our $\sigma$ parameters. The logic is the same for each process. First, we find the container of features which impact that process (within-region features for within-region speciation and extinction, between-region features for between-region speciation and dispersal). Then we loop over the different features inside that container. For each feature, we initialize the value of the parameter, and add appropriate moves for the MCMC. We also include variables, with names beginning with `use_`, to monitor which feature effect parameters are on or off across MCMC samples.
 
 ```
 # initialize categorical feature effects, create moves, add monitor variables
 for (i in 1:feature_CW.size()) {
     sigma_w[i].setValue(0)
-    moves.append( mvScale(sigma_w[i], weight=2) )
-    moves.append( mvSlide(sigma_w[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_w[i], weight=3) )
+    moves.append( mvScale(sigma_w[i], weight=1) )
+    moves.append( mvSlide(sigma_w[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_w[i], weight=2) )
     use_sigma_w[i] := ifelse(sigma_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CW.size()) {
     sigma_e[i].setValue(0)
-    moves.append( mvScale(sigma_e[i], weight=2) )
-    moves.append( mvSlide(sigma_e[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_e[i], weight=3) )
+    moves.append( mvScale(sigma_e[i], weight=1) )
+    moves.append( mvSlide(sigma_e[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_e[i], weight=2) )
     use_sigma_e[i] := ifelse(sigma_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_d[i].setValue(0)
-    moves.append( mvScale(sigma_d[i], weight=2) )
-    moves.append( mvSlide(sigma_d[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_d[i], weight=3) )
+    moves.append( mvScale(sigma_d[i], weight=1) )
+    moves.append( mvSlide(sigma_d[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_d[i], weight=2) )
     use_sigma_d[i] := ifelse(sigma_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_CB.size()) {
     sigma_b[i].setValue(0)
-    moves.append( mvScale(sigma_b[i], weight=2) )
-    moves.append( mvSlide(sigma_b[i], weight=2) )
-    moves.append( mvRJSwitch(sigma_b[i], weight=3) )
+    moves.append( mvScale(sigma_b[i], weight=1) )
+    moves.append( mvSlide(sigma_b[i], weight=1) )
+    moves.append( mvRJSwitch(sigma_b[i], weight=2) )
     use_sigma_b[i] := ifelse(sigma_b[i] == 0.0, 0, 1)
 }
 ```
 
-Similarly, we will address the quantitative features for each process. These are our `\phi` parameters.
+Similarly, we will address the quantitative features for each process. These are our $\phi$ parameters.
 
 ```
 # initialize quantitative feature effects, create moves, add monitor variables
 for (i in 1:feature_QW.size()) {
     phi_w[i].setValue(0)
-    moves.append( mvScale(phi_w[i], weight=2) )
-    moves.append( mvSlide(phi_w[i], weight=2) )
-    moves.append( mvRJSwitch(phi_w[i], weight=3) )
+    moves.append( mvScale(phi_w[i], weight=1) )
+    moves.append( mvSlide(phi_w[i], weight=1) )
+    moves.append( mvRJSwitch(phi_w[i], weight=2) )
     use_phi_w[i] := ifelse(phi_w[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QW.size()) {
     phi_e[i].setValue(0)
-    moves.append( mvScale(phi_e[i], weight=2) )
-    moves.append( mvSlide(phi_e[i], weight=2) )
-    moves.append( mvRJSwitch(phi_e[i], weight=3) )
+    moves.append( mvScale(phi_e[i], weight=1) )
+    moves.append( mvSlide(phi_e[i], weight=1) )
+    moves.append( mvRJSwitch(phi_e[i], weight=2) )
     use_phi_e[i] := ifelse(phi_e[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_d[i].setValue(0)
-    moves.append( mvScale(phi_d[i], weight=2) )
-    moves.append( mvSlide(phi_d[i], weight=2) )
-    moves.append( mvRJSwitch(phi_d[i], weight=3) )
+    moves.append( mvScale(phi_d[i], weight=1) )
+    moves.append( mvSlide(phi_d[i], weight=1) )
+    moves.append( mvRJSwitch(phi_d[i], weight=2) )
     use_phi_d[i] := ifelse(phi_d[i] == 0.0, 0, 1)
 }
 for (i in 1:feature_QB.size()) {
     phi_b[i].setValue(0)
-    moves.append( mvScale(phi_b[i], weight=2) )
-    moves.append( mvSlide(phi_b[i], weight=2) )
-    moves.append( mvRJSwitch(phi_b[i], weight=3) )
+    moves.append( mvScale(phi_b[i], weight=1) )
+    moves.append( mvSlide(phi_b[i], weight=1) )
+    moves.append( mvRJSwitch(phi_b[i], weight=2) )
     use_phi_b[i] := ifelse(phi_b[i] == 0.0, 0, 1)
 }
 ```
@@ -504,7 +505,7 @@ timetree.clampCharData(dat_nn)
 
 {% subsection MCMC %}
 
-For this analysis, we will perform an MCMC of 10000 generations. This may seem like a low number of generations (compared to other programs), but this is because RevBayes performs multiple moves per iteration under the `random` move scheduler (a setting from the start of the tutorial). You can alter this MCMC by changing the number of iterations, the move schedule, or how frequently the MCMC prints output. You can even add a period of burnin that tunes hyperparameters for moves. We have already created all of our moves for this MCMC, so we can move on to monitors!
+For the purposes of demonstrating, we will perform a short MCMC analysis with only 50 generations. For a proper analysis, you will want to use more e.g. 10000 generations. This may seem like a low number of generations (compared to other programs), but this is because RevBayes performs multiple moves per iteration under the `random` move scheduler (a setting from the start of the tutorial). You can alter this MCMC by changing the number of iterations, the move schedule, or how frequently the MCMC prints output. You can even add a period of burnin that tunes hyperparameters for moves. We have already created all of our moves for this MCMC, so we can move on to monitors!
 
 Monitors are instructions for RevBayes to record MCMC output. Since we want RevBayes to record every iteration, we have set the `printgen` argument to 1 (one of those settings from the beginning of the tutorial). We want it to print some output to the screen so we can see how it is running (`mnScreen`). We also want it to save model parameters to a file (`mnModel` and both `mnFile`). Finally, if we want to use the output for ancestral state reconstruction, we want to save states (`mnJointConditionalAncestralStates`) and stochastic mappings (`mnStochasticCharacterMap`). All of the output files will be saved in the `output` directory so that it can be accessed later.
 
@@ -513,20 +514,20 @@ Monitors are instructions for RevBayes to record MCMC output. Since we want RevB
 monitors.append( mnScreen(rho_d, rho_e, rho_w, rho_b, printgen=print_gen) )
 
 # file monitor for all simple model variables
-monitors.append( mnModel(printgen=print_gen, file=out_fn+".model.txt") )
+monitors.append( mnModel(printgen=save_gen, file=out_fn+".model.txt") )
 
 # file monitor for tree
-monitors.append( mnFile(timetree, printgen=print_gen, file=out_fn + ".tre") )
+monitors.append( mnFile(timetree, printgen=save_gen, file=out_fn + ".tre") )
 
 # monitor ancestral ranges at internal nodes
 monitors.append( mnJointConditionalAncestralState(
-    tree=timetree, glhbdsp=timetree, printgen=print_gen,
+    tree=timetree, glhbdsp=timetree, printgen=save_gen,
     filename=out_fn+".states.txt",
     withTips=true, withStartStates=true, type="NaturalNumbers") )
 
 # file monitor for biogeographic rates
 bg_mon_fn = out_fn + ".bg.txt"
-monitors.append( mnFile( filename = bg_mon_fn, printgen=print_gen,
+monitors.append( mnFile( filename = bg_mon_fn, printgen=save_gen,
                          rho_e, rho_w, rho_d, rho_b,
                          r_e, r_w,
                          r_d[1], r_d[2], r_d[3], r_d[4],
@@ -614,7 +615,7 @@ cp -R ./fig_tools/scripts ./multifig/plot
 
 These scripts assume you are in the base of your analysis directory:
 ```
-cd ~/multifig
+cd ./multifig
 ```
 
 Now we can generate plots using FIG tools. First, we generate a tree with ancestral range estimates using these commands:
