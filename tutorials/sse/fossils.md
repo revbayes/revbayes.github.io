@@ -16,13 +16,11 @@ include_files:
 - data/canidae_tree.nex
 - scripts/mcmc_fBiSSE.Rev
 - scripts/mcmc_fBiSSE_tp.Rev
-- scripts/mcmc_fHiSSE.Rev
 index: true
 ---
 
 {% assign bisse_script = "mcmc_fBiSSE.Rev" %}
 {% assign bisse_tp_script = "mcmc_fBiSSE_tp.Rev" %}
-{% assign hisse_script = "mcmc_fHiSSE.Rev" %}
 
 {% section Introduction | introduction %}
 
@@ -273,13 +271,6 @@ posteriori (MAP) state and the posterior probabilities for each state at a given
 
 {{ bisse_script | snippet:"block#", "32" }}
 
-To visualize the ancestral state estimation using RevGadgets {% cite Tribble2022 %}, see 
-[the BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse).
-
-Before we analyze our BiSSE results, we will take some time to set up a HiSSE analysis of the same dataset.
-This will allow us to consider whether any trait-dependent extinction signal we detect is truly due to the trait,
-or due to unobserved effects.
-
 {% aside Using TensorPhylo %}
 
 TensorPhylo {% cite May2022 %} is a plugin that introduced an alternative general SSE function, the generalized
@@ -312,58 +303,59 @@ to change the output, checkpointing, and ancestral state filenames if you run bo
 
 {% endaside %}
 
-{% section Setting up a serially-sampled HiSSE model | sec_fHiSSE %}
+{% section Summarizing and interpreting results | secanalysis %}
 
-The hidden SSE (HiSSE) model {% cite Beaulieu2016 %} was introduced to explicitly accommodate the role of
-unobserved effects on diversification rates.
-This alleviated some of the more complicated issues in BiSSE, as it was shown to falsely identify trait-associated
-hetereogeneity when the source of heterogeneity was not included in the model {% cite Rabosky2015 %}.
-See [the HiSSE tutorial]({{ base.url }}/tutorials/sse/hisse) for more information on the model.
+To visualize our rate and ancestral state estimates, we will make use of RevGadgets {% cite Tribble2022 %}, similar
+to the [BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse). We will not copy that code here to avoid redundancy,
+since the procedure is the same. 
 
-We only need to make minor modifications to our BiSSE script to make it into a HiSSE model.
-The easiest way to proceed would therefore be to make a copy of your BiSSE script, renaming it as appropriate,
-and make the changes we mention below.
-If a part of the script is not mentioned, assume it remains unchanged (e.g. the lines to read `tree` and `data`
-remain the same, since we are using the same fixed tree and same observed characters).
+First, let us take a look at our ancestral state results
 
-First, in addition to our `num_states` variables as before, we must create new variables to
-hold the number of hidden states, and the total number of states.
+{% figure fBiSSE_anc_states %}
+<img src="figures/fBiSSE_anc_states_diet.png" width="75%">
+{% figcaption %}
+A visualization of the ancestral states estimated under the BiSSE model. Code for this plot can be found in [the BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse).
+{% endfigcaption %}
+{% endfigure %}
 
-{{ hisse_script | snippet:"block#", "4-5" }}
+These ancestral states largely agree with the ancestral state estimation in {% cite Slater2015 %}, which is a good
+sign. The clusters of hypercarnivory are sensible considering the tree in question, and there are not a lot of
+confounding nodes. 
 
-We are using only two hidden states, which we call A and B.
-While it is possible to include more hidden states, since these are unobserved states for which we have no data,
-one should proceed with caution including more parameters.
+Note that there are reasonably few transitions to and from hypercarnivory (state 0), which should spell caution
+when interpreting the results of the model. This illustrates an important point about the signal for state-dependent
+diversification: the sample size for these analyses is not the number of species in a tree, but the number of state
+transitions present in that group's history {% cite Maddison2006 %}. This should be considered, together with our 
+remarks on sampled ancestors in the introduction, by any researcher hoping to implement a serially-sampled SSE
+analysis for their data. We reiterate that this tutorial should be seen as illustrative only, and the conclusions
+drawn herein about the history of diet (or the effect of diet on diversification) in Canidae should not be
 
-Then, we must expand our `data` object to include the hidden states
+All that said, let us take a look at our rate estimates. Note that given the naming convention in our tutorial,
+and our desire to also plot fossil sampling rate `psi`, the call to `processSSE` should be something like
 
-{{ hisse_script | snippet:"block#", "8" }}
+```
+pdata <- processSSE(bisse_file,
+                    speciation = "lambda",
+                    extinction = "mu",
+                    rates = c("lambda", "mu", "diversification", "psi"))
+```
 
-Now the character in `data_exp` has four states.
-By default, RevBayes sets up state numbers to follow the order of observed, then hidden.
-So here, states 1 and 2 correspond to 0A and 1A, and states 3 and 4 to 0B and 1B.
+Using the `plotMuSSE` function, we then get our posterior density plots.
 
-To set up our speciation, extinction, and fossil sampling rates, we follow the exact same procedure as in the
-BiSSE case, but with `num_rates` rates instead.
+{% figure fBiSSE_rates %}
+<img src="figures/fBiSSE_div_rates_diet.png" width="75%">
+{% figcaption %}
+Visualizing posterior samples of diversification and sampling rates associated with diet in Canidae. Code for this plot can be found in [the BiSSE tutorial]({{ base.url }}/tutorials/sse/bisse).
+{% endfigcaption %}
+{% endfigure %}
 
-{{ hisse_script | snippet:"block#", "9-13" }}
+We do not recover a strong signal of trait-dependent diversification, but the diversification rate for
+non-hypercarnivorous canids (state $1$) seems to be slightly higher (posterior probability of
+$\lambda_1 - \mu_1 > \lambda_2 - \mu_2$ is around 0.65). So there is no support one way or the other for
+the hypothesis that hypercarnivorous canids have higher extinction and speciation rates. A more complete
+dataset is likely to provide better grounds for testing this and other complex patterns.
 
-Note that this sets each rate to be independent.
-While that is the most flexible set up, some analyses might run into "label-swapping" issues.
-Label-swapping occurs because the likelihood of the model does not change if the states A and B are switched,
-since there is no data associated with those states.
-As such, the assignment of each state might switch throughout the MCMC, making it so that each rate parameter's
-posterior distribution is actually a mixture between the corresponding rates.
-If you encounter such problems in your analyses, see [the HiSSE tutorial]({{ base.url }}/tutorials/sse/hisse) for
-a way to set rates that guarantees there will be no label-swapping (sacrificing a small amount of flexibility in
-the process).
-
-To set up the rate matrix, we can create variables for `q_obs` and `q_hidden`, corresponding to $q_{01}$ and \
-$q_{10}$, and $q_{AB}$ and $q_{BA}$ respectively.
-We can then use `fnHiddenStateRateMatrix` to build the full rate matrix.
-
-{{ hisse_script | snippet:"block#", "14-18" }}
-
-Note that this set up assumes that transitions between rate categories with the same observed state occur at the
-same rate (i.e. $q_{0A->0B} = q_{1A->1B} = q_{AB}$), and similarly for categories with the same hidden state.
-While this is often a useful assumption (and one that was 
+In this tutorial, you learned how to set up, run, and visualize the results of a serially-sampled BiSSE
+analysis. While we only explored the BiSSE model, you can make use of the many SSE functions in RevBayes
+to apply any SSE model to your dataset by modifying the code in the appropriate tutorial to reflect the
+addition of fossil sampling rates. 
