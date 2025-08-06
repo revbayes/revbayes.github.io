@@ -83,7 +83,8 @@ for t in */tests.txt; do
         (
             cd scripts
             cat "$script" |
-            sed 's/generations=[0-9]*/generations=1/g' |
+            sed 's/generations[[:space:]]=[[:space:]][0-9]*/generations=1/g' |
+            sed 's/rules[[:space:]]*=[[:space:]]*[^,]*/generations=1/g' |
             sed 's/^n_gen *= *[0-9]*/n_gen = 1/' |
             sed 's/\.burnin([0-9][0-9]*/.burnin(1/' |
             sed 's/\.run([0-9][0-9]*/.run(1/' |
