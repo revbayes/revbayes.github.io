@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: State-dependent diversification with fossils</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">State-dependent diversification with fossils</h1>
+	<h3 class="subtitle">Applying state-dependent speciation and extinction (SSE) models to trees with fossil tips</h3>
+	<h4 class="authors">Bruno do Rosario Petrucci</h4>
+  <h5>Last modified on August  5, 2025</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/sse/data/canidae_diet.nex">canidae_diet.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/canidae_tree.nex">canidae_tree.nex</a></li>
+        
+          <li><a href="/tutorials/sse/scripts/mcmc_fBiSSE.Rev">mcmc_fBiSSE.Rev</a></li>
+        
+          <li><a href="/tutorials/sse/scripts/mcmc_fBiSSE_tp.Rev">mcmc_fBiSSE_tp.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to apply state-dependent diversification models to trees including fossil data.
+To that end, <code class="language-plaintext highlighter-rouge">dnCDBDP</code> includes the option of a serial sampling rate, combining SSE models with the fossilized birth-death (FBD) process <a class="citation" href="#Stadler2010">(Stadler 2010; Heath et al. 2014)</a>.
+For more details on the theory behind these models, please see <a href="/tutorials/sse/bisse-intro">the SSE theory tutorial</a>, 
+<a href="/tutorials/fbd/fbd_specimen">the FBD tutorial</a>, or <a class="citation" href="#Beaulieu2023">(Beaulieu and O’Meara 2023)</a> for a full mathematical derivation.</p>
+
+<p>The tutorial will explain how to build both a BiSSE <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a> and HiSSE <a class="citation" href="#Beaulieu2016">(Beaulieu and O’Meara 2016)</a> 
+models to investigate the effect of hipercarnivory on canid extinction rates.
+It was heavily based on <a href="/tutorials/sse/bisse">the BiSSE tutorial</a>, and users are highly encouraged to 
+complete that tutorial before this one.</p>
+
+<h2 class="section" id="thedata">Getting Set Up</h2>
+<hr class="section" />
+
+<p>We provide the data files which we will use in this tutorial:</p>
+
+<ul>
+  <li><a href="data/canidae_tree.nex">canidae_tree.nex</a>:
+Dated canid phylogeny including 94 species. This tree is from <a class="citation" href="#Slater2015">(Slater 2015)</a>,
+and it includes many representatives of the two extinct canid subfamilies (Hesperocyoninae
+and Borophaginae), as well as extinct species of the extant subfamily (Caninae), and 
+four extant species: <em>Canis lupus</em> (grey wolf), <em>Canis latrans</em> (coyote), <em>Cuon alpinus</em>
+(dhole), and <em>Urocyon cinereoargenteus</em> (grey fox).</li>
+  <li><a href="data/canidae_diet.nex">canidae_diet.nex</a>:
+A file with the coded character states for canid diet. This character has two states: 
+<code class="language-plaintext highlighter-rouge">0</code> = hypercarnivorous, <code class="language-plaintext highlighter-rouge">1</code> = non-hypercarnivorous, which can mean either meso- or 
+hypocarnivorous. These categories signify the percentage of vertebrates in an animal’s diet, 
+correspoding to &gt;70%, between 30 and 70%, and less than 30%, respectively (though sources 
+differ on the exact percentages). We could use the MuSSE model (missing reference) to
+analyze the rates for meso- and hypocarnivores separately, but given the relatively small size
+of the tree, and our main interest on the effects of hypercarnivory specifically, we simplified
+the dataset.</li>
+</ul>
+
+<blockquote class="instruction">
+  <p>Create a new directory on your computer called <code class="language-plaintext highlighter-rouge">RB_fsse_tutorial</code>.</p>
+
+  <p>Within the <code class="language-plaintext highlighter-rouge">RB_fsse_tutorial</code> directory, create a subdirectory called <code class="language-plaintext highlighter-rouge">data</code>.
+Then, download the provided files and place them in the <code class="language-plaintext highlighter-rouge">data</code> folder.
+You can then start a <code class="language-plaintext highlighter-rouge">scripts</code> folder to hold the script for this analysis, or use RevBayes interactively by running <code class="language-plaintext highlighter-rouge">rb</code> and adding the code described below one block at a time.</p>
+</blockquote>
+
+<h2 class="section" id="sec_fBiSSE">Setting up a serially-sampled BiSSE model</h2>
+<hr class="section" />
+
+<p>To investigate the effect of diet on the diversification of Canidae, we will start by setting up a BiSSE model, which
+assumes 2 rate categories for speciation, extinction, and fossil sampling, depending on a species’ diet.
+If you open the data file <a href="data/canidae_diet.nex">canidae_diet.nex</a> in your text editor, you will see the coded
+characters for each species in our tree. For example, the dire wolf (<a href="https://https://en.wikipedia.org/wiki/Dire_wolf"><em>Canis dirus</em></a>) was
+hypercarnivorous, so it is set to state <code class="language-plaintext highlighter-rouge">0</code>. Coyotes (<em>Canis latrans</em>), on the other hand, are mesocarnivores, while
+the extinct <em>Archaeocyon pavidus</em> (a member of the extinct <a href="https://https://en.wikipedia.org/wiki/Borophaginae">Borophaginae subfamily</a>) 
+and living grey foxes (<em>Urocyon cinereoargenteus</em>) are hypocarnivores (all of these set to state <code class="language-plaintext highlighter-rouge">1</code>).
+Longstanding hypotheses on the effects of extreme specialization would lead to an <em>a priori</em> hypothesis that
+hypercarnivorous canids have higher extinction rates, which we can then test by comparing the posterior distributions of
+the extinction rate for each state, $\mu_0$ and $\mu_1$, under BiSSE.</p>
+
+<p>Note that this analysis, like most tutorials, should be seen as illustrative only. The tree used here is generally too
+small to achieve reliable SSE estimates, and the lack of sampled ancestors likely means our estimates will be
+biased <a class="citation" href="#Beaulieu2023">(Beaulieu and O’Meara 2023)</a>. Work is already underway to estimate a more complete canid tree, which will then
+allow for more reliable SSE analyses. For the moment, consider this as merely illustrative as to how you can
+set up your own serially-sampled SSE analyses.</p>
+
+<h3 class="subsection" id="subsec_readdata">Read in the Data</h3>
+<hr class="subsection" />
+
+<p>Here, since we are using a fixed tree, it is considered <em>data</em>. So we first read our dated phylogeny.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- readTrees("data/canidae_tree.nex")[1]
+</code></pre></div></div>
+
+<p>Then, we read the diet data for our canids.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readCharacterData("data/canidae_diet.nex")
+</code></pre></div></div>
+
+<p>We then create a helper variable to record the number of states used here. In this case, 2 (hypercarnivorous and
+non-hypercarnivorous).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_states &lt;- 2
+</code></pre></div></div>
+
+<p>We also create a helper variable to hold the value of the root age of the tree.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- tree.rootAge()
+</code></pre></div></div>
+
+<p>Finally, we initialize a variable for our vector of moves and monitors.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
+<hr class="subsection" />
+
+<h4 id="diversification-sampling-and-transition-rates"><strong>Diversification, sampling, and transition rates</strong></h4>
+
+<p>The first step for specifying our BiSSE model is creating variables to hold the priors on diversification and
+fossil-sampling rate. To keep things simple, we will set speciation and extinction priors to a log-uniform distribution,
+representing a relatively agnostic prior belief about these rates. For fossil-sampling rate, we will set an exponential
+prior, a slightly more informative distribution, since fossil-sampling is often a more difficult rate for the model
+to estimate. We will set these priors using a <code class="language-plaintext highlighter-rouge">for</code> loop on <code class="language-plaintext highlighter-rouge">num_states</code> (making the code easy to modify for a
+different character with a different number of states), and also create nodes for the <code class="language-plaintext highlighter-rouge">diversification</code> rates, for
+easy comparisons later.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_states) {
+
+  lambda[i] ~ dnLoguniform( 1E-6, 1E2)
+  moves.append( mvSlice(lambda[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+
+  mu[i] ~ dnLoguniform( 1E-6, 1E2)
+  moves.append( mvSlice(mu[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+
+  psi[i] ~ dnExp(5)
+  moves.append( mvSlice(psi[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+
+  diversification[i] := lambda[i] - mu[i]
+}
+</code></pre></div></div>
+
+<p>Note that we are using <code class="language-plaintext highlighter-rouge">mvSlice</code> instead of the more popular <code class="language-plaintext highlighter-rouge">mvScale</code> move. <code class="language-plaintext highlighter-rouge">mvSlice</code> is a relatively new addition
+to RevBayes that functions as an <code class="language-plaintext highlighter-rouge">mvScale</code> move that searches for an optimal jump size to improve mixing. This allows,
+on average, faster convergence with a lower number of moves.</p>
+
+<p>Next we will specify the transition rates, $q_{01}$ and $q_{10}$. These represent the rate with which species
+transition anagenetically between hypercarnivorous and non-hypercarnivorous lifestyles. We could set up uninformative
+priors like we did for speciation and extinction, but to again keep things simple we will specify an exponential prior
+on each rate, with a mean representing 10 character state transitions throughout the tree, on average. This allows for
+reasonably frequent transitions, while also leaving a good amount of uncertainty. We will once again use a <code class="language-plaintext highlighter-rouge">for</code> loop
+in this case over <code class="language-plaintext highlighter-rouge">num_states * (num_states - 1)</code>, so that the code can be easily modified for analyses with non-binary
+characters.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := tree.treeLength() / 10
+
+for ( i in 1:(num_states * (num_states - 1)) ) {
+
+    q[i] ~ dnExp(rate_pr)
+    moves.append( mvSlice(q[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+}
+</code></pre></div></div>
+
+<p>Here, <code class="language-plaintext highlighter-rouge">q[1]</code> is equivalent to $q_{01}$, the rate with which hypercarnivorous species transition to non-hypercarnivorous
+lifestyles. <code class="language-plaintext highlighter-rouge">q[2]</code> is equivalent to $q_{10}$, the rate of the opposite transition.</p>
+
+<p>To use these rates with <code class="language-plaintext highlighter-rouge">dnCDBDP</code>, we need to make a rate matrix, which we do using <code class="language-plaintext highlighter-rouge">fnFreeK</code>. Since the character in
+this case is binary, we could instead use <code class="language-plaintext highlighter-rouge">fnFreeBinary</code>, but in this way we again allow the script to be modified
+for use with other characters with minimal modifications.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK( q, rescaled = false)
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">rescaled</code> argument is there to be used with DNA evolution matrices, where we want the total transition rates
+to be normalized to 1. Here, we want the rates in the same units as the diversification and sampling rates, so
+we set <code class="language-plaintext highlighter-rouge">rescaled = false</code>.</p>
+
+<h4 id="root-state"><strong>Root State</strong></h4>
+
+<p>Next, we need to create a variable to hold the root frequency for each state, <code class="language-plaintext highlighter-rouge">pi</code> ($\pi$). <code class="language-plaintext highlighter-rouge">pi</code> is a vector of size
+<code class="language-plaintext highlighter-rouge">num_states</code>, with <code class="language-plaintext highlighter-rouge">pi[1]</code> being the probability that the root (<em>i.e.</em> the common ancestor of all species in
+the dataset) was at state <code class="language-plaintext highlighter-rouge">0</code> (hypercarnivorous), and respectively for <code class="language-plaintext highlighter-rouge">pi[2]</code> and state <code class="language-plaintext highlighter-rouge">1</code>. In this step, we
+could make use of past studies about the ancestral state of canid diets, and <em>e.g.</em> set a higher prior probability 
+for state <code class="language-plaintext highlighter-rouge">1</code> than state <code class="language-plaintext highlighter-rouge">0</code>, because it is likely that the first canids were not hypercarnivorous. However,
+to illustrate a useful prior for the case where we have no prior knowledge on the root state, we will assume
+that is the case. The <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> is a
+multi-dimensional generalization of the Beta distribution. We will set the prior to a Dirichlet with parameters
+all equal to 1, which is equivalent to setting a uniform distribution on the probability of each state at the root.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi ~ dnDirichlet( rep(1, num_states) )
+</code></pre></div></div>
+
+<p>Once again, we set the number of states for our Dirichlet prior in the way to make it the most straightforward to
+modify for a character with more states, by making use of the <code class="language-plaintext highlighter-rouge">rep</code> function. In the case of our binary diet data,
+this would be equivalent to setting <code class="language-plaintext highlighter-rouge">dnDirichlet( v(1, 1) )</code>.</p>
+
+<p>We will use a special move for objects that are drawn from a Dirichlet distribution</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvDirichletSimplex(pi, weight = 2) )
+</code></pre></div></div>
+
+<h4 id="extant-sampling"><strong>Extant Sampling</strong></h4>
+
+<p>All birth-death processes are conditioned on the probability a taxon is sampled at the present, usually termed
+the extant sampling rate <code class="language-plaintext highlighter-rouge">rho</code> ($\rho$). While <code class="language-plaintext highlighter-rouge">dnCDBDP</code> allows for <code class="language-plaintext highlighter-rouge">rho</code> to be dependent on states, we have no
+reason to expect it to be in this case. Furthermore, since we know the exact number of canid species alive
+today (barring some discussion on species delimitation), we know that our dataset has exactly 4 out of 36 canid
+species. We can therefore set a constant node for <code class="language-plaintext highlighter-rouge">rho</code>, equal to that proportion.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 4 / 36
+</code></pre></div></div>
+
+<p>If you are unsure on the proportion of extant species present in your dataset, or if you have reason to believe
+the trait of focus in your analysis could affect <code class="language-plaintext highlighter-rouge">rho</code>, you could create stochastic nodes for it, just as we did
+for the serial sampling rate.</p>
+
+<h4 id="the-time-tree"><strong>The Time Tree</strong></h4>
+
+<p>We now have all the parameters necessary for our BiSSE model. We can initialize our time tree using the <code class="language-plaintext highlighter-rouge">dnCDBDP</code>
+function.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root_age,
+                    lambda            = lambda,
+                    mu                = mu,
+                    psi               = psi,
+                    Q                 = Q,
+                    pi                = pi,
+                    rho               = rho)
+</code></pre></div></div>
+
+<p>Since we are treating the tree as fixed, we need to attach this time tree node to our observed phylogeny. We do so
+using the <code class="language-plaintext highlighter-rouge">clamp</code> method.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp( tree )
+</code></pre></div></div>
+
+<p>The tree is not our only data, however, and we also need to attach the observed character states. We can do so
+using the <code class="language-plaintext highlighter-rouge">clampCharData</code> method.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clampCharData( data )
+</code></pre></div></div>
+
+<p>This completes the model setup.</p>
+
+<h3 class="subsection" id="subsec_runningmcmc">Running the MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 id="the-model-object"><strong>The model object</strong></h4>
+
+<p>First, we need to create a workspace object that represents our entire model. The <code class="language-plaintext highlighter-rouge">model</code> function can be used,
+taking any node in your model and traversing the entire model by finding the connections between that node and
+the others. We give it the <code class="language-plaintext highlighter-rouge">timetree</code> node for simplicity.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
+</code></pre></div></div>
+
+<h4 id="monitors"><strong>Monitors</strong></h4>
+
+<p>We need to create monitors to record the important steps in our Markov Chain. First, we set up a monitor to store
+all numerical variables in our model, <em>e.g.</em> <code class="language-plaintext highlighter-rouge">lambda</code> and <code class="language-plaintext highlighter-rouge">mu</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/canidae_diet_bisse.log", printgen = 1000) )
+</code></pre></div></div>
+
+<p>If we are interested on the evolution of diet throughout our canid tree, we can set an ancestral state estimation
+monitor. This will then allow us to analyze the estimated state at each node of the tree, and provide information
+on how canids have transitioned in and out of a hypercarnivorous lifestyle throughout the tree. This monitor is
+also particularly useful for HiSSE analyses (see below), since it allows us to check the estimated hidden state for
+each species in the dataset.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnJointConditionalAncestralState(tree            = timetree, 
+                                                  cdbdp           = timetree, 
+                                                  type            = "Standard", 
+                                                  withStartStates = false,
+                                                  printgen        = 100, 
+                                                  filename        = "output/canidae_diet_anc_states.log") )
+</code></pre></div></div>
+
+<p>Finally, we add a screen monitor to monitor the progress of the MCMC run.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen = 10000) )
+</code></pre></div></div>
+
+<h4 id="creating-and-running-the-mcmc"><strong>Creating and Running the MCMC</strong></h4>
+
+<p>Armed with our full model, and vectors of monitors and moves, we can use the <code class="language-plaintext highlighter-rouge">mcmc</code> function to create our MCMC
+object.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>In most RevBayes tutorials, we set the MCMC to run for a certain number of generations, using the <code class="language-plaintext highlighter-rouge">generations</code>
+argument. This often requires users to have a prior idea of how long convergence will take, which could be
+challenging.</p>
+
+<p>Here we present an alternative, where one can instead set the MCMC to run until a certain set of stopping rules
+have been met. Specifically, we use <code class="language-plaintext highlighter-rouge">srMinESS</code> to ensure the MCMC will run until all numerical parameters have
+reached an effective sample size of 250 (see 
+<a href="/tutorials/convergence">the MCMC convergence assessment tutorial</a> for more background on ESS and
+other measures of convergence).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>stopping_rules[1] = srMinESS(250, file = "output/canidae_diet_bisse.log", freq = 10000)
+</code></pre></div></div>
+
+<p>SSE models are time-consuming, and time-constraints when using institutional super-computers often mean you might
+need to restart analyses. To that end, we can make use of checkpointing by specifying a <code class="language-plaintext highlighter-rouge">checkpointFile</code> argument
+in the <code class="language-plaintext highlighter-rouge">run</code> method.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/canidae_diet_bisse.state")
+</code></pre></div></div>
+
+<p>The MCMC can then be restarted from the checkpoint file by adding</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  mymcmc.initializeFromCheckpoint("output/canidae_diet_bisse.state")
+</code></pre></div></div>
+
+<p>before the <code class="language-plaintext highlighter-rouge">run</code> method.</p>
+
+<h4 id="summarize-sampled-ancestral-states"><strong>Summarize Sampled Ancestral States</strong></h4>
+
+<p>To make use of the ancestral states sampled using <code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code>, we first need to summarize
+the sampled values using the <code class="language-plaintext highlighter-rouge">readAncestralStateTrace</code> function.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/canidae_diet_anc_states.log")
+</code></pre></div></div>
+
+<p>Then, <code class="language-plaintext highlighter-rouge">ancestralStateTree</code> can be used to summarize the ancestral state trace as a tree with the maximum a
+posteriori (MAP) state and the posterior probabilities for each state at a given node.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree                         = tree,
+                              ancestral_state_trace_vector = anc_states,
+                              include_start_states         = false,
+                              file                         = "output/canidae_diet_anc_states_results.tree",
+                              burnin                       = 0.1,
+                              summary_statistic            = "MAP",
+                              site                         = 1)
+</code></pre></div></div>
+
+<blockquote class="aside"><h2>Using TensorPhylo</h2><p>TensorPhylo <a class="citation" href="#May2022">(May and Meyer)</a> is a plugin that introduced an alternative general SSE function, the generalized
+lineage-heterogeneous birth-death-sampling process (<code class="language-plaintext highlighter-rouge">dnGLHBDSP</code>). <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code> provides much of the same utility
+as <code class="language-plaintext highlighter-rouge">dnCDBDP</code> and other birth-death functions in RevBayes, being a generalization of BiSSE, HiSSE, and other
+SSE models, including serial-sampling. It allows for more homogeneous scripts, using the same function for
+multiple models, and it often leads to faster likelihood calculations than <code class="language-plaintext highlighter-rouge">dnCDBDP</code>. For more information on
+<code class="language-plaintext highlighter-rouge">dnGLHBDSP</code> and instructions on how to install TensorPhylo, see the Tensorphylo tutorial (need to add a link here
+when we have one).</p>
+
+<p>Only minor modifications are needed to use <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code> in our analysis. Throughout the rest of this box, we will
+only mention lines that must be changed compared to our <code class="language-plaintext highlighter-rouge">dnCDBDP</code> script. First, we need to load the TensorPhylo
+plugin</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "/path/to/tensorphylo/build/installer/lib")
+</code></pre></div></div>
+
+<p>Then, we need an extra helper variable representing the taxa in our tree.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- tree.taxa()
+</code></pre></div></div>
+
+<p>All variables defined above will be used, and we will then pass them, together with <code class="language-plaintext highlighter-rouge">taxa</code> and <code class="language-plaintext highlighter-rouge">num_states</code>, to
+<code class="language-plaintext highlighter-rouge">dnGLHBDSP</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnGLHBDSP( rootAge           = root_age,
+                      lambda            = lambda,
+                      mu                = mu,
+                      phi               = psi,
+                      eta               = Q,
+                      pi                = pi,
+                      rho               = rho,
+                      taxa              = taxa,
+                      nStates           = num_states)
+</code></pre></div></div>
+
+<p>And we’re done! This should run, and achieve similar results to <code class="language-plaintext highlighter-rouge">dnCDBDP</code>, while being slightly faster. Make sure
+to change the output, checkpointing, and ancestral state filenames if you run both analyses!</p>
+</blockquote>
+
+<h2 class="section" id="secanalysis">Summarizing and interpreting results</h2>
+<hr class="section" />
+
+<p>To visualize our rate and ancestral state estimates, we will make use of RevGadgets <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a>, similar
+to the <a href="/tutorials/sse/bisse">BiSSE tutorial</a>. We will not copy that code here to avoid redundancy,
+since the procedure is the same.</p>
+
+<p>First, let us take a look at our ancestral state results</p>
+
+<figure id="fBiSSE_anc_states"><p><img src="figures/fBiSSE_anc_states_diet.png" width="75%" /></p>
+<figcaption>A visualization of the ancestral states estimated under the BiSSE model. Code for this plot can be found in <a href="/tutorials/sse/bisse">the BiSSE tutorial</a>.</figcaption>
+</figure>
+
+<p>These ancestral states largely agree with the ancestral state estimation in <a class="citation" href="#Slater2015">(Slater 2015)</a>, which is a good
+sign. The clusters of hypercarnivory are sensible considering the tree in question, and there are not a lot of
+confounding nodes.</p>
+
+<p>Note that there are reasonably few transitions to and from hypercarnivory (state 0), which should spell caution
+when interpreting the results of the model. This illustrates an important point about the signal for state-dependent
+diversification: the sample size for these analyses is not the number of species in a tree, but the number of state
+transitions present in that group’s history (missing reference). This should be considered, together with our 
+remarks on sampled ancestors in the introduction, by any researcher hoping to implement a serially-sampled SSE
+analysis for their data. We reiterate that this tutorial should be seen as illustrative only, and the conclusions
+drawn herein about the history of diet (or the effect of diet on diversification) in Canidae should not be</p>
+
+<p>All that said, let us take a look at our rate estimates. Note that given the naming convention in our tutorial,
+and our desire to also plot fossil sampling rate <code class="language-plaintext highlighter-rouge">psi</code>, the call to <code class="language-plaintext highlighter-rouge">processSSE</code> should be something like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pdata &lt;- processSSE(bisse_file,
+                    speciation = "lambda",
+                    extinction = "mu",
+                    rates = c("lambda", "mu", "diversification", "psi"))
+</code></pre></div></div>
+
+<p>Using the <code class="language-plaintext highlighter-rouge">plotMuSSE</code> function, we then get our posterior density plots.</p>
+
+<figure id="fBiSSE_rates"><p><img src="figures/fBiSSE_div_rates_diet.png" width="75%" /></p>
+<figcaption>Visualizing posterior samples of diversification and sampling rates associated with diet in Canidae. Code for this plot can be found in <a href="/tutorials/sse/bisse">the BiSSE tutorial</a>.</figcaption>
+</figure>
+
+<p>We do not recover a strong signal of trait-dependent diversification, but the diversification rate for
+non-hypercarnivorous canids (state $1$) seems to be slightly higher (posterior probability of
+$\lambda_1 - \mu_1 &gt; \lambda_2 - \mu_2$ is around 0.65). So there is no support one way or the other for
+the hypothesis that hypercarnivorous canids have higher extinction and speciation rates. A more complete
+dataset is likely to provide better grounds for testing this and other complex patterns.</p>
+
+<p>In this tutorial, you learned how to set up, run, and visualize the results of a serially-sampled BiSSE
+analysis. While we only explored the BiSSE model, you can make use of the many SSE functions in RevBayes
+to apply any SSE model to your dataset by modifying the code in the appropriate tutorial to reflect the
+addition of fossil sampling rates.</p>
+
+<ol class="bibliography"><li><span id="Beaulieu2016">Beaulieu J.M., O’Meara B.C. 2016. Detecting hidden diversification shifts in models of trait-dependent speciation and extinction. Systematic Biology. 65:583–601.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw022">10.1093/sysbio/syw022</a>
+
+</li>
+<li><span id="Beaulieu2023">Beaulieu J.M., O’Meara B.C. 2023. Fossils Do Not Substantially Improve, and May Even Harm, Estimates of Diversification Rate Heterogeneity. Systematic Biology. 72:50–61.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syac049">10.1093/sysbio/syac049</a>
+
+</li>
+<li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
+
+<a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
+
+</li>
+<li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
+
+<a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
+
+</li>
+<li><span id="May2022">May M.R., Meyer X. TensorPhylo. .</span>
+
+
+<a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">https://bitbucket.org/mrmay/tensorphylo/src/master/</a>
+</li>
+<li><span id="Slater2015">Slater G.J. 2015. Iterative adaptive radiations of fossil canids show no evidence for diversity-dependent trait evolution. Proceedings of the National Academy of Sciences. 112:4897–4902.</span>
+
+<a href="https://doi.org/10.1073/pnas.1403666111">10.1073/pnas.1403666111</a>
+
+</li>
+<li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

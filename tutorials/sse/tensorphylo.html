@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: The TensorPhylo plugin</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">The TensorPhylo plugin</h1>
+	<h3 class="subtitle">Installing and using TensorPhylo and the Generalized Lineage-Heterogeneous Birth-Death-Sampling Process</h3>
+	<h4 class="authors">Michael May and Bruno do Rosario Petrucci</h4>
+  <h5>Last modified on April 29, 2025</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>This tutorial describes the steps to download, compile, and install the TensorPhylo plugin <a class="citation" href="#May2022">(May and Meyer)</a>, discusses its strengths and limitations, and
+details the usage of the <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code> function that uses the plugin. This function generalizes state-dependent speciation and extinction (SSE) and fossilized
+birth-death (FBD) models, allowing for users to use it to set up any particular case of those models, e.g. BiSSE <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>, HiSSE (missing reference),
+or FBD specimen <a class="citation" href="#Stadler2010">(Stadler 2010; Heath et al. 2014)</a>.</p>
+
+<h2 class="section" id="installation">Installation</h2>
+<hr class="section" />
+
+<p>Note that all the steps described here can also be found in the 
+<a href="https://bitbucket.org/mrmay/tensorphylo/src/a1314e61f180bd46a4de529bc6d26c434d1d442a/doc/Install.md">TensorPhylo installation page</a>.</p>
+
+<h3 class="subsection" id="unix">Linux and MacOS</h3>
+<hr class="subsection" />
+
+<p>First, you must ensure you have access to all the command-line tools required by TensorPhylo. 
+These can all be easily installed using your Linux package manager, or homebrew if you’re using MacOS. They are:</p>
+
+<ul>
+  <li>curl</li>
+  <li>zip and unzip</li>
+  <li>automake and autoconf</li>
+  <li>make</li>
+  <li>python 2</li>
+</ul>
+
+<p>To begin installing TensorPhylo, first acquire it from <a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">its BitBucket repository</a>. This could involve downloading it
+from your browser and extracting it locally, or cloning it with <code class="language-plaintext highlighter-rouge">git</code>, similarly to how you cloned the RevBayes repository.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://bitbucket.org/mrmay/tensorphylo.git
+</code></pre></div></div>
+
+<p>Or, if you prefer using ssh</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@bitbucket.org:mrmay/tensorphylo.git
+</code></pre></div></div>
+
+<p>Then, navigate to <code class="language-plaintext highlighter-rouge">tensorphylo/build/installer</code>, and execute the installation script by running</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bash install.sh
+</code></pre></div></div>
+
+<p>This will take several minutes, and use several processors. Make sure not to have too much running at the same time.
+The installation script will let you know if any dependency is missing. It will then download and compile eigen,
+NCL, and boost locally, and install tensorphylo properly. Once done, all the TensorPhylo libraries will be in
+<code class="language-plaintext highlighter-rouge">build/installer/lib</code>. If the installation is unsuccessful, a <code class="language-plaintext highlighter-rouge">build/installer/log.txt</code> file will be written.
+If you can’t understand what went wrong, submit an issue (including the <code class="language-plaintext highlighter-rouge">log.txt</code> file) in the BitBucket repository.</p>
+
+<h3 class="subsection" id="windows">Windows</h3>
+<hr class="subsection" />
+
+<p>For the Windows installation, all you need to start is an internet connection (to download all necessary dependencies) and a functional installation
+of <a href="https://www.cygwin.com/">cygwin</a>, a Unix-like terminal for Windows.</p>
+
+<p>First, download TensorPhylo, in the same way described on the <a href="#unix"></a> section. Then, copy the cygwin <code class="language-plaintext highlighter-rouge">setup-x86_64.exe</code> executable
+into <code class="language-plaintext highlighter-rouge">tensorphylo/build/installer/cygwin</code>. Using a cygwin terminal, you can then install all necessary dependencies by running</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd build/installer/cygwin
+bash installPackages.sh
+</code></pre></div></div>
+
+<p>Then, once all dependencies are installed, you can move back to <code class="language-plaintext highlighter-rouge">build/installer</code> and run</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bash install.sh
+</code></pre></div></div>
+
+<p>This will take a while, possibly even a few hours, and use several processors. Make sure not to have too much
+running in your computer at the same time. Once done, all the TensorPhylo libraries will be in <code class="language-plaintext highlighter-rouge">build/installer/lib</code>.
+If the installation is unsuccessful, a <code class="language-plaintext highlighter-rouge">build/installer/log.txt</code> file will be written.
+If you can’t understand what went wrong, submit an issue (including the <code class="language-plaintext highlighter-rouge">log.txt</code> file) in the BitBucket repository.</p>
+
+<h2 class="section" id="usage">Using TensorPhylo</h2>
+<hr class="section" />
+
+<p>Talk here about why TensorPhylo is good, and what kinds of applications it has that make it better than native revbayes functions</p>
+
+<h3 class="subsection" id="glhbdsp">The Generalized Lineage-Heterogeneous Birth-Death-Sampling Process distribution</h3>
+<hr class="subsection" />
+
+<p>Describe <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code>!</p>
+
+<h2 class="section" id="bisse">Worked example using BiSSE</h2>
+<hr class="section" />
+
+<p>Quick example adapting the BiSSE tutorial to use <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code></p>
+
+<ol class="bibliography"><li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
+
+<a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
+
+</li>
+<li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
+
+<a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
+
+</li>
+<li><span id="May2022">May M.R., Meyer X. TensorPhylo. .</span>
+
+
+<a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">https://bitbucket.org/mrmay/tensorphylo/src/master/</a>
+</li>
+<li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
