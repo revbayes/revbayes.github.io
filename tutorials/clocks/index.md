@@ -342,25 +342,29 @@ still depend on variable initialized in different files.
 
 The clock-rate parameter is a stochastic node from a gamma distribution.
 
+{% snippet scripts/m_GMC_bears.Rev %}
     clock_rate ~ dnGamma(2.0,4.0)
     moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0) )
+{% endsnippet %}
 
 ***The Sequence Model and Phylogenetic CTMC***
 
 Specify the parameters of the GTR model and the moves to operate on
 them.
-```
+
+{% snippet scripts/m_GTR.Rev %}
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
     moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
     moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
-```
+{% endsnippet %}
+
 And instantiate the phyloCTMC.
-```
+{% snippet scripts/m_GMC_bears.Rev %}
     phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
     phySeq.clamp(D)
-```
+{% endsnippet %}
 This is all we will include in the global molecular clock model file.
 
 Save and close the file called in the `scripts` directory.
