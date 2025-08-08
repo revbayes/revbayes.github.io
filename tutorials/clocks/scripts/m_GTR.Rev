@@ -8,17 +8,15 @@
 
 ### the stationary base frequencies 
 ### with a flat Dirichlet prior
-sf_hp <- v(1,1,1,1)
-sf ~ dnDirichlet(sf_hp)
+sf ~ dnDirichlet(v(1,1,1,1))
 
 ### the exchangeability rates 
 ### with a flat Dirichlet prior
-er_hp <- v(1,1,1,1,1,1)
-er ~ dnDirichlet(er_hp)
+er ~ dnDirichlet(v(1,1,1,1,1,1))
 
 ### a deterministic node for the instantaneous rate matrix
 Q := fnGTR(er,sf)
 
 ### simplex moves for er and sf
-moves.append(mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0))
-moves.append(mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0))
+moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
+moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )

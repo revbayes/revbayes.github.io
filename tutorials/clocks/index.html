@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
 	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on July 17, 2025</h5>
+  <h5>Last modified on August  7, 2025</h5>
 </div>
 
 
@@ -467,16 +467,20 @@ moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0) )
 
 <p>Specify the parameters of the GTR model and the moves to operate on
 them.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sf ~ dnDirichlet(v(1,1,1,1))
-    er ~ dnDirichlet(v(1,1,1,1,1,1))
-    Q := fnGTR(er,sf)
-    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
-    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf ~ dnDirichlet(v(1,1,1,1))
+er ~ dnDirichlet(v(1,1,1,1,1,1))
+Q := fnGTR(er,sf)
+moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
+moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
 </code></pre></div></div>
+
 <p>And instantiate the phyloCTMC.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
-    phySeq.clamp(D)
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
+phySeq.clamp(D)
 </code></pre></div></div>
+
 <p>This is all we will include in the global molecular clock model file.</p>
 
 <p>Save and close the file called in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
@@ -535,7 +539,7 @@ sampling closer and closer to the prior as the power decreases.</p>
 <p>First, we initialize a monitor which will log the MCMC samples for each
 parameter at every step in the power posterior.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/GMC_posterior_pp.log",printgen=10, separator = TAB)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/GMC_posterior_pp.log",printgen=10, separator = TAB) )
 </code></pre></div></div>
 
 <p>Next, we create the variable containing the power posterior. This
