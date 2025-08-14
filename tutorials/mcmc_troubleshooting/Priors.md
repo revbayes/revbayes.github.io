@@ -99,7 +99,7 @@ This interaction needs to be taken into account in order to correctly interpret 
 Each of these clades has an associated prior distribution on the age of their most recent common ancestor (MRCA):
 {{ calib_script | snippet:"block#","7" }}
 
-We also have a prior set on the origin time of the tree:
+We also have a prior set on the origin time of the trees:
 {{ calib_script | snippet:"block#","4" }}
 
 When we run the analysis, we obtain the posterior distribution shown in {% ref fig_age_posterior %} for the _Ursavus_ clade that we have set. The first impression we might get from this result is that our inference strongly supports younger ages for this clade, because our original prior was a uniform distribution on the full range [25.0 ; 36.0] My, whereas the posterior has much higher densities for values in the first half of the range. However, this is not taking into account the interactions between priors, which may lead to an **effective** prior on the clade age which is not uniform at all.

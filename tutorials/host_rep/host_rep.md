@@ -119,60 +119,60 @@ In this tutorial we are going to perform the analysis with two different host tr
 Now, let's begin.
 
 First, create file management variables for input
-
+{% snippet scripts/run_nymphalini.Rev %}
     phy_host_fn = "data/angio_25tips_time.phy"
     phy_parasite_fn = "data/Nymphalini.phy"
     dat_parasite_fn = "data/interaction_matrix.nex"
-
+{% endsnippet %}
 then read in our character data
-
+{% snippet scripts/run_nymphalini.Rev %}
     dat_parasite <- readDiscreteCharacterData(dat_parasite_fn)
-    
+{% endsnippet %}
 For this tutorial we'll assume we know the host and parasite phylogenies without error. Note that our host repertoire inference method uses a root branch length to estimate the stationary probabilities at the root node. Our parasite tree file (`Nymphalini.phy`) is modified to have a branch length assigned to the root node. If you provide a tree without a root branch length, the software will consider it to be the same length as the tree height. 
-
+{% snippet scripts/run_nymphalini.Rev %}
     phy_parasite <- readTrees(phy_parasite_fn)[1]
-    
+{% endsnippet %}
 Here is where you can change the host tree to `angio_25tips_bl1.phy` when you repeat the analysis
- 
+{% snippet scripts/run_nymphalini.Rev %}
     phy_host <- readTrees(phy_host_fn)[1]
-
+{% endsnippet %}
 Retrieve dataset dimensions
-
+{% snippet scripts/run_nymphalini.Rev %}
     n_host_tips <- phy_host.ntips()
     n_host_branches <- 2 * n_host_tips - 2
     n_parasite_branches <- 2 * phy_parasite.ntips() - 2
     n_sites <- dat_parasite.nchar()
-
+{% endsnippet %}
 Add more information to the name of output files
-
+{% snippet scripts/run_nymphalini.Rev %}
 	out_str = "out.time"
 	out_fn = "output/" + out_str    
-
+{% endsnippet %}
 We need to create vectors of *moves* and *monitors* to later inform how our Markov chain Monte Carlo (MCMC) analysis needs to propose and sample new model parameters and host repertoire histories. Also, we use monitors to record the information we want to use
-
+{% snippet scripts/run_nymphalini.Rev %}
     moves = VectorMoves()
     monitors = VectorMonitors()
-
+{% endsnippet %}
 Next, we'll build the transition rate matrix for the model. In this example, the rate matrix requires four rates: two gain rates (0->1 and 1->2) and two loss rates (1->0 and 2->1). 
 
 First, create a vector containing all transition rates and assign it a move
-
+{% snippet scripts/run_nymphalini.Rev %}
     switch_rates_pos ~ dnDirichlet( [1,1,1,1] )
     moves.append( mvSimplex(switch_rates_pos, alpha=10, weight=2, tune=false) )
-
+{% endsnippet %}
 We'll now create a set of deterministic nodes to help us map our simplex of transition rates onto specific host gain and loss events
-
+{% snippet scripts/run_nymphalini.Rev %}
     switch_rate_0_to_1 := switch_rates_pos[1]
     switch_rate_0_to_2 := 0.
     switch_rate_1_to_0 := switch_rates_pos[2]
     switch_rate_1_to_2 := switch_rates_pos[3]
     switch_rate_2_to_0 := 0.
     switch_rate_2_to_1 := switch_rates_pos[4]
-
+{% endsnippet %}
 Next, we assemble our named rate variables into a vector
-
+{% snippet scripts/run_nymphalini.Rev %}
     switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
-
+{% endsnippet %}
 We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (`rescaled=false`). This might not be true for every data set and you can always change it to `rescaled=true`.
 
     Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
