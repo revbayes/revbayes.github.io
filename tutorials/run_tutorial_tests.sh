@@ -90,7 +90,7 @@ for t in */tests.txt; do
             sed 's/\.run([0-9][0-9]*/.run(1/' |
             sed 's/checkpointInterval[[:space:]]*=[[:space:]]*[0-9]*/checkpointInterval=1/g'  > "cp_$script"
         )
-        ${rb_exec} -b scripts/cp_$script &> "output/${script%.[Rr]ev}.errout"
+        ${rb_exec} scripts/cp_$script &> "output/${script%.[Rr]ev}.errout"
         script_result="$?"
         printf "${CLEAR}"
         if [ "${script_result}" = 139 ]; then
