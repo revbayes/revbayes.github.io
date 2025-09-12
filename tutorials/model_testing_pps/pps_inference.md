@@ -449,7 +449,7 @@ Example topological test statistic calculations from a posterior distribution {%
 {% endfigure %}
 
 Since these values are calculated by iterating over the entire series of posterior predictive analyses
-they are a bit unweildy to run line by line. However, we will talk about some of the individual functions
+they are a bit unwieldy to run line by line. However, we will talk about some of the individual functions
 and how they work so if you wish you can develop your own test statistics at a later time.
 Here are some examples of these functions from the
 **PosteriorPredictive_TreeSummary.Rev** script:
@@ -469,7 +469,7 @@ Here are some examples of these functions from the
 > various topologies become increasingly uneven, entropy decreases causing the difference between the entropy of the prior and the 
 > posterior to increase. Equation $\ref{equation1}$.  
 
-```entropy <- sim_tree_trace.computeEntropy(credibleTreeSetSize=1.0,numTaxa=data.ntaxa(),verbose=FALSE)```
+```entropy <- sim_tree_trace.computeEntropy(credibleTreeSetSize=1.0,verbose=FALSE)```
 
 Assuming a uniform prior on topologies, the change in entropy can be calculated as:
 
