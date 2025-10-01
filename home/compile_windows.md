@@ -60,7 +60,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     1. [Download Boost](https://www.boost.org/users/download/) and unzip the archive.  In this tutorial, I unzipped v1.82.0 to `c:\boost\boost_1_82_0`.  It may be wise not to use the most current version; at time of writing, the latest 1.85 release caused compatibility issues.
     2. Use Open a cygwin terminal window and `cd` to the boost directory, here: `c:/boost/boost_1_82_0`
     3. Type `./bootstrap.bat gcc` to run the script with the gcc toolset.
-    4. Execute `b2 toolset=gcc-13 address-model=64 architecture=x86 --build-dir=build variant=release --build-type=complete --prefix=c:/boost/boost_1_82_0/gcc --with-regex --with-program_options --with-thread --with-system --with-filesystem --with-date_time --with-serialization  install`.
+    4. Execute `b2 toolset=gcc-13 address-model=64 architecture=x86 --build-dir=build variant=release --build-type=complete --prefix=c:/boost/boost_1_82_0/gcc --with-regex --with-program_options --with-thread --with-system --with-filesystem --with-date_time --with-serialization  cxxflags=-std=c++17 install`.
        - The `address-model=64 architecture=x86 toolset=gcc-13` options are assumed to match the configuration of your system – here, a 64-bit x86 machine – throughout this tutorial.  Use `gcc -v` to check which version of gcc you are using and update `gcc-13` to match.
     5. Check that installation was successful.  If it was, `C:\boost\boost_1_82_0\gcc\lib\cmake\Boost-1.82.0` will contain a file `BoostConfig.cmake`
     
