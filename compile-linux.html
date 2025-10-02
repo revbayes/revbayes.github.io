@@ -144,26 +144,26 @@ echo "cmake installed at: $(cd bin; pwd)/cmake"
 
 <p>Then you can compile boost:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
-tar -xzvf boost_1_74_0.tar.gz
-cd boost_1_74_0
-./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization --prefix=../installed-boost-1.74.0
-./b2 link=static install
-echo -e "\n    BOOST root is at $(cd ../installed-boost-1.74.0; pwd)\n"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://archives.boost.io/release/1.88.0/source/boost_1_88_0.tar.gz
+tar -xzvf boost_1_88_0.tar.gz
+cd boost_1_88_0
+./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization --prefix=../installed-boost-1.88.0
+./b2 link=static cxxflags=-std=c++17 install
+echo -e "\n    BOOST root is at $(cd ../installed-boost-1.88.0; pwd)\n"
 </code></pre></div></div>
 
-<p>This creates a new directory called <code class="language-plaintext highlighter-rouge">installed-boost-1.74.0</code> that contains the boost installation.
+<p>This creates a new directory called <code class="language-plaintext highlighter-rouge">installed-boost-1.88.0</code> that contains the boost installation.
 This directory is called the BOOST “root”.
 You will need the path to the BOOST root for the next step.</p>
 
 <p>To set up an IDE such as XCode, the following directory should be added to compiler include paths:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/path/to/installed-boost-1.74.0/include
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/path/to/installed-boost-1.88.0/include
 </code></pre></div></div>
 
 <p>The following directory should be added to linker library paths:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/path/to/installed-boost-1.74.0/lib
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/path/to/installed-boost-1.88.0/lib
 </code></pre></div></div>
 
 <h2 id="compile">Compile</h2>
@@ -183,7 +183,7 @@ You will need the path to the BOOST root for the next step.</p>
 
 <p>To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /path/to/installed-boost-1.74.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /path/to/installed-boost-1.88.0
 </code></pre></div></div>
 
 <p>For the MPI version:</p>
@@ -219,7 +219,7 @@ You will need the path to the BOOST root for the next step.</p>
 
 <ul>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">Error can't find the libboost_filesystem.so library or Library not   loaded: libboost_filesystem.so</code></p>
+    <p><code class="language-plaintext highlighter-rouge">Error can't find the libboost_filesystem.so library or Library not loaded: libboost_filesystem.so</code></p>
 
     <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="language-plaintext highlighter-rouge">LD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="language-plaintext highlighter-rouge">.bash_profile</code> or <code class="language-plaintext highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="language-plaintext highlighter-rouge">nano</code> to create this file type:</p>
 
@@ -230,7 +230,7 @@ nano .bash_profile
 
     <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">/root</code> with wherever you put the boost libraries:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export LD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$LD_LIBRARY_PATH
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export LD_LIBRARY_PATH=/root/boost_1_88_0/stage/lib:$LD_LIBRARY_PATH
 </code></pre></div>    </div>
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
