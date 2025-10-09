@@ -377,7 +377,7 @@ my_pps_mcmc = posteriorPredictiveAnalysis(mymcmc, directory)
 Finally, we run the 100 individual MCMC analyses:
 ~~~
 ## run the actual analyses
-my_pps_mcmc.run(generations=10000)
+my_pps_mcmc.run(generations=100)
 ~~~
 ~~~
 Running posterior predictive analysis ...
