@@ -387,10 +387,11 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |          
 -----------------------------------------------------------------------------------------------------------------------
 0           |       -9345.75   |       -9353.53   |        7.77435   |       2.322464   |   00:00:00   |   --:--:--   |
 100         |   9.04115e+271   |              0   |   9.04115e+271   |       2.322464   |   00:00:00   |   --:--:--   |
+200 [...]
 ~~~
 {:.Rev-output}
 
-Now that we have a full set of MCMC analyses for our simulated data, we can move on to calculating test statistics. 
+Once we have a full set of MCMC analyses for our simulated data, we can move on to calculating test statistics. 
 
 Calculating the Test Statistics
 -------------------------------
