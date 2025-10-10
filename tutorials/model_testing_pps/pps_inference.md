@@ -391,7 +391,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |          
 ~~~
 {:.Rev-output}
 
-Now that we have a full set of MCMC analyses for our simulated data, we can move on to calculating test statistics. 
+Once we have a full set of MCMC analyses for our simulated data, we can move on to calculating test statistics. 
 
 Calculating the Test Statistics
 -------------------------------
