@@ -377,7 +377,7 @@ my_pps_mcmc = posteriorPredictiveAnalysis(mymcmc, directory)
 Finally, we run the 100 individual MCMC analyses:
 ~~~
 ## run the actual analyses
-my_pps_mcmc.run(generations=100)
+my_pps_mcmc.run(generations=10000)
 ~~~
 ~~~
 Running posterior predictive analysis ...
@@ -387,6 +387,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |          
 -----------------------------------------------------------------------------------------------------------------------
 0           |       -9345.75   |       -9353.53   |        7.77435   |       2.322464   |   00:00:00   |   --:--:--   |
 100         |   9.04115e+271   |              0   |   9.04115e+271   |       2.322464   |   00:00:00   |   --:--:--   |
+200 [...]
 ~~~
 {:.Rev-output}
 
