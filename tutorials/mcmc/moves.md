@@ -207,7 +207,6 @@ Moves available in RevBayes for tree variables.
 
  |   **Move**      |        **Description**        |    **Citation**   |
  |:---------------:|:-----------------------------:|:-----------------:|
- |    `mvAddRemoveTip`    |                               |  {% cite  %} |
  |    `mvBranchLengthScale`    |                               |  {% cite  %} |
  |    `mvCollapseExpandFossilBranch`    |                               |  {% cite  %} |
  |    `mvEmpiricalTree`    |                               |  {% cite  %} |
