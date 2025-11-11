@@ -24,10 +24,11 @@ graphical models*, which lends flexibility and enhances the capabilities
 of the program. Users interact with RevBayes via an interactive shell.
 Users communicate commands using a language specifically designed for
 RevBayes, called `Rev`; an R-like language (complete with control
-statements, user-defined functions, and loops) that enables the user to
-build up (phylogenetic) models from simple parts (random variables,
-variable/parameter transformations, models, and constants of different
-sorts).
+statements, [user-defined functions](
+https://revbayes.github.io/tutorials/mcmc/archery.html#likelihood-function),
+and loops) that enables the user to build up (phylogenetic) models from
+simple parts (random variables, variable/parameter transformations, models,
+and constants of different sorts).
 
 Here we assume that you have successfully installed RevBayes. If this
 isn't the case, then please consult our website on how to install
