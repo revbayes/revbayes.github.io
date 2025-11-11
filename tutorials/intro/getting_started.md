@@ -369,8 +369,8 @@ RevBayes Users' Forum
 ---------------------
 {:.subsection}
 
-An email list has been created for users of RevBayes to discuss
-RevBayes-related topics, including: RevBayes installation and use,
-scripting and programming, phylogenetics, population genetics, models of
-evolution, graphical models, etc. The forum is hosted by Google Groups: [revbayes-users](http://bit.ly/107aW2R)
+Our [discussion forum](https://github.com/revbayes/revbayes/discussions) allows users of
+RevBayes to discuss RevBayes-related topics with developers and other users.
+Topics include: RevBayes installation and use, scripting and programming, phylogenetics,
+population genetics, models of evolution, and graphical models.
 
