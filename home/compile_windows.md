@@ -10,7 +10,7 @@ code_layout: bash
 
 **NOTE: Boost now needs to be at least version 1.71.**
 
-You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.  Meson allows using linux to generate windows binaries ("cross-compiling").
+You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.  Meson allows using Linux to generate Windows binaries ("cross-compiling").
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
@@ -24,10 +24,12 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     | cmake-gui               | 3.14.5-1  | 
     | git                     | 2.21.0-1  | 
     | make                    | 4.3-1     | 
-    | mingw64-x86_64-boost    | 1.66.0-1  | 
     | mingw64-x86_64-gcc-core | 9.2.0-2   | 
-    | mingw64-x86_64-gcc-g++  | 9.2.0-2   | 
+    | mingw64-x86_64-gcc-g++  | 9.2.0-2   |
+    | <strike>mingw64-x86_64-boost</strike> *   | <strike>1.66.0-1</strike>  | 
 
+    \* Note that Cygwin does not include the required Boost 1.71 as of Nov 2025.
+    As such, Boost must be installed separately; see instructions below.
 
     For RevStudio you will also need:
 
@@ -76,7 +78,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
       b. After the  line starting `find_package(Boost`, around line 170,
          add `include_directories(${Boost_INCLUDE_DIRS})`
 
-2. Retrieve the RevBayes sources.
+3. Retrieve the RevBayes sources.
 
     1. Open a cygwin terminal window
     2. Clone the git repository:
@@ -88,7 +90,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     navigate to the folder that contains it.  To get to the folder `c:/RevBayes`,
     use `cd /cygdrive/c/RevBayes`.
 
-3. Compile RevBayes.
+4. Compile RevBayes.
 
     1. Open a **Cygwin** terminal window (cmd or PowerShell will not work!) and go to the RevBayes source directory
        if you haven't already done so, e.g., 
@@ -135,7 +137,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
       successfully by `<revbayes>/projects/cmake/regenerate.sh`; head to
       this folder and run `bash regenerate.sh`.
 
-4. Library whack-a-mole
+5. Library whack-a-mole
 
     When you try to run the executable you will likely get an error about missing libraries. 
 
