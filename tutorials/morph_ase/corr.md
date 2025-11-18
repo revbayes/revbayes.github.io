@@ -77,10 +77,10 @@ Now in the second rate matrix, we have 8 parameters.
 If we want to test for correlations, we can simply test if specific parameters are indeed distinguishable {% cite Pagel2004 %}.
 
 These parameters are:
-* $\mu_{1,2} \neq \mu_{3,4}$: a gain in character A does not depend on the state of character B
-* $\mu_{2,1} \neq \mu_{4,3}$: a loss in character A does not depend on the state of character B
-* $\mu_{1,3} \neq \mu_{2,4}$: a gain in character B does not depend on the state of character A
-* $\mu_{3,1} \neq \mu_{4,2}$: a loss in character B does not depend on the state of character A
+* $\mu_{1,2} \neq \mu_{3,4}$: a gain in character A depends on the state of character B
+* $\mu_{2,1} \neq \mu_{4,3}$: a loss in character A depends on the state of character B
+* $\mu_{1,3} \neq \mu_{2,4}$: a gain in character B depends on the state of character A
+* $\mu_{3,1} \neq \mu_{4,2}$: a loss in character B depends on the state of character A
 
 We will perform these tests here using reversible jump Markov chain Monte Carlo.
 
