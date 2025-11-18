@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</h1>
 	<h3 class="subtitle">Model adequacy testing using posterior prediction (Morphological Models).</h3>
 	<h4 class="authors">Laura Mulvey</h4>
-  <h5>Last modified on February  1, 2024</h5>
+  <h5>Last modified on November 18, 2025</h5>
 </div>
 
 
@@ -145,8 +145,8 @@
 <hr class="section" />
 
 <p>This tutorial presents a general approach for using posterior predictive
-simulations (PPS) to determine the adequacy of morphological substitution models following 
-<a class="citation" href="#Mulvey2024">(Mulvey et al. 2024)</a>. PPS
+simulations (PPS) to determine the adequacy of morphological substitution models following
+<a class="citation" href="#Mulvey2025">(Mulvey et al. 2025)</a>. PPS
 assess the reliability of an evolutionary model for a given data set through the use
 of simulations and a number of test statistics. In this way, it is possible to determine
 whether a model is adequately capturing the evolutionary dynamics of the data set or
@@ -155,16 +155,16 @@ not.</p>
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>Understanding morphological evolution is a difficult task. Within palaeobiology 
-there are a small number of relatively  simple evolutionary models to describe 
-this complex process. Assessing the fit of these models to individual data sets is 
-therefore crucial in order to have confidence in the inference results. Posterior 
+<p>Understanding morphological evolution is a difficult task. Within palaeobiology
+there are a small number of relatively  simple evolutionary models to describe
+this complex process. Assessing the fit of these models to individual data sets is
+therefore crucial in order to have confidence in the inference results. Posterior
 prediction is a Bayesian approach to assess the fit of a model to a given data set
 <a class="citation" href="#Bollback2002">(Bollback 2002; Brown 2014; Höhna et al. 2018)</a>. PPS works by simulating data sets
 based on parameters sampled from the posterior distribution
 (<a href="#pps_schematic"></a>). If the simulated data is found to be similar to the
 empirical data, according to the chosen test statistics, you can have
-confidence that the model is capturing the properties of the empirical data 
+confidence that the model is capturing the properties of the empirical data
 and can be used for an analysis. In this way, PPS provides the absolute fit of an
 evolutionary model to a given data set.</p>
 
@@ -174,7 +174,7 @@ We will test two models in this tutorial. Each test is completely seperate from
 the other as we are determining the absolute fit of the model to the data set.</p>
 
 <figure id="pps_schematic"><p><img src="figures/pps-morpho.png" /></p>
-<figcaption>A schematic presentation of posterior predictive simulation for morphological 
+<figcaption>A schematic presentation of posterior predictive simulation for morphological
 substitution models. Step 1 involves a carrying out an inference under the model of
 interest. Step 2 a number of data sets are then simulated using parameters taken from
 the posterior distribution estimated in step 1. Step 3 uses tests statistics to assess
@@ -226,7 +226,7 @@ the previous tutorial. We provide scripts for two subsitution models here:</p>
   <tbody>
     <tr>
       <td>P</td>
-      <td style="text-align: right">partitions the data based on the number of character states</td>
+      <td style="text-align: right">partitions the data based on the number of character states <a class="citation" href="#Khakurel2024">(Khakurel et al. 2024)</a></td>
     </tr>
   </tbody>
 </table>
@@ -237,8 +237,8 @@ the previous tutorial. We provide scripts for two subsitution models here:</p>
 <h2 class="section" id="assessing-model-fit-with-posterior-prediction">Assessing Model Fit with Posterior Prediction</h2>
 <hr class="section" />
 
-<p>Here we will highlight the main parts of the analysis. The morpholgoical data used here is of a family of extinct birds from the Miocene <a class="citation" href="#agnolin2007">(Agnolin 2007)</a>. The data set contains 12 taxa, 
-51 characters with a maximum 4 character states. To quickly run the entire PPS pipeline you can run 
+<p>Here we will highlight the main parts of the analysis. The morpholgoical data used here is of a family of extinct birds from the Miocene <a class="citation" href="#agnolin2007">(Agnolin 2007)</a>. The data set contains 12 taxa,
+51 characters with a maximum 4 character states. To quickly run the entire PPS pipeline you can run
 the <strong>pps_analysis_Mk.Rev</strong> script. To run this type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code></p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/pps_analysis_Mk.Rev")
@@ -250,7 +250,7 @@ the <strong>pps_analysis_Mk.Rev</strong> script. To run this type the following 
 <hr class="subsection" />
 
 <p>The initial step in PPS involves generating a posterior distribution from which we
-will later sample parameter values from, in order to simulated new data sets. 
+will later sample parameter values from, in order to simulated new data sets.
 Here we will specify our dataset, evolutionary model, and run a normal MCMC analysis.
 This code is in the <strong>pps_analysis_Mk.Rev</strong> script.</p>
 
@@ -275,7 +275,7 @@ morpho &lt;- readDiscreteCharacterData(inFile)
 </code></pre></div></div>
 
 <p>Specify the maximum number of states in the morphological alignment. For morphological data
-sets this value will change depending on the data set. We need this to construct a 
+sets this value will change depending on the data set. We need this to construct a
 Q-matrix of the correct size.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_states ="4"
@@ -287,19 +287,19 @@ Q-matrix of the correct size.</p>
 monitors = VectorMonitors()
 </code></pre></div></div>
 
-<p>For the rest of the tutorial you can choose to either use the <code class="language-plaintext highlighter-rouge">source()</code> function to run the scripts <strong>or</strong> 
+<p>For the rest of the tutorial you can choose to either use the <code class="language-plaintext highlighter-rouge">source()</code> function to run the scripts <strong>or</strong>
 copy and paste the each line into revbayes as they are explained.</p>
 
 <h4 class="subsubsection" id="specifying-the-model">Specifying the model</h4>
 <hr class="subsubsection" />
 
-<p>Here we will specify both the tree model and the substitution model. 
+<p>Here we will specify both the tree model and the substitution model.
 Typing the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code> will run the model script.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source( model_file_name )
 </code></pre></div></div>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Processing file "scripts/Mk_Model.Rev"
-Processing of file "scripts/Mk_Model.Rev" completed 
+Processing of file "scripts/Mk_Model.Rev" completed
 </code></pre></div></div>
 <p>Opening the model file, we can see how we have set it up.</p>
 
@@ -317,7 +317,7 @@ We put a prior on the branch lengths using an exponential distribution with a ra
 moves.append(mvScale(br_len_lambda, weight=2))
 </code></pre></div></div>
 
-<p>We then set a uniform tree prior for the tree topology. This prior assumes that no tree is 
+<p>We then set a uniform tree prior for the tree topology. This prior assumes that no tree is
 more likely <em>a priori</em> than any other.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
@@ -328,11 +328,11 @@ tree_length := phylogeny.treeLength()
 </code></pre></div></div>
 
 <p>In this script we are specifying an Mk model, where <em>k</em> is the maximum number of
-observed states. As the Mk model is a generalization of the JC model this is done using the 
-<code class="language-plaintext highlighter-rouge">fnJC()</code> function. This creates a Q-matrix of size <code class="language-plaintext highlighter-rouge">num_states</code>. The resulting Q-matrix 
+observed states. As the Mk model is a generalization of the JC model this is done using the
+<code class="language-plaintext highlighter-rouge">fnJC()</code> function. This creates a Q-matrix of size <code class="language-plaintext highlighter-rouge">num_states</code>. The resulting Q-matrix
 will have equal transition probabilities between all states.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnJC(int(num_states)) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnJC(int(num_states))
 </code></pre></div></div>
 <p>We then create a <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> object. This joins all the model parameters we created to model
 the morphological data. The is then clamped to the morphological evolution model.</p>
@@ -341,7 +341,7 @@ the morphological data. The is then clamped to the morphological evolution model
 seq.clamp(morpho)
 </code></pre></div></div>
 
-<p>Finally, we can create a workspace model variable using the <code class="language-plaintext highlighter-rouge">model()</code> function. We provide 
+<p>Finally, we can create a workspace model variable using the <code class="language-plaintext highlighter-rouge">model()</code> function. We provide
 the model function a single node here using (<code class="language-plaintext highlighter-rouge">phylogeny</code>).</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
@@ -355,16 +355,16 @@ the model function a single node here using (<code class="language-plaintext hig
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/pps_MCMC.Rev")
 </code></pre></div></div>
 <p>In this script, we are specifying the number of iterations, the monitors and the burn.
-For this analysis we add a different file than the normal set up, the <code class="language-plaintext highlighter-rouge">.var</code> file. This file 
+For this analysis we add a different file than the normal set up, the <code class="language-plaintext highlighter-rouge">.var</code> file. This file
 will be used in the next step to simulate the new data sets.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output_" + model_name + "/" + analysis_name + "_posterior.log",printgen=10, separator = TAB)) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output_" + model_name + "/" + analysis_name + "_posterior.log",printgen=10, separator = TAB))
 monitors.append( mnFile(filename="output_" + model_name + "/" + analysis_name + "_posterior.trees",printgen=10, separator = TAB, phylogeny) )
 monitors.append( mnScreen(printgen=1000, tree_length) )
 monitors.append( mnStochasticVariable(filename="output_" + model_name + "/" + analysis_name + "_posterior.var",printgen=10) )
 </code></pre></div></div>
 
-<p>Now that we have our model, moves, and monitors set up we can define our MCMC. This is done 
+<p>Now that we have our model, moves, and monitors set up we can define our MCMC. This is done
 using the <code class="language-plaintext highlighter-rouge">mcmc()</code> function. <code class="language-plaintext highlighter-rouge">nruns</code> specifiies that there are two independent mcmc runs during the analysis.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
@@ -373,7 +373,7 @@ mymcmc.burnin(generations=200,tuningInterval=200)
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Running burn-in phase of Monte Carlo sampler for 200 iterations.
    This simulation runs 2 independent replicates.
    The simulator uses 4 different moves in a random move schedule with 30.7 moves per iteration
-   
+
 
 Progress:
 0---------------25---------------50---------------75--------------100
@@ -388,7 +388,7 @@ Progress:
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Running MCMC simulation
    This simulation runs 2 independent replicates.
    The simulator uses 4 different moves in a random move schedule with 30.7 moves per iteration
-   
+
 
 Iter        |      Posterior   |     Likelihood   |          Prior   |    tree_length   |    elapsed   |        ETA   |
 -----------------------------------------------------------------------------------------------------------------------
@@ -407,11 +407,11 @@ mccTree(trace, file="output_" + model_name + "/MCC.tre")
 <h4 class="subsubsection" id="mcmc-output">MCMC output</h4>
 <hr class="subsubsection" />
 
-<p>As output from the analysis, you should have folder named <em>output_Mk</em> in your current directory. This file contains the 
-log files and trees from both runs and a combination of both. You should use programs like Tracer to check for 
+<p>As output from the analysis, you should have folder named <em>output_Mk</em> in your current directory. This file contains the
+log files and trees from both runs and a combination of both. You should use programs like Tracer to check for
 convergence at this stage.</p>
 
-<p>Before moving on to the next section it is important to clear the <code class="language-plaintext highlighter-rouge">RevBayes</code> environment of all the variables created 
+<p>Before moving on to the next section it is important to clear the <code class="language-plaintext highlighter-rouge">RevBayes</code> environment of all the variables created
 during the previous step. This can be done using the following <code class="language-plaintext highlighter-rouge">clear()</code> function.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
@@ -420,10 +420,10 @@ during the previous step. This can be done using the following <code class="lang
 <h3 class="subsection" id="posterior-predictive-data-simulation">Posterior Predictive Data Simulation</h3>
 <hr class="subsection" />
 
-<p>In this section we will simulate new data sets based on the parameters sampled in the <code class="language-plaintext highlighter-rouge">.var</code>file in part one of this 
+<p>In this section we will simulate new data sets based on the parameters sampled in the <code class="language-plaintext highlighter-rouge">.var</code>file in part one of this
 tutorial.</p>
 
-<p>We first have to load the data and set up the model as we did in the previous step. As we went through this above you 
+<p>We first have to load the data and set up the model as we did in the previous step. As we went through this above you
 can simply copy and paste this into the terminal.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inFile = "data/Agnolin_2007a_paleobiodb.nex"
@@ -447,11 +447,11 @@ source( model_file_name )
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pps = posteriorPredictiveSimulation(mymodel, directory="output_" + model_name + "/" + analysis_name + "_post_sims", trace)
 </code></pre></div></div>
 
-<p>To start the simulation we use the <code class="language-plaintext highlighter-rouge">pps.run()</code> function. Here we can specify how many data sets we want to simulate by 
-setting the thinning. The <code class="language-plaintext highlighter-rouge">.var</code> file contains a number of phylogenetic trees. If thinning is set to the default (0) the 
-pps.run() function will simulate data for each tree. Setting thinning to 2 will simulate along every second tree and so 
-on. In this way setting thinning = 2 simulates data for half of the trees in the .var file. Simulating 500 data 
-sets has been found to be sufficient for these types of analysis. If you increase the number of iterations in the MCMC 
+<p>To start the simulation we use the <code class="language-plaintext highlighter-rouge">pps.run()</code> function. Here we can specify how many data sets we want to simulate by
+setting the thinning. The <code class="language-plaintext highlighter-rouge">.var</code> file contains a number of phylogenetic trees. If thinning is set to the default (0) the
+pps.run() function will simulate data for each tree. Setting thinning to 2 will simulate along every second tree and so
+on. In this way setting thinning = 2 simulates data for half of the trees in the .var file. Simulating 500 data
+sets has been found to be sufficient for these types of analysis. If you increase the number of iterations in the MCMC
 you may want to increase the thinning value here. Here we set thinning to 4.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pps.run(thinning=4)
@@ -463,36 +463,36 @@ This is where all of the data simulated in revbayes will be stored. This simulat
 <h3 class="subsection" id="calculating-the-p-values-and-effect-sizes-for-the-test-statistics">Calculating the <em>P-values</em> and effect sizes for the Test Statistics</h3>
 <hr class="subsection" />
 
-<p>To determine if a model is adequate or not we need to compare the empirical data with the newly simulated data sets. If 
-the simulated data sets are not significantly different from the empirical, we can conclude that the model is adequate 
+<p>To determine if a model is adequate or not we need to compare the empirical data with the newly simulated data sets. If
+the simulated data sets are not significantly different from the empirical, we can conclude that the model is adequate
 for the data set. Here we use two test statistics, <strong>Consistency Index</strong> and <strong>Retention Index</strong>.
-Consistency Index is a measure of homoplasy in the data and retention index measures the degree to which potential 
+Consistency Index is a measure of homoplasy in the data and retention index measures the degree to which potential
 synapomorphy is exhibited on the tree. These test statistics are calculated in <code class="language-plaintext highlighter-rouge">R</code> using the <strong>Test-stats.r</strong> script.</p>
 
 <p>This script calculates posterior <em>P-values</em> and effect sizes to determine the adequacy of the model. Here we calculate 4
-p-values, lower 1-tailed, Upper 1-tailed, 2-tailed, and the mid-point p-value. Values of less than 0.025 or greater the 
-0.975 indicate significance. The effect sizes can also be used to determine the adequacy of a model, though the p-values 
-are considered more conservative. For the effect sizes, if the maximum and minimum value range through zero a model can 
+p-values, lower 1-tailed, Upper 1-tailed, 2-tailed, and the mid-point p-value. Values of less than 0.025 or greater the
+0.975 indicate significance. The effect sizes can also be used to determine the adequacy of a model, though the p-values
+are considered more conservative. For the effect sizes, if the maximum and minimum value range through zero a model can
 be considered adequate.</p>
 
 <h4 class="subsubsection" id="visualising-the-results">Visualising the results</h4>
 <hr class="subsubsection" />
 
 <figure id="pps_results"><p><img src="figures/Ma_results.png" width="600" /></p>
-<figcaption>Histrograms show the distribution of values calculated for each test statistic from the simulated data sets. The green 
-line shows the empirical value while the blue shows the median simulated value. The box plots show the effect sizes 
-calculated for the test statistics. The median value should be closer to zero, models are considered adequate if the 
+<figcaption>Histrograms show the distribution of values calculated for each test statistic from the simulated data sets. The green
+line shows the empirical value while the blue shows the median simulated value. The box plots show the effect sizes
+calculated for the test statistics. The median value should be closer to zero, models are considered adequate if the
 min and max values are range through zero.</figcaption>
 </figure>
 
-<p>The Mk model would not be considered adequate for this data set. While it does well according to the retention index, 
+<p>The Mk model would not be considered adequate for this data set. While it does well according to the retention index,
 the consistency index determined the simulated data to be significantly different to the empirical.</p>
 
 <h2 class="section" id="additional-exercise">Additional Exercise</h2>
 <hr class="section" />
 
 <ul>
-  <li>Now that you know the Mk model is not appropriate for the data set try the MkVP+G model. This model is more complex than the Mk as it relaxes some of the assumption. Is this model adequate for the data set? Use the following command to rerun the 
+  <li>Now that you know the Mk model is not appropriate for the data set try the MkVP+G model. This model is more complex than the Mk as it relaxes some of the assumption. Is this model adequate for the data set? Use the following command to rerun the
 entire analysis using the other model.</li>
 </ul>
 
@@ -528,14 +528,19 @@ entire analysis using the other model.</li>
 <a href="https://doi.org/10.1093/molbev/msx286">10.1093/molbev/msx286</a>
 
 </li>
+<li><span id="Khakurel2024">Khakurel B., Grigsby C., Tran T.D., Zariwala J., Höhna S., Wright A.M. 2024. The fundamental role of character coding in Bayesian morphological phylogenetics. Systematic Biology. 73:861–871.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syae033">10.1093/sysbio/syae033</a>
+
+</li>
 <li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
 
 <a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
 
 </li>
-<li><span id="Mulvey2024">Mulvey L.P.A., May M.R., Brown J.M., Höhna S., Wright A.M., Warnock R.C.M. 2024. Assessing the Adequacy of Morphological Models used in Palaeobiology. bioRxiv.</span>
+<li><span id="Mulvey2025">Mulvey L.P.A., May M.R., Brown J.M., Höhna S., Wright A.M., Warnock R.C.M. 2025. Assessing the Adequacy of Morphological Models Using Posterior Predictive Simulations. Systematic Biology. 74:34–52.</span>
 
-<a href="https://doi.org/10.1101/2024.01.25.577179">10.1101/2024.01.25.577179</a>
+<a href="https://doi.org/10.1093/sysbio/syae055">10.1093/sysbio/syae055</a>
 
 </li>
 <li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
