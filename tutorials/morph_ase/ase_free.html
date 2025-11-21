@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation with the independent rates model</h1>
 	<h3 class="subtitle">Testing for Unequal Rates</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on November 29, 2022</h5>
+  <h5>Last modified on November 21, 2025</h5>
 </div>
 
 
@@ -166,28 +166,24 @@ In short, it is probably not likely that one single model describes all characte
 
 <p>The ERM model makes a number of assumptions, but one that may strike you as unrealistic is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
-While this may hold true for some traits, we expect that it may be untrue for many others.
-$$Q = \begin{pmatrix}</p>
-<ul>
-  <li>&amp; \mu_1 <br />
+While this may hold true for some traits, we expect that it may be untrue for many others.</p>
+
+<p>RevBayes has functionality to allow us to relax this assumption.
+For example, we can define the rates</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [0.0,  mu_1],
+           [ mu_2,  0.0] ]
+</code></pre></div></div>
+<p>and then create the rate matrix</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
+</code></pre></div></div>
+<p>which corresponds to the model</p>
+
+\[Q = \begin{pmatrix}
+ - &amp; \mu_1 \\
 \mu_2 &amp; -
-\end{pmatrix}$$
-RevBayes has functionality to allow us to relax this assumption.
-For example, we can define the rates
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [0.0,  mu_1],
-        [ mu_2,  0.0] ]
-</code></pre></div>    </div>
-    <p>and then create the rate matrix</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
-</code></pre></div>    </div>
-    <p>which corresponds to the model
-$$Q = \begin{pmatrix}</p>
-  </li>
-  <li>&amp; \mu_1 <br />
-\mu_2 &amp; -
-\end{pmatrix}$$
-This is the independent rates model <a class="citation" href="#Pagel1994">(Pagel 1994; Maddison 1994; Schluter et al. 1997)</a>, which we will explore in this tutorial.</li>
-</ul>
+\end{pmatrix} \mbox{.}\]
+
+<p>This is the independent rates model <a class="citation" href="#Pagel1994">(Pagel 1994; Maddison 1994; Schluter et al. 1997)</a>, which we will explore in this tutorial.</p>
 
 <blockquote class="instruction">
   <p>Make a copy of the MCMC and model files you just made.
