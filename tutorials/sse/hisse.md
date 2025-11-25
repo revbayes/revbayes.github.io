@@ -203,8 +203,8 @@ is drawn from an exponential distribution with a mean of 10 character
 state transitions over the entire tree. This is reasonable because we
 use this kind of model for traits that transition not-infrequently, and
 it leaves a fair bit of uncertainty.
-Note that we will actually use a `for`-loop to instantiate the transition rates
-so that our script will also work for non-binary characters.
+We will actually use a `for`-loop to instantiate the transition rates
+so that our script also works for non-binary characters.
 ```
 rate_pr := observed_phylogeny.treeLength() / 10
 for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
@@ -212,7 +212,17 @@ for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
     moves.append( mvScale(transition_rates[i],lambda=0.50,tune=true,weight=3.0) )
 }
 ```
-Similarly to the rate of change between the observed character, we also add a rate of change between the unobserved character, the hidden rate.
+Note that the loop fills the non-diagonal entries of the rate matrix
+by row: if, for example, `NUM_STATES` was equal to 3 rather than 2, then:
+
+- `transition_rates[1]` would correspond to $q_{01}$;
+- `transition_rates[2]` would correspond to $q_{02}$;
+- `transition_rates[3]` would correspond to $q_{10}$;
+- `transition_rates[4]` would correspond to $q_{12}$;
+- `transition_rates[5]` would correspond to $q_{20}$;
+- `transition_rates[6]` would correspond to $q_{21}$.
+
+Similarly to the rate of change between the observed states, we also add a rate of change between the unobserved states, the hidden rate.
 Thus, we will also assume the same exponential prior distribution.
 ```
 hidden_rate ~ dnExponential(rate_pr)
