@@ -101,8 +101,8 @@ age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 if (use_bg_calib) {
     age_bg_min <- 0.0
     age_bg_max <- 6.3
-    clade_calib ~ dnUniform(age_bg_min-age_ingroup, age_bg_max-age_ingroup)
-    clade_calib.clamp(0.0)
+    clade_calib ~ dnPseudo( pdBetween(age_ingroup, age_bg_nmin, age_bg_max))
+    clade_calib.clamp( pseudoObservation())
 }
 
 

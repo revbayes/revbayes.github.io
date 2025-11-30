@@ -104,13 +104,9 @@ diff_age_root_ingroup := root_age - age_ingroup
 age_bg_min <- 0.0
 age_bg_max <- 6.3
 
-# set lower/upper bounds as difference between min/max age and ingroup age
-calib_lower := age_bg_min - age_ingroup
-calib_upper := age_bg_max - age_ingroup
-
 # set calibration interval
-clade_calib ~ dnUniform(calib_lower, calib_upper)
-clade_calib.clamp(0.0)
+clade_calib ~ dnPseudo( pdBetween( age_ingroup, age_bg_min, age_bg_max) )
+clade_calib.clamp( pseudoObservation() )
 
 
 ###################

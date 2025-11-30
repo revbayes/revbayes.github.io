@@ -541,24 +541,12 @@ Recall from the previous tutorial on molecular phylogenetics that we created the
 age_bg_min <- 0.0
 age_bg_max <- 6.3
 
-# set lower/upper bounds as difference between min/max age and ingroup age
-calib_lower := age_bg_min - age_ingroup
-calib_upper := age_bg_max - age_ingroup
-
 # set calibration interval
-calib_clade ~ dnUniform(calib_lower, calib_upper)
-calib_clade.clamp(0.0)
+calib_clade ~ dnPseudo( pdBetween(age_ingroup, age_bg_min, age_bg_max) )
+calib_clade.clamp( pseudoObservation() )
 ```
 
-
-Calibration in RevBayes works by setting the calibration variable to fixed value of `0.0`. You can then imagine the calibration density as a "sliding window" that assigns a probability to the fixed point of zero. The position of this sliding window depends on the difference between the clade's age and relative to the window. In our case, the fixed point of `0.0` will always be greater than the lower bound of `calib_lower := 0.0 - age_ingroup`, because clades always have positive ages. The fixed point `0.0` will be less than the upper bound of `calib_upper := 6.3 - age_ingroup` only when `age_ingroup < 6.3`. When `age_ingroup > 6.3`, then the fixed value of `calib_clade > 6.3 - age_ingroup` and the prior density will assign probability zero to the node age constraint being satisfied. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample. Learn more about divergence time estimation using node age calibrations in RevBayes through this tutorial: [link](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf).
-
-{% figure phy_calib %}
-<img src="figures/kadua_calibration.png" width="60%">
-{% figcaption %}
-Cartoon for how RevBayes node age calibration densities behave. This example assumes the maximum clade age is 6.3 Ma and the minimum clade age is 0.0 Ma (present, i.e effectively no lower bound) under a uniform calibration density. When the clade age increases, the density "slides" to the left. When the clade age decreases, the density "slides" to the right. MCMC will reject a clade ages that have low (or zero) probability, as marked in red.
-{% endfigcaption %}
-{% endfigure %}
+Calibration in RevBayes works by specifying a pseudodata likelihood.  In this case the pseudodata likelihood `pdBetween(age_ingroup, age_bg_min, age_bg_max)` is `0` except when `age_ingroup` is within the interval `[age_bg_min, age_bg_max]`. This is called a pseudodata likelihood, because we imagine that there is some unspecified data (i.e. "pseudodata") whose likelihood function has this shape. Phylogenetic trees that violate the node age constraint will always be discarded and never appear in the posterior sample.  It is possible to turn this into a soft constraint by specifying the `decayRate` parameter to `pdBetween`.  Other pseudodata likelihood function shapes are also possible.  Learn more about divergence time estimation using node age calibrations in RevBayes through this tutorial: [link](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf).
 
 Let's view the MCC tree for the prior-based time-calibration analysis in FigTree (Fig. {% ref phy_nodeprior %}).
 
