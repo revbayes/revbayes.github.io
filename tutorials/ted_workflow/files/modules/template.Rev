@@ -96,8 +96,8 @@ for(i in 1:fossils.size()) {
   a = fossils[i].getMinAge()
   b = fossils[i].getMaxAge()
 
-  F[i] ~ dnUniform(t[i] - b, t[i] - a)
-  F[i].clamp( 0 )
+  F[i] ~ dnPseudo( pdBetween(t[i], a, b) )
+  F[i].clamp( pseudoObservation() )
 
   # specify a proposal on the fossil age
   moves.append( mvFossilTimeSlideUniform(timetree, origin_time, fossils[i], weight = 1.0) )
