@@ -229,9 +229,11 @@ age being younger than 38 Mya is equal to 0, using this value to offset
 a prior distribution on the root-age.
 
 First specify the occurrence-time of the fossil.
-```
-tHesperocyon <- 38.0
-```
+
+{% snippet scripts/m_BDP_bears.Rev %}
+    tHesperocyon <- 38.0
+{% endsnippet %}
+
 We will assume a lognormal prior on the root age that is offset by the
 observed age of *Hesperocyon gregarius*. We can use the previous
 analysis by {% cite DosReis2012 %} to parameterize the lognormal prior on the root
@@ -241,14 +243,18 @@ distribution to equal $49 - 38 = 11$ Mya. Given the expected value of
 the lognormal (`mean_ra`) and a standard deviation (`stdv_ra`), we can
 also compute the location parameter of the lognormal (`mu_ra`).
 
+{% snippet scripts/m_BDP_bears.Rev %}
     mean_ra <- 11.0
     stdv_ra <- 0.25
     mu_ra <- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
+{% endsnippet %}
 
 With these parameters we can instantiate the root age stochastic node
 with the offset value.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     root_time ~ dnLognormal(mu_ra, stdv_ra, offset=tHesperocyon)
+{% endsnippet %}
 
 ### Time Tree Stochastic Node
 
@@ -256,7 +262,9 @@ Now that we have specified all of the parameters of the birth-death
 process, we can create our stochastic node representing the tree
 topology and divergence times.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
+{% endsnippet %}
 
 ### Creating a Node-Age Variable
 
@@ -267,27 +275,35 @@ taxa using the `clade()` function. This will not restrict this node to
 be monophyletic, but just create a node that is the MRCA of the taxa
 listed (even if that node has descendants that are not named).
 
-    clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus", "Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+{% snippet scripts/m_BDP_bears.Rev %}
+    clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus","Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+{% endsnippet %}
 
 Once we have defined the node, we can create a deterministic node to
 monitor its age.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     tmrca_Ursidae := tmrca(timetree,clade_Ursidae)
+{% endsnippet %}
 
 ### Proposals on the Time Tree
 
 Next, create the vector of moves. These tree moves act on node ages:
 
-    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) ) )
+{% snippet scripts/m_BDP_bears.Rev %}
+    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0 ) )
     moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
     moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
     moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
+{% endsnippet %}
 
 Then, we will add moves that will propose changes to the tree topology.
 
+{% snippet scripts/m_BDP_bears.Rev %}
     moves.append( mvNNI(timetree, weight=8.0) )
     moves.append( mvNarrow(timetree, weight=8.0) )
     moves.append( mvFNPR(timetree, weight=8.0) )
+{% endsnippet %}
 
 Now save and close the file. This file, with all the model
 specifications will be loaded by other `Rev` files.
@@ -326,25 +342,29 @@ still depend on variable initialized in different files.
 
 The clock-rate parameter is a stochastic node from a gamma distribution.
 
+{% snippet scripts/m_GMC_bears.Rev %}
     clock_rate ~ dnGamma(2.0,4.0)
     moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0) )
+{% endsnippet %}
 
 ***The Sequence Model and Phylogenetic CTMC***
 
 Specify the parameters of the GTR model and the moves to operate on
 them.
-```
+
+{% snippet scripts/m_GTR.Rev %}
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
     moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
     moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
-```
+{% endsnippet %}
+
 And instantiate the phyloCTMC.
-```
+{% snippet scripts/m_GMC_bears.Rev %}
     phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
     phySeq.clamp(D)
-```
+{% endsnippet %}
 This is all we will include in the global molecular clock model file.
 
 Save and close the file called in the `scripts` directory.
@@ -362,30 +382,30 @@ the `scripts` directory.
 
 *Load Sequence Alignment* — Read in the sequences and initialize
 important variables.
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     D <- readDiscreteCharacterData(file="data/bears_irbp.nex")
     n_sites <- D.nchar()
     mi = 1
-
+{% endsnippet %}
 *The Calibrated Time-Tree Model* — Load the calibrated tree model from
 file using the `source()` function. Note that this file does not have
 moves that operate on the tree topology, which is helpful when you plan
 to estimate the marginal likelihoods and compare different relaxed clock
 models.
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     source("scripts/m_BDP_bears.Rev")
-
+{% endsnippet %}
 *Load the GMC Model File* — Source the file containing all of the
 parameters of the global molecular clock model. This file is called .
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     source("scripts/m_GMC_bears.Rev")
-
+{% endsnippet %}
 We can now create our workspace model variable with our fully specified
 model DAG. We will do this with the `model()` function and provide a
 single node in the graph (`er`).
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     mymodel = model(er)
-
+{% endsnippet %}
 *Run the Power-Posterior Sampler and Compute the Marginal Likelihoods* —
 With a fully specified model, we can set up the `powerPosterior()`
 analysis to create a file of 'powers' and likelihoods from which we can
@@ -398,29 +418,29 @@ sampling closer and closer to the prior as the power decreases.
 
 First, we initialize a monitor which will log the MCMC samples for each
 parameter at every step in the power posterior.
-
-    monitors[1] = mnModel(filename="output/GMC_posterior_pp.log",printgen=10, separator = TAB)
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
+    monitors.append( mnModel(filename="output/GMC_posterior_pp.log",printgen=10, separator = TAB) )
+{% endsnippet %}
 Next, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
 file name. The `cats` argument sets the number of power steps. Once we
 have specified the options for our sampler, we can then start the run
 after a burn-in/tuning period.
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     pow_p = powerPosterior(mymodel, moves, monitors, "output/GMC_bears_powp.out", cats=50, sampleFreq=10) 
     pow_p.burnin(generations=5000,tuningInterval=200)
     pow_p.run(generations=1000)  
-
+{% endsnippet %}
 Compute the marginal likelihood using two different methods,
 stepping-stone sampling and path sampling.
-
+{% snippet scripts/mlnl_GMC_bears.Rev %}
     ss = steppingStoneSampler(file="output/GMC_bears_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ss.marginal() 
 
     ### use path sampling to calculate marginal likelihoods
     ps = pathSampler(file="output/GMC_bears_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ps.marginal() 
-
+{% endsnippet %}
 If you have entered all of this directly in the RevBayes console, you
 will see the marginal likelihoods under each method printed to screen.
 Otherwise, if you have created the separate `Rev` file in the `scripts`

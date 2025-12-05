@@ -52,12 +52,11 @@ mean_ra <- 11.0
 stdv_ra <- 0.25
 ### the lognormal distribution is parameterized by mu which is a function of the mean and standard deviation
 mu_ra <- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
-root_time ~ dnLnorm(mu_ra, stdv_ra, offset=tHesperocyon)
+root_time ~ dnLognormal(mu_ra, stdv_ra, offset=tHesperocyon)
 
 
 ### the time tree is a stochastic node modeled by the constant rate birth-death process (dnBDP)
-timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, 
-	samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
+timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
 
 
 ### If you would like to specify a starting tree, simply use the .setValue() method
@@ -70,9 +69,7 @@ timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time,
 ### then a deterministic node for the age. This does not create a monophyletic constraint.
 
 ### The clade() function specifies the node that is the MRCA of all listed taxa
-clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus",
-                        "Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus",
-                        "Melursus_ursinus")
+clade_Ursidae <- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus","Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
 
 
 ### A deterministic node for a given "clade" will report the age of that node (even if they are not
@@ -82,12 +79,12 @@ tmrca_Ursidae := tmrca(timetree,clade_Ursidae)
 ####### Tree Moves #######
 
 ### add moves on the tree node times, including the root time, which is outside of the timetree 
-moves.append(mvNodeTimeSlideUniform(timetree, weight=30.0))
-moves.append(mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0))
-moves.append(mvSlide(root_time, delta=2.0, tune=true, weight=10.0))
-moves.append(mvScale(root_time, lambda=2.0, tune=true, weight=10.0))
+moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0 ) )
+moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
+moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
+moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
 
 ### and moves for the tree topology
-moves.append(mvNNI(timetree, weight=8.0))
-moves.append(mvNarrow(timetree, weight=8.0))
-moves.append(mvFNPR(timetree, weight=8.0))
+moves.append( mvNNI(timetree, weight=8.0) )
+moves.append( mvNarrow(timetree, weight=8.0) )
+moves.append( mvFNPR(timetree, weight=8.0) )
