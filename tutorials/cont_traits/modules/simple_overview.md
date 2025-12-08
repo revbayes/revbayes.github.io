@@ -73,11 +73,10 @@ In the {% page_ref cont_traits/relaxed_ou %} tutorial, we provide an example of 
 
 {% subsubsection (3) Detecting state-dependent evolutionary optima and rates of evolution/adaptation %}
 
-*Does the continuous character adapt differently for species in specific discrete selective regimes?*
+*Does the continuous character adapt differently for species in specific discrete character states?*
+Species may adapt differently when they are in a different adaptive zone.
+We can model the adaptive zones occupied by a species as discrete character states, which evolve along the phylogeny.
+To test explicit hypotheses of continuous trait adaptation to different character states, we can use a state-dependent Ornstein-Uhlenbeck model.
+In the {% page_ref cont_traits/state_dependent_ou %} tutorial, we provide an example of how to test hypotheses of state-dependent continuous trait evolution using sequential and joint inference approaches.
 
-For species in the same discrete selective regime across the phylogeny, a continuous character can converge towards the same optimal value.
-Similarly, the rates of evolution/adaptation in some selective regimes may be higher than the others. 
-We can test hypotheses of discrete regime-driven continuous character evolution explicitly using the state-dependent Ornstein-Uhlenbeck model.
-
-In the {% page_ref cont_traits/state_dependent_ou %} tutorial, we provide an example of how to test hypotheses of state-dependent continuous character evolution using a joint-inference approach.
-
+{% subsubsection (4) Inferring adaptation of a continuous character to various discrete character states %}

@@ -1,6 +1,6 @@
 ---
 title: State-dependent Ornstein-Uhlenbeck Models
-subtitle: Detecting state-dependent evolutionary optima and rates of adaptation (work in progress)
+subtitle: Detecting adaptation to different discrete character states
 authors: Priscilla Lau and Sebastian Höhna
 level: 6
 order: 1.9
@@ -16,18 +16,19 @@ index: true
 redirect: false
 include_all: false
 include_files:
-- data/diprotodontia_tree.nex
-- data/diprotodontia_discrete_diet.nex
-- data/diprotodontia_discrete_island.nex
-- data/diprotodontia_continuous.nex
+- data/artiodactyla.tree
+- data/artiodactyla_diet.nex
+- data/artiodactyla_hypsodonty_index.nex
 - scripts/mcmc_state_dependent_OU.Rev
 - scripts/plot_state_dependent_OU.R
-- scripts/plot_helper_state_dependent_OU.R
+- scripts/plot_state_dependent_OU_helper.R
 ---
 
-{% section Inferring adaptation of a continuous character to various discrete selective regimes %}
+{% section Inferring adaptation of a continuous character to various discrete character states %}
 
-This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where all parameters ($\alpha$, $\sigma^2$, and $\theta$) are allowed to vary depending on the state of a discrete character on a time-calibrated phylogeny {% cite LauInprep %}. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of the Ornstein-Uhlenbeck process for each state.
+This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model with state-dependent rates of attraction ($\alpha$), optima ($\theta$), and diffusion variances ($\sigma^2$) to model continuous-character adaptation to different discrete character states.
+We provide two probabilistic graphical models for this tutorial, which correspond to sequential and joint inference approaches respectively.
+After specifying the model, you will estimate the parameters of the state-dependent Ornstein-Uhlenbeck process for each character state.
 
 {% include_relative modules/state_dependent_OU_parameter_estimation.md %}
 

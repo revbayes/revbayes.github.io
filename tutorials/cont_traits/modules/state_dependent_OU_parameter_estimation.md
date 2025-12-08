@@ -1,196 +1,183 @@
-{% section Testing hypotheses of state-dependent evolution with the OU Model %}
+{% section Testing hypotheses of state-dependent adaptation with the OU Model %}
 
-The relaxed OU model detects shifts of the optimum on a phylogeny without assuming what caused (or is correlated with) the shifts.
-Sometimes however, we are interested in whether, or how, some specific variables contributed to the continuous character evolution.
-Here, we use the state-dependent OU model to infer (1) discrete character history and (2) discrete-state-dependent continuous character evolution.
-Similar to {% citet Beaulieu2012 %}, this model supports multiple $\alpha$, $\sigma^2$, and $\theta$, allowing us to infer changes in the optimal value as well as the rates of evolution/adaptation.
+Previously, we used a relaxed OU model to infer adaptation of a continuous trait (in terms of optimum shifts) without specifying a potential cause (or correlated variable) for such adaptation.
+However, we may be interested in testing specific hypotheses of continuous trait adaptation to different discrete character states.
 
-Conventionally, a sequential approach is used to infer discrete state-dependent continuous character evolution -- we first reconstruct the discrete character history, then infer continuous character evolution on the discrete character map(s) (e.g., {% citet Hansen1997 %}).
-Alternatively, a joint approach can be used to infer evolution of both characters simultaneously while taking their dependence into account (e.g., {% citet Boyko2023 %}).
-The state-dependent OU model in RevBayes can perform both.
-In this tutorial, we will focus on the joint approach, where the discrete character history is treated as a random variable and can be modified using a data-augmentation approach.
+In this tutorial, we will specify the state-dependent OU model described in {% citet LauInReview %}.
+Under this model, any or all of the OU parameters ($\alpha$, $\theta$, $\sigma^2$) depend on the state of a discrete character that is also evolving on the phylogeny.
+We must therefore specify a model that includes both the continuous trait and the discrete character.
+Our state-dependent OU model implementation supports (1) sequential inference of OU parameters conditionally on a discrete character history and (2) joint inference of discrete character history and OU parameters.
+Therefore, we will demonstrate how to (1) read in a character history (sequential inference approach), and (2) model discrete character evolution using a continuous-time Markov chain distribution (joint inference approach).
+
 
 {% figure fig_ou_sd_gm %}
 <img src="figures/state_dependent_ou_gm.pdf" width="50%" height="50%" />
 {% figcaption %}
-The graphical model representation of the state-dependent Ornstein-Uhlenbeck (OU) process using a joint-inference approach. For more information about graphical model representations see {% citet Hoehna2014b %}.
+The graphical model representation of the state-dependent Ornstein-Uhlenbeck (OU) process using (a) a sequential inference approach and (b) a joint-inference approach. For more information about graphical model representations see {% citet Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
 
-In this tutorial, we use a time-calibrated phylogeny of 97 Diprotodontia from { % citet something % } and datasets of (log) body size and herbivory from {% cite PHYLACINE %} to test diet dependency in body size evolution.
+In this tutorial, we use a time-calibrated phylogeny, the hypsodonty index, and the diet of 82 ruminants (Artiodactyla) from { % citet toljagic2018 % } as data.
 
-&#8680; The full state-dependent OU-model specification is in the file called `mcmc_state_dependent_OU.Rev`.
 
 {% subsection Read the data %}
 
-We begin by deciding which of the characters to use.
-Here, we assume we are analyzing the first discrete character (diet) and first continuous character (body mass).
+First, we read in the phylogenetic tree.
 ```
-char_disc <- 1
-char_cont <- 1
-```
-
-Now, we read in the phylogenetic tree.
-```
-tree <- readTrees("data/diprotodontia_tree.nex")[1]
-```
-We also want to keep track of the number of branches for our relaxed clock model.
-```
-ntips     <- tree.ntips()
-nbranches <- 2 * ntips - 2
+tree <- readTrees("data/artiodactyla.tree")[1]
 ```
 
 Next, we read in the discrete character data.
-We have to exclude all other characters that we are not interested in and only include our focal trait.
+We have to exclude all other characters that we are not interested in and only include our focal character.
 This can be done in RevBayes using the member methods `.excludeAll()` and `.includeCharacter()`.
 ```
-disc <- readContinuousCharacterData("data/primates_disc_traits.nex")
+disc <- readDiscreteCharacterData("data/artiodactyla_diet.nex")
 disc.excludeAll()
-disc.includeCharacter( char_disc )
+disc.includeCharacter( 1 ) # diet is the first (and only) character
 num_disc_states <- disc.getStateDescriptions().size()
 ```
 
-Similarly, we read in the continuous character data.
+Similarly, we read in the continuous trait data.
 ```
-cont <- readContinuousCharacterData("data/primates_cont_traits.nex")
+cont <- readContinuousCharacterData("data/artiodactyla_hypsodonty_index.nex")
 cont.excludeAll()
-cont.includeCharacter( char_cont )
+cont.includeCharacter( 1 ) # hypsodonty index is the first (and only) character
 ```
 
-We initialize a variable for our vector of
-moves and monitors.
-We add one adaptable variance multivariate normal (AVMVN) kernel for each of the discrete and continuous models to improve mixing of MCMC traces.
+We initialize two vectors for moves and monitors respectively.
+We initialize an adaptable variance multivariate normal (AVMVN) kernel to improve mixing of MCMC traces.
+After specifying each parameter, we add the parameter to the kernel.
+After all parameters are added, we add the kernel to the moves,
 ```
 moves    = VectorMoves()
 monitors = VectorMonitors()
-avmvn_disc = mvAVMVN(weight=20, waitBeforeLearning=500, waitBeforeUsing=1000)
-avmvn_cont = mvAVMVN(weight=20, waitBeforeLearning=500, waitBeforeUsing=1000)
+avmvn = mvAVMVN(weight=20, waitBeforeLearning=500, waitBeforeUsing=1000)
 ```
 
-{% subsection Specify the model %}
 
-{% subsubsection The discrete character model %}
+{% subsection Discrete character history %}
+In a joint inference approach, we model the discrete character evolution using a continuous-time Markove chain distribution, which is defined by an instantaneous-rate matrix ($Q$).
 
-We create a vector of transition rates drawn from a Dirichlet prior. 
+Assuming all character states have equal transition rates, we specify an Mk model {% cite Lewis2001 %}.
 ```
-num_type_transition <- num_disc_states * (num_disc_states - 1)
-rates ~ dnDirichlet( rep(1, num_type_transition) )
-moves.append( mvBetaSimplex( rates, weight=2 ) )
-moves.append( mvDirichletSimplex( rates, weight=2 ) )
-avmvn_disc.addVariable( rates )
+Q  <- fnJC( num_disc_states )
 ```
 
-We build the rate matrix and set the rescaled argument as TRUE.
+We specify a scaling factor for the transition rates.
 ```
-Q := fnFreeK( rates, rescaled=TRUE )
-```
-
-Next, we assign a prior to the rescaling factor of the rate matrix.
-```
-lambda ~ dnExponential(200)
+lambda ~ dnLognormal(ln(0.4), 0.05)
 moves.append( mvScale(lambda, weight=1.0) )
 avmvn_rates.addVariable(lambda)
 ```
-After including all parameters in the discrete model to avmvn_disc, we add avmvn_disc to our moves vector.
-```
-moves.append( avmvn_disc )
-```
 
-We set up the CTMC model.
-Note that it is a different from the one used for stochastic mapping.
+Now, we specify a data augmentation-based CTMC model.
+We use this CTMC model because the branch histories are sampled (instead of integrated out).
+This allows us to retrieve instances of the character history, which will be used in the state-dependent OU model.
 ```
 X ~ dnPhyloCTMCDASiteIID(tree, Q, branchRates=lambda, type="Standard", nSites=1)
-X.clamp(disc)
+X.setValue(disc)
 ```
 
-We include proposals for the discrete character history.
-Node proposal changes the state of a randomly chosen node, as well as its parent branch and daughter branches. 
-Path proposal changes the state along a branch while the states of the parent node and the child node do not change.
+We include proposals for changing the character history at the nodes and on the branches.
 ```
-moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=100.0) )
-moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=50.0) )
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=400.0) )
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=100.0) )
 ```
 
-We keep track of the number of transitions.
+We retrieve the character history from the CTMC model, which will be passed to the state-dependent OU model later.
 ```
-for(i in 1:nbranches) {
-    num_changes[i] := sum(X.numCharacterChanges(i))
-}
-total_num_changes := sum(num_changes)
-
 char_hist := X.characterHistories()
 ```
 
-{% subsubsection The OU model %}
-First, we set up the optimum parameter.
-for (i in 1:num_disc_states){
-  theta[i] ~ dnUniform(-10, 10)
-  moves.append(mvSlide(theta[i], weight = 1.0) )
-  avmvn_ou.addVariable(theta[i])
-}
+{% aside Alternative: Sequential inference approach %}
+
+Alternatively, we can infer the character history in prior steps and read in the output as follows.
+Note that the character history should be in simmap format.
+```
+char_hist = readCharacterHistory("data/artiodactyla_character_history.tree")[1]
+```
+
+{% endaside %}
 
 
-We retrieve some information from our data before proceeding.
+
+{% subsection The state-dependent OU model %}
+Here, we set up a state-dependent OU model where all parameters are state-dependent.
+The prior distributions we use below are empirically motivated.
+First, we retrieve some information about the age of the tree and the among-species variance of the continuous trait data.
 ```
 root_age <- tree.rootAge()
-v_emp <- cont.var(char_cont)
+across_species_variance <- cont.var( 1 )
 ```
 
-There are two options to assign priors to $\alpha$ and $\sigma^2$.
-On one hand, we can directly put priors on the parameters.
+
+For the optimum parameter ($\theta$), we use a uniform distribution that covers more than the range of continuous trait observations.
 ```
 for (i in 1:num_disc_states){
-  alpha[i] ~ dnExponential(root_age/2/ln(2))
+  theta[i] ~ dnUniform(0, 10)
+  moves.append(mvSlide(theta[i], weight = 1.0) )
+  avmvn_cont.addVariable(theta[i])
+}
+```
+
+There are two common ways to specify the rates of attraction ($\alpha$) and the diffusion variance ($\sigma^2$).
+First, by putting priors directly on the parameters:
+```
+for (i in 1:num_disc_states){
+
+  a <- ln(2) / root_age
+  alpha[i] ~ dnLognormal(ln(a), 0.587405) # the median of the phylogenetic half-life is equal to one tree height
   moves.append(mvScale(alpha[i], weight = 1.0) )
   avmvn_cont.addVariable(alpha[i])
-
-  sigma2[i] ~ dnLognormal(ln(sqrt(v_emp), 0.587405))
-  moves.append(mvScale(sigma2[i], weight = 3.0) )
+  
+  s <- across_species_variance * 2 * a
+  sigma2[i] ~ dnLognormal(ln(s), 0.587405)
+  moves.append(mvScale(sigma2[i], weight = 1.0) )
   avmvn_cont.addVariable(sigma2[i])
+  
 }
 ```
 
-Alternatively, we can assign a hyperprior for phylogenetic half-life ($ln(2)/\alpha$) and stationary variance ($sigma^2/2\alpha$) respectively, and transform the parameters to $\alpha$ and $\sigma^2$.
-The advantage of this option is that phylogenetic half-life and stationary variance have clearer biological meanings and can be interpreted intuitively.
+Alternatively, by putting hyper-priors on transformed parameters phylogenetic half-life ($t_{1/2}$) and stationary variance ($V_y$).
+The advantage of using hyper-priors on transformed parameters is that these parameters have clear biological meaning and can be interpreted more easily (see { % citet Hansen1997 % }).
 ```
 for (i in 1:num_disc_states){
-  t_half[i] ~ dnLognormal(ln(root_age/2), 0.587405)
+
+  t_half[i] ~ dnLognormal(ln(root_age), 0.587405)  # the median of the phylogenetic half-life is equal to one tree height
   moves.append(mvScale(t_half[i], weight = 1.0) )
   avmvn_cont.addVariable(t_half[i])
+  
   alpha[i] := abs(ln(2)/t_half[i])
 
-  Vy[i] ~ dnLognormal(ln(v_emp), 0.587405)
+  Vy[i] ~ dnLognormal(ln(across_species_variance), 0.587405)  # the median of the stationary variance is equal to the across-species variance
   moves.append(mvScale(Vy[i], weight = 3.0) )
   avmvn_cont.addVariable(Vy[i])
+  
   sigma2[i] := Vy[i] * 2 * alpha[i]
+  
 }
 ```
-Note that the prior distributions of the two options are _not_ equivalent.
 
 
-
-All paramters in the OU model go to avmvn_cont.
+Finally, We add the AVMVN kernel to the moves.
 ```
-moves.append( avmvn_ou )
+moves.append( avmvn )
 ```
 
-{% The state-dependent OU model %}
-Now that we have specified the state-dependent parameters, we can draw the discrete model and the character data from the corresponding phylogenetic OU model.
+Now, we are ready to set up the state-dependent OU model.
+We can choose between three possible root treatments, which is the assumption of the continuous trait value at the root.
+Note that the option `parameter` should only be used when the phylogenetic tree contains fossil tips, which in our example does not.
+Therefore, we choose the simplest option `optimum`, which assumes that the root value is the same as the optimum.
+We assume that the discrete character states at the root is at stationary frequencies by not specifying the argument `rootFrequencies`.
 ```
 Y ~ dnPhyloOUSD(char_hist, theta=theta, rootTreatment="optimum", alpha=alpha, sigma=sigma2^0.5)
 Y.clamp(cont)
 ```
 
-Noting that $y$ is the observed data ({% ref fig_ou_relaxed_gm %}), we clamp the `cont` to this stochastic node.
-```
-Y.clamp(data)
-```
-
-Finally, we create a workspace object for the entire model with `model()`.
+We create a workspace object for the entire model with `model()`.
 Remember that workspace objects are initialized with the `=` operator, and are not themselves part of the Bayesian graphical model.
 The `model()` function traverses the entire model graph and finds all the nodes in the model that we specified.
 This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.
-
 ```
 mymodel = model(Y)
 ```
@@ -199,7 +186,7 @@ mymodel = model(Y)
 
 {% subsubsection Specify Monitors %}
 
-For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain. The monitor functions are all called `mn*`, where `*` is the wildcard representing the monitor type.
+For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain.
 First, we will initialize the model monitor using the `mnModel` function.
 This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.
 ```
@@ -210,9 +197,9 @@ specified variables to the screen with `mnScreen`:
 ```
 monitors.append( mnScreen(printgen=1000, theta) )
 ```
-Finally, we include a monitor for the character history on each branch.
+Finally, we include a monitor for the character history.
 ```
-monitors.append( mnFile( char_hist, filename="output/char_hist.trees", printgen=10 ) )
+monitors.append( mnFile( char_hist, filename="output/character_histories.trees", printgen=10 ) )
 ```
 
 {% subsubsection Initialize and Run the MCMC Simulation %}
@@ -230,19 +217,18 @@ mymcmc.run(generations=50000, burnin=200)
 ```
 
 Since the character history output is in simmap format, we will convert it to ancestral map format in R and summarize it in RevBayes.
-We hope to simplify the process in the future. 
 Start R in the main directory for this analysis and then type the following commands:
 ```R
-source("scripts/plot_helper_state_dependent_OU.R")
+source("scripts/plot_state_dependent_OU_helper.R")
 
-tree <- read.nexus("data/diprotodontia_tree.nex")
-simmap_to_ancStates("output/char_hist.trees", "output/anc_states.log", tree)
+tree <- read.nexus("data/artiodactyla.tree")
+simmap_to_ancStates("output/character_histories.trees", "output/character_histories.log", tree)
 
 ```
 
 Now, go back to RevBayes and type the following commands:
 ```rb
-file_in <- "output/anc_states.log"
+file_in <- "output/character_histories.log"
 file_out <- "output/anc_states.tre"
 
 anc_states = readAncestralStateTrace(file_in)
@@ -255,25 +241,27 @@ anc_tree = ancestralStateTree(tree=tree,
                               burnin=0.1,
                               nStates=3,
                               site=1)
-# nStates should always be >= 3 even if your character is binary
 q()
 ```
+Note that `nStates` should always be >= 3 even if your character is binary
 
-Finally, open R again to plot the objects:
+Finally, open R again to plot the objects.
+First, we plot the ancestral states at nodes.
 ```R
+library(cowplot)
 library(RevGadgets)
-source("scripts/plot_helper_state_dependent_OU.R")
+source("scripts/plot_state_dependent_OU_helper.R")
 
-tree <- readTrees("data/diprotodontia_tree.nex")
+tree <- readTrees("data/artiodactyle.tree")
 
 # plot the objects
 ase <- processAncStates("output/anc_states.tre",
-                        state_labels=c("0"="non-herbivore", "1"="herbivore"))
+                        state_labels=c("0"="Browsers", "1"="Mixed feeders", "2"="Grazers"))
 
 p1 <- plotAncStatesMAP(t = ase,
                        tip_labels = FALSE,
                        node_color_as = "state",
-                       node_color = c("non-herbivore"="#88ccee", "herbivore"="#999933"),
+                       node_color = c("Browsers"="#2c6e49", "Mixed feeders"="#adc178", "Grazers"="#7f4f24"),
                        node_size = c(1, 3),
                        tip_states = TRUE,
                        tip_states_size = 2,
@@ -283,7 +271,7 @@ p1 <- plotAncStatesMAP(t = ase,
   theme(legend.position.inside = c(0.6,0.8))
 
 p2 <- plotAncStatesPie(t = ase,
-                       pie_colors = c("non-herbivore"="#88ccee", "herbivore"="#999933"),              
+                       pie_colors = c("Browsers"="#2c6e49", "Mixed feeders"="#adc178", "Grazers"="#7f4f24"),   
                        node_pie_size = 3,
                        tip_pies = TRUE,
                        tip_pie_size = 2
@@ -292,75 +280,76 @@ p2 <- plotAncStatesPie(t = ase,
 ) +
   # modify legend location using ggplot2
   theme(legend.position.inside = c(0.6,0.8))
-
-
-char_hist <- read.table("output/char_hist.trees", header=TRUE)
-simmaps <- read.simmap(text=char_hist$char_hist, format="phylip")
-stoc_map <- processStochMaps(tree,
-                             simmap = simmaps,
-                             states=c("0", "1"))
-
-colnames(stoc_map)[6] = "non-herbivore"
-colnames(stoc_map)[7] = "herbivore"
-
-p3 <- plotStochMaps(tree, maps=stoc_map,
-                    tip_labels = FALSE,
-                    tree_layout = "rectangular",
-                    color_by = "MAP",
-                    colors = c("non-herbivore" = "#88ccee",
-                               "herbivore" = "#999933"),
-                    line_width = 0.5) +
-  theme(legend.position.inside = c(0.6,0.8))
-
-trace <- readTrace("output/trace.log", burnin = 0.1)
-color_diet <- c("#88ccee", "#999933")
-names(color_diet) <- c("t_half[1]", "t_half[2]")
-p4 <- plotTrace(trace, vars = c("t_half[1]", "t_half[2]"), color = color_diet)[[1]] +
-  ggtitle("Phylogenetic half-life") +
-  theme(legend.position = "none") +
-  xlab("Time (tree height)") +
-  ylab("Posterior probability density")
-
-names(color_diet) <- c("Vy[1]", "Vy[2]")
-p5 <- plotTrace(trace, vars = c("Vy[1]", "Vy[2]"), color = color_diet)[[1]] +
-  ggtitle("Stationary variance") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank()) +
-  xlab("ln(body mass (kg))^2") +
-  xlim(0, 100)
-
-names(color_diet) <- c("theta[1]", "theta[2]")
-p6 <- plotTrace(trace, vars = c("theta[1]", "theta[2]"), color = color_diet)[[1]] +
-  ggtitle("Optimum") +
-  theme(axis.title.y = element_blank()) +
-  xlab("ln(body mass (kg))") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank())
-  
-legend <- get_legend2(p6 + theme(legend.position = "left",
-                                 legend.box.margin = margin(0, 0, 0, 12))
-                               + guides(color = guide_legend(title='Diet'),
-                                        fill=guide_legend(title='Diet'))
-                               + scale_fill_discrete(name = "Diet")
-                               + scale_color_manual(values=c("#88ccee", "#999933"), 
-                                                name="Diet",
-                                                labels=c("non-herbivore", "herbivore")))
-  
-row1 <- cowplot::plot_grid(p1, p2, p3, ncol=3)
-row2_left <- cowplot::plot_grid(p4, p5, p6, ncol=3)
-row2 <- cowplot::plot_grid(row2_left, legend, ncol=2, rel_widths = c(1, 0.3))
-plot <- cowplot::plot_grid(row1, row2, ncol=1, rel_heights=c(3,2))
-
-
 ```
 
-{% figure fig_state_dependent_OU %}
-<img src="figures/state_dependent_OU.pdf" width="50%" height="50%" />
-{% figcaption %}
-**Top row: Estimated discrete character history on the phylogeny. Bottom row: Estimated state-dependent OU parameters.**
+Then, we plot the branch histories with _maximumn a posteriori_ probabilities.
+```R
+char_hist <- read.table("output/sdou_joint/charhist.log", header = TRUE)
+simmaps <- read.simmap(text=char_hist$char_hist, format = "phylip")
+processed_simmaps <- processStochMaps(tree=tree, simmap = simmaps, states = c("0", "1", "2"))
+
+colnames(processed_MAP)[6] = "Browsers"
+colnames(processed_MAP)[7] = "Mixed feeders"
+colnames(processed_MAP)[8] = "Grazers"
+  
+p3 <- plotStochMaps(tree=tree, maps = processed_MAP, color_by = "MAP",
+                    colors = c("Browsers"="#2c6e49", "Mixed feeders"="#adc178", "Grazers"="#7f4f24"),
+                    tip_labels = FALSE,
+                    line_width=0.5
+)
+
+# combine all maps
+history_plots <- plot_grid(p1, p2, p3, ncol=3)
+```
+
+Lastly, we plot the posterior probabilities of OU parameters.
+```R
+trace <- readTrace("output/trace.log", burnin = 0.1)
+color_diet <- c("#2c6e49", "#adc178", "#7f4f24")
+
+# plot alpha
+names(color_diet) <- c("alpha[1]", "alpha[2]", "alpha[3]")
+p4 <- plotTrace(trace, vars = c("alpha[1]", "alpha[2]", "alpha[3]"), color = color_diet)[[1]] +
+  ggtitle("Rate of attraction $alpha$") +
+  theme(legend.position = "none") +
+  xlab("inverse time") +
+  ylab("Posterior probability density")
+
+# plot theta
+names(color_diet) <- c("theta[1]", "theta[2]", "theta[3]")
+p5 <- plotTrace(trace, vars = c("theta[1]", "theta[2]", "theta[3]"), color = color_diet)[[1]] +
+  ggtitle("Optimum $theta$") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank()) +
+  xlab("hypsodonty index")
+# plot sigma^2
+
+names(color_diet) <- c("sigma2[1]", "sigma2[2]", "sigma2[3]")
+p6 <- plotTrace(trace, vars = c("sigma2[1]", "sigma2[2]", "sigma2[3]"), color = color_diet)[[1]] +
+  ggtitle("Diffusion variance") +
+  theme(axis.title.y = element_blank()) +
+  xlab("hypsodonty index-squared per unit time") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank())
+
+# plot legend
+legend <- get_legend2(p6 + theme(legend.position = "left",
+                                 legend.box.margin = margin(0, 0, 0, 12))
+                      + guides(color = guide_legend(title='Diet'),
+                               fill=guide_legend(title='Diet'))
+                      + scale_fill_discrete(name = "Diet")
+                      + scale_color_manual(values=c("#2c6e49", "#adc178", "#7f4f24"), 
+                                           name="Diet",
+                                           labels=c("Browsers", "Mixed feeders", "Grazers")))
+
+ou_plots <- plot_grid(p4, p5, p6, legend, ncol=4)
+```
 Here we show the results of our example analysis.
+
+{% figure fig_state_dependent_OU %}
+<img src="figures/state_dependent_OU_history.pdf" width="50%" height="50%" />
+<img src="figures/state_dependent_OU_pars.pdf" width="50%" height="50%" />
+{% figcaption %}
+**(Top) Estimated character history. (Bottom) Estimated state-dependent OU parameters.**
 {% endfigcaption %}
 {% endfigure %}
-
-
-
