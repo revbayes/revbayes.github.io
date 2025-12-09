@@ -33,3 +33,5 @@ After specifying the model, you will estimate the parameters of the state-depend
 {% include_relative modules/state_dependent_OU_parameter_estimation.md %}
 
 {% include_relative modules/state_dependent_OU_exercise_1.md %}
+{% include_relative modules/state_dependent_OU_exercise_2.md %}
+{% include_relative modules/state_dependent_OU_exercise_3.md %}

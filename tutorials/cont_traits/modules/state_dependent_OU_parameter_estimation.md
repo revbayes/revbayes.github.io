@@ -221,7 +221,7 @@ Start R in the main directory for this analysis and then type the following comm
 ```R
 source("scripts/plot_state_dependent_OU_helper.R")
 
-tree <- read.nexus("data/artiodactyla.tree")
+tree <- read.tree("data/artiodactyla.tree")
 simmap_to_ancStates("output/character_histories.trees", "output/character_histories.log", tree)
 
 ```
