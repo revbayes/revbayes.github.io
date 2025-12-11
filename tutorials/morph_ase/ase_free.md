@@ -48,10 +48,7 @@ In short, it is probably not likely that one single model describes all characte
 The ERM model makes a number of assumptions, but one that may strike you as unrealistic is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
 While this may hold true for some traits, we expect that it may be untrue for many others.
-$$Q = \begin{pmatrix}
- - & \mu_1 \\
-\mu_2 & -
-\end{pmatrix}$$
+
 RevBayes has functionality to allow us to relax this assumption.
 For example, we can define the rates
 ```
@@ -63,10 +60,14 @@ and then create the rate matrix
 Q := fnFreeK(rates)
 ```
 which corresponds to the model
-$$Q = \begin{pmatrix}
+
+$$
+Q = \begin{pmatrix}
  - & \mu_1 \\
 \mu_2 & -
-\end{pmatrix}$$
+\end{pmatrix} \mbox{.}
+$$
+
 This is the independent rates model {% cite Pagel1994 Maddison1994 Schluter1997 %}, which we will explore in this tutorial.
 
 >Make a copy of the MCMC and model files you just made.

@@ -10,7 +10,7 @@ code_layout: bash
 
 **NOTE: Boost now needs to be at least version 1.71.**
 
-You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.  Meson allows using linux to generate windows binaries ("cross-compiling").
+You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.  Meson allows using Linux to generate Windows binaries ("cross-compiling").
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
@@ -24,10 +24,12 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     | cmake-gui               | 3.14.5-1  | 
     | git                     | 2.21.0-1  | 
     | make                    | 4.3-1     | 
-    | mingw64-x86_64-boost    | 1.66.0-1  | 
     | mingw64-x86_64-gcc-core | 9.2.0-2   | 
-    | mingw64-x86_64-gcc-g++  | 9.2.0-2   | 
+    | mingw64-x86_64-gcc-g++  | 9.2.0-2   |
+    | <strike>mingw64-x86_64-boost</strike> *   | <strike>1.66.0-1</strike>  | 
 
+    \* Note that Cygwin does not include the required Boost 1.71 as of Nov 2025.
+    As such, Boost must be installed separately; see instructions below.
 
     For RevStudio you will also need:
 
@@ -60,7 +62,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     1. [Download Boost](https://www.boost.org/users/download/) and unzip the archive.  In this tutorial, I unzipped v1.82.0 to `c:\boost\boost_1_82_0`.  It may be wise not to use the most current version; at time of writing, the latest 1.85 release caused compatibility issues.
     2. Use Open a cygwin terminal window and `cd` to the boost directory, here: `c:/boost/boost_1_82_0`
     3. Type `./bootstrap.bat gcc` to run the script with the gcc toolset.
-    4. Execute `b2 toolset=gcc-13 address-model=64 architecture=x86 --build-dir=build variant=release --build-type=complete --prefix=c:/boost/boost_1_82_0/gcc --with-regex --with-program_options --with-thread --with-system --with-filesystem --with-date_time --with-serialization  install`.
+    4. Execute `b2 toolset=gcc-13 address-model=64 architecture=x86 --build-dir=build variant=release --build-type=complete --prefix=c:/boost/boost_1_82_0/gcc --with-regex --with-program_options --with-thread --with-system --with-filesystem --with-date_time --with-serialization  cxxflags=-std=c++17 install`.
        - The `address-model=64 architecture=x86 toolset=gcc-13` options are assumed to match the configuration of your system – here, a 64-bit x86 machine – throughout this tutorial.  Use `gcc -v` to check which version of gcc you are using and update `gcc-13` to match.
     5. Check that installation was successful.  If it was, `C:\boost\boost_1_82_0\gcc\lib\cmake\Boost-1.82.0` will contain a file `BoostConfig.cmake`
     
@@ -76,7 +78,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
       b. After the  line starting `find_package(Boost`, around line 170,
          add `include_directories(${Boost_INCLUDE_DIRS})`
 
-2. Retrieve the RevBayes sources.
+3. Retrieve the RevBayes sources.
 
     1. Open a cygwin terminal window
     2. Clone the git repository:
@@ -88,7 +90,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
     navigate to the folder that contains it.  To get to the folder `c:/RevBayes`,
     use `cd /cygdrive/c/RevBayes`.
 
-3. Compile RevBayes.
+4. Compile RevBayes.
 
     1. Open a **Cygwin** terminal window (cmd or PowerShell will not work!) and go to the RevBayes source directory
        if you haven't already done so, e.g., 
@@ -135,7 +137,7 @@ You can also [compile with meson](https://github.com/revbayes/revbayes/blob/deve
       successfully by `<revbayes>/projects/cmake/regenerate.sh`; head to
       this folder and run `bash regenerate.sh`.
 
-4. Library whack-a-mole
+5. Library whack-a-mole
 
     When you try to run the executable you will likely get an error about missing libraries. 
 
