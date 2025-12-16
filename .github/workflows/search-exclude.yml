@@ -1,7 +1,7 @@
 name: Exclude pages from search engines
 
 on:
-  dispatch:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Check that website builds"]  # build.yml
     types:
@@ -30,22 +30,20 @@ jobs:
             exit 1
           fi
 
-          # Check for existing robots noindex tag
-          if grep -qi 'meta[[:space:]]\+name="robots"[[:space:]]\+content="noindex,[[:space:]]*nofollow"' "$FILE"; then
+          # If any robots noindex,nofollow meta exists (ignore spacing/case), do nothing
+          if grep -Eqi '<meta[[:space:]]+name="robots"[[:space:]]+content="noindex,[[:space:]]*nofollow"' "$FILE"; then
             echo "Robots noindex tag already present. Skipping."
             exit 0
           fi
 
-          # Insert after the first <head ...> line
-          if grep -qi '<head[^>]*>' "$FILE"; then
-            echo "Adding robots meta tag after <head> in $FILE"
-            sed -i '0,/<head[^>]*>/I{/<head[^>]*>/a\
-'"$TAG"'
-}' "$FILE"
-          else
-            echo "WARNING: No <head> tag found in $FILE; not inserting."
-            exit 0
-          fi
+          # Insert TAG on a new line immediately after the first <head ...> line
+          awk -v tag="$TAG" '
+            BEGIN { IGNORECASE=1; inserted=0 }
+            !inserted && $0 ~ /<head[^>]*>/ { print; print tag; inserted=1; next }
+            { print }
+          ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+
+          echo "Inserted robots meta tag after <head>."
 
       - name: Commit and push changes
         shell: bash
