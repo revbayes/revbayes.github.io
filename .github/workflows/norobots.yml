@@ -1,0 +1,61 @@
+name: Add norobots tag
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Check that website builds"]  # build.yml
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  add-noindex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v5
+        with:
+          ref: master
+
+      - name: Insert robots meta tag if missing
+        shell: bash
+        run: |
+          FILE="tutorials/fbd/index.html"
+          TAG='    <meta name="robots" content="noindex, nofollow"> <!--Exclude from search results until debugged-->'
+
+          if [[ ! -f "$FILE" ]]; then
+            echo "ERROR: $FILE not found"
+            exit 1
+          fi
+
+          # If any robots noindex,nofollow meta exists (ignore spacing/case), do nothing
+          if grep -Eqi '<meta[[:space:]]+name="robots"[[:space:]]+content="noindex,[[:space:]]*nofollow"' "$FILE"; then
+            echo "Robots noindex tag already present. Skipping."
+            exit 0
+          fi
+
+          # Insert TAG on a new line immediately after the first <head ...> line
+          awk -v tag="$TAG" '
+            BEGIN { IGNORECASE=1; inserted=0 }
+            !inserted && $0 ~ /<head[^>]*>/ { print; print tag; inserted=1; next }
+            { print }
+          ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+
+          echo "Inserted robots meta tag after <head>."
+
+      - name: Commit and push changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add tutorials/fbd/index.html
+          git commit -m "Add robots noindex meta tag to tutorials/fbd/index.html"
+          git push origin master
