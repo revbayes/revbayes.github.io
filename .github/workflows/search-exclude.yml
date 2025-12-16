@@ -1,4 +1,3 @@
-
 name: Exclude pages from search engines
 
 on:
@@ -21,26 +20,44 @@ jobs:
           ref: master
 
       - name: Insert robots meta tag if missing
+        shell: bash
         run: |
           FILE="tutorials/fbd/index.html"
-          TAG='<meta name="robots" content="noindex, nofollow"> <!--Exclude from search results until debugged-->'
-          
-          if grep -q "$TAG" "$FILE"; then
-            echo "Tag already present. Skipping."
-          else
-            echo "Adding robots meta tag to $FILE"
-            sed -i '6i\
+          TAG='    <meta name="robots" content="noindex, nofollow"> <!--Exclude from search results until debugged-->'
+
+          if [[ ! -f "$FILE" ]]; then
+            echo "ERROR: $FILE not found"
+            exit 1
+          fi
+
+          # Check for existing robots noindex tag
+          if grep -qi 'meta[[:space:]]\+name="robots"[[:space:]]\+content="noindex,[[:space:]]*nofollow"' "$FILE"; then
+            echo "Robots noindex tag already present. Skipping."
+            exit 0
+          fi
+
+          # Insert after the first <head ...> line
+          if grep -qi '<head[^>]*>' "$FILE"; then
+            echo "Adding robots meta tag after <head> in $FILE"
+            sed -i '0,/<head[^>]*>/I{/<head[^>]*>/a\
 '"$TAG"'
-' "$FILE"
+}' "$FILE"
+          else
+            echo "WARNING: No <head> tag found in $FILE; not inserting."
+            exit 0
           fi
 
       - name: Commit and push changes
+        shell: bash
         run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add tutorials/fbd/index.html
-            git            git commit -m "Add robots noindex meta tag to tutorials/fbd/index.html"
-            git push origin master
-          else
+          if git diff --quiet; then
             echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add tutorials/fbd/index.html
+          git commit -m "Add robots noindex meta tag to tutorials/fbd/index.html"
+          git push origin master
