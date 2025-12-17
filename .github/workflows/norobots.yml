@@ -2,6 +2,9 @@ name: Add norobots tag
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ms609-norobots-2 # test workflow upon push
   workflow_run:
     workflows: ["Check that website builds"]  # build.yml
     types:
