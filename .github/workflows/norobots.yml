@@ -1,4 +1,4 @@
-name: Add norobots tag
+name: Hide inactive docs from search engines
 
 on:
   workflow_dispatch:
@@ -26,16 +26,16 @@ jobs:
         shell: bash
         run: |
           FILE="tutorials/fbd/index.html"
-          TAG='    <meta name="robots" content="noindex, nofollow"> <!--Exclude from search results until debugged-->'
+          TAG='    <link rel="canonical" href="https://revbayes.github.io/tutorials/fbd/fbd_specimen.html"> <!--Point search engines away until debugged-->'
 
           if [[ ! -f "$FILE" ]]; then
             echo "ERROR: $FILE not found"
             exit 1
           fi
 
-          # If any robots noindex,nofollow meta exists (ignore spacing/case), do nothing
-          if grep -Eqi '<meta[[:space:]]+name="robots"[[:space:]]+content="noindex,[[:space:]]*nofollow"' "$FILE"; then
-            echo "Robots noindex tag already present. Skipping."
+          # If any link-canonical exists (ignore spacing/case), do nothing
+          if grep -Eqi '<link[[:space:]]+rel="canonical"[[:space:]]"' "$FILE"; then
+            echo "Canonical link tag already present. Skipping."
             exit 0
           fi
 
@@ -46,7 +46,7 @@ jobs:
             { print }
           ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 
-          echo "Inserted robots meta tag after <head>."
+          echo "Inserted canonical link tag after <head>."
 
       - name: Commit and push changes
         shell: bash
@@ -60,5 +60,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add tutorials/fbd/index.html
-          git commit -m "Add robots noindex meta tag to tutorials/fbd/index.html"
+          git commit -m "Add canonical link meta tag to tutorials/fbd/index.html"
           git push origin master
