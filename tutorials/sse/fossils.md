@@ -64,11 +64,11 @@ We provide the data files which we will use in this tutorial:
 {% section Setting up a serially-sampled BiSSE model | sec_fBiSSE %}
 
 To investigate the effect of diet on the diversification of Canidae, we will start by setting up a BiSSE model, which
-assumes 2 rate categories for speciation, extinction, and fossil sampling, depending on a species' diet.
+assumes two rate categories for speciation, extinction, and fossil sampling, depending on a species' diet.
 If you open the data file [canidae_diet.nex](data/canidae_diet.nex) in your text editor, you will see the coded
-characters for each species in our tree. For example, the dire wolf ([*Canis dirus*](https://https://en.wikipedia.org/wiki/Dire_wolf)) was
+characters for each species in our tree. For example, the dire wolf ([*Canis dirus*](https://en.wikipedia.org/wiki/Dire_wolf)) was
 hypercarnivorous, so it is set to state `0`. Coyotes (*Canis latrans*), on the other hand, are mesocarnivores, while
-the extinct *Archaeocyon pavidus* (a member of the extinct [Borophaginae subfamily](https://https://en.wikipedia.org/wiki/Borophaginae)) 
+the extinct *Archaeocyon pavidus* (a member of the extinct [Borophaginae subfamily](https://en.wikipedia.org/wiki/Borophaginae)) 
 and living grey foxes (*Urocyon cinereoargenteus*) are hypocarnivores (all of these set to state `1`).
 Longstanding hypotheses on the effects of extreme specialization would lead to an _a priori_ hypothesis that
 hypercarnivorous canids have higher extinction rates, which we can then test by comparing the posterior distributions of
@@ -178,7 +178,7 @@ species. We can therefore set a constant node for `rho`, equal to that proportio
 
 If you are unsure on the proportion of extant species present in your dataset, or if you have reason to believe
 the trait of focus in your analysis could affect `rho`, you could create stochastic nodes for it, just as we did
-for the serial sampling rate.
+for the fossil-sampling rate.
 
 #### **The Time Tree**
 
@@ -320,7 +320,7 @@ A visualization of the ancestral states estimated under the BiSSE model. Code fo
 
 These ancestral states largely agree with the ancestral state estimation in {% cite Slater2015 %}, which is a good
 sign. The clusters of hypercarnivory are sensible considering the tree in question, and there are not a lot of
-confounding nodes. 
+internal nodes with uncertain states. 
 
 Note that there are reasonably few transitions to and from hypercarnivory (state 0), which should spell caution
 when interpreting the results of the model. This illustrates an important point about the signal for state-dependent
@@ -328,7 +328,8 @@ diversification: the sample size for these analyses is not the number of species
 transitions present in that group's history {% cite Maddison2006 %}. This should be considered, together with our 
 remarks on sampled ancestors in the introduction, by any researcher hoping to implement a serially-sampled SSE
 analysis for their data. We reiterate that this tutorial should be seen as illustrative only, and the conclusions
-drawn herein about the history of diet (or the effect of diet on diversification) in Canidae should not be
+drawn herein about the history of diet (or the effect of diet on diversification) in Canidae should not be considered
+conclusive.
 
 All that said, let us take a look at our rate estimates. Note that given the naming convention in our tutorial,
 and our desire to also plot fossil sampling rate `psi`, the call to `processSSE` should be something like
