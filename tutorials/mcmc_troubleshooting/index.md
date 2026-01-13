@@ -23,6 +23,14 @@ Markov Chain Monte Carlo is a common method for approximating the posterior dist
 
 This tutorial closely follows the text of [this](https://open-research-europe.ec.europa.eu/browse/articles?all=Practical+guidelines+for+Bayesian+phylogenetic+inf) paper, which describes strategies for troubleshooting MCMC. We assume that you have completed the introductory MCMC tutorials ({% page_ref mcmc %}), and will not be covering the basic mechanics of the MCMC algorithm. This tutorial, instead, will focus on giving examples of issues that may impact the efficiency and convergence of your MCMC simulation, and will give strategies for solving this problems.
 
+{% figure fig_flowchart %}
+<img src="figures/MCMC_FlowChart.png" width="600" />
+{% figcaption %}
+A flowchart to guide users through the MCMC-debugging process, highlighting key points mentioned in the text, with common issues in blue boxes and corresponding resolutions in green.
+Note that the different types of issues and resolutions within the orange box are not meant to be addressed in the order shown, but represent different avenues for investigating an issue.
+{% endfigcaption %}
+{% endfigure %}
+
 {% section Reading a Trace %}
 
 Before we can understand if there are problems with our MCMC trace, we need to understand how to examine an MCMC for convergence. In this tutorial, we will mainly focus on fairly simple visual convergence diagnostics. But please note that this tutorial offers some more sophisticated techniques for asessing convergence. For this, we will use the software [Tracer](https://beast.community/tracer). 
