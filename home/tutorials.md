@@ -125,12 +125,13 @@ The following tutorials are to be picked based on your intended analyses, as the
 
 {% aside Total-evidence analysis with tip-dating %}
 
-This module is intended for users looking to infer a time-calibrated phylogenetic tree with both molecular and fossil data, and fossil ages. 
+This module is intended for users looking to infer a time-calibrated phylogenetic tree with morphological data, fossil ages, and (optionally) molecular data. 
 
 - Pre-requisites: **Dating a phylogeny** (and both **Molecular phylogenetic inference** and **Morphological phylogenetic inference**), and **Estimating diversification rates**.
 
 1. [The fossilized birth-death model]({{ base.url }}/tutorials/fbd/fbd_specimen). This tutorial will push you to put together the skills learned in many previous tutorials, including setting up molecular and morphological evolution, clock, and birth-death models.
 
+- If interested in a gentler introduction to fossilized birth-death analyses without molecular data: [FBD with morphological data]({{ base.url }}/tutorials/fbd_simple).
 - If interested in more complex diversification dynamics, explore the advanced tutorials in **Estimating diversification rates**. Note that `dnFBDP` should be used instead of `dnBDP`/`dnEBDP`.
 
 {% endaside %}
@@ -152,7 +153,6 @@ This module is intended for users looking to infer trait-dependent diversificati
 
 {% endaside %}
 
-<<<<<<< HEAD
 {% aside Ancestral-state estimation %}
 
 This module is intended for users looking to estimate the ancestral state of species in a fixed phylogenetic tree. Tutorials assume a fixed tree, and no diversification-rate estimation, but tips in that direction are provided.
@@ -184,6 +184,8 @@ This module is intended for users looking to estimate rates of evolution for con
 - If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: [Relaxed Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/relaxed_bm) and [Relaxed OU models]({{ base.url }}/tutorials/cont_traits/relaxed_ou).
 - If interested in multiple continuous traits: [Multivariate Brownian motion]({{ base.url }}/tutorials/cont_traits/multivariate_bm). 
 - If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
+
+{% endaside %}
 
 {% aside Biogeography %}
 
