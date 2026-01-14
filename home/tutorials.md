@@ -131,7 +131,7 @@ This module is intended for users looking to infer a time-calibrated phylogeneti
 
 1. [The fossilized birth-death model]({{ base.url }}/tutorials/fbd/fbd_specimen). This tutorial will push you to put together the skills learned in many previous tutorials, including setting up molecular and morphological evolution, clock, and birth-death models.
 
-- If interested in a gentler introduction to fossilized birth-death analyses without molecular data: [FBD with morphological data]({{ base.url }}/tutorials/fbd_simple).
+- If interested in a gentler introduction to fossilized birth-death analyses without molecular data, including videos walking you through the tutorial: [FBD with morphological data]({{ base.url }}/tutorials/fbd_simple).
 - If interested in more complex diversification dynamics, explore the advanced tutorials in **Estimating diversification rates**. Note that `dnFBDP` should be used instead of `dnBDP`/`dnEBDP`.
 
 {% endaside %}
