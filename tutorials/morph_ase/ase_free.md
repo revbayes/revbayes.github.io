@@ -88,37 +88,37 @@ Our goal here is to create a rate matrix with 2 free parameters.
 We will assume an exponential prior distribution for each of the rates.
 Thus, we start be specifying the rate of this exponential prior distribution.
 A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.
-```
-rate_pr := phylogeny.treeLength() / 10
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+{% endsnippet %}
 Now we can create our two independent rate variables drawn from an identical exponential distribution
-```
-NUM_RATES = NUM_STATES * (NUM_STATES-1)
-for ( i in 1:NUM_RATES ) {
-    rate[i] ~ dnExp(rate_pr)
-    moves.append( mvScale( rate[i], weight=2 ) )
-}
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    NUM_RATES = NUM_STATES * (NUM_STATES-1)
+    for ( i in 1:NUM_RATES ) {
+        rate[i] ~ dnExp(rate_pr)
+        moves.append( mvScale( rate[i], weight=2 ) )
+    }
+{% endsnippet %}
 Next, we put all the rates together into our rate matrix.
 Don't forget to say that we do not rescale the rate matrix (`rescale=false`).
 We would only rescale if we use relative rates.
-```
-Q_morpho := fnFreeK( rate, rescale=false )
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    Q_morpho := fnFreeK( rate, rescale=false )
+{% endsnippet %}
 
 In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.
-```
-rf_prior <- [1,1]
-rf ~ dnDirichlet( rf_prior )
-moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    rf_prior <- rep(1,NUM_STATES)
+    rf ~ dnDirichlet( rf_prior )
+    moves.append( mvBetaSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
+{% endsnippet %}
 We need to modify the `dnPhyloCTMC` to pass in our new root frequencies parameter.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
-phyMorpho.clamp(morpho)
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+    phyMorpho.clamp(morpho)
+{% endsnippet %}
 
 >Now you are done with your unequal rates model. Give it a run!
 {:.instruction}
@@ -143,23 +143,27 @@ Ancestral state estimates under the independent rates model. Note that the root 
 
 Next, we want to actually see the estimated rates.
 We can do this nicely in `RevGadgets` (see the {% page_ref intro/revgadgets %} Tutorial, {% citet Tribble2022 %}):
-```{R}
-library(RevGadgets)
-library(ggplot2)
+{% snippet scripts/plot_iid_rates.R %}
+    library(RevGadgets)
+    library(ggplot2)
 
-# specify the input file
-file <- paste0("output/solitariness_freeK.log")
+    CHARACTER  <- "solitariness"
+    NUM_STATES <- 2
+    NUM_RATES  <- NUM_STATES * (NUM_STATES-1)
 
-# read the trace and discard burnin
-trace_quant <- readTrace(path = file, burnin = 0.25)
+    # specify the input file
+    file <- paste0("output/",CHARACTER,"_freeK.log")
 
-# produce the plot object, showing the posterior distributions of the rates.
-p <- plotTrace(trace = trace_quant, vars = paste0("rate[",1:2,"]"))[[1]] +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.88,0.85))
+    # read the trace and discard burnin
+    trace_quant <- readTrace(path = file, burnin = 0.25)
 
-ggsave(paste0("Primates_solitariness_rates_freeK.pdf"), p, width = 5, height = 5)
-```
+    # produce the plot object, showing the posterior distributions of the rates.
+    p <- plotTrace(trace = trace_quant, vars = paste0("rate[",1:NUM_RATES,"]"))[[1]] +
+        # modify legend location using ggplot2
+        theme(legend.position = c(0.88,0.85))
+
+    ggsave(paste0("Primates_",CHARACTER,"_rates_freeK.pdf"), p, width = 5, height = 5)
+{% endsnippet %}
 
 {% figure fig_freeK_rates %}
 <img src="figures/Primates_solitariness_rates_freeK.png" width="400" />
@@ -186,29 +190,29 @@ Have a look at the {% page_ref model_selection_bayes_factors/bf_intro %} tutoria
 You need to exchange the MCMC algorithm with the power posterior algorithm {% cite Hoehna2021 %}.
 Remove all lines after `mymodel = model(phylogeny)`.
 Then, you need to construct the `powerPosterior`, which works analogous to an MCMC.
-In fact, it perform `cats=63` MCMC runs.
+In fact, it performs `cats=63` MCMC runs.
 We chose `cats=63` as a conservative estimate.
 Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.
-```
-### Compute power posterior distributions```
-pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
-pow_p.burnin(generations=2000,tuningInterval=250)
-pow_p.run(generations=1000)
-```
+{% snippet scripts/ml_ase_ERM.Rev %}
+    ### Compute power posterior distributions
+    pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
+    pow_p.burnin(generations=2000,tuningInterval=250)
+    pow_p.run(generations=1000)
+{% endsnippet %}
 The next step is to summarize the power posterior distribution, first using stepping stone sampling,
-```
-### Use stepping-stone sampling to calculate marginal likelihoods
-ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ss.marginal()
-```
+{% snippet scripts/ml_ase_ERM.Rev %}
+    ### Use stepping-stone sampling to calculate marginal likelihoods
+    ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    ss.marginal()
+{% endsnippet %}
 and then using path sampling.
-```
-### Use path-sampling to calculate marginal likelihoods
-ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ps.marginal()
-```
+{% snippet scripts/ml_ase_ERM.Rev %}
+    ### Use path-sampling to calculate marginal likelihoods
+    ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    ps.marginal()
+{% endsnippet %}
 You should see the following output
-```
+```{rb}
 > source("scripts/ml_ase_ERM.Rev")
    Processing file "scripts/ml_ase_ERM.Rev"
    Successfully read one character matrix from file 'data/primates_solitariness.nex'
