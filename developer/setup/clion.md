@@ -8,7 +8,7 @@ Clion is a paid IDE from JetBrains. Your insititution may provide free access yo
 Prerequisites
 ----------------------
 
-You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. `./build.sh`). For this tutorial I used CMake which I recommend for CLion but steps are likely similar for meson. Next, open  Clion and open a a project selecting the `revbayes/src` folder from wherever you have stored it on your computer. 
+You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. `./build.sh`). For this tutorial I used CMake which I recommend for CLion but steps are likely similar for meson. Next, open Clion and open a project selecting the `revbayes/src` folder from wherever you have stored it on your computer. 
 
 CLion will likely not be able to build yet as it struggles to understand what you are using to build RevBayes that we will fix next. In the meantime close CLion and open your preffered terminal application, changing the directory to where you installed RevBayes. 
 
