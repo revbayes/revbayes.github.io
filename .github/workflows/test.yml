@@ -89,6 +89,16 @@ jobs:
           ccache -s
         )
 
+    - name: Clone and build Tensorphylo (Linux)
+      if: runner.os == 'Linux' && matrix.name != 'windows'
+      run: |
+        git clone https://bredelings@bitbucket.org/mrmay/tensorphylo.git
+        cd tensorphylo
+        meson setup build --prefix=$HOME/local
+        meson install -C build
+        mkdir ~/.plugins
+        cp ~/local/lib/x86_64-linux-gnu/libTensorPhylo.so ~/.plugins/
+
     - name: Test tutorials
       run: |
         export PATH=${HOME}/wrapper:${HOME}/local/bin:$PATH
