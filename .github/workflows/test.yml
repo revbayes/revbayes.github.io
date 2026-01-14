@@ -92,6 +92,7 @@ jobs:
     - name: Clone and build Tensorphylo (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       run: |
+        sudo apt install libeigen3-dev
         git clone https://bredelings@bitbucket.org/mrmay/tensorphylo.git
         cd tensorphylo
         meson setup build --prefix=$HOME/local
