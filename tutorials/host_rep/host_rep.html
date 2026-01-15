@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Reconstructing Host Repertoire Evolution</h1>
 	<h3 class="subtitle">Inference of ancestral ecological interactions</h3>
 	<h4 class="authors">Mariana P. Braga and Michael J. Landis</h4>
-  <h5>Last modified on August 14, 2025</h5>
+  <h5>Last modified on December  8, 2025</h5>
 </div>
 
 
@@ -420,7 +420,7 @@ moves.append( mvScale(mu, weight=2) )
 
 <p>Once the <code class="language-plaintext highlighter-rouge">PhyloCTMCDASequence</code> variable has been created, we can attach our observed host repertoires (interaction matrix) to the tip nodes in the parasite tree</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host.clamp(dat_parasite)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host.setValue(dat_parasite)
 </code></pre></div></div>
 
 <p>Let’s add the remaining moves to update the character histories. These moves share several arguments to configure how they update histories. <code class="language-plaintext highlighter-rouge">ctmc</code> and <code class="language-plaintext highlighter-rouge">qmap_seq</code> indicate which model variables are relevant to the move. The <code class="language-plaintext highlighter-rouge">lambda</code> argument assigns the probability of proposing a new history for any individual character, e.g. if <code class="language-plaintext highlighter-rouge">lambda=0.2</code>and <code class="language-plaintext highlighter-rouge">n_host_tips</code> equals 25, then we would expect the move to propose 5 new host interaction histories per update. The <code class="language-plaintext highlighter-rouge">graph</code> argument specifies whether the move performs on a single branch (<code class="language-plaintext highlighter-rouge">graph="branch"</code>) or on a single node and its three incident branches (<code class="language-plaintext highlighter-rouge">graph="node"</code>). The <code class="language-plaintext highlighter-rouge">proposal</code> argument controls which MCMC proposal algorithm we use to sample and propose new branch histories; in our case, we use the rejection sampling algorithm of <a class="citation" href="#Nielsen2002">Nielsen (2002)</a> (<code class="language-plaintext highlighter-rouge">proposal="rejection"</code>). Finally, the <code class="language-plaintext highlighter-rouge">weight</code> argument controls the relative number of times that move is sampled per MCMC iteration. 
