@@ -147,6 +147,7 @@ This module is intended for users looking to infer trait-dependent diversificati
 - If interested in testing whether unobserved effects might impact diversification for your data: [State-dependent diversification with hidden SSE (HiSSE)]({{ base.url }}/tutorials/sse/hisse).
 - If interested in the presence of cladogenetic state transitions: [State-dependent diversification with cladogenetic SSE (ClaSSE)]({{ base.url }}/tutorials/sse/classe).
 - If interested in the effect of chromosome number on diversification: [Chromosome evolution]({{ base.url }}/tutorials/chromo).
+- If interested in performing SSE analyses in trees including serially-sampled/fossil tips: [SSE with fossils]({{ base.url }}/tutorials/sse/fossils).
 - If interested in jointly estimating topology and state-dependent diversification rates, adapt [Relaxed clocks & time-trees]({{ base.url }}/tutorials/clocks) to use `dnCDBDP` or `dnGLHBDSP` instead of `dnBDP` (consider completing the **Molecular phylogenetic inference** and **Dating a phylogeny** modules).
 
 {% endaside %}

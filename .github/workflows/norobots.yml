@@ -1,0 +1,64 @@
+name: Hide inactive docs from search engines
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ms609-norobots-2 # test workflow upon push
+  workflow_run:
+    workflows: ["Check that website builds"]  # build.yml
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  add-noindex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v5
+        with:
+          ref: master
+
+      - name: Insert robots meta tag if missing
+        shell: bash
+        run: |
+          FILE="tutorials/fbd/index.html"
+          TAG='    <link rel="canonical" href="https://revbayes.github.io/tutorials/fbd/fbd_specimen.html"> <!--Point search engines away until debugged-->'
+
+          if [[ ! -f "$FILE" ]]; then
+            echo "ERROR: $FILE not found"
+            exit 1
+          fi
+
+          # If any link-canonical exists (ignore spacing/case), do nothing
+          if grep -Eqi '<link[[:space:]]+rel="canonical"[[:space:]]"' "$FILE"; then
+            echo "Canonical link tag already present. Skipping."
+            exit 0
+          fi
+
+          # Insert TAG on a new line immediately after the first <head ...> line
+          awk -v tag="$TAG" '
+            BEGIN { IGNORECASE=1; inserted=0 }
+            !inserted && $0 ~ /<head[^>]*>/ { print; print tag; inserted=1; next }
+            { print }
+          ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+
+          echo "Inserted canonical link tag after <head>."
+
+      - name: Commit and push changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add tutorials/fbd/index.html
+          git commit -m "Add canonical link meta tag to tutorials/fbd/index.html"
+          git push origin master
