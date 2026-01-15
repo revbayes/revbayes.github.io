@@ -3,7 +3,7 @@
 Previously, we used a relaxed OU model to infer adaptation of a continuous trait (in terms of optimum shifts) without specifying a potential cause (or correlated variable) for such adaptation.
 However, we may be interested in testing specific hypotheses of continuous trait adaptation to different discrete character states.
 
-In this tutorial, we will specify the state-dependent OU model described in {% citet LauInReview %}.
+In this tutorial, we will specify the state-dependent OU model described in {% citet Lau2026 %}.
 Under this model, any or all of the OU parameters ($\alpha$, $\theta$, $\sigma^2$) depend on the state of a discrete character that is also evolving on the phylogeny.
 We must therefore specify a model that includes both the continuous trait and the discrete character.
 Our state-dependent OU model implementation supports (1) sequential inference of OU parameters conditionally on a discrete character history and (2) joint inference of discrete character history and OU parameters.
@@ -11,7 +11,7 @@ Therefore, we will demonstrate how to (1) read in a character history (sequentia
 
 
 {% figure fig_ou_sd_gm %}
-<img src="figures/state_dependent_ou_gm.pdf" width="50%" height="50%" />
+<img src="figures/state_dependent_ou_gm.png" width="50%" height="50%" />
 {% figcaption %}
 The graphical model representation of the state-dependent Ornstein-Uhlenbeck (OU) process using (a) a sequential inference approach and (b) a joint-inference approach. For more information about graphical model representations see {% citet Hoehna2014b %}.
 {% endfigcaption %}
@@ -347,8 +347,8 @@ ou_plots <- plot_grid(p4, p5, p6, legend, ncol=4)
 Here we show the results of our example analysis.
 
 {% figure fig_state_dependent_OU %}
-<img src="figures/state_dependent_OU_history.pdf" width="50%" height="50%" />
-<img src="figures/state_dependent_OU_pars.pdf" width="50%" height="50%" />
+<img src="figures/state_dependent_OU_history.png" width="50%" height="50%" />
+<img src="figures/state_dependent_OU_pars.png" width="50%" height="50%" />
 {% figcaption %}
 **(Top) Estimated character history. (Bottom) Estimated state-dependent OU parameters.**
 {% endfigcaption %}
