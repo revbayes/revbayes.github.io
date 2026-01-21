@@ -184,6 +184,7 @@ This module is intended for users looking to estimate rates of evolution for con
 - If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: [Relaxed Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/relaxed_bm) and [Relaxed OU models]({{ base.url }}/tutorials/cont_traits/relaxed_ou).
 - If interested in multiple continuous traits: [Multivariate Brownian motion]({{ base.url }}/tutorials/cont_traits/multivariate_bm). 
 - If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
+- If interested in making all OU parameters state-dependent: [State-dependent OU models]({{ base.url }}/tutorials/cont_traits/state_dependent_ou).
 
 {% endaside %}
 
