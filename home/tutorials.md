@@ -147,6 +147,7 @@ This module is intended for users looking to infer trait-dependent diversificati
 - If interested in testing whether unobserved effects might impact diversification for your data: [State-dependent diversification with hidden SSE (HiSSE)]({{ base.url }}/tutorials/sse/hisse).
 - If interested in the presence of cladogenetic state transitions: [State-dependent diversification with cladogenetic SSE (ClaSSE)]({{ base.url }}/tutorials/sse/classe).
 - If interested in the effect of chromosome number on diversification: [Chromosome evolution]({{ base.url }}/tutorials/chromo).
+- If interested in performing SSE analyses in trees including serially-sampled/fossil tips: [SSE with fossils]({{ base.url }}/tutorials/sse/fossils).
 - If interested in jointly estimating topology and state-dependent diversification rates, adapt [Relaxed clocks & time-trees]({{ base.url }}/tutorials/clocks) to use `dnCDBDP` or `dnGLHBDSP` instead of `dnBDP` (consider completing the **Molecular phylogenetic inference** and **Dating a phylogeny** modules).
 
 {% endaside %}
@@ -182,6 +183,7 @@ This module is intended for users looking to estimate rates of evolution for con
 - If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: [Relaxed Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/relaxed_bm) and [Relaxed OU models]({{ base.url }}/tutorials/cont_traits/relaxed_ou).
 - If interested in multiple continuous traits: [Multivariate Brownian motion]({{ base.url }}/tutorials/cont_traits/multivariate_bm). 
 - If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
+- If interested in making all OU parameters state-dependent: [State-dependent OU models]({{ base.url }}/tutorials/cont_traits/state_dependent_ou).
 
 {% endaside %}
 
