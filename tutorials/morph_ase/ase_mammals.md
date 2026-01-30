@@ -185,9 +185,10 @@ All of the components of the model are now specified.
 
 We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the `model()` function and provide a single node in the graph (`phylogeny`).
-```
+{% snippet scripts/mcmc_scm_hrm_RJk.Rev %}
 mymodel = model(phylogeny)
-```
+{% endsnippet %}
+
 
 The object `mymodel` is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.
 
@@ -207,9 +208,10 @@ monitors.append( mnModel(filename="output/mk.log", printgen=10) )
 
 The second monitor we will add to our analysis will print information to the screen.
 Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen.
-```
+{% snippet scripts/mcmc_corr.Rev %}
 monitors.append( mnScreen(printgen=100) )
-```
+{% endsnippet %}
+
 
 The third and final monitor might be new to you: the `mnJointConditionalAncestralState` monitor computes and writes the ancestral states to file.
 ```
@@ -252,9 +254,10 @@ Iteration	end_1	end_2	end_3	end_4	end_5	...
 
 Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run.
 We do this using the `mcmc()` function that simply takes the three main analysis components as arguments.
-```
+{% snippet scripts/mcmc_scm_hrm_RJk.Rev %}
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-```
+{% endsnippet %}
+
 
 The MCMC object that we named `mymcmc` has a member method called `.run()`.
 This will execute our analysis and we will set the chain length to `10000` cycles using the `generations` option.
@@ -274,9 +277,10 @@ writeNexus( anc_tree, filename="output/ase_mk.tree" )
 
 Finally we can close RevBayes.
 Tell the program to quit using the `q()` function.
-```
+{% snippet scripts/mcmc_scm_hrm_RJk.Rev %}
 q()
-```
+{% endsnippet %}
+
 
 >You made it! Save your file.
 {:.instruction}

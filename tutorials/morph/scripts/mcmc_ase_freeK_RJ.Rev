@@ -4,7 +4,7 @@
 # 
 # This file: Runs the full reversible-jump MCMC on an irreversible model.
 #
-# authors:  Sebastian Höhna, Will Freyman, April M. Wright, Michael J. Landis
+# authors:  Sebastian HÃ¶hna, Will Freyman, April M. Wright, Michael J. Landis
 #
 ################################################################################
 
@@ -43,12 +43,12 @@ phylogeny <- readTrees("data/mammals_thinned.tree")[1]
 rate_pr := phylogeny.treeLength() / 10
 mix_pr <- 0.5
 
-rate_12 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-rate_13 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-rate_21 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-rate_23 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-rate_31 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-rate_32 ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
+rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
 
 prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
 prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )

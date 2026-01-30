@@ -4,7 +4,7 @@
 # 
 # This file: Runs the full MCMC on an irreversible model.
 #
-# authors:  Sebastian Höhna, Will Freyman, April M. Wright, Michael J. Landis
+# authors:  Sebastian HÃ¶hna, Will Freyman, April M. Wright, Michael J. Landis
 #
 ################################################################################
 
@@ -38,12 +38,12 @@ phylogeny <- readTrees("data/mammals_thinned.tree")[1]
 
 # we assume every rate i <-> j to be independent and exponentially distributed
 rate_pr := phylogeny.treeLength() / 10
-rate_12 ~ dnExp(rate_pr)
-rate_13 ~ dnExp(rate_pr)
-rate_21 ~ dnExp(rate_pr)
-rate_23 ~ dnExp(rate_pr)
-rate_31 ~ dnExp(rate_pr)
-rate_32 ~ dnExp(rate_pr)
+rate_12 ~ dnExponential(rate_pr)
+rate_13 ~ dnExponential(rate_pr)
+rate_21 ~ dnExponential(rate_pr)
+rate_23 ~ dnExponential(rate_pr)
+rate_31 ~ dnExponential(rate_pr)
+rate_32 ~ dnExponential(rate_pr)
 
 moves.append( mvScale( rate_12, weight=2 ) )
 moves.append( mvScale( rate_13, weight=2 ) )
