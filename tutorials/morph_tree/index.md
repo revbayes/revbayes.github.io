@@ -458,9 +458,7 @@ You only need to set the option `coding="variable"` in the `dnPhyloCTMC`. Coding
 what type of ascertainment bias is expected. We are using the `variable` correction,
 as we have no invariant character in our matrix. If we also lacked
 parsimony non-informative characters, we would use the coding `informative`.
-{% snippet scripts/mcmc_mkv.Rev %}
-    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
-{% endsnippet %}
+{{ "mcmc_mkv.Rev" | snippet:"line","65" }}
 
 >Remember to change all filenames for the output, e.g., from `output/mk.log` to `output/mkv.log`.
 {:.instruction}
