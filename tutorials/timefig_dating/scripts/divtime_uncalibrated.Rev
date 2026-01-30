@@ -12,7 +12,7 @@ phy_fn        = dat_fp + "kadua.tre"
 out_fn        = "./output/" + analysis
 
 # MCMC variables
-num_gen = 5000
+num_gen = 500         # set to 5000 for full analysis
 print_gen = 20
 moves = VectorMoves()
 monitors = VectorMonitors()
@@ -24,7 +24,7 @@ num_taxa     = taxa.size()
 num_branches = 2 * num_taxa - 2
 
 # molecular input
-num_loci = 10
+num_loci = 2       # num_loci = 10 for full analysis
 for (i in 1:num_loci) {
     mol_fn[i] = dat_fp + "kadua_gene_" + i + ".nex"
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
