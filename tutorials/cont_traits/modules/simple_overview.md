@@ -69,3 +69,14 @@ You can find examples and more information in the {% page_ref cont_traits/simple
 Optimal traits may change as species evolve over the adaptive landscape. Relaxing the assumption that the optimal value is fixed across the tree requires specifying a model that describes how theta varies.
 
 In the {% page_ref cont_traits/relaxed_ou %} tutorial, we provide an example of relaxing the assumption that optima are homogeneously across branches using a ''random local clock'' model, which is spiritually similar to the one described in {% citet Uyeda2014 %}.
+
+
+{% subsubsection (3) Detecting state-dependent evolutionary optima and rates of evolution/adaptation %}
+
+*Does the continuous character adapt differently for species in specific discrete character states?*
+Species may adapt differently when they are in a different adaptive zone.
+We can model the adaptive zones occupied by a species as discrete character states, which evolve along the phylogeny.
+To test explicit hypotheses of continuous trait adaptation to different character states, we can use a state-dependent Ornstein-Uhlenbeck model.
+In the {% page_ref cont_traits/state_dependent_ou %} tutorial, we provide an example of how to test hypotheses of state-dependent continuous trait evolution using sequential and joint inference approaches.
+
+{% subsubsection (4) Inferring adaptation of a continuous character to various discrete character states %}
