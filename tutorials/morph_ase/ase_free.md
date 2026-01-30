@@ -10,7 +10,7 @@ prerequisites:
 - ctmc
 - morph_tree
 exclude_files:
-- data/pimates_morph.nex
+- data/primates_morph.nex
 - mcmc_ase_ERM.Rev
 - mcmc_ase_hrm_flex.Rev
 - mcmc_ase_irrev.Rev
@@ -143,7 +143,7 @@ Ancestral state estimates under the independent rates model. Note that the root 
 
 Next, we want to actually see the estimated rates.
 We can do this nicely in `RevGadgets` (see the {% page_ref intro/revgadgets %} Tutorial, {% citet Tribble2022 %}):
-{% snippet scripts/plot_iid_rates.R %}
+```{R}
     library(RevGadgets)
     library(ggplot2)
 
@@ -163,7 +163,7 @@ We can do this nicely in `RevGadgets` (see the {% page_ref intro/revgadgets %} T
       theme(legend.position = c(0.88, 0.85))
 
     ggsave(paste0("Primates_", CHARACTER, "_rates_freeK.pdf"), p, width = 5, height = 5)
-{% endsnippet %}
+```
 
 {% figure fig_freeK_rates %}
 <img src="figures/Primates_solitariness_rates_freeK.png" width="400" />
@@ -193,24 +193,24 @@ Then, you need to construct the `powerPosterior`, which works analogous to an MC
 In fact, it performs `cats=63` MCMC runs.
 We chose `cats=63` as a conservative estimate.
 Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.
-{% snippet scripts/ml_ase_ERM.Rev %}
+```
     ### Compute power posterior distributions
     pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
     pow_p.burnin(generations=2000,tuningInterval=250)
     pow_p.run(generations=1000)
-{% endsnippet %}
+```
 The next step is to summarize the power posterior distribution, first using stepping stone sampling,
-{% snippet scripts/ml_ase_ERM.Rev %}
+```
     ### Use stepping-stone sampling to calculate marginal likelihoods
     ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ss.marginal()
-{% endsnippet %}
+```
 and then using path sampling.
-{% snippet scripts/ml_ase_ERM.Rev %}
+```
     ### Use path-sampling to calculate marginal likelihoods
     ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ps.marginal()
-{% endsnippet %}
+```
 You should see the following output
 ```{rb}
 > source("scripts/ml_ase_ERM.Rev")

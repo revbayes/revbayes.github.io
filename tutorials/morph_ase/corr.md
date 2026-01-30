@@ -416,7 +416,7 @@ Stochastic character map (left) and ancestral state estimates (middle and right)
 The more important output analysis here is the probability of the rates being dependent or not.
 Therefore, we will plot the probability that two rates were identical.
 You can do this nicely in `RevGadgets` {% cite Tribble2022 %}
-{% snippet scripts/plot_corr.R %}
+```{R}
 library(RevGadgets)
 library(ggplot2)
 
@@ -444,7 +444,7 @@ p <- plotTrace(
   theme(legend.position = c(0.40, 0.825))
 
 ggsave(paste0("Primates_", CHARACTER_A, "_", CHARACTER_B, "_corr_RJ.pdf"), p, width = 5, height = 5)
-{% endsnippet %}
+```
 
 {% figure fig_prob_irrev %}
 <img src="figures/Primates_solitariness_terrestrially_corr_RJ.png" width="400" />

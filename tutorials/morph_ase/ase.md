@@ -363,24 +363,24 @@ We have written a little R package called \RevGadgets that can be used to visual
 
 First, we need to load R packages `RevGadgets` and `ggplot2`.
 We also specify the character name and state labels here.
-{% snippet scripts/plot_anc_states.R %}
+```{R}
     library(RevGadgets)
     library(ggplot2)
 
     CHARACTER <- "solitariness"
     STATE_LABELS <- c("0" = "no", "1" = "yes")
-{% endsnippet %}
+```
 
 Second, we specify the name of the tree file.
-{% snippet scripts/plot_anc_states.R %}
+```{R}
     tree_file <- paste0("output/",CHARACTER,"_ase_ERM.tree")
-{% endsnippet %}
+```
 
 Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
 For example, if you set `show_posterior_legend=TRUE` and `node_size_range=c(1, 3)`,
 then the size of the circles will represent the posterior probability.
-{% snippet scripts/plot_anc_states.R %}
+```{R}
     # process the ancestral states
     ase <- processAncStates(tree_file,
                        # Specify state labels.
@@ -395,14 +395,14 @@ then the size of the circles will represent the posterior probability.
                       tip_labels_size = 1) +
      # modify legend location using ggplot2
      theme(legend.position = c(0.92,0.81))
-{% endsnippet %}
+```
 
 Finally, we save the output into a PDF.
-{% snippet scripts/plot_anc_states.R %}
+```{R}
     ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_MAP.pdf"), p, width = 11, height = 9)
-{% endsnippet %}
+```
 You can also plot the ancestral states as a pie chart, which nicely shows the uncertainty.
-{% snippet scripts/plot_anc_states.R %}
+```{R}
     p <- plotAncStatesPie(t = ase,
                       tree_layout = "rect",
                       tip_labels_size = 1) +
@@ -410,7 +410,7 @@ You can also plot the ancestral states as a pie chart, which nicely shows the un
           theme(legend.position = c(0.92,0.81))
 
     ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
-{% endsnippet %}
+```
 
 
 >You can also find all these commands in the file called **plot_anc_states.R** which you can run as a script in R.
