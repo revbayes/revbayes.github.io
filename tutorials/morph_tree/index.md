@@ -574,7 +574,7 @@ the Mk model, due to increased model complexity.
 
 
 {% figure add_files %}
-<img src="figures/convergence.png" width="100%"/>
+<img src="figures/convergence.png" width="90%"/>
 {% figcaption %}
 Assessing convergence using `convenience` {% cite Fabreti2022 %}. Here we show the difference in split frequencies. These runs have converged for us.
 {% endfigcaption %}
