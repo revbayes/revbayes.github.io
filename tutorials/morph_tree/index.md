@@ -399,9 +399,9 @@ created will all be used by RevBayes.
 Provided that you started RevBayes from the correct directory
 (`RB_DiscreteMorphology_Tutorial`), you can then use the `source()`
 function to feed RevBayes your Rev-script file (`mcmc_mk.Rev`).
-{% snippet scripts/mk_gamma.Rev %}
-source("scripts/mcmc_mk.Rev")
-{% endsnippet %}
+```
+    source("scripts/mcmc_mk.Rev")
+```
 
 This will execute the analysis and you should see the following output
 (though not the exact same values):
@@ -458,8 +458,8 @@ You only need to set the option `coding="variable"` in the `dnPhyloCTMC`. Coding
 what type of ascertainment bias is expected. We are using the `variable` correction,
 as we have no invariant character in our matrix. If we also lacked
 parsimony non-informative characters, we would use the coding `informative`.
-{% snippet scripts/mk_model_gamma_lognormal.Rev %}
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+{% snippet scripts/mcmc_mkv.Rev %}
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 {% endsnippet %}
 
 >Remember to change all filenames for the output, e.g., from `output/mk.log` to `output/mkv.log`.
