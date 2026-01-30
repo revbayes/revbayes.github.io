@@ -420,7 +420,7 @@ formatted files:
 and 2) the posterior probabilities of the entire character history.
 These can be plotted using the **phytools** R package {% cite Revell2012 %}.
 {% snippet scripts/mcmc_scm_hrm.Rev %}
-char_map_tree = characterMapTree(tree=phylogeny,
+    char_map_tree = characterMapTree(tree=phylogeny,
                  ancestral_state_trace_vector=anc_states_stoch_map,
                  character_file="output/"+CHARACTER+"_hrm_marginal_character.tree",
                  posterior_file="output/"+CHARACTER+"_hrm_marginal_posterior.tree",
@@ -431,8 +431,8 @@ char_map_tree = characterMapTree(tree=phylogeny,
 This is all you need for this analysis.
 Don't forget to quit RevBayes at the end of the script.
 {% snippet scripts/mcmc_scm_hrm.Rev %}
-# Quit RevBayes #
-q()
+    # Quit RevBayes #
+    q()
 {% endsnippet %}
 
 >This is all that you need to do for the rate variation analysis with hidden rate categories and stochastic character mapping. Save your script and give it a try!
