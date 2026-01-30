@@ -217,7 +217,7 @@ non-hypercarnivorous).</p>
 <p>Finally, we initialize a variable for our vector of moves and monitors.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
-monitors = VectorMonitors()
+    monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
@@ -235,21 +235,21 @@ easy comparisons later.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_states) {
 
-  # loguniform prior on speciation
-  speciation[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvSlice(speciation[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+      # loguniform prior on speciation
+      speciation[i] ~ dnLoguniform( 1E-6, 1E2)
+      moves.append( mvSlice(speciation[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
-  # and on extinction
-  extinction[i] ~ dnLoguniform( 1E-6, 1E2)
-  moves.append( mvSlice(extinction[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+      # and on extinction
+      extinction[i] ~ dnLoguniform( 1E-6, 1E2)
+      moves.append( mvSlice(extinction[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
-  # exponential prior on fossil sampling
-  fossil_sampling[i] ~ dnExp(5)
-  moves.append( mvSlice(fossil_sampling[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+      # exponential prior on fossil sampling
+      fossil_sampling[i] ~ dnExp(5)
+      moves.append( mvSlice(fossil_sampling[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
 
-  # set a variable to monitor diversification rates
-  diversification[i] := speciation[i] - extinction[i]
-}
+      # set a variable to monitor diversification rates
+      diversification[i] := speciation[i] - extinction[i]
+    }
 </code></pre></div></div>
 
 <p>Note that we are using <code class="language-plaintext highlighter-rouge">mvSlice</code> instead of the more popular <code class="language-plaintext highlighter-rouge">mvScale</code> move. <code class="language-plaintext highlighter-rouge">mvSlice</code> is a relatively new addition
@@ -266,13 +266,13 @@ characters.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := observed_phylogeny.treeLength() / 10
 
-# loop through number of transition rates (3 * 2 = 6 in this case)
-for ( i in 1:(num_states * (num_states - 1)) ) {
+    # loop through number of transition rates (3 * 2 = 6 in this case)
+    for ( i in 1:(num_states * (num_states - 1)) ) {
 
-     # set it to an exponential prior
-     q[i] ~ dnExp(rate_pr)
-     moves.append( mvSlice(q[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
-}
+         # set it to an exponential prior
+         q[i] ~ dnExp(rate_pr)
+         moves.append( mvSlice(q[i], window = 0.1, weight = 1.0, search_method = "stepping_out") )
+    }
 </code></pre></div></div>
 
 <p>Here, <code class="language-plaintext highlighter-rouge">q[1]</code> is equivalent to $q_{01}$, the rate with which hypercarnivorous species transition to non-hypercarnivorous
@@ -334,12 +334,12 @@ for the fossil-sampling rate.</p>
 function.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
-                    lambda            = speciation,
-                    mu                = extinction,
-                    psi               = fossil_sampling,
-                    Q                 = rate_matrix,
-                    pi                = root_frequencies,
-                    rho               = extant_sampling)
+                        lambda            = speciation,
+                        mu                = extinction,
+                        psi               = fossil_sampling,
+                        Q                 = rate_matrix,
+                        pi                = root_frequencies,
+                        rho               = extant_sampling)
 </code></pre></div></div>
 
 <p>Since we are treating the tree as fixed, we need to attach this time tree node to our observed phylogeny. We do so
@@ -383,11 +383,11 @@ also particularly useful for HiSSE analyses, since it allows us to check the est
 each species in the dataset.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnJointConditionalAncestralState(tree            = timetree,
-                                                  cdbdp           = timetree,
-                                                  type            = "Standard",
-                                                  withStartStates = false,
-                                                  printgen        = 100,
-                                                  filename        = "output/canidae_diet_anc_states.log") )
+                                                      cdbdp           = timetree,
+                                                      type            = "Standard",
+                                                      withStartStates = false,
+                                                      printgen        = 100,
+                                                      filename        = "output/canidae_diet_anc_states.log") )
 </code></pre></div></div>
 
 <p>Finally, we add a screen monitor to monitor the progress of the MCMC run.</p>
@@ -420,7 +420,7 @@ other measures of convergence).</p>
 need to restart analyses. To that end, we can make use of checkpointing by specifying a <code class="language-plaintext highlighter-rouge">checkpointFile</code> argument
 in the <code class="language-plaintext highlighter-rouge">run</code> method.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/canidae_diet_bisse.state")                                     
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/canidae_diet_bisse.state")
 </code></pre></div></div>
 
 <p>The MCMC can then be restarted from the checkpoint file by adding</p>
@@ -442,12 +442,12 @@ the sampled values using the <code class="language-plaintext highlighter-rouge">
 posteriori (MAP) state and the posterior probabilities for each state at a given node.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree                         = observed_phylogeny,
-                              ancestral_state_trace_vector = anc_states,
-                              include_start_states         = false,
-                              file                         = "output/canidae_diet_anc_states_results.tree",
-                              burnin                       = 0.1,
-                              summary_statistic            = "MAP",
-                              site                         = 1)
+                                  ancestral_state_trace_vector = anc_states,
+                                  include_start_states         = false,
+                                  file                         = "output/canidae_diet_anc_states_results.tree",
+                                  burnin                       = 0.1,
+                                  summary_statistic            = "MAP",
+                                  site                         = 1)
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Using TensorPhylo</h2><p>TensorPhylo <a class="citation" href="#May2022">(May and Meyer)</a> is a plugin that introduced an alternative general SSE function, the generalized
@@ -474,14 +474,14 @@ plugin</p>
 <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnGLHBDSP( rootAge           = root,
-                      lambda            = speciation,
-                      mu                = extinction,
-                      phi               = fossil_sampling,
-                      eta               = rate_matrix,
-                      pi                = root_frequencies,
-                      rho               = extant_sampling,
-                      taxa              = taxa,
-                      nStates           = num_states)
+                          lambda            = speciation,
+                          mu                = extinction,
+                          phi               = fossil_sampling,
+                          eta               = rate_matrix,
+                          pi                = root_frequencies,
+                          rho               = extant_sampling,
+                          taxa              = taxa,
+                          nStates           = num_states)
 </code></pre></div></div>
 
 <p>And we’re done! This should run, and achieve similar results to <code class="language-plaintext highlighter-rouge">dnCDBDP</code>, while being slightly faster. Make sure

@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Stochastic Character Mapping and Hidden Rates</h1>
 	<h3 class="subtitle">Mapping Character Transitions and Testing for Rate Variation</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on November 29, 2022</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -215,15 +215,22 @@ Create an empty text file and call it `mcmc_scm_hrm.Rev.</p>
 
 <p>As before, use the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a data matrix to the workspace from a formatted file.
 Import the morphological character matrix and assign it to the variable <code class="language-plaintext highlighter-rouge">morpho</code>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/primates_solitariness.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CHARACTER = "solitariness"
+    NUM_STATES = 2
+    NUM_HIDDEN_STATES = 2
+
+    # Import the morphological character matrix #
+    morpho &lt;- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
 </code></pre></div></div>
+
 <p>However, now we also need to <em>expand</em> the state space to include the 2 categories.
 In RevBayes, the character data matrix has a member function <code class="language-plaintext highlighter-rouge">.expandCharacters()</code> which will create these additional categories.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_exp = morpho.expandCharacters( 2 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_exp = morpho.expandCharacters( NUM_HIDDEN_STATES )
 </code></pre></div></div>
+
 <p>To understand better what has happened, let us look at the character data matrices in RevBayes.
 First, we look at the original character data matrix.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; morpho
 </code></pre></div></div>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Standard character matrix with 233 taxa and 1 characters
    ========================================================
@@ -240,7 +247,7 @@ Now look at the expanded character data matrix.</p>
 </code></pre></div></div>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   NaturalNumbers character matrix with 233 taxa and 1 characters
    ==============================================================
-   Origination:                   
+   Origination:
    Number of taxa:                233
    Number of included taxa:       233
    Number of characters:          1
@@ -307,8 +314,8 @@ It is important to remember how the state space was expanded to set the rates up
 
 <p>As before, we need to instantiate a couple “helper variables” that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
-monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+    monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_phylogeny">The Phylogeny</h3>
@@ -329,17 +336,19 @@ This gives 4 states in total and therefore a 4x4 rate matrix.</p>
 
 <p>Start with creating a matrix called <code class="language-plaintext highlighter-rouge">rates</code> where all elements are 0.0.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># we will fill the non-zero elements below
-for (i in 1:4) {
-  for (j in 1:4) {
-    rates[i][j] &lt;- 0.0
-  }
-}
+    for (i in 1:4) {
+      for (j in 1:4) {
+        rates[i][j] &lt;- 0.0
+      }
+    }
 </code></pre></div></div>
+
 <p>Next, we need to specify some priors for our rates.
 It is probably quite challenging to have a good idea of a reasonable rate for the <em>hidden</em> category changes, i.e., the rate of changing between the slow and the fast rate categories.
 We simply assume the same prior as before, that is, we assume on average 10 changes along the given phylogeny.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
 </code></pre></div></div>
+
 <p>Next, we need to assume some model how the fast and the slow rates are specified.
 If we simply use free parameters for $\mu_{1,s}$ and $\mu_{1,f}$, we could easily estimate that $\mu_{1,s} &gt; \mu_{1,f}$ or the other way around.
 So this model is clearly non-identifiable and we need to restrict that $\mu_{1,s} &lt; \mu_{1,f}$.
@@ -352,52 +361,60 @@ This approach is analogous in idea to the well known $+\Gamma$ model of among si
 First, we need to specify the prior distribution on the standard deviation of the lognormal distribution.
 Let us assume an exponential that on standard deviation with mean of $0.587405$, which means that the 95% probability interval of the lognormal distribution spans 1 order of magnitude.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>H &lt;- 0.587405
-SD_PRIOR &lt;- 1/H
+    SD_PRIOR &lt;- 1/H
 </code></pre></div></div>
+
 <p>Now that we have the hyper-prior parameters, we can start with the prior distribution.
 Let us start with the rate of gain.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_gain_median ~ dnExponential( rate_pr )
-rate_gain_sd ~ dnExponential( SD_PRIOR )
+    rate_gain_sd ~ dnExponential( SD_PRIOR )
 </code></pre></div></div>
+
 <p>Since these are positive real variable, we apply scaling moves on them.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( rate_gain_median, weight=2 ) )
-moves.append( mvScale( rate_gain_sd, weight=2 ) )
+    moves.append( mvScale( rate_gain_sd, weight=2 ) )
 </code></pre></div></div>
+
 <p>Next, we use the prior median and prior standard deviation to construct the median quantiles of the lognormal distribution.
 We will use the function <code class="language-plaintext highlighter-rouge">fnDiscretizeDistribution</code>, which takes as arguments the distribution and the number of quantiles, which is 2 in our case for 2 rate categories (slow vs fast).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_gain := fnDiscretizeDistribution( dnLognormal( ln(rate_gain_median), rate_gain_sd ), 2 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_gain := fnDiscretizeDistribution( dnLognormal( ln(rate_gain_median), rate_gain_sd ), NUM_HIDDEN_STATES )
 </code></pre></div></div>
+
 <p>Now repeat exactly the same for the loss rate.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_loss_median ~ dnExponential( rate_pr )
-rate_loss_sd ~ dnExponential( SD_PRIOR )
+    rate_loss_sd ~ dnExponential( SD_PRIOR )
 
-moves.append( mvScale( rate_loss_median, weight=2 ) )
-moves.append( mvScale( rate_loss_sd, weight=2 ) )
+    moves.append( mvScale( rate_loss_median, weight=2 ) )
+    moves.append( mvScale( rate_loss_sd, weight=2 ) )
 
-rate_loss := fnDiscretizeDistribution( dnLognormal( ln(rate_loss_median), rate_loss_sd ), NUM_HIDDEN_STATES )
+    rate_loss := fnDiscretizeDistribution( dnLognormal( ln(rate_loss_median), rate_loss_sd ), NUM_HIDDEN_STATES )
 </code></pre></div></div>
+
 <p>Finally, we create the two rate variables for the switching rates between the fast and slow rate categories.
 As mentioned before, we will simply assume an exponential prior distribution with a mean of 10 events along the phylogeny.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_slow_fast ~ dnExponential( rate_pr )
-switch_fast_slow ~ dnExponential( rate_pr )
+    switch_fast_slow ~ dnExponential( rate_pr )
 </code></pre></div></div>
+
 <p>We also should not forget the moves on the switching rates.
 We will use as usual the scaling move since these are rate variables (positive real numbers).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( switch_slow_fast, weight=2 ) )
-moves.append( mvScale( switch_fast_slow, weight=2 ) )
+    moves.append( mvScale( switch_fast_slow, weight=2 ) )
 </code></pre></div></div>
+
 <p>Now we have created all the rate variables.
 We need to connect them to our rate matrix.
 As a help, look again at the rate matrix described in the introduction.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates[1][2] := rate_gain[1]     # 0S-&gt;1S
-rates[1][3] := switch_slow_fast # 0S-&gt;0F
-rates[2][1] := rate_loss[1]     # 1S-&gt;0S
-rates[2][4] := switch_slow_fast # 1S-&gt;1F
-rates[3][1] := switch_fast_slow # 0F-&gt;0S
-rates[3][4] := rate_gain[2]     # 0F-&gt;1F
-rates[4][2] := switch_fast_slow # 1F-&gt;1S
-rates[4][3] := rate_loss[2]     # 1F-&gt;2F
+    rates[1][3] := switch_slow_fast # 0S-&gt;0F
+    rates[2][1] := rate_loss[1]     # 1S-&gt;0S
+    rates[2][4] := switch_slow_fast # 1S-&gt;1F
+    rates[3][1] := switch_fast_slow # 0F-&gt;0S
+    rates[3][4] := rate_gain[2]     # 0F-&gt;1F
+    rates[4][2] := switch_fast_slow # 1F-&gt;1S
+    rates[4][3] := rate_loss[2]     # 1F-&gt;2F
 </code></pre></div></div>
+
 <p>Finally, we can create our transition rate matrix <code class="language-plaintext highlighter-rouge">Q</code> using the rate matrix function <code class="language-plaintext highlighter-rouge">fnFreeK</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK(rates, rescaled=FALSE)
 </code></pre></div></div>
@@ -406,20 +423,23 @@ rates[4][3] := rate_loss[2]     # 1F-&gt;2F
 We assume a flat Dirichlet distribution, which assigns each combination of root frequencies the exact same prior probability.
 Remember that we 2 states for the observed characters and 2 states for the rate categories.
 Thus we need a vector of 2*2 filled with ones.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- rep(1,2*2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- rep(1,NUM_STATES*NUM_HIDDEN_STATES)
 </code></pre></div></div>
+
 <p>We use this for our Dirichlet distribution.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf ~ dnDirichlet( rf_prior )
 </code></pre></div></div>
+
 <p>We apply two different moves to the root frequencies, a <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code> that changes a single frequencies and rescales the other frequencies, and a <code class="language-plaintext highlighter-rouge">mvDirichletSimplex</code> that redraws all root frequencies together.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
 </code></pre></div></div>
 
 <p>Lastly, we set up the CTMC.
 Not that this time we need to specify the <code class="language-plaintext highlighter-rouge">type=NaturalNumbers</code>, as we saw this is used in the <em>expanded</em> data matrix.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="NaturalNumbers")
 </code></pre></div></div>
+
 <p>We conclude the model specification by attaching the <em>expanded</em> data matrix to the CTMC object.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho.clamp(morpho_exp)
 </code></pre></div></div>
@@ -445,26 +465,28 @@ Stochastic character mapping, similar to ancestral state estimation, is achieved
 
 <p>We will specify the same model monitor (<code class="language-plaintext highlighter-rouge">mnModel</code>), screen monitor (<code class="language-plaintext highlighter-rouge">mnScreen</code>) and ancestral state monitor (<code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code>) as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 1. for the full model #
-monitors.append( mnModel(filename="output/solitariness_hrm.log", printgen=1) )
-# 2. and a few select parameters to be printed to the screen #
-monitors.append( mnScreen(printgen=10) )
-# 3. add an ancestral state monitor
-monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
-                                                  ctmc=phyMorpho,
-                                                  filename="output/solitariness_hrm.states.txt",
-                                                  type="NaturalNumbers",
-                                                  printgen=1,
-                                                  withTips=true,
-                                                  withStartStates=false) )
+    monitors.append( mnModel(filename="output/"+CHARACTER+"_hrm.log", printgen=1) )
+    # 2. and a few select parameters to be printed to the screen #
+    monitors.append( mnScreen(printgen=100) )
+    # 3. add an ancestral state monitor
+    monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                      ctmc=phyMorpho,
+                                                      filename="output/"+CHARACTER+"_hrm.states.txt",
+                                                      type="NaturalNumbers",
+                                                      printgen=1,
+                                                      withTips=true,
+                                                      withStartStates=false) )
 </code></pre></div></div>
+
 <p>Now add the new stochastic character mapping monitor, <code class="language-plaintext highlighter-rouge">mnStochasticCharacterMap</code>.
 This monitor also requires that you specify the <code class="language-plaintext highlighter-rouge">CTMC</code> object, which is <code class="language-plaintext highlighter-rouge">phyMorpho</code> in our example, and output filename, the frequency how often you want to generate stochastic character maps, e.g., once every iteration or every 10 generations, and whether we want to include the simmap states (yes, very important).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 4. add an stochastic character map monitor
-monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
-                                          filename="output/solitariness_hrm_stoch_char_map.log",
-                                          printgen=1,
-                                          include_simmap=true) )
+    monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
+                                              filename="output/"+CHARACTER+"_hrm_stoch_char_map.log",
+                                              printgen=1,
+                                              include_simmap=true) )
 </code></pre></div></div>
+
 <p>This monitor will create the <code class="language-plaintext highlighter-rouge">output/solitariness_hrm_stoch_char_map.log</code> file.
 Just like the other log files, each row in this file represents a different sample from the MCMC.
 Each column in the file, though, is the character history for a different node in the phylogeny.</p>
@@ -475,7 +497,7 @@ Each column in the file, though, is the character history for a different node i
 <p>Setup the MCMC analysis as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>).
 This will run 2 replicated MCMC runs with 5,000 iterations and auto-tuning the moves every 200 iterations.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-mymcmc.run(generations=5000, tuningInterval=200)
+    mymcmc.run(generations=5000, tuningInterval=200)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="summarizing-the-mcmc-output">Summarizing the MCMC output</h4>
@@ -485,13 +507,15 @@ mymcmc.run(generations=5000, tuningInterval=200)
 <em>marginal</em>, <em>joint</em>, or <em>conditional</em> character history.
 As before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>), we will compute the ancestral state estimates.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in the tree trace and construct the ancestral states (ASE) #
-anc_states = readAncestralStateTrace("output/solitariness_hrm.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/solitariness_ase_hrm.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=2*2)
+    anc_states = readAncestralStateTrace("output/"+CHARACTER+"_hrm.states.txt")
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_hrm.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=NUM_STATES*NUM_HIDDEN_STATES)
 </code></pre></div></div>
+
 <p>In a very similar way, we summarize the output of the stochastic character mapping.
 First, we load in the ancestral state trace (sampled character histories)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states_stoch_map = readAncestralStateTrace("output/solitariness_hrm_stoch_char_map.log")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states_stoch_map = readAncestralStateTrace("output/"+CHARACTER+"_hrm_stoch_char_map.log")
 </code></pre></div></div>
+
 <p>Then we use the <code class="language-plaintext highlighter-rouge">characterMapTree</code> function.
 This generates two <strong>SIMMAP</strong> <a class="citation" href="#Bollback2006">(Bollback 2006)</a>
 formatted files:
@@ -500,8 +524,8 @@ and 2) the posterior probabilities of the entire character history.
 These can be plotted using the <strong>phytools</strong> R package <a class="citation" href="#Revell2012">(Revell 2012)</a>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char_map_tree = characterMapTree(tree=phylogeny,
                  ancestral_state_trace_vector=anc_states_stoch_map,
-                 character_file="output/solitariness_hrm_marginal_character.tree",
-                 posterior_file="output/solitariness_hrm_marginal_posterior.tree",
+                 character_file="output/"+CHARACTER+"_hrm_marginal_character.tree",
+                 posterior_file="output/"+CHARACTER+"_hrm_marginal_posterior.tree",
                  burnin=0.25,
                  num_time_slices=500)
 </code></pre></div></div>
@@ -509,7 +533,7 @@ These can be plotted using the <strong>phytools</strong> R package <a class="cit
 <p>This is all you need for this analysis.
 Don’t forget to quit RevBayes at the end of the script.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Quit RevBayes #
-q()
+    q()
 </code></pre></div></div>
 
 <blockquote class="instruction">

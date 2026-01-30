@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation</h1>
 	<h3 class="subtitle">The Equal Rates Markov Model</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on November 29, 2022</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -247,7 +247,9 @@ After writing all the components for your model, you will complete the Rev scrip
 <p>RevBayes uses the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a data matrix to the workspace from a formatted file.
 This function can be used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable <code class="language-plaintext highlighter-rouge">morpho</code>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/primates_solitariness.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CHARACTER = "solitariness"
+
+    morpho &lt;- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="subsubsec_var">Create Helper Variables</h4>
@@ -255,8 +257,8 @@ Import the morphological character matrix and assign it to the variable <code cl
 
 <p>Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple “helper variables” that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
-monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+    monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_ERM_Model">The ERM Model</h3>
@@ -273,11 +275,13 @@ We will use an exponential prior with a mean of 10 events along this given phylo
 If you have an idea for another reasonable number of events, then feel free to change this prior mean.
 Note that if you are uncertain, it is better to specify a slightly too high than too low prior mean.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
-mu ~ dnExp(rate_pr)
+    mu ~ dnExp(rate_pr)
 </code></pre></div></div>
+
 <p>Since $\mu$ is a rate parameter, we will apply a scaling move to update it.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(mu, lambda=1, weight=2.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( mu, lambda=1, weight=2.0 ) )
 </code></pre></div></div>
+
 <p>Next, we specify our vector of rates.
 We need to do this because our rate matrix requires a vector of rates.
 Since we use the ERM model, all rates in this vector are identical.
@@ -285,11 +289,12 @@ We could simply write <code class="language-plaintext highlighter-rouge">rate :=
 So we use for convenience a loop over the number of rates, which is $K*(K-1)$ rates where $K$ is the number of states.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_STATES = 2
 
-NUM_RATES = NUM_STATES * (NUM_STATES-1)
-for ( i in 1:NUM_RATES ) {
-    rate[i] := mu
-}
+    NUM_RATES = NUM_STATES * (NUM_STATES-1)
+    for ( i in 1:NUM_RATES ) {
+        rate[i] := mu
+    }
 </code></pre></div></div>
+
 <p>Now that we have our rates, we can specify the morphological rate matrix.
 We will use the <code class="language-plaintext highlighter-rouge">fnFreeK</code> function for this.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK( rate, rescale=false )
@@ -300,8 +305,11 @@ This should be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitut
 We see some familiar pieces: tree and Q matrix.
 We also have one new keywords: data type.
 The data type argument specifies the type of data - in our case, “Standard”, the specification for morphology.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard")
-phyMorpho.clamp(morpho)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- rep(1,NUM_STATES)
+    rf &lt;- simplex( rf_prior )
+
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+    phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
 <p>All of the components of the model are now specified.</p>
@@ -328,7 +336,7 @@ This will include every stochastic and deterministic node using the <code class=
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
 We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/solitariness_ERM.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/"+CHARACTER+"_ERM.log", printgen=1) )
 </code></pre></div></div>
 
 <p>The second monitor we will add to our analysis will print information to the screen.
@@ -338,12 +346,12 @@ Like with <code class="language-plaintext highlighter-rouge">mnFile</code> we mu
 
 <p>The third and final monitor might be new to you: the <code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code> monitor computes and writes the ancestral states to file.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
-                                                   ctmc=phyMorpho,
-                                                   filename="output/solitariness_ERM.states.txt",
-                                                   type="Standard",
-                                                   printgen=1,
-                                                   withTips=true,
-                                                   withStartStates=false) )
+                                                  ctmc=phyMorpho,
+                                                  filename="output/"+CHARACTER+"_ERM.states.txt",
+                                                  type="Standard",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
 </code></pre></div></div>
 
 <p>The core arguments this monitor needs are a tree object (<code class="language-plaintext highlighter-rouge">tree=phylogeny</code>),
@@ -385,8 +393,8 @@ This will execute our analysis and we will set the chain length to <code class="
 <p>Once our Markov chain has terminated, we will process the ancestral state samples.
 This function will compute the posterior probabilities of the ancestral states from the samples.
 Later we can visualize our ancestral states.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/solitariness_ERM.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/solitariness_ase_ERM.tree", burnin=0.25, summary_statistic="MAP", site=1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/"+CHARACTER+"_ERM.states.txt")
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_ERM.tree", burnin=0.25, summary_statistic="MAP", site=1)
 </code></pre></div></div>
 
 <p>Finally we can close RevBayes.
@@ -410,10 +418,10 @@ The Rev script you just created will be used by RevBayes and loaded in the appro
 
 <p>Provided that you started RevBayes from the correct directory (<code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial</code>),
 you can then use the <code class="language-plaintext highlighter-rouge">source()</code> function to feed RevBayes your master script file (<code class="language-plaintext highlighter-rouge">mcmc_ase_ERM.Rev</code>).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_ase_ERM.Rev")
-</code></pre></div></div>
+<pre><code class="language-{bash}">source("scripts/mcmc_ase_ERM.Rev")
+</code></pre>
 <p>This will execute the analysis and you should see the following output (though not the exact same values):</p>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_ase_ERM.Rev"
+<pre class="Rev-output"><code class="language-{rb}">   Processing file "scripts/mcmc_ase_ERM.Rev"
    Successfully read one character matrix from file 'data/primates_solitariness.nex'
    Attempting to read the contents of file "primates_tree.nex"
    Successfully read file
@@ -430,7 +438,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |    elapse
 200         |       -26.3264   |       -30.6164   |        4.29003   |   00:00:01   |   00:02:04   |
 300         |       -26.3876   |       -30.5523   |        4.16473   |   00:00:02   |   00:02:44   |
 ...
-</code></pre></div></div>
+</code></pre>
 
 <p>When the analysis is complete, RevBayes will quit and you will have a new directory called <code class="language-plaintext highlighter-rouge">output</code> that will contain all of the files you specified with the monitors (Section <a href="#subsubsec_Monitors"></a>).</p>
 
@@ -448,52 +456,57 @@ This section will aim to produce a pdf containing figures for the ancestral stat
 This should be the directory where you now have you directory called <code class="language-plaintext highlighter-rouge">output</code> with the MCMC output files.</p>
 </blockquote>
 
-<p>First, we need to load the R package RevGadgets</p>
-<pre><code class="language-{R}">library(RevGadgets)
+<p>First, we need to load R packages <code class="language-plaintext highlighter-rouge">RevGadgets</code> and <code class="language-plaintext highlighter-rouge">ggplot2</code>.
+We also specify the character name and state labels here.</p>
+<pre><code class="language-{R}">    library(RevGadgets)
+    library(ggplot2)
+
+    CHARACTER &lt;- "solitariness"
+    STATE_LABELS &lt;- c("0" = "no", "1" = "yes")
 </code></pre>
 
 <p>Second, we specify the name of the tree file.</p>
-<pre><code class="language-{R}">tree_file = "output/solitariness_ase_ERM.tree"
+<pre><code class="language-{R}">    tree_file &lt;- paste0("output/",CHARACTER,"_ase_ERM.tree")
 </code></pre>
 
 <p>Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
 For example, if you set <code class="language-plaintext highlighter-rouge">show_posterior_legend=TRUE</code> and <code class="language-plaintext highlighter-rouge">node_size_range=c(1, 3)</code>,
 then the size of the circles will represent the posterior probability.</p>
-<pre><code class="language-{R}"># process the ancestral states
-ase &lt;- processAncStates(tree_file,
+<pre><code class="language-{R}">    # process the ancestral states
+    ase &lt;- processAncStates(tree_file,
                        # Specify state labels.
                        # These numbers correspond to
                        # your input data file.
-                         state_labels = c("0" = "no", "1" = "yes"))
+                         state_labels = STATE_LABELS)
 
-# produce the plot object, showing MAP states at nodes.
-# color corresponds to state, size to the state's posterior probability
-p &lt;- plotAncStatesMAP(t = ase,
+    # produce the plot object, showing MAP states at nodes.
+    # color corresponds to state, size to the state's posterior probability
+    p &lt;- plotAncStatesMAP(t = ase,
                       tree_layout = "rect",
                       tip_labels_size = 1) +
      # modify legend location using ggplot2
      theme(legend.position = c(0.92,0.81))
-
 </code></pre>
+
 <p>Finally, we save the output into a PDF.</p>
-<pre><code class="language-{R}">ggsave(paste0("primates_solitariness_ASE_ERM_MAP.pdf"), p, width = 11, height = 9)
+<pre><code class="language-{R}">    ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_MAP.pdf"), p, width = 11, height = 9)
 </code></pre>
 <p>You can also plot the ancestral states as a pie chart, which nicely shows the uncertainty.</p>
-<pre><code class="language-{R}">p &lt;- plotAncStatesPie(t = ase,
+<pre><code class="language-{R}">    p &lt;- plotAncStatesPie(t = ase,
                       tree_layout = "rect",
                       tip_labels_size = 1) +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.92,0.81))
+          # modify legend location using ggplot2
+          theme(legend.position = c(0.92,0.81))
 
-ggsave(paste0("primates_solitariness_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
+    ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
 </code></pre>
 
 <blockquote class="instruction">
   <p>You can also find all these commands in the file called <strong>plot_anc_states.R</strong> which you can run as a script in R.</p>
 </blockquote>
-
-<p><a href="#fig_ERM_anc_states"></a> shows the result of this analysis.</p>
+<p>ggsave(paste0(“primates_solitariness_ASE_ERM_Pie.pdf”), p, width = 11, height = 9)
+<a href="#fig_ERM_anc_states"></a> shows the result of this analysis.</p>
 
 <figure id="fig_ERM_anc_states"><p><img src="figures/Primates_solitariness_ASE_ERM_MAP.png" width="400" />
 <img src="figures/Primates_solitariness_ASE_ERM_Pie.png" width="400" /></p>

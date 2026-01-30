@@ -301,67 +301,57 @@ is the top directory above the <code class="language-plaintext highlighter-rouge
 <p>Now, let’s begin.</p>
 
 <p>First, create file management variables for input</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host_fn = "data/angio_25tips_time.phy"
-phy_parasite_fn = "data/Nymphalini.phy"
-dat_parasite_fn = "data/interaction_matrix.nex"
+    phy_parasite_fn = "data/Nymphalini.phy"
+    dat_parasite_fn = "data/interaction_matrix.nex"
 </code></pre></div></div>
 
 <p>then read in our character data</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_parasite &lt;- readDiscreteCharacterData(dat_parasite_fn)
 </code></pre></div></div>
 
 <p>For this tutorial we’ll assume we know the host and parasite phylogenies without error. Note that our host repertoire inference method uses a root branch length to estimate the stationary probabilities at the root node. Our parasite tree file (<code class="language-plaintext highlighter-rouge">Nymphalini.phy</code>) is modified to have a branch length assigned to the root node. If you provide a tree without a root branch length, the software will consider it to be the same length as the tree height.</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_parasite &lt;- readTrees(phy_parasite_fn)[1]
 </code></pre></div></div>
 
 <p>Here is where you can change the host tree to <code class="language-plaintext highlighter-rouge">angio_25tips_bl1.phy</code> when you repeat the analysis</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host &lt;- readTrees(phy_host_fn)[1]
 </code></pre></div></div>
 
 <p>Retrieve dataset dimensions</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_host_tips &lt;- phy_host.ntips()
-n_host_branches &lt;- 2 * n_host_tips - 2
-n_parasite_branches &lt;- 2 * phy_parasite.ntips() - 2
-n_sites &lt;- dat_parasite.nchar()
+    n_host_branches &lt;- 2 * n_host_tips - 2
+    n_parasite_branches &lt;- 2 * phy_parasite.ntips() - 2
+    n_sites &lt;- dat_parasite.nchar()
 </code></pre></div></div>
 
 <p>Add more information to the name of output files</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "out.time"
-out_fn = "output/" + out_str    
+	out_fn = "output/" + out_str
 </code></pre></div></div>
 
 <p>We need to create vectors of <em>moves</em> and <em>monitors</em> to later inform how our Markov chain Monte Carlo (MCMC) analysis needs to propose and sample new model parameters and host repertoire histories. Also, we use monitors to record the information we want to use</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
-monitors = VectorMonitors()
+    monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>Next, we’ll build the transition rate matrix for the model. In this example, the rate matrix requires four rates: two gain rates (0-&gt;1 and 1-&gt;2) and two loss rates (1-&gt;0 and 2-&gt;1).</p>
 
 <p>First, create a vector containing all transition rates and assign it a move</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1,1,1] )
-moves.append( mvSimplex(switch_rates_pos, alpha=10, weight=2, tune=false) )
+    moves.append( mvSimplex(switch_rates_pos, alpha=10, weight=2, tune=false) )
 </code></pre></div></div>
 
 <p>We’ll now create a set of deterministic nodes to help us map our simplex of transition rates onto specific host gain and loss events</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
-switch_rate_0_to_2 := 0.
-switch_rate_1_to_0 := switch_rates_pos[2]
-switch_rate_1_to_2 := switch_rates_pos[3]
-switch_rate_2_to_0 := 0.
-switch_rate_2_to_1 := switch_rates_pos[4]
+    switch_rate_0_to_2 := 0.
+    switch_rate_1_to_0 := switch_rates_pos[2]
+    switch_rate_1_to_2 := switch_rates_pos[3]
+    switch_rate_2_to_0 := 0.
+    switch_rate_2_to_1 := switch_rates_pos[4]
 </code></pre></div></div>
 
 <p>Next, we assemble our named rate variables into a vector</p>
-
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
 </code></pre></div></div>
 

@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation with the independent rates model</h1>
 	<h3 class="subtitle">Testing for Unequal Rates</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on November 21, 2025</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -118,8 +118,6 @@
           <li><a href="/tutorials/morph_ase/data/primates_males.nex">primates_males.nex</a></li>
         
           <li><a href="/tutorials/morph_ase/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
-        
-          <li><a href="/tutorials/morph_ase/data/primates_morph.nex">primates_morph.nex</a></li>
         
           <li><a href="/tutorials/morph_ase/data/primates_morph_description.txt">primates_morph_description.txt</a></li>
         
@@ -211,13 +209,15 @@ Thus, we start be specifying the rate of this exponential prior distribution.
 A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
 </code></pre></div></div>
+
 <p>Now we can create our two independent rate variables drawn from an identical exponential distribution</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_RATES = NUM_STATES * (NUM_STATES-1)
-for ( i in 1:NUM_RATES ) {
-    rate[i] ~ dnExp(rate_pr)
-    moves.append( mvScale( rate[i], weight=2 ) )
-}
+    for ( i in 1:NUM_RATES ) {
+        rate[i] ~ dnExp(rate_pr)
+        moves.append( mvScale( rate[i], weight=2 ) )
+    }
 </code></pre></div></div>
+
 <p>Next, we put all the rates together into our rate matrix.
 Don’t forget to say that we do not rescale the rate matrix (<code class="language-plaintext highlighter-rouge">rescale=false</code>).
 We would only rescale if we use relative rates.</p>
@@ -226,14 +226,15 @@ We would only rescale if we use relative rates.</p>
 
 <p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- [1,1]
-rf ~ dnDirichlet( rf_prior )
-moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- rep(1,NUM_STATES)
+    rf ~ dnDirichlet( rf_prior )
+    moves.append( mvBetaSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
 </code></pre></div></div>
+
 <p>We need to modify the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> to pass in our new root frequencies parameter.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
-phyMorpho.clamp(morpho)
+    phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -258,21 +259,25 @@ Plot the ancestral state estimates.</p>
 
 <p>Next, we want to actually see the estimated rates.
 We can do this nicely in <code class="language-plaintext highlighter-rouge">RevGadgets</code> (see the <a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a> Tutorial, <a class="citation" href="#Tribble2022">Tribble et al. (2022)</a>):</p>
-<pre><code class="language-{R}">library(RevGadgets)
-library(ggplot2)
+<pre><code class="language-{R}">    library(RevGadgets)
+    library(ggplot2)
 
-# specify the input file
-file &lt;- paste0("output/solitariness_freeK.log")
+    CHARACTER &lt;- "solitariness"
+    NUM_STATES &lt;- 2
+    NUM_RATES &lt;- NUM_STATES * (NUM_STATES - 1)
 
-# read the trace and discard burnin
-trace_quant &lt;- readTrace(path = file, burnin = 0.25)
+    # specify the input file
+    file &lt;- paste0("output/", CHARACTER, "_freeK.log")
 
-# produce the plot object, showing the posterior distributions of the rates.
-p &lt;- plotTrace(trace = trace_quant, vars = paste0("rate[",1:2,"]"))[[1]] +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.88,0.85))
+    # read the trace and discard burnin
+    trace_quant &lt;- readTrace(path = file, burnin = 0.25)
 
-ggsave(paste0("Primates_solitariness_rates_freeK.pdf"), p, width = 5, height = 5)
+    # produce the plot object, showing the posterior distributions of the rates.
+    p &lt;- plotTrace(trace = trace_quant, vars = paste0("rate[", 1:NUM_RATES, "]"))[[1]] +
+      # modify legend location using ggplot2
+      theme(legend.position = c(0.88, 0.85))
+
+    ggsave(paste0("Primates_", CHARACTER, "_rates_freeK.pdf"), p, width = 5, height = 5)
 </code></pre>
 
 <figure id="fig_freeK_rates"><p><img src="figures/Primates_solitariness_rates_freeK.png" width="400" /></p>
@@ -299,26 +304,26 @@ Have a look at the <a href="/tutorials/model_selection_bayes_factors/bf_intro.ht
 <p>You need to exchange the MCMC algorithm with the power posterior algorithm <a class="citation" href="#Hoehna2021">(Höhna et al. 2021)</a>.
 Remove all lines after <code class="language-plaintext highlighter-rouge">mymodel = model(phylogeny)</code>.
 Then, you need to construct the <code class="language-plaintext highlighter-rouge">powerPosterior</code>, which works analogous to an MCMC.
-In fact, it perform <code class="language-plaintext highlighter-rouge">cats=63</code> MCMC runs.
+In fact, it performs <code class="language-plaintext highlighter-rouge">cats=63</code> MCMC runs.
 We chose <code class="language-plaintext highlighter-rouge">cats=63</code> as a conservative estimate.
 Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Compute power posterior distributions```
-pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
-pow_p.burnin(generations=2000,tuningInterval=250)
-pow_p.run(generations=1000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ### Compute power posterior distributions
+    pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
+    pow_p.burnin(generations=2000,tuningInterval=250)
+    pow_p.run(generations=1000)
 </code></pre></div></div>
 <p>The next step is to summarize the power posterior distribution, first using stepping stone sampling,</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Use stepping-stone sampling to calculate marginal likelihoods
-ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ss.marginal()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ### Use stepping-stone sampling to calculate marginal likelihoods
+    ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    ss.marginal()
 </code></pre></div></div>
 <p>and then using path sampling.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Use path-sampling to calculate marginal likelihoods
-ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ps.marginal()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ### Use path-sampling to calculate marginal likelihoods
+    ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    ps.marginal()
 </code></pre></div></div>
 <p>You should see the following output</p>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; source("scripts/ml_ase_ERM.Rev")
+<pre class="Rev-output"><code class="language-{rb}">&gt; source("scripts/ml_ase_ERM.Rev")
    Processing file "scripts/ml_ase_ERM.Rev"
    Successfully read one character matrix from file 'data/primates_solitariness.nex'
    Attempting to read the contents of file "primates_tree.nex"
@@ -344,7 +349,7 @@ Step 63 / 64		****************************************
 Step 64 / 64		****************************************
    -31.7236
    -31.72593
-</code></pre></div></div>
+</code></pre>
 <p>Note that last two numbers; these are your marginal likelihood estimates.</p>
 
 <p>Now, write another script to compute the power posterior distribution for the independent rates (freeK) model (see the <code class="language-plaintext highlighter-rouge">ml_ase_freeK.Rev</code> script). Then use stepping stone sampling and/or path sampling to calculate the marginal likelihood.</p>

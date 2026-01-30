@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation</h1>
 	<h3 class="subtitle">Ancestral State Estimation and Testing for Irreversibility</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis</h4>
-  <h5>Last modified on February 25, 2022</h5>
+  <h5>Last modified on January 13, 2026</h5>
 </div>
 
 
@@ -409,7 +409,7 @@ r.setValue( simplex(1,3,3,1) )
     }
 }
 </code></pre></div></div>
-<p>Populate the elements of {\tt rates}</p>
+<p>Populate the elements of <code class="language-plaintext highlighter-rouge">rates</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates[1][2] := r[1] * pi[2] * pi[1] # 00-&gt;10
 rates[1][3] := r[1] * pi[1] * pi[2] # 00-&gt;01
 rates[2][1] := r[3] * pi[1] * pi[1] # 10-&gt;00
@@ -533,13 +533,13 @@ Note that $P[1][2] &gt; P[3][4]$, which is largely due to the fact that $r_1 &gt
 <hr class="section" />
 
 <p>In this example we will look at the evolution of morphological character <em>placenta type</em> in placental mammals.
-We have three different types of placenta: Epitheliochorial(1), Endotheliochorial(2), Hemochorial(3) (<a href="#fig_placenta_types"></a> (missing reference)).
+We have three different types of placenta: Epitheliochorial(1), Endotheliochorial(2), Hemochorial(3) (<a href="#fig_placenta_types"></a> <a class="citation" href="#PrabhuDas2015">(PrabhuDas et al. 2015)</a>).
 We are interested, in general, in the evolution of placenta type in placental mammals.
 Specifically, we want to know what the ancestral state of all placental mammals is.
 Furthermore, we want to know if placenta type is evolving under an equal-rates model, an unequal rates model, an irreversible model, or any other type of transition model.</p>
 
 <figure id="fig_placenta_types"><p><img src="figures/placenta_types.png" /></p>
-<figcaption>Visualization of different placenta types. Reproduced from (missing reference).</figcaption>
+<figcaption>Visualization of different placenta types. Reproduced from <a class="citation" href="#PrabhuDas2015">(PrabhuDas et al. 2015)</a>.</figcaption>
 </figure>
 
 <h3 class="subsection" id="specifying-the-mk-model">Specifying the Mk Model</h3>
@@ -591,7 +591,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.</p>
 <hr class="subsection" />
 
 <blockquote class="instruction">
-  <p>Create a new directory (in <code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial) called </code>scripts`.
+  <p>Create a new directory (in <code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial</code>) called <code class="language-plaintext highlighter-rouge">scripts</code>.
 (If you do not have this folder, please refer to the directions in section <a href="#subsec_data_files"></a>.)</p>
 </blockquote>
 
@@ -635,8 +635,8 @@ Import the morphological character matrix and assign it to the variable <code cl
 
 <p>Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables’’ that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
-monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+    monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_Mk_Model">The Mk Model</h3>
@@ -656,6 +656,7 @@ Therefore, we will create a 3x3 Q matrix using <code class="language-plaintext h
 The parameter specifies all the rates of morphological evolution:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu_morpho ~ dnExponential( 1.0 )
 </code></pre></div></div>
+
 <p>Since $\mu$ is a rate parameter, we will apply a scaling move to update it.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
 </code></pre></div></div>
@@ -666,7 +667,7 @@ We see some familiar pieces: tree and Q matrix.
 We also have two new keywords: data type and coding.
 The data type argument specifies the type of data - in our case, “Standard”, the specification for morphology.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, branchRates=mu_morpho, Q=Q_morpho, type="Standard")
-phyMorpho.clamp(morpho)
+    phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
 <p>All of the components of the model are now specified.</p>
@@ -693,7 +694,7 @@ This will include every stochastic and deterministic node using the <code class=
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
 We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk.log", printgen=1) )
 </code></pre></div></div>
 
 <p>The second monitor we will add to our analysis will print information to the screen.
@@ -744,15 +745,15 @@ We do this using the <code class="language-plaintext highlighter-rouge">mcmc()</
 
 <p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called <code class="language-plaintext highlighter-rouge">.run()</code>.
 This will execute our analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">10000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000, tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=5000, tuningInterval=200)
 </code></pre></div></div>
 
 <p>Once our Markov chain has terminated, we will process the ancestral state samples.
 This function will compute the posterior probabilities of the ancestral states from the samples.
 Later we can visuallize our ancestral states.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/mk.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
-writeNexus( anc_tree, filename="output/ase_mk.tree" )
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
+    writeNexus( anc_tree, filename="output/ase_mk.tree" )
 </code></pre></div></div>
 
 <p>Finally we can close RevBayes.
@@ -776,8 +777,8 @@ The Rev script you just created will be used by RevBayes and loaded in the appro
 
 <p>Provided that you started RevBayes from the correct directory (<code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial</code>),
 you can then use the <code class="language-plaintext highlighter-rouge">source()</code> function to feed RevBayes your master script file (<code class="language-plaintext highlighter-rouge">mcmc_ase_mk.Rev</code>).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_ase_mk.Rev")
-</code></pre></div></div>
+<pre><code class="language-{bash}">source("scripts/mcmc_ase_mk.Rev")
+</code></pre>
 <p>This will execute the analysis and you should see the following output (though not the exact same values):</p>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_ase_mk.Rev"
    Successfully read one character matrix from file 'data/mammals_thinned_placenta_type.nex'
@@ -823,29 +824,29 @@ This should be the directory where you now have you directory called <code class
 </blockquote>
 
 <p>First, we need to load the R package RevGadgets</p>
-<pre><code class="language-{R}">library(RevGadgets)
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+</code></pre></div></div>
 
 <p>Second, we specify the name of the tree file.</p>
-<pre><code class="language-{R}">tree_file = "output/ase_mk.tree"
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_file = "output/ase_mk.tree"
+</code></pre></div></div>
 
 <p>Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
 For example, if you set <code class="language-plaintext highlighter-rouge">show_posterior_legend=TRUE</code> and <code class="language-plaintext highlighter-rouge">node_size_range=c(1, 3)</code>,
 then the size of the circles will represent the posterior probability.</p>
-<pre><code class="language-{R}">g &lt;- plot_ancestral_states(tree_file, summary_statistic="MAP",
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>g &lt;- plot_ancestral_states(tree_file, summary_statistic="MAP",
                       tip_label_size=1,
                       xlim_visible=NULL,
                       node_label_size=0,
-                      show_posterior_legend=FALSE,
-                      node_size_range=c(2.5, 2.5),
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(1, 3),
                       alpha=0.75)
-</code></pre>
+</code></pre></div></div>
 
 <p>Finally, we save the output into a PDF.</p>
-<pre><code class="language-{R}">ggsave("Mammals_ASE_MK.pdf", g, width = 11, height = 9)
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ggsave("Mammals_ASE_MK.pdf", g, width = 11, height = 9)
+</code></pre></div></div>
 
 <blockquote class="instruction">
   <p>You can also find all these commands in the file called <strong>plot_anc_states.R</strong> which you can run as a script in R.</p>
@@ -892,20 +893,22 @@ A good guess might be that 10 events happened along the tree, so the rate should
 
 <p>Now we can create our six independent rate variables drawn from an identical exponential distribution</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_12 ~ dnExponential(rate_pr)
-rate_13 ~ dnExponential(rate_pr)
-rate_21 ~ dnExponential(rate_pr)
-rate_23 ~ dnExponential(rate_pr)
-rate_31 ~ dnExponential(rate_pr)
-rate_32 ~ dnExponential(rate_pr)
+    rate_13 ~ dnExponential(rate_pr)
+    rate_21 ~ dnExponential(rate_pr)
+    rate_23 ~ dnExponential(rate_pr)
+    rate_31 ~ dnExponential(rate_pr)
+    rate_32 ~ dnExponential(rate_pr)
 </code></pre></div></div>
+
 <p>As usual, we will apply a scaling move to each of the rate variables.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( rate_12, weight=2 ) )
-moves.append( mvScale( rate_13, weight=2 ) )
-moves.append( mvScale( rate_21, weight=2 ) )
-moves.append( mvScale( rate_23, weight=2 ) )
-moves.append( mvScale( rate_31, weight=2 ) )
-moves.append( mvScale( rate_32, weight=2 ) )
+    moves.append( mvScale( rate_13, weight=2 ) )
+    moves.append( mvScale( rate_21, weight=2 ) )
+    moves.append( mvScale( rate_23, weight=2 ) )
+    moves.append( mvScale( rate_31, weight=2 ) )
+    moves.append( mvScale( rate_32, weight=2 ) )
 </code></pre></div></div>
+
 <p>Next, we put all the rates together into our rate matrix.
 Don’t forget to say that we do not rescale the rate matrix (<code class="language-plaintext highlighter-rouge">rescale=false</code>).
 We would only rescale if we use relative rates.</p>
@@ -915,9 +918,9 @@ We would only rescale if we use relative rates.</p>
 <p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- [1,1,1]
-rf ~ dnDirichlet( rf_prior )
-moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
+    rf ~ dnDirichlet( rf_prior )
+    moves.append( mvBetaSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
 </code></pre></div></div>
 
 <p>We need to modify the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> to pass in our new root frequencies parameter.</p>
@@ -953,6 +956,7 @@ For example, you might call your output file <code class="language-plaintext hig
 We will assume the same rate for the exponential prior distribution as before.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
 </code></pre></div></div>
+
 <p>Next, we specify that we have a 0.5 probability, <em>a priori</em>, that a rate is equal to 0.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mix_pr &lt;- 0.5
 </code></pre></div></div>
@@ -960,43 +964,43 @@ We will assume the same rate for the exponential prior distribution as before.</
 <p>Now we can create our reversible-jump distributions, which take in a constant value, 0.0 in this case, and a distribution.
 Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
 </code></pre></div></div>
 
 <p>Since we are interested in the probability that a rate is equal to 0.0, we want to compute this posterior probability directly.
 Therefore, we will use the <code class="language-plaintext highlighter-rouge">ifelse</code> function, which will return 1.0 if the rate is equal to 0.0, and 0.0 otherwise (if the rate is unequal to 0.0).
 Hence, the frequency with which we sample a 1.0 gives us the posterior probability that a given rate is equal to 0.0.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
-prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
-prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
-prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
-prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
-prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
+    prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
+    prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
+    prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
+    prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
+    prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
 </code></pre></div></div>
 
 <p>We also need to specify specific moves that ``jump’’ in parameter dimension.
 We will use the <code class="language-plaintext highlighter-rouge">mvRJSwitch</code> move that changes the value to be either equal to the constant value
 provided from the <code class="language-plaintext highlighter-rouge">dnRJMixture</code> or a value drawn from the base distribution (the exponential distribution).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch( rate_12, weight=2 ) )
-moves.append( mvRJSwitch( rate_13, weight=2 ) )
-moves.append( mvRJSwitch( rate_21, weight=2 ) )
-moves.append( mvRJSwitch( rate_23, weight=2 ) )
-moves.append( mvRJSwitch( rate_31, weight=2 ) )
-moves.append( mvRJSwitch( rate_32, weight=2 ) )
+    moves.append( mvRJSwitch( rate_13, weight=2 ) )
+    moves.append( mvRJSwitch( rate_21, weight=2 ) )
+    moves.append( mvRJSwitch( rate_23, weight=2 ) )
+    moves.append( mvRJSwitch( rate_31, weight=2 ) )
+    moves.append( mvRJSwitch( rate_32, weight=2 ) )
 </code></pre></div></div>
 
 <p>Additionally, we also need to specify moves that change the rates if they are not equal to 0.0.
 As usual, we use the standard scaling moves.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( rate_12, weight=2 ) )
-moves.append( mvScale( rate_13, weight=2 ) )
-moves.append( mvScale( rate_21, weight=2 ) )
-moves.append( mvScale( rate_23, weight=2 ) )
-moves.append( mvScale( rate_31, weight=2 ) )
-moves.append( mvScale( rate_32, weight=2 ) )
+    moves.append( mvScale( rate_13, weight=2 ) )
+    moves.append( mvScale( rate_21, weight=2 ) )
+    moves.append( mvScale( rate_23, weight=2 ) )
+    moves.append( mvScale( rate_31, weight=2 ) )
+    moves.append( mvScale( rate_32, weight=2 ) )
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -1050,6 +1054,9 @@ My output is shown in <a href="#fig_mk_anc_states_freeK"></a></p>
 <li><span id="Pagel1994">Pagel M. 1994. Detecting correlated evolution on phylogenies: a general method for the comparative analysis of discrete characters. Proceedings of the Royal Society of London B: Biological Sciences. 255:37–45.</span>
 
 <a href="https://doi.org/10.1098/rspb.1994.0006">10.1098/rspb.1994.0006</a>
+
+</li>
+<li><span id="PrabhuDas2015">PrabhuDas M., Bonney E., Caron K., Dey S., Erlebacher A., Fazleabas A., Fisher S., Golos T., Matzuk M., McCune J.M., others. 2015. Immune mechanisms at the maternal-fetal interface: perspectives and challenges. Nature immunology. 16:328–334.</span>
 
 </li>
 <li><span id="Tuffley1998">Tuffley C., Steel M. 1998. Modeling the covarion hypothesis of nucleotide substitution. Mathematical Biosciences. 147:63–91.</span>

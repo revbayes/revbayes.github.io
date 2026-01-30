@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation and Irreversibility</h1>
 	<h3 class="subtitle">Testing for Irreversibility</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on March  1, 2022</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -178,18 +178,21 @@ For example, you might call your output file <code class="language-plaintext hig
 We will assume the same rate for the exponential prior distribution as before.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
 </code></pre></div></div>
+
 <p>Next, we specify that we have a 0.5 probability, <em>a priori</em>, that a rate is equal to 0.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mix_pr &lt;- 0.5
 </code></pre></div></div>
+
 <p>We will specify again our rates within a <code class="language-plaintext highlighter-rouge">for</code>-loop, which makes changing this script to other number of character states very easy.
 We will explain each element within in the <code class="language-plaintext highlighter-rouge">for</code>-loop below.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:NUM_RATES ) {
-    rate[i] ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-    prob_rate[i] := ifelse( rate[i] == 0, 1.0, 0.0 )
-    moves.append( mvScale( rate[i], weight=2 ) )
-    moves.append( mvRJSwitch( rate[i], weight=2 ) )
-}
+        rate[i] ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
+        prob_rate[i] := ifelse( rate[i] == 0, 1.0, 0.0 )
+        moves.append( mvScale( rate[i], weight=2 ) )
+        moves.append( mvRJSwitch( rate[i], weight=2 ) )
+    }
 </code></pre></div></div>
+
 <p>First, we can create our reversible-jump distributions <code class="language-plaintext highlighter-rouge">dnRJMixture</code>, which take in a constant value, 0.0 in this case, and a distribution <code class="language-plaintext highlighter-rouge">dnExp(rate_pr)</code>.
 Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).
 The last argument specifies the probability of the constant value <code class="language-plaintext highlighter-rouge">p=mix_pr</code>, which is important later for model comparison.</p>
@@ -227,24 +230,34 @@ My output is shown in <a href="#fig_anc_states_irrev"></a></p>
 <p>Next, we also want to see if there was support for the irreversible model.
 Therefore, we will plot the probability that a rate was equal to 0.0.
 You can do this nicely in <code class="language-plaintext highlighter-rouge">RevGadgets</code> <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a></p>
-<pre><code class="language-{R}">library(RevGadgets)
-library(ggplot2)
+<pre><code class="language-{R}">    library(RevGadgets)
+    library(ggplot2)
 
-CHARACTER  &lt;- "solitariness"
+    CHARACTER &lt;- "solitariness"
+    NUM_STATES &lt;- 2
+    NUM_RATES &lt;- NUM_STATES * (NUM_STATES - 1)
 
-# specify the input file
-file &lt;- paste0("output/",CHARACTER,"_irrev.log")
+    # specify the input file
+    file &lt;- paste0("output/", CHARACTER, "_irrev.log")
 
-# read the trace and discard burnin
-trace_qual &lt;- readTrace(path = file, burnin = 0.25)
+    # read the trace and discard burnin
+    trace_qual &lt;- readTrace(path = file, burnin = 0.25)
 
-# produce the plot object, showing the posterior distributions of the rates.
-p &lt;- plotTrace(trace = trace_qual,
-          vars = paste0("prob_rate[",1:NUM_RATES,"]"))[[1]] +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.85,0.85))
+    BF &lt;- c(3.2, 10, 100)
+    p &lt;- BF / (1 + BF)
+    # produce the plot object, showing the posterior distributions of the rates.
+    p &lt;- plotTrace(
+      trace = trace_qual,
+      vars = paste0("prob_rate[", 1:NUM_RATES, "]")
+    )[[1]] +
+      ylim(0, 1) +
+      geom_hline(yintercept = 0.5, linetype = "solid", color = "black") +
+      geom_hline(yintercept = p, linetype = c("longdash", "dashed", "dotted"), color = "red") +
+      geom_hline(yintercept = 1 - p, linetype = c("longdash", "dashed", "dotted"), color = "red") +
+      # modify legend location using ggplot2
+      theme(legend.position = c(0.85, 0.85))
 
-ggsave(paste0("Primates_",CHARACTER,"_irrev.pdf"), p, width = 5, height = 5)
+    ggsave(paste0("Primates_", CHARACTER, "_irrev.pdf"), p, width = 5, height = 5)
 </code></pre>
 
 <figure id="fig_prob_irrev"><p><img src="figures/Primates_solitariness_irrev.png" width="400" /></p>

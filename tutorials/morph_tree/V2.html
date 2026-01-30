@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Multistate Characters</h1>
 	<h3 class="subtitle">Phylogenetic inference with discrete morphological data</h3>
 	<h4 class="authors">April M. Wright</h4>
-  <h5>Last modified on March 26, 2020</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -263,14 +263,14 @@
 
 <p>We will first create a constant node called <code class="language-plaintext highlighter-rouge">num_taxa</code> that is equal to the number of species in our analysis (27). We will also create a constant node called <code class="language-plaintext highlighter-rouge">num_branches</code> representing the number of branches in the tree, and one of the taxon names. This list will be used to initialize the tree.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- morpho.size()
-num_branches &lt;- 2 * num_taxa - 2
-taxa &lt;- morpho.names()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
+    num_taxa &lt;- taxa.size()
+    num_branches &lt;- 2 * num_taxa - 2
 </code></pre></div></div>
 
 <p>Next, create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code>, a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 </code></pre></div></div>
 
 <p>One important distinction here is that <code class="language-plaintext highlighter-rouge">moves</code> is part of the RevBayes workspace and not the hierarchical model. Thus, we use the workspace assignment operator <code class="language-plaintext highlighter-rouge">=</code> instead of the constant node assignment <code class="language-plaintext highlighter-rouge">&lt;-</code>.</p>
@@ -279,7 +279,7 @@ taxa &lt;- morpho.names()
 function to load the model files into RevBayes from your Rev-script files (<code class="language-plaintext highlighter-rouge">mk_model_tree.Rev</code> and <code class="language-plaintext highlighter-rouge">mk_model_gamma.Rev</code> ).</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mk_model_tree.Rev")
-source("scripts/mk_model_gamma.Rev")
+    source("scripts/mk_model_gamma.Rev")
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
@@ -288,24 +288,31 @@ source("scripts/mk_model_gamma.Rev")
 <p>In this section you will move on to specifying the Mk model components, starting in file <code class="language-plaintext highlighter-rouge">mk_model_tree.Rev</code>. First, we will create a joint prior on the branch lengths.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda ~ dnExp(0.2)
-moves.append(mvScale(br_len_lambda, weight=2))
+    moves.append( mvScale(br_len_lambda, weight=2) )
 </code></pre></div></div>
+
 <p>This prior specifies that branch lengths will be drawn from an exponential distribution with parameter 0.2.</p>
 
 <p>Now, we combine the branch lengths with a uniform prior on topology to make a tree. The uniform prior simply means no tree is more likely <em>a priori</em> than any other. This can be easily changed, for example, to use a starting tree. We then specify MCMC moves on the topology, NNI and SPR. These moves propose new topologies. In this way, we propose and evaluate new sets of relationships. We perform these moves frequently because these parameters are really important. We will also move each of the branch lengths each iteration. The scale move scales the current branch length. Finally, we monitor the tree length by adding a deterministic node with the operator <code class="language-plaintext highlighter-rouge">:=</code>. This is a quantity many biologists are interested in.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves.append(mvNNI(phylogeny, weight=num_branches/2.0))
-moves.append(mvSPR(phylogeny, weight=num_branches/10.0))
-moves.append(mvBranchLengthScale(phylogeny, weight=num_branches))
-tree_length := phylogeny.treeLength()
+    moves.append( mvNNI(phylogeny, weight=num_branches/2.0) )
+    moves.append( mvSPR(phylogeny, weight=num_branches/10.0) )
+    moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
+
+
+    # compute the tree length from the phylogeny
+    tree_length := phylogeny.treeLength()
 </code></pre></div></div>
 
 <p>Move on to file <code class="language-plaintext highlighter-rouge">mk_model_gamma.Rev</code>, where we will add Gamma-distributed rate variation and specify moves on the parameter of the Gamma distribution.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0, 1E6 )
-rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
-moves.append(mvScale(alpha_morpho, lambda=1, weight=2.0))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Set up Gamma-distributed rate variation.
+    alpha_morpho ~ dnUniform( 0.0, 1E6 )
+    rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+    # Moves on the parameters to the Gamma distribution.
+    moves.append( mvScale(alpha_morpho,lambda=1, weight=2.0) )
 </code></pre></div></div>
 
 <p>Next we will create a $Q$-matrix. Recall that the Mk model is simply a generalization of the JC model. Therefore, we will create a $Q$-matrix using <code class="language-plaintext highlighter-rouge">fnJC</code>, which initializes $Q$-matrices with equal transition probabilities between all states. Since we have multistate data, we need to specify different $Q$-matrices for the different number of character states. For example, it would not make sense to model a 5-state character using a model saying there are only two character states.</p>
@@ -315,27 +322,39 @@ moves.append(mvScale(alpha_morpho, lambda=1, weight=2.0))
 <p>Then, we combine each partition, Gamma-distributed rate heterogeneity, and the tree together into what is called the <code class="language-plaintext highlighter-rouge">phyloCTMC</code>. This is the joint set of model parameters that will be used the model these data. Each partition is then clamped to its model.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_max_states &lt;- 7
-idx = 1
-morpho_bystate[1] &lt;- morpho
-for (i in 2:n_max_states) {
-    morpho_bystate[i] &lt;- morpho                                # make local tmp copy of data
-    morpho_bystate[i].setNumStatesPartition(i)                 # only keep character blocks with state space equal to size i
-    nc = morpho_bystate[i].nchar()                             # get number of characters per character size with i-sized states
+    idx = 1
+    morpho_bystate[1] &lt;- morpho
+    for (i in 2:n_max_states) {
+        # make local tmp copy of data
+        # only keep character blocks with state space equal to size i
 
-    if (nc &gt; 0) {                                              # for non-empty character blocks
-        q[idx] &lt;- fnJC(i)                                      # make i-by-i rate matrix
-        m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
-                                    Q=q[idx],
-                                    nSites=nc,
-                                    siteRates=rates_morpho,
-                                    type="Standard")           # create model of evolution for the character block
+        morpho_bystate[i] &lt;- morpho
+        morpho_bystate[i].setNumStatesPartition(i)
 
-        m_morph[idx].clamp(morpho_bystate[i])                  # attach the data
+        # get number of characters per character size wth i-sized states
+        nc = morpho_bystate[i].nchar()
 
-        idx = idx + 1                                          # increment counter
-        idx
+        # for non-empty character blocks
+        if (nc &gt; 0) {
+
+            # make i-by-i rate matrix
+            q[idx] &lt;- fnJC(i)
+
+            # create model of evolution for the character block
+            m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                        Q=q[idx],
+                                        nSites=nc,
+                                        siteRates=rates_morpho,
+                                        type="Standard")
+
+            # attach the data
+            m_morph[idx].clamp(morpho_bystate[i])
+
+            # increment counter
+            idx = idx + 1
+            idx
+        }
     }
-}
 </code></pre></div></div>
 
 <p>We see some familiar pieces: tree, $Q$-matrix and <code class="language-plaintext highlighter-rouge">rates_morpho</code>.
@@ -365,17 +384,17 @@ All of the components of the model are now specified.</p>
 
 <p>The first monitor we create will monitor every named random variable in our model graph. This will include every stochastic and deterministic node using the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor. The only parameter that is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> is the tree topology. Therefore, the parameters in the file written by this monitor are all numerical parameters written to a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk_gamma.log", printgen=10))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk_gamma.log", printgen=10) )
 </code></pre></div></div>
 
 <p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if we only cared about the branch lengths and nothing else (this is not a typical or recommended attitude for an analysis this complex) we wouldn’t use the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor above and just use the <code class="language-plaintext highlighter-rouge">mnFile</code> monitor to write a smaller and simpler output file. Since the tree topology is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor (because it is not numerical), we will use <code class="language-plaintext highlighter-rouge">mnFile</code> to write the tree to file by specifying our <code class="language-plaintext highlighter-rouge">phylogeny</code> variable in the arguments.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/mk_gamma.trees", printgen=10, phylogeny))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/mk_gamma.trees", printgen=10, phylogeny) )
 </code></pre></div></div>
 
 <p>The third monitor we will add to our analysis will print information to the screen. Like with <code class="language-plaintext highlighter-rouge">mnFile</code> we could tell <code class="language-plaintext highlighter-rouge">mnScreen</code> which parameters we’d like to see updated on the screen.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
@@ -388,7 +407,7 @@ All of the components of the model are now specified.</p>
 
 <p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called <code class="language-plaintext highlighter-rouge">.run()</code>. This will execute our analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">10000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000, tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
 </code></pre></div></div>
 
 <p>Once our Markov chain has terminated, we will want RevBayes to close. Tell the program to quit using the <code class="language-plaintext highlighter-rouge">q()</code> function.</p>
@@ -415,9 +434,17 @@ rb scripts/mcmc_mk_tutorial.Rev</p>
 
 <p>We can look at the log files in the software <code class="language-plaintext highlighter-rouge">Tracer</code>. We can also calculate several different types of summary trees:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/mk_gamma.trees")      # Read in the tree trace
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in the tree trace and summarize tree topology #
+    trace = readTreeTrace("output/mk_gamma.trees", treetype="non-clock")
+    trace.setBurnin(0.25)
 
-mccTree(trace, file="output/mk_gamma.mcc.tre" )     # Construct and save the maximum clade credibility (MCC) tree
+    # Summarize tree trace
+    # maximum clade credibility tree
+    mccTree(trace, file="output/mk_gamma.mcc.tre")
+    # maximum a posteriori tree
+    mapTree(trace, file="output/mk_gamma.map.tre")
+    # majority rule consensus tree
+    consensusTree(trace, file="output/mk_gamma.majrule.tre")
 </code></pre></div></div>
 
 <p>RevBayes can calculate MCC trees, MAP trees, and consensus trees. Have each person at your table try one, and see how they differ.</p>
@@ -453,6 +480,7 @@ what type of ascertainment bias is expected. We are using the <code class="langu
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 </code></pre></div></div>
+
 <h3 class="subsection" id="subsubsec_relaxing">Relaxing Character State Symmetry</h3>
 <hr class="subsection" />
 
@@ -509,9 +537,10 @@ can vary; we have chosen 4 for tractability. Note that we need to make sure that
 <p>Next, we will set up the prior on $\beta$.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_cats = 4
-beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
-moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+    beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+    moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
 </code></pre></div></div>
+
 <p>Above, we initialized the number of categories, the parameters of the
 beta distribution, and the moves on these parameters.</p>
 
@@ -519,34 +548,36 @@ beta distribution, and the moves on these parameters.</p>
 distribution specified by <code class="language-plaintext highlighter-rouge">beta_scale</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 </code></pre></div></div>
+
 <p>If you were to print the <code class="language-plaintext highlighter-rouge">cats</code> variable, you would see a list of state
 frequencies like so:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ 0.011, 0.236, 0.764, 0.989 ]
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ 0.011, 0.236, 0.764, 0.989 ]
 </code></pre></div></div>
 
 <p>Using these state frequencies, we will generate a new vector of Q-matrices. Because we are varying the state frequencies, we must use a Q-matrix generation function that allows for state frequencies to vary as
 a parameter. We will, therefore, use the <code class="language-plaintext highlighter-rouge">fnF81</code> function.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:cats.size())
-{
-Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
-}
+    {
+        Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
+    }
 </code></pre></div></div>
+
 <p>Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
 of the Q-matrices. For this model the probabilities must be equal because we need to guarantee that
 the model is symmetric. Thus, we use a <code class="language-plaintext highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  mat_prior &lt;- rep(1,num_cats)
-  matrix_probs ~ dnDirichlet(mat_prior)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mat_prior &lt;- rep(1,num_cats)
+    matrix_probs ~ dnDirichlet(mat_prior)
 
-  moves.append( mvBetaSimplex(matrix_probs, weight=3.0) )
-  moves.append( mvDirichletSimplex(matrix_probs, weight=1.5) )
+    moves.append( mvBetaSimplex(matrix_probs, weight=3.0) )
+    moves.append( mvDirichletSimplex(matrix_probs, weight=1.5) )
 </code></pre></div></div>
 
 <p>Finally, we make the CTMC for the model:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
-phyMorpho.clamp(morpho)
+    phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
 <p>This model can be embedded in the for loop seen in <a href="#subsec_Mk_model"></a> to work with multi-state characters. An example is provided in script <code class="language-plaintext highlighter-rouge">mkv_model_gamma_discretized_multistate.Rev</code>.</p>

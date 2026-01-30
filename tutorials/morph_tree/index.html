@@ -67,7 +67,7 @@
 	<h1 class="maintitle">Discrete morphology - Tree Inference</h1>
 	<h3 class="subtitle">Phylogenetic inference with discrete morphological data</h3>
 	<h4 class="authors">April M. Wright, Michael J. Landis and Sebastian Höhna</h4>
-  <h5>Last modified on September 12, 2023</h5>
+  <h5>Last modified on January 30, 2026</h5>
 </div>
 
 
@@ -523,8 +523,9 @@ rb</p>
 <p>Provided that you started RevBayes from the correct directory
 (<code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_Tutorial</code>), you can then use the <code class="language-plaintext highlighter-rouge">source()</code>
 function to feed RevBayes your Rev-script file (<code class="language-plaintext highlighter-rouge">mcmc_mk.Rev</code>).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_mk.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/mcmc_mk.Rev")
 </code></pre></div></div>
+
 <p>This will execute the analysis and you should see the following output
 (though not the exact same values):</p>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_mk.Rev"
@@ -583,6 +584,7 @@ as we have no invariant character in our matrix. If we also lacked
 parsimony non-informative characters, we would use the coding <code class="language-plaintext highlighter-rouge">informative</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 </code></pre></div></div>
+
 <blockquote class="instruction">
   <p>Remember to change all filenames for the output, e.g., from <code class="language-plaintext highlighter-rouge">output/mk.log</code> to <code class="language-plaintext highlighter-rouge">output/mkv.log</code>.</p>
 </blockquote>
@@ -698,7 +700,7 @@ the Mk model, due to increased model complexity.</p>
 <h4 class="subsubsection" id="subsubsec_MCMC_conv">Checking Convergence</h4>
 <hr class="subsubsection" />
 
-<figure id="add_files"><p><img src="figures/convergence.png" width="100%" /></p>
+<figure id="add_files"><p><img src="figures/convergence.png" width="90%" /></p>
 <figcaption>Assessing convergence using <code class="language-plaintext highlighter-rouge">convenience</code> <a class="citation" href="#Fabreti2022">(Fabreti and Höhna 2022)</a>. Here we show the difference in split frequencies. These runs have converged for us.</figcaption>
 </figure>
 
@@ -825,12 +827,12 @@ be robust to model complexity.</p>
 <li><span id="allman08b">Allman E.S., Rhodes J.A. 2008. Identifying evolutionary trees and substitution parameters for the general Markov model with invariable sites. Mathematical Biosciences. 211:18–33.</span>
 
 </li>
-<li><span id="Fabreti2023">Fabreti L.G., Höhna S. 2023. Nucleotide substitution model selection is not necessary for Bayesian inference of phylogeny with well-behaved priors. Systematic Biology. 72:1418–1432.</span>
-
-</li>
 <li><span id="Fabreti2022">Fabreti L.G., Höhna S. 2022. Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution. 13:77–90.</span>
 
 <a href="https://doi.org/https://doi.org/10.1111/2041-210X.13727">https://doi.org/10.1111/2041-210X.13727</a>
+
+</li>
+<li><span id="Fabreti2023">Fabreti L.G., Höhna S. 2023. Nucleotide substitution model selection is not necessary for Bayesian inference of phylogeny with well-behaved priors. Systematic Biology. 72:1418–1432.</span>
 
 </li>
 <li><span id="freudenstein05">Freudenstein J.V. 2005. Characters, States and Homology. Systematic Biology. 54:965.</span>
