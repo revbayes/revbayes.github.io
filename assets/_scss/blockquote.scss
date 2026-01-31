@@ -62,3 +62,33 @@ $codeblock-padding: 5px !default;
   display: inline-block;
   -webkit-font-smoothing: antialiased;
 }
+
+.show-more-container {
+    display: block;      /* Forces a clear line break */
+    margin-top: -5px;    /* Pulls it slightly closer to the list above */
+    margin-bottom: 15px; /* Pushes the next header down */
+    padding-left: 5px;   /* Aligns with the list items */
+}
+
+.show-more-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: colors.$info; /* Uses your theme's info color */
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+        color: scale-color(colors.$info, $lightness: -20%);
+    }
+
+    .toggle-icon {
+        display: inline-block;
+        width: 12px;
+        font-family: monospace;
+    }
+}
+
