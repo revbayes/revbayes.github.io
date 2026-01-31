@@ -233,3 +233,31 @@ function google_search() {
   var domain = $("meta[name=search-domain]").attr("value");
   window.open("https://www.google.com/search?q=" + query + "+site:" + domain);
 }
+
+function toggleFileList(btn) {
+    var container = btn.parentElement;
+    var list = container.previousElementSibling;
+    var hiddenItems = list.querySelectorAll('.hidden-file');
+    var isExpanded = btn.getAttribute('data-expanded') === 'true';
+    
+    var icon = btn.querySelector('.toggle-icon');
+    var textSpan = btn.querySelector('.btn-text');
+    var count = btn.getAttribute('data-count');
+    
+    // Determine the correct noun (file vs files)
+    var unit = (count === "1") ? " file" : " files";
+
+    if (!isExpanded) {
+        // EXPANDING
+        hiddenItems.forEach(item => item.style.display = 'list-item');
+        icon.innerHTML = "−"; 
+        textSpan.innerHTML = "Hide " + count + unit;
+        btn.setAttribute('data-expanded', 'true');
+    } else {
+        // COLLAPSING
+        hiddenItems.forEach(item => item.style.display = 'none');
+        icon.innerHTML = "+";
+        textSpan.innerHTML = "Show " + count + " more" + unit;
+        btn.setAttribute('data-expanded', 'false');
+    }
+}
