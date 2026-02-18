@@ -1,0 +1,43 @@
+name: Build and Deploy Jekyll Site
+
+on:
+  push:
+    branches:
+      - source  # Trigger on pushes to the source branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the source branch
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for proper Git operations
+
+      # Step 2: Set up Ruby (Jekyll requires Ruby)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true  # Automatically runs `bundle install` and caches gems
+
+
+      # Step 3: Build the Jekyll site
+      - name: Build Jekyll site
+        env:
+          JEKYLL_ENV: production
+        run: |
+          bundle exec jekyll build
+
+      # Step 4: Deploy the built site to the master branch
+      - name: Deploy to master branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site       # Jekyll's default output directory
+          publish_branch: master     # Target branch to deploy to
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy: ${{ github.event.head_commit.message }}'

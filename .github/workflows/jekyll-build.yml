@@ -1,0 +1,34 @@
+name: Check Build of Jekyll Site
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  check-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the source branch
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for proper Git operations
+
+      # Step 2: Set up Ruby (Jekyll requires Ruby)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true  # Automatically runs `bundle install` and caches gems
+
+      # Step 3: Build the Jekyll site
+      - name: Build Jekyll site
+        env:
+          JEKYLL_ENV: production
+        run: |
+          bundle exec jekyll build
