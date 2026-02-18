@@ -54,6 +54,7 @@ jobs:
          key: ${{ matrix.name }}
          restore-keys: |
            ${{ matrix.name }}
+         max-size: 2G
 
     - name: Install BOOST (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
@@ -103,7 +104,7 @@ jobs:
           ccache -s
 
           cd projects/cmake
-          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local
+          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
         
           cmake --install build
 
