@@ -5,10 +5,10 @@ category: Developer
 order: 2
 ides:
 - vscode 
-- eclipse
 - xcode
 - vim
 - clion
+- qtcreator
 ---
 
 The easiest way to get started developing in RevBayes is to use an IDE such as XCode or Eclipse.
