@@ -231,9 +231,9 @@ With the data loaded, we can now proceed to specify our specifying the model.
 ### Setting up the Graphical Model and MCMC
 
 Estimating an unrooted tree under the JC model requires specification of two main components:
-(1) the {% ref subsub-JCMod %} and (2) the {% ref subsub-TreeBlMod %}.
+(1) the [Jukes-Cantor Substitution Model](#jukes-cantor-substitution-model) and (2) the [Tree Topology and Branch Lengths](#tree-topology-and-branch-lengths).
 
-#### Jukes-Cantor Substitution Model  {: #subsub-JCMod}
+#### Jukes-Cantor Substitution Model
 [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/S1XTkUOWTLo)
 
 A given substitution model is defined by its corresponding
@@ -262,7 +262,7 @@ Q
 
 As you can see, all substitution rates are equal.
 
-#### Tree Topology and Branch Lengths | subsub-TreeBlMod %}
+#### Tree Topology and Branch Lengths
 
 The tree topology and branch lengths are stochastic nodes in our phylogenetic model.
 In {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the
