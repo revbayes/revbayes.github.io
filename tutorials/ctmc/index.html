@@ -68,7 +68,7 @@
 	<h1 class="maintitle">Nucleotide substitution models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on June  5, 2025</h5>
+  <h5>Last modified on February 19, 2026</h5>
 </div>
 
 
@@ -161,9 +161,7 @@
 <div class="tutorial-content">
 <p>This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: <a href="https://www.youtube.com/playlist?list=PLztACvN0g42t9pLJpeUel-ynfuNdWOsa4"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough playlist" height="36" width="36" /></a></p>
 
-<h2 class="section" id="overview">Overview</h2>
-<hr class="section" />
-
+<h2 id="overview">Overview</h2>
 <p><a href="https://youtu.be/x4ADIyqbYGM"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>This tutorial covers the first protocol from <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a>,
@@ -257,12 +255,9 @@ be covered in more detail later in this tutorial.</p>
 </table>
 </figure>
 
-<h2 class="section" id="example-character-evolution-under-the-jukes-cantor-substitution-model">Example: Character Evolution under the Jukes-Cantor Substitution Model</h2>
-<hr class="section" />
-
+<h2 id="example-character-evolution-under-the-jukes-cantor-substitution-model">Example: Character Evolution under the Jukes-Cantor Substitution Model</h2>
 <p><a href="https://youtu.be/z-94P0d10us"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
-<h3 class="subsection" id="getting-started">Getting Started</h3>
-<hr class="subsection" />
+<h3 id="getting-started">Getting Started</h3>
 
 <p>The first section of this exercise involves:</p>
 <ol>
@@ -309,9 +304,7 @@ output the states of the Markov chain once the MCMC analysis begins.</p>
 
 <p>Ultimately, this is how you will execute most analyses in RevBayes, with the full specification of the model and analyses contained in the sourced files. You could easily run this entire analysis on your own data by substituting your data file name for that in the model-specification file. However, it is important to understand the components of the model to be able to take full advantage of the flexibility and richness of RevBayes. Furthermore, without inspecting the Rev scripts sourced in <code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code>, you may end up inadvertently performing inappropriate analyses on your dataset, which would be a waste of your time and CPU cycles. The next steps will walk you through the full specification of the model and MCMC analyses.</p>
 
-<h3 class="subsection" id="loading-the-data">Loading the Data</h3>
-<hr class="subsection" />
-
+<h3 id="loading-the-data">Loading the Data</h3>
 <p><a href="https://youtu.be/kU-6WEv0mRQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <blockquote class="instruction">
@@ -402,15 +395,12 @@ You will later see that we use this operator more often, e.g., when we create mo
 
 <p>With the data loaded, we can now proceed to specify our specifying the model.</p>
 
-<h3 class="subsection" id="setting-up-the-graphical-model-and-mcmc">Setting up the Graphical Model and MCMC</h3>
-<hr class="subsection" />
+<h3 id="setting-up-the-graphical-model-and-mcmc">Setting up the Graphical Model and MCMC</h3>
 
 <p>Estimating an unrooted tree under the JC model requires specification of two main components:
 (1) the <a href="#subsub-JCMod"></a> and (2) the <a href="#subsub-TreeBlMod"></a>.</p>
 
-<h4 class="subsubsection" id="subsub-JCMod">Jukes-Cantor Substitution Model</h4>
-<hr class="subsubsection" />
-
+<h4 id="jukes-cantor-substitution-model---subsub-jcmod">Jukes-Cantor Substitution Model  {: #subsub-JCMod}</h4>
 <p><a href="https://youtu.be/S1XTkUOWTLo"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>A given substitution model is defined by its corresponding
@@ -437,8 +427,7 @@ instantaneous-rate matrix:</p>
 
 <p>As you can see, all substitution rates are equal.</p>
 
-<h4 class="subsubsection" id="subsub-TreeBlMod">Tree Topology and Branch Lengths</h4>
-<hr class="subsubsection" />
+<h4 id="tree-topology-and-branch-lengths--subsub-treeblmod-">Tree Topology and Branch Lengths | subsub-TreeBlMod %}</h4>
 
 <p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model.
 In <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the
@@ -573,8 +562,7 @@ moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> for more details about moves and MCMC strategies.</p>
 
-<h4 class="subsubsection" id="molecular-clock">Molecular Clock</h4>
-<hr class="subsubsection" />
+<h4 id="molecular-clock">Molecular Clock</h4>
 
 <p>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
@@ -589,9 +577,7 @@ clock_rate := 10^log_clock_rate
 For more information on molecular clocks please read the <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a> tutorial.</p>
 </blockquote>
 
-<h4 class="subsubsection" id="putting-it-all-together">Putting it All Together</h4>
-<hr class="subsubsection" />
-
+<h4 id="putting-it-all-together">Putting it All Together</h4>
 <p><a href="https://youtu.be/XaXJ26rD16c"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>We have fully specified all of the parameters of our phylogenetic
@@ -643,14 +629,13 @@ DAG:</p>
 </code></pre></div></div>
 
 <!--
-<h4 class="subsubsection" id="performing-an-mcmc-analysis-under-the-jukes-cantor-model">Performing an MCMC Analysis Under the Jukes-Cantor Model</h4><hr class="subsubsection">
+#### Performing an MCMC Analysis Under the Jukes-Cantor Model
 
 In this section, we will describe how to set up the MCMC sampler and
 summarize the resulting posterior distribution of trees.
  -->
 
-<h4 class="subsubsection" id="specifying-monitors-and-output-files">Specifying Monitors and Output Files</h4>
-<hr class="subsubsection" />
+<h4 id="specifying-monitors-and-output-files">Specifying Monitors and Output Files</h4>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
@@ -677,8 +662,7 @@ specified variables to the screen with <code class="language-plaintext highlight
 
 <p>This monitor mostly helps us to see the progress of the MCMC run.</p>
 
-<h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
-<hr class="subsubsection" />
+<h4 id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
@@ -720,9 +704,7 @@ mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output
 </code></pre></div></div>
 </blockquote>
 
-<h4 class="subsubsection" id="summarizing-mcmc-samples">Summarizing MCMC Samples</h4>
-<hr class="subsubsection" />
-
+<h4 id="summarizing-mcmc-samples">Summarizing MCMC Samples</h4>
 <p><a href="https://youtu.be/ZJhj8wR9YNs"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself.
@@ -739,8 +721,7 @@ There you see the posterior distribution of the continuous parameters, <em>e.g.<
 You can read more about MCMC tuning and
 evaluating and improving mixing in the tutorials <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a>.</p>
 
-<h3 class="subsection" id="exercise-1">Exercise 1</h3>
-<hr class="subsection" />
+<h3 id="exercise-1">Exercise 1</h3>
 
 <p>We are interested in the phylogenetic relationship of the Tarsiers.
 Therefore, we need to summarize the trees sampled from the posterior
@@ -1005,9 +986,7 @@ Q := fnK80(kappa)
 </code></pre></div></div>
 </blockquote>
 
-<h2 class="section" id="the-hasegawa-kishino-yano-hky-1985-substitution-model">The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model</h2>
-<hr class="section" />
-
+<h2 id="the-hasegawa-kishino-yano-hky-1985-substitution-model">The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model</h2>
 <p><a href="https://youtu.be/cqeyZyjIcuw"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>The Jukes-Cantor model assumes that all substitution rates are equal,
@@ -1072,8 +1051,7 @@ simple scaling move should do the job.</p>
 
 <p>This should be all for the HKY model. Don’t forget to change the output file names, otherwise your old analyses files will be overwritten.</p>
 
-<h3 class="subsection" id="exercise-2">Exercise 2</h3>
-<hr class="subsection" />
+<h3 id="exercise-2">Exercise 2</h3>
 
 <ul>
   <li>
@@ -1116,9 +1094,7 @@ probabilities of phylogenetic relationships.</p>
   </li>
 </ul>
 
-<h2 class="section" id="the-general-time-reversible-gtr-substitution-model">The General Time-Reversible (GTR) Substitution Model</h2>
-<hr class="section" />
-
+<h2 id="the-general-time-reversible-gtr-substitution-model">The General Time-Reversible (GTR) Substitution Model</h2>
 <p><a href="https://youtu.be/mqLv0INyit4"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>The HKY substitution model can accommodate unequal base frequencies and
@@ -1201,8 +1177,7 @@ moves.append( mvDirichletSimplex(pi, weight=1) )
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi) 
 </code></pre></div></div>
 
-<h3 class="subsection" id="exercise-3">Exercise 3</h3>
-<hr class="subsection" />
+<h3 id="exercise-3">Exercise 3</h3>
 
 <ul>
   <li>
@@ -1219,9 +1194,7 @@ GTR substitution model.</p>
   </li>
 </ul>
 
-<h2 class="section" id="the-discrete-gamma-model-of-among-site-rate-variation">The Discrete Gamma Model of Among Site Rate Variation</h2>
-<hr class="section" />
-
+<h2 id="the-discrete-gamma-model-of-among-site-rate-variation">The Discrete Gamma Model of Among Site Rate Variation</h2>
 <p><a href="https://youtu.be/JN1nOT7iSOE"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a class="citation" href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV (<a href="#asrhGammaFig"></a>). By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV (<a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
@@ -1241,8 +1214,7 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <figcaption>Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.</figcaption>
 </figure>
 
-<h4 class="subsubsection" id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in RevBayes</h4>
-<hr class="subsubsection" />
+<h4 id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in RevBayes</h4>
 
 <p>Then create a stochastic node called <code class="language-plaintext highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10$
 (this represents the stochastic node for the $\alpha$-shape parameter in
@@ -1268,8 +1240,7 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type = "DNA")
 </code></pre></div></div>
 
-<h3 class="subsection" id="exercise-4">Exercise 4</h3>
-<hr class="subsection" />
+<h3 id="exercise-4">Exercise 4</h3>
 
 <ul>
   <li>
@@ -1286,9 +1257,7 @@ probabilities of the clades.</p>
   </li>
 </ul>
 
-<h2 class="section" id="modeling-invariable-sites">Modeling Invariable Sites</h2>
-<hr class="section" />
-
+<h2 id="modeling-invariable-sites">Modeling Invariable Sites</h2>
 <p><a href="https://youtu.be/0P4yLk0jxps"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
@@ -1320,8 +1289,7 @@ new <code class="language-plaintext highlighter-rouge">p_inv</code> parameter:</
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 </code></pre></div></div>
 
-<h3 class="subsection" id="exercise-5">Exercise 5</h3>
-<hr class="subsection" />
+<h3 id="exercise-5">Exercise 5</h3>
 
 <ul>
   <li>
