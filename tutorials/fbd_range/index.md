@@ -1,7 +1,7 @@
 ---
 title: Macroevolutionary Analysis of Stratigraphic Range Data
 subtitle: Inference of diversification rates using the fossilized birth-death range process
-authors:  Rachel Warnock and Walker Pett
+authors:  Rachel Warnock and June Walker
 level: 7
 order: 10
 prerequisites:

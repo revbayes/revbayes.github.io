@@ -51,6 +51,10 @@ if [ ! -d "_site" ] ; then
     echo "Done."
 fi
 
+if [ ! -e "_site/.git" ] ; then
+    echo "Error: The _site/ directory should be a separate git repo, but it is not!  Please remove it."
+    exit 1
+fi
 
 # make sure there are no changes to commit
 if ! git diff-index --quiet HEAD --
@@ -59,31 +63,39 @@ then
     exit 1
 fi
 
-msg=`git log -1 --pretty=%B`
+# make sure there aren't untracked files that will get uploaded to the website
+UNTRACKED_FILES=$(git ls-files --others --exclude-standard)
+if [ -n "${UNTRACKED_FILES}" ] ; then
+    echo "Error: Untracked files.  Please commit or stash before updating master."
+    exit 1
+fi
 
-echo "Pulling updates to the source"
-git pull --quiet origin source
-echo
+# make sure the source branch is up-to-date with origin/source
+echo "Fetching content from remote"
+git fetch --quiet origin
 
-# fetch master
-echo "Pulling master"
+COUNT_MISSING="$(git rev-list --count source..origin/source)"
+if [ "${COUNT_MISSING}" != 0 ] ; then
+    echo "Error: the 'source' branch is not up-to-date.  Please do a 'git pull'"
+    exit 1
+fi
+
+COUNT_EXTRA="$(git rev-list --count origin/source..source)"
+if [ "${COUNT_EXTRA}" != 0 ] ; then
+    echo "Error: the 'source' branch contains changes that have not been merged!"
+    echo
+    echo "    Please create a PR for these changes. After the PR is merged, "
+    echo "    please pull from the source branch and run the ./deploy.sh script again."
+    exit 1
+fi
+
+# Check out master in _site
+echo "Checking out master in _site"
 (
     cd _site
-    git checkout --quiet master
     git fetch --quiet origin
+    git checkout --quiet master
     git reset --quiet --hard origin/master
-
-    # update the documentation?
-    if [ "$1" = "help" ]
-    then
-        git update-index --no-assume-unchanged documentation/index.html
-        git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
-        git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
-    else
-        git update-index --assume-unchanged documentation/index.html
-        git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
-        git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
-    fi
 )
 echo
 
@@ -95,18 +107,10 @@ if ! bundle exec jekyll build; then
 fi
 echo
 
-# Push the source BEFORE we push master.
-# If the push to source fails, we don't want to update master.
-
-# deploy source
-echo "Pushing source files."
-git push --quiet origin source
-echo "   Updated the source branch!"
-echo
-
 # deploy master
 (
     cd _site
+    msg=`git log -1 --pretty=%B`
 
     # check if there are any changes on master
     untracked=`git ls-files --other --exclude-standard --directory`

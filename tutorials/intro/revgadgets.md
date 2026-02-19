@@ -3,7 +3,7 @@ title: Introduction to RevGadgets
 subtitle: Plotting the output of RevBayes analyses in the R package RevGadgets.
 authors: Carrie M. Tribble and Michael R. May
 level: 0
-order: 1.1
+order: 2.1
 prerequisites: 
 - intro
 index: true

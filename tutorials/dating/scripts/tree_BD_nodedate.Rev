@@ -41,13 +41,14 @@ constraints = v(clade_ursinae)
 timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #
-moves.append( mvNarrow(timetree, weight=n_taxa/2.0) )
-moves.append( mvFNPR(timetree, weight=n_taxa/10.0) )
+moves.append( mvNarrow(timetree, weight=n_taxa) )
+moves.append( mvFNPR(timetree, weight=n_taxa/4) )
 moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
+moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 
 # Monitor the age of Ursinae #
 age_ursinae := tmrca(timetree, clade_ursinae)
 
 # Specify an exponetial distribution on the age of this node #
-obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
-obs_age_ursinae.clamp(-1.84)
+obs_age_ursinae ~ age_ursinae - dnExponential(1.0)
+obs_age_ursinae.clamp(1.84)

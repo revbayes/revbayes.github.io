@@ -1,7 +1,7 @@
 ---
 title: Dating trees
 subtitle: Estimating species divergence times using RevBayes
-authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
+authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and June Walker
 level: 3
 order: 3
 prerequisites:

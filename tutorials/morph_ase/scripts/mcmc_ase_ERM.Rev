@@ -39,7 +39,7 @@ phylogeny <- readTrees("data/primates_tree.nex")[1]
 # we assume every rate i <-> j to be exponentially distributed
 rate_pr := phylogeny.treeLength() / 10
 mu ~ dnExp(rate_pr)
-moves.append( mvScale( mu, weight=2 ) )
+moves.append( mvScale( mu, lambda=1, weight=2.0 ) )
 
 # specify the rate matrix
 NUM_RATES = NUM_STATES * (NUM_STATES-1)

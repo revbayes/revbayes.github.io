@@ -123,7 +123,7 @@ model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
 {{ "mcmc_Yule.Rev" | snippet:"line","50" }}
 Note that we specified the `condition="survival"`, which says that we assume this process only produced trees that survived until the present.
-Fore more information, see the {% page_ref divrate/conditions %} tutorial.
+Fore more information, see [Conditions of the Birth-Death Process]({{ base.url }}/tutorials/divrate/div_rate_intro#conditions). 
 
 If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %},
 the time tree $\Psi$ is the variable we observe,
@@ -187,8 +187,8 @@ output directory.
 -   Plot the `birth_rate` using RevGadgets ({% page_ref intro/revgadgets %}, {% citet Tribble2022 %}): What is
     the mean posterior estimate of the `birth_rate` and what is the
     estimated HPD?
--   Compare the prior mean with the posterior mean. (**Hint:** Use the
-    optional argument `underPrior=TRUE` in the function `mymcmc.run()`)
+-   Compare the prior mean with the posterior mean. (**Hint:** Call the
+    method `.ignoreAllData()` on the model object to ignore data at clamped nodes.)
     Are they different (*e.g.,* {% ref fig_prior_posterior %})?
     Is the posterior mean outside the prior 95% probability interval?
 -   Repeat the analysis and allow for two orders of magnitude of

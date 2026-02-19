@@ -22,9 +22,17 @@ In order to build the site you will need `jekyll`, see instructions below to ins
 Making changes to the site
 =================
 
-When making changes to the site, you should always work on the `source` branch. After committing your changes to `source`, simply run the `deploy.sh` script. This script will take care of the steps involved to push both the `source` and `master` branches to github. 
+When making changes to the site:
+1. Start from the lastest version of the source branch with `git checkout source ; git pull`.
+2. Create a new branch for your changes with `git checkout -b <mybranchname>`.
+3. Commit your changes to the branch.
+4. Push the changes to github using `git push --set-upstream origin <mybranchname>`.
+5. Open a pull request (PR) for the branch on github at https://github.com/revbayes/revbayes.github.io
+6. After the pull request is merged to the `source` branch on github, move back to the source branch locally with `git checkout source` and fetch the latest version with `git pull`.
+7. Now you can run the `deploy.sh` script to update the `master` branch.
 
-	./deploy.sh
+Pull requests for the website do not currently require review, so you can merge them yourself if checks pass.
+These checks help to prevent the tutorials from breaking.
 
 Setting up jekyll
 =================
@@ -59,6 +67,8 @@ Next, move into the `revbayes.github.io` repo directory, and install required ge
 Now, you should be able to build and serve the static HTML with:
 
     bundle exec jekyll serve
+
+To check the static HTML once the command finishes running, navigate to `localhost:4000` on your browser.
 
 The previous command will cause a full rebuild of the site each time a file is modified. This can sometimes take a long time. You can selectively regenerate only modified files using the `--incremental` option
 

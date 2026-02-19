@@ -36,7 +36,7 @@
 \tikzstyle{smod}=[black, draw=black, line width=2pt, fill=white, shape=rectangle, rounded corners, minimum size=10mm, minimum width=20mm]
 \tikzstyle{obmod}=[black, draw=black, line width=2pt, fill=black!20!white, shape=rectangle, rounded corners, minimum size=10mm, minimum width=20mm, minimum width=20mm]
 
-\definecolor{shc}{RGB}{238,224,229}
+\definecolor{shc}{RGB}{183,207,237}
 \definecolor{shc2}{RGB}{182,152,195}
 \definecolor{brnt}{RGB}{221,132,13}
 
@@ -44,7 +44,7 @@
 \thispagestyle{empty}
 \vspace{-1cm}
 
-\[\definecolor{shc}{RGB}{183,207,237}
+\[
 \begin{tikzpicture}
 \node[obnode] (x) at (-1,1) {$seq$};
 \node (x_dist) at ($(x)+(0.8,-0.7)$) {PhyloCTMC};
@@ -65,11 +65,10 @@
 \node (a2) at (4,5.0) { };
 \node (a3) at (16.0,2.75) { };
 \node[rectangle, very thick, inner sep=6mm, fill=shc, fit = (a1) (a2) (a3)] (console) {};
-\node (l2) at (4,4.55) [right]{\tt psi $\sim$ dnUniformTopologyBranchLength(names, dnExponential(10))};
+\node (l2) at (4,4.55) [right]{\tt phylogeny $\sim$ dnUniformTopologyBranchLength(taxa, dnExponential(10))};
 \node (l8) at (4,3.5) [right]{\tt Q\_morpho <- fnJC(2) };
-\node (l9) at (4,2.6) [right]{\tt phyMorpho $\sim$ dnPhyloCTMC( tree=phylogeny, };
-\node (l9) at (4,2.2) [right]{\tt siteRates=rates\_morpho, Q=Q\_morpho, };
-\node (l10) at (4,1.8) [right]{\tt type="Standard", coding="variable" ) };
+\node (l9) at (4,2.6) [right]{\tt phyMorpho $\sim$ dnPhyloCTMC( tree=phylogeny, Q=Q\_morpho, };
+\node (l10) at (8.7,2.2) [right]{\tt type="Standard", coding="variable" ) };
 \node (l10) at (4,1.2) [right]{\tt phyMorpho.clamp( data ) };
 \end{tikzpicture}\]
 \end{document}

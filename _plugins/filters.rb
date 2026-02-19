@@ -60,6 +60,22 @@ Could not find page '#{page_identifier}' in #{tag_string}
 MSG
       end
 
+      def parse_range_string(str)
+        str.split(',').flat_map do |chunk|
+          if chunk.include?('-')
+            start_str, end_str = chunk.split('-', 2)
+            starti = Integer(start_str)
+            endi = Integer(end_str)
+            if starti > endi
+              raise ArgumentError, "Line number #{starti} > #{endi} in 'snippet' filter"
+            end
+            (starti..endi).to_a
+          else
+            [Integer(chunk)]
+          end
+        end
+      end
+
       def snippet(file,type,number)
         site = @context.registers[:site]
 
@@ -118,6 +134,41 @@ MSG
 Unknown option '#{type}' for 'snippet' filter
 MSG
         end
+      end
+
+      def tagged_snippet(file, tag, range)
+        site = @context.registers[:site]
+
+        if not file.instance_of? Jekyll::Drops::StaticFileDrop
+          file = match_file(file)
+        end
+
+        content = File.read(site.in_source_dir(file.path))
+
+        ret = ""
+
+        range = parse_range_string(range)
+
+        tag_pattern = Regexp.new('^\s*' + Regexp.escape(tag))
+
+        if content.scan(tag_pattern).size > 1
+          raise "Error: tag '#{tag}' occurred more than once in file '#{file}'"
+        elsif content.scan(tag_pattern).size < 1
+          raise "Error: tag '#{tag}' not found in file '#{file}'"
+        end
+
+        # remove content from the string before the pattern
+        content = content.sub(/.*?(#{tag_pattern})/m, '\1')
+        content = content.sub(/\A\s*\n*/, '')
+
+        i = 0
+        for line in content.each_line do
+          ret += line if range.include? i
+          i += 1
+        end
+
+        # strip final newlines and put the content between backticks
+        "```\n"+ret.sub(/\n*\z/,'')+"\n```"
       end
   end
 end

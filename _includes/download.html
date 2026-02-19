@@ -6,23 +6,42 @@
     <h2>Data files and scripts</h2>
     {% for type in tutorial_files %}
         {% if type.name == "data" %}
-        <strong>Data Files</strong>
-        <ul id="data_files">
+            <strong>Data Files</strong>
+            <ul id="data_files" class="file-list">
         {% elsif type.name == "script" %}
-        <strong>Scripts</strong>
-        <ul id="scripts">
+            <strong>Scripts</strong>
+            <ul id="scripts" class="file-list">
         {% elsif type.name == "example_output" %}
-        <strong>Example output</strong>
-        <ul id="example_output">
+            <strong>Example output</strong>
+            <ul id="example_output" class="file-list">
         {% else %}
-        <strong>Other</strong>
-        <ul id="other_files">
+            <strong>Other</strong>
+            <ul id="other_files" class="file-list">
         {% endif %}
+
         {% assign sorted = type.items | sort:"name" %}
+        {% assign extra_count = sorted.size | minus: 10 %}
+
         {% for file in sorted %}
-          <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
+            <li {% if forloop.index > 10 %}class="hidden-file" style="display:none;"{% endif %}>
+                <a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a>
+            </li>
         {% endfor %}
         </ul>
+
+        {% if sorted.size > 10 %}
+            <div class="show-more-container">
+              <button class="show-more-btn" 
+                      onclick="toggleFileList(this)" 
+                      data-expanded="false" 
+                      data-count="{{ extra_count }}">
+                <span class="toggle-icon">+</span> 
+                <span class="btn-text">Show {{ extra_count }} more files</span>
+              </button>
+            </div>
+        {% endif %}
+
     {% endfor %}
 </blockquote>
 {% endif %}
+

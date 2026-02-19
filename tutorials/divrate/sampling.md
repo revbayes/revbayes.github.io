@@ -470,7 +470,7 @@ species.
     Galagidae             = clade("Galago_senegalensis",  "Otolemur_crassicaudatus", missing= 17)
     Lorisidae             = clade("Perodicticus_potto", "Loris_tardigradus", "Nycticebus_coucang", missing=6)
     Cheirogaleoidea       = clade("Cheirogaleus_major", "Microcebus_murinus", missing= 19)
-    Lemuridae             = clade("Lemur_catta", "Varecia_variegata_variegata", missing=17)
+    Lemuridae             = clade("Lemur_catta", "Varecia_variegata", missing=17)
     Lemuriformes          = clade(Lemuridae, Cheirogaleoidea, missing=29)
     Atelidae_Aotidae      = clade("Alouatta_palliata", "Aotus_trivirgatus", missing=30)
     NWM                   = clade(Atelidae_Aotidae,"Callicebus_donacophilus", "Saimiri_sciureus", "Cebus_albifrons", missing=93)

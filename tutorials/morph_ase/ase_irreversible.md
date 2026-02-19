@@ -57,23 +57,23 @@ For example, you might call your output file `output/solitariness_ase_irrev.log`
 
 The only part in the model section that we are going to modify is the prior distributions and moves on the rate parameters.
 We will assume the same rate for the exponential prior distribution as before.
-```
-rate_pr := phylogeny.treeLength() / 10
-```
+{% snippet scripts/mcmc_ase_irrev.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+{%  endsnippet %}
 Next, we specify that we have a 0.5 probability, *a priori*, that a rate is equal to 0.
-```
-mix_pr <- 0.5
-```
+{% snippet scripts/mcmc_ase_irrev.Rev %}
+    mix_pr <- 0.5
+{%  endsnippet %}
 We will specify again our rates within a `for`-loop, which makes changing this script to other number of character states very easy.
 We will explain each element within in the `for`-loop below.
-```
-for ( i in 1:NUM_RATES ) {
-    rate[i] ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
-    prob_rate[i] := ifelse( rate[i] == 0, 1.0, 0.0 )
-    moves.append( mvScale( rate[i], weight=2 ) )
-    moves.append( mvRJSwitch( rate[i], weight=2 ) )
-}
-```
+{% snippet scripts/mcmc_ase_irrev.Rev %}
+    for ( i in 1:NUM_RATES ) {
+        rate[i] ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
+        prob_rate[i] := ifelse( rate[i] == 0, 1.0, 0.0 )
+        moves.append( mvScale( rate[i], weight=2 ) )
+        moves.append( mvRJSwitch( rate[i], weight=2 ) )
+    }
+{% endsnippet %}
 First, we can create our reversible-jump distributions `dnRJMixture`, which take in a constant value, 0.0 in this case, and a distribution `dnExp(rate_pr)`.
 Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).
 The last argument specifies the probability of the constant value `p=mix_pr`, which is important later for model comparison.
@@ -116,24 +116,34 @@ Next, we also want to see if there was support for the irreversible model.
 Therefore, we will plot the probability that a rate was equal to 0.0.
 You can do this nicely in `RevGadgets` {% cite Tribble2022 %}
 ```{R}
-library(RevGadgets)
-library(ggplot2)
+    library(RevGadgets)
+    library(ggplot2)
 
-CHARACTER  <- "solitariness"
+    CHARACTER <- "solitariness"
+    NUM_STATES <- 2
+    NUM_RATES <- NUM_STATES * (NUM_STATES - 1)
 
-# specify the input file
-file <- paste0("output/",CHARACTER,"_irrev.log")
+    # specify the input file
+    file <- paste0("output/", CHARACTER, "_irrev.log")
 
-# read the trace and discard burnin
-trace_qual <- readTrace(path = file, burnin = 0.25)
+    # read the trace and discard burnin
+    trace_qual <- readTrace(path = file, burnin = 0.25)
 
-# produce the plot object, showing the posterior distributions of the rates.
-p <- plotTrace(trace = trace_qual,
-          vars = paste0("prob_rate[",1:NUM_RATES,"]"))[[1]] +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.85,0.85))
+    BF <- c(3.2, 10, 100)
+    p <- BF / (1 + BF)
+    # produce the plot object, showing the posterior distributions of the rates.
+    p <- plotTrace(
+      trace = trace_qual,
+      vars = paste0("prob_rate[", 1:NUM_RATES, "]")
+    )[[1]] +
+      ylim(0, 1) +
+      geom_hline(yintercept = 0.5, linetype = "solid", color = "black") +
+      geom_hline(yintercept = p, linetype = c("longdash", "dashed", "dotted"), color = "red") +
+      geom_hline(yintercept = 1 - p, linetype = c("longdash", "dashed", "dotted"), color = "red") +
+      # modify legend location using ggplot2
+      theme(legend.position = c(0.85, 0.85))
 
-ggsave(paste0("Primates_",CHARACTER,"_irrev.pdf"), p, width = 5, height = 5)
+    ggsave(paste0("Primates_", CHARACTER, "_irrev.pdf"), p, width = 5, height = 5)
 ```
 
 {% figure fig_prob_irrev %}

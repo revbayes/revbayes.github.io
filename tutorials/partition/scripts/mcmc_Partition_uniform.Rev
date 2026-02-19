@@ -37,14 +37,14 @@ er ~ dnDirichlet(er_prior)
 moves.append( mvBetaSimplex(er, alpha=10.0, tune=true, weight=3.0) )
 moves.append( mvDirichletSimplex(er, alpha=10.0, tune=true, weight=1.0) )
 
-pi_prior <- v(1,1,1,1) 
+pi_prior <- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 moves.append( mvBetaSimplex(pi, alpha=10.0, tune=true, weight=2.0) )
 moves.append( mvDirichletSimplex(pi, alpha=10.0, tune=true, weight=1.0) )
 
 
 #### create a deterministic variable for the rate matrix ####
-Q := fnGTR(er,pi) 
+Q := fnGTR(er,pi)
 
 
 #############################
@@ -71,8 +71,8 @@ moves.append( mvBetaProbability(pinvar, delta=10.0, tune=true, weight=2.0) )
 out_group = clade("Galeopterus_variegatus")
 # Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
-moves.append( mvNNI(topology, weight=n_taxa/2.0) )
-moves.append( mvSPR(topology, weight=n_taxa/10.0) )
+moves.append( mvNNI(topology, weight=n_taxa*2.0) )
+moves.append( mvSPR(topology, weight=n_taxa/2.0) )
 
 # Branch length prior
 for (i in 1:n_branches) {
@@ -111,7 +111,8 @@ monitors.append( mnModel(filename="output/PS_uniform.log",printgen=10) )
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
-mymcmc.run(30000,tuningInterval=200)
+mymcmc.burnin(5000,tuningInterval=200)
+mymcmc.run(50000,tuningInterval=200)
 
 
 # summarize output
@@ -123,4 +124,3 @@ map_tree = mapTree(treetrace,"output/PS_uniform_map.tre")
 
 # you may want to quit RevBayes now
 q()
-

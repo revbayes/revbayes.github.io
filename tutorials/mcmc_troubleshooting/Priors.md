@@ -99,7 +99,7 @@ This interaction needs to be taken into account in order to correctly interpret 
 Each of these clades has an associated prior distribution on the age of their most recent common ancestor (MRCA):
 {{ calib_script | snippet:"block#","7" }}
 
-We also have a prior set on the origin time of the tree:
+We also have a prior set on the origin time of the trees:
 {{ calib_script | snippet:"block#","4" }}
 
 When we run the analysis, we obtain the posterior distribution shown in {% ref fig_age_posterior %} for the _Ursavus_ clade that we have set. The first impression we might get from this result is that our inference strongly supports younger ages for this clade, because our original prior was a uniform distribution on the full range [25.0 ; 36.0] My, whereas the posterior has much higher densities for values in the first half of the range. However, this is not taking into account the interactions between priors, which may lead to an **effective** prior on the clade age which is not uniform at all.
@@ -112,7 +112,7 @@ Posterior distribution of the age of the _Ursavus_ clade, visualized into Tracer
 {% endfigure %}
 
 We can check the effective priors for any inference by running the analysis **under the prior**, i.e. without taking the contributions of the data into account. There are two ways to achieve this:
-- we can use the `underPrior` option in the MCMC inference itself. **CAREFUL:** this will remove _all_ clamped nodes, including the node calibrations if they use clamping. Thus this option requires node calibrations to be set using the `setValue` function rather than `clamp`.
+- we can use the `.ignoreAllData()` method on the model object to mark clamped nodes as ignored. **CAREFUL:** this will ignore _all_ clamped nodes, including the node calibrations if they use clamping. If you want to retain clamped fossil calibrations, you can use the more selective method `.ignoreData(...)` to ignore some data but retain fossil calibration data.
 
 {{ prior_script | snippet:"block#","7" }}
 - we can simply comment out all the components of the likelihood, which in the case of our analysis is only the `dnPhyloCTMC` component.

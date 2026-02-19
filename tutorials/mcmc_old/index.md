@@ -505,9 +505,8 @@ Comparing your output to the prior
 Next, let's compare it to the prior. Here we want to see how much
 information we actually have from the data and how much our prior
 influenced our posterior estimates. Run now an analysis that does not
-use the data. You can do this in RevBayes the exact same way as
-running an MCMC on the exact same model, you only need to call
-'mymcmc.run(1000,underPrior=true)'.
+use the data. You can do this in RevBayes by calling the `.ignoreAllData()`
+on the model object to mark clamped nodes as ignored.
 
     source("scripts/mcmc_run_prior.Rev")
 

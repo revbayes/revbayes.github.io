@@ -135,26 +135,28 @@ After writing all the components for your model, you will complete the Rev scrip
 RevBayes uses the function `readDiscreteCharacterData()` to load a data matrix to the workspace from a formatted file.
 This function can be used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable `morpho`.
-```
-morpho <- readDiscreteCharacterData("data/primates_solitariness.nex")
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    CHARACTER = "solitariness"
+
+    morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
+{% endsnippet %}
 
 {% subsubsection Create Helper Variables | subsubsec_var %}
 
 Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple "helper variables" that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors
-```
-moves = VectorMoves()
-monitors = VectorMonitors()
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    moves    = VectorMoves()
+    monitors = VectorMonitors()
+{% endsnippet %}
 
 
 {% subsection The ERM Model | subsec_ERM_Model %}
 
 First, we read in the tree topology:
-```
-phylogeny <- readTrees("data/primates_tree.nex")[1]
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    phylogeny <- readTrees("data/primates_tree.nex")[1]
+{% endsnippet %}
 
 Next, we will create a Q matrix.
 Recall that the ERM model has equal rates to transition between any states.
@@ -162,42 +164,45 @@ Therefore, we fist define a global rate variable $\mu$.
 We will use an exponential prior with a mean of 10 events along this given phylogeny.
 If you have an idea for another reasonable number of events, then feel free to change this prior mean.
 Note that if you are uncertain, it is better to specify a slightly too high than too low prior mean.  
-```
-rate_pr := phylogeny.treeLength() / 10
-mu ~ dnExp(rate_pr)
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+    mu ~ dnExp(rate_pr)
+{% endsnippet %}
 Since $\mu$ is a rate parameter, we will apply a scaling move to update it.
-```
-moves.append( mvScale(mu, lambda=1, weight=2.0) )
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    moves.append( mvScale( mu, lambda=1, weight=2.0 ) )
+{% endsnippet %}
 Next, we specify our vector of rates.
 We need to do this because our rate matrix requires a vector of rates.
 Since we use the ERM model, all rates in this vector are identical.
 We could simply write `rate := [mu,mu]`, however, we want our script to be more flexible if we wanted to analyze multistate characters.
 So we use for convenience a loop over the number of rates, which is $K*(K-1)$ rates where $K$ is the number of states.
-```
-NUM_STATES = 2
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    NUM_STATES = 2
 
-NUM_RATES = NUM_STATES * (NUM_STATES-1)
-for ( i in 1:NUM_RATES ) {
-    rate[i] := mu
-}
-```
+    NUM_RATES = NUM_STATES * (NUM_STATES-1)
+    for ( i in 1:NUM_RATES ) {
+        rate[i] := mu
+    }
+{% endsnippet %}
 Now that we have our rates, we can specify the morphological rate matrix.
 We will use the `fnFreeK` function for this.
-```
-Q_morpho := fnFreeK( rate, rescale=false )
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    Q_morpho := fnFreeK( rate, rescale=false )
+{% endsnippet %}
 
 Lastly, we set up the CTMC.
 This should be familiar from the {% page_ref ctmc %} tutorial.
 We see some familiar pieces: tree and Q matrix.
 We also have one new keywords: data type.
 The data type argument specifies the type of data - in our case, "Standard", the specification for morphology.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard")
-phyMorpho.clamp(morpho)
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    rf_prior <- rep(1,NUM_STATES)
+    rf <- simplex( rf_prior )
+
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+    phyMorpho.clamp(morpho)
+{% endsnippet %}
 
 All of the components of the model are now specified.
 
@@ -207,9 +212,9 @@ All of the components of the model are now specified.
 
 We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the `model()` function and provide a single node in the graph (`phylogeny`).
-```
-mymodel = model(phylogeny)
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    mymodel = model(phylogeny)
+{% endsnippet %}
 
 The object `mymodel` is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.
 
@@ -223,26 +228,26 @@ This will include every stochastic and deterministic node using the `mnModel` mo
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
 We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.
-```
-monitors.append( mnModel(filename="output/solitariness_ERM.log", printgen=10) )
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    monitors.append( mnModel(filename="output/"+CHARACTER+"_ERM.log", printgen=1) )
+{% endsnippet %}
 
 The second monitor we will add to our analysis will print information to the screen.
 Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen.
-```
-monitors.append( mnScreen(printgen=100) )
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    monitors.append( mnScreen(printgen=100) )
+{% endsnippet %}
 
 The third and final monitor might be new to you: the `mnJointConditionalAncestralState` monitor computes and writes the ancestral states to file.
-```
-monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
-                                                   ctmc=phyMorpho,
-                                                   filename="output/solitariness_ERM.states.txt",
-                                                   type="Standard",
-                                                   printgen=1,
-                                                   withTips=true,
-                                                   withStartStates=false) )
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                  ctmc=phyMorpho,
+                                                  filename="output/"+CHARACTER+"_ERM.states.txt",
+                                                  type="Standard",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
+{% endsnippet %}
 
 The core arguments this monitor needs are a tree object (`tree=phylogeny`),
 the phylogenetic model (`ctmc=phyMorpho`), an output filename (`filename="output/solitariness_ERM.states.txt"`),
@@ -274,30 +279,30 @@ Iteration	end_1	end_2	end_3	end_4	end_5	...
 
 Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run.
 We do this using the `mcmc()` function that simply takes the three main analysis components as arguments.
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+{% endsnippet %}
 
 The MCMC object that we named `mymcmc` has a member method called `.run()`.
 This will execute our analysis and we will set the chain length to `25000` cycles using the `generations` option.
-```
-mymcmc.run(generations=25000, tuningInterval=200)
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    mymcmc.run(generations=25000, tuningInterval=200)
+{% endsnippet %}
 
 Once our Markov chain has terminated, we will process the ancestral state samples.
 This function will compute the posterior probabilities of the ancestral states from the samples.
 Later we can visualize our ancestral states.
-```
-anc_states = readAncestralStateTrace("output/solitariness_ERM.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/solitariness_ase_ERM.tree", burnin=0.25, summary_statistic="MAP", site=1)
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
+    anc_states = readAncestralStateTrace("output/"+CHARACTER+"_ERM.states.txt")
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_ERM.tree", burnin=0.25, summary_statistic="MAP", site=1)
+{% endsnippet %}
 
 
 Finally we can close RevBayes.
 Tell the program to quit using the `q()` function.
-```
+{% snippet scripts/mcmc_ase_ERM.Rev %}
 q()
-```
+{% endsnippet %}
 
 >You made it! Save your file.
 {:.instruction}
@@ -313,11 +318,11 @@ The Rev script you just created will be used by RevBayes and loaded in the appro
 
 Provided that you started RevBayes from the correct directory (`RB_DiscreteMorphology_RateASE_Tutorial`),
 you can then use the `source()` function to feed RevBayes your master script file (`mcmc_ase_ERM.Rev`).
-```
+```{bash}
 source("scripts/mcmc_ase_ERM.Rev")
 ```
 This will execute the analysis and you should see the following output (though not the exact same values):
-```
+```{rb}
    Processing file "scripts/mcmc_ase_ERM.Rev"
    Successfully read one character matrix from file 'data/primates_solitariness.nex'
    Attempting to read the contents of file "primates_tree.nex"
@@ -356,14 +361,19 @@ We have written a little R package called \RevGadgets that can be used to visual
 >This should be the directory where you now have you directory called `output` with the MCMC output files.
 {:.instruction}
 
-First, we need to load the R package RevGadgets
+First, we need to load R packages `RevGadgets` and `ggplot2`.
+We also specify the character name and state labels here.
 ```{R}
-library(RevGadgets)
+    library(RevGadgets)
+    library(ggplot2)
+
+    CHARACTER <- "solitariness"
+    STATE_LABELS <- c("0" = "no", "1" = "yes")
 ```
 
 Second, we specify the name of the tree file.
 ```{R}
-tree_file = "output/solitariness_ase_ERM.tree"
+    tree_file <- paste0("output/",CHARACTER,"_ase_ERM.tree")
 ```
 
 Then, you plot the tree with ancestral states nicely mapped onto it.
@@ -371,41 +381,41 @@ You may want to experiment with some of the settings to make the plot look prett
 For example, if you set `show_posterior_legend=TRUE` and `node_size_range=c(1, 3)`,
 then the size of the circles will represent the posterior probability.
 ```{R}
-# process the ancestral states
-ase <- processAncStates(tree_file,
+    # process the ancestral states
+    ase <- processAncStates(tree_file,
                        # Specify state labels.
                        # These numbers correspond to
                        # your input data file.
-                         state_labels = c("0" = "no", "1" = "yes"))
+                         state_labels = STATE_LABELS)
 
-# produce the plot object, showing MAP states at nodes.
-# color corresponds to state, size to the state's posterior probability
-p <- plotAncStatesMAP(t = ase,
+    # produce the plot object, showing MAP states at nodes.
+    # color corresponds to state, size to the state's posterior probability
+    p <- plotAncStatesMAP(t = ase,
                       tree_layout = "rect",
                       tip_labels_size = 1) +
      # modify legend location using ggplot2
      theme(legend.position = c(0.92,0.81))
-
 ```
+
 Finally, we save the output into a PDF.
 ```{R}
-ggsave(paste0("primates_solitariness_ASE_ERM_MAP.pdf"), p, width = 11, height = 9)
+    ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_MAP.pdf"), p, width = 11, height = 9)
 ```
 You can also plot the ancestral states as a pie chart, which nicely shows the uncertainty.
 ```{R}
-p <- plotAncStatesPie(t = ase,
+    p <- plotAncStatesPie(t = ase,
                       tree_layout = "rect",
                       tip_labels_size = 1) +
-     # modify legend location using ggplot2
-     theme(legend.position = c(0.92,0.81))
+          # modify legend location using ggplot2
+          theme(legend.position = c(0.92,0.81))
 
-ggsave(paste0("primates_solitariness_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
+    ggsave(paste0("Primates_",CHARACTER,"_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
 ```
 
 
 >You can also find all these commands in the file called **plot_anc_states.R** which you can run as a script in R.
 {:.instruction}
-
+ggsave(paste0("primates_solitariness_ASE_ERM_Pie.pdf"), p, width = 11, height = 9)
 {% ref fig_ERM_anc_states %} shows the result of this analysis.
 
 

@@ -450,8 +450,8 @@ and variances. Internally, it is ensured that the indices are shared correctly.
 # Reroot and make bifurcating.
 rootId <- tree.getRootIndex()
 outgroup <- tree.getDescendantTaxa(rootId)
-mean_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
-var_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+mean_tree.reroot(outgroup=clade(outgroup), make_bifurcating=TRUE)
+var_tree.reroot(outgroup=clade(outgroup), make_bifurcating=TRUE)
 
 # Renumber nodes.
 mean_tree.renumberNodes(tree)

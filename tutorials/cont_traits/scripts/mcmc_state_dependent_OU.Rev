@@ -1,0 +1,149 @@
+################################################################################
+#
+# RevBayes Example: The state-dependent Ornstein-Uhlenbeck models under a
+#                   sequential/joint inference approach
+#
+# authors: Priscilla Lau and Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+### Read in the tree
+tree <- readTrees("data/artiodactyla.tree")[1]
+
+
+### Read in the character data
+disc <- readDiscreteCharacterData("data/artiodactyla_diet.nex")
+disc.excludeAll()
+disc.includeCharacter( 1 ) # diet is the first (and only) character
+num_disc_states <- disc.getStateDescriptions().size()
+
+cont <- readContinuousCharacterData("data/artiodactyla_hypsodonty_index.nex")
+cont.excludeAll()
+cont.includeCharacter( 1 ) # hypsodonty index is the first (and only) character
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+avmvn = mvAVMVN(weight=20, waitBeforeLearning=500, waitBeforeUsing=1000)
+
+##############################
+# Discrete character history #
+##############################
+# if using a sequential inference approach
+# char_hist = readCharacterHistory("data/artiodactyla_character_history.tree")[1]
+
+# if using a joint inference approach
+Q  <- fnJC( num_disc_states )
+
+
+lambda ~ dnLognormal(ln(0.05), 0.4)
+moves.append( mvScale(lambda, weight=1.0) )
+avmvn.addVariable(lambda)
+
+
+X ~ dnPhyloCTMCDASiteIID(tree, Q, branchRates=lambda, type="Standard", nSites=1)
+X.setValue(disc)
+
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=400.0) )
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=100.0) )
+
+char_hist := X.characterHistories()
+
+########################
+# Specify the OU model #
+########################
+root_age <- tree.rootAge()
+across_species_variance <- cont.var( 1 )
+
+# if put priors directly on all OU parameters
+for (i in 1:num_disc_states){
+  theta[i] ~ dnUniform(0, 10)
+  moves.append(mvSlide(theta[i], weight = 1.0) )
+  avmvn.addVariable(theta[i])
+
+  a <- ln(2) / root_age
+  alpha[i] ~ dnLognormal(ln(a), 0.587405) # the median of the phylogenetic half-life is equal to one tree height
+  moves.append(mvScale(alpha[i], weight = 1.0) )
+  avmvn.addVariable(alpha[i])
+
+  s <- across_species_variance * 2 * a
+  sigma2[i] ~ dnLognormal(ln(s), 0.587405)
+  moves.append(mvScale(sigma2[i], weight = 1.0) )
+  avmvn.addVariable(sigma2[i])
+}
+
+
+# if put hyper-priors on phylogenetic half-life and stationary variance
+# for (i in 1:num_disc_states){
+#   theta[i] ~ dnUniform(0, 10)
+#   moves.append(mvSlide(theta[i], weight = 1.0) )
+#   avmvn.addVariable(theta[i])
+#
+#   t_half[i] ~ dnLognormal(ln(root_age), 0.587405)  # the median of the phylogenetic half-life is equal to one tree height
+#   moves.append(mvScale(t_half[i], weight = 1.0) )
+#   avmvn.addVariable(t_half[i])
+#
+#   alpha[i] := abs(ln(2)/t_half[i])
+#
+#   Vy[i] ~ dnLognormal(ln(across_species_variance), 0.587405)  # the median of the stationary variance is equal to the across-species variance
+#   moves.append(mvScale(Vy[i], weight = 3.0) )
+#   avmvn.addVariable(Vy[i])
+#
+#   sigma2[i] := Vy[i] * 2 * alpha[i]
+#
+# }
+
+
+moves.append( avmvn )
+
+
+#############
+# The Model #
+#############
+Y ~ dnPhyloOUSD(char_hist, theta=theta, rootTreatment="optimum", alpha=alpha, sigma=sigma2^0.5)
+Y.clamp(cont)
+
+mymodel = model(Y)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/trace.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000, theta) )
+monitors.append( mnFile( char_hist, filename="output/character_histories.trees", printgen=10 ) )
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="none")
+
+### run the MCMC ###
+mymcmc.burnin(generations=5000, tuningInterval=200)
+mymcmc.run(generations=25000, tuningInterval=200)
+
+
+##############################
+# After post-processing in R #
+##############################
+# file_in <- "output/character_histories.log"
+# file_out <- "output/anc_states.tre"
+#
+# anc_states = readAncestralStateTrace(file_in)
+# anc_tree = ancestralStateTree(tree=tree,
+#                               ancestral_state_trace_vector=anc_states,
+#                               include_start_states=false,
+#                               file=file_out,
+#                               summary_statistic="MAP",
+#                               reconstruction="marginal",
+#                               burnin=0.1,
+#                               nStates=3,
+#                               site=1)
+
+
+## quit ##
+q()

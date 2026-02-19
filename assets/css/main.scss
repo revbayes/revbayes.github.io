@@ -1,5 +1,15 @@
 ---
 ---
+@use 'colors';
+@use 'home';
+@use 'code';
+@use 'blockquote';
+@use 'tutorial';
+@use 'tutorial-index';
+@use 'figure';
+@use 'keywords';
+@use 'bibliography';
+@use 'help';
 
 body {
   display:none;
@@ -21,17 +31,6 @@ html {
         display: none !important;
     }
 }
-
-@import 'colors';
-@import 'home';
-@import 'code';
-@import 'blockquote';
-@import 'tutorial';
-@import 'tutorial-index';
-@import 'figure';
-@import 'keywords';
-@import 'bibliography';
-@import 'help';
 
 //----------------------------------------
 // Globals
@@ -72,7 +71,26 @@ img {
 }
 
 .navbar .navbar-collapse {
+  height: 50px;
   text-align: right;
+}
+
+
+.navbar-nav {
+  display: flex;
+}
+
+.navbar-nav > li:last-child {
+  margin-left: auto;
+  flex: 1;
+}
+
+.navbar-nav > li:last-child > * {
+  width: 100%;
+}
+
+.header-search-form {
+  margin: 8px 0px;
 }
 
 .pull-left {

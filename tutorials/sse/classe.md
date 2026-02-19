@@ -12,10 +12,8 @@ prerequisites:
 - sse/bisse
 include_all: false
 include_files:
-- data/primates_activity_period.nex
-- data/primates_mating_system.nex
-- data/primates_solitariness.nex
-- data/primates_tree.nex
+- sse/data/primates_biogeo.tre
+- sse/data/primates_biogeo.tsv
 - scripts/mcmc_ClaSSE.Rev
 index: true
 ---
@@ -343,7 +341,7 @@ anc_tree = ancestralStateTree(tree=observed_phylogeny, ancestral_state_trace_vec
 Like before, we'll plot the ancestral states
 using the `RevGadgets` `R` package.
 Execute the script `plot_anc_states_ClaSSE.R` in `R`.
-The results can be seen in Figure \ref{fig:results_ClaSSE}.
+The results can be seen in ({% ref results_ClaSSE %}).
 The maximum *a posteriori* (MAP) estimate for each node is shown as well as the posterior probability of the states represented by the size of the dots.
 
 ```{R}
@@ -387,4 +385,3 @@ daughter lineage in the Old World and one in the New World (green).
     Modify this script to include cladogenetic
     long distance dispersal and calculate Bayes factors to see which model fits the data better.
     How does this affect the ancestral state estimate?
-}

@@ -1,7 +1,7 @@
 ########################################################
 #
 # RevBayes Example: Molecular dating
-# 
+#
 # This file: Runs the full MCMC for exercise 5
 #
 # authors: Rachel C. M. Warnock, Sebastian Hoehna
@@ -51,16 +51,16 @@ source("scripts/clock_relaxed_lognormal.Rev") # Molecular clock model
 
 source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 
-source("scripts/clock_morpho.Rev") # Morphological clock model
+#source("scripts/clock_morpho.Rev") # Morphological clock model
 
-source("scripts/sub_Mk.Rev") # Morphological substitution model (Mk+G)
+#source("scripts/sub_Mk.Rev") # Morphological substitution model (Mk+G)
 
 ########
 # MCMC #
 ########
 
 # initialize the model object #
-mymodel = model(sf)	
+mymodel = model(sf)
 
 # Create a vector of monitors #
 # 1. for the full model #
@@ -76,7 +76,7 @@ monitors.append( mnScreen(printgen=10, extant_mrca, num_samp_anc, diversificatio
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 # Run the MCMC #
-mymcmc.run(generations=20000, tuningInterval=200)
+mymcmc.run(generations=250, tuningInterval=200)
 
 ########################
 # Summarizing the tree #
@@ -87,6 +87,14 @@ trace = readTreeTrace("output/bears_TEFBD.trees")
 
 # Maximum clade credibility tree #
 mccTree(trace, file="output/bears_TEFBD.mcc.tre" )
+
+
+my_map_tree = mapTree(trace, file="output/bears_TEFBD.map.cca.tre", positiveBranchLengths=TRUE, mean=FALSE, conditionalAges=TRUE )
+my_map_tree = mapTree(trace, file="output/bears_TEFBD.map.pos.tre", positiveBranchLengths=TRUE, mean=FALSE, conditionalAges=FALSE )
+my_map_tree = mapTree(trace, file="output/bears_TEFBD.map.tre", positiveBranchLengths=FALSE, mean=FALSE, conditionalAges=FALSE )
+my_mcc_tree = mccTree(trace, file="output/bears_TEFBD.mcc.cca.tre", positiveBranchLengths=TRUE, mean=FALSE, conditionalAges=TRUE )
+my_mcc_tree = mccTree(trace, file="output/bears_TEFBD.mcc.pos.tre", positiveBranchLengths=TRUE, mean=FALSE, conditionalAges=FALSE )
+my_mcc_tree = mccTree(trace, file="output/bears_TEFBD.mcc.tre", positiveBranchLengths=FALSE, mean=FALSE, conditionalAges=FALSE )
 
 # Quit RevBayes #
 q()
