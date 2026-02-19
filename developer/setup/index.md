@@ -1,6 +1,6 @@
 ---
 title: Setting up an IDE for RevBayes
-subtitle: Setting up XCode, Eclipse, vim
+subtitle: Setting up VSCode, XCode, Eclipse, vim, CLion
 category: Developer
 order: 2
 ides:
@@ -8,6 +8,7 @@ ides:
 - eclipse
 - xcode
 - vim
+- clion
 ---
 
 The easiest way to get started developing in RevBayes is to use an IDE such as XCode or Eclipse.
