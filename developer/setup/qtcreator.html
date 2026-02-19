@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Setting up Qt Creator for RevBayes development</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Setting up Qt Creator for RevBayes development</h1>
+	
+	<h4 class="authors"></h4>
+  <h5>Last modified on January 22, 2026</h5>
+</div>
+
+<p>Qt Creator is a free IDE from Qt Group.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. <code class="language-plaintext highlighter-rouge">./build.sh</code>). For this tutorial I used Meson which I recommend for Qt Creator. To install Qt Creator using homebrew, type the following into your local terminal: <code class="language-plaintext highlighter-rouge">brew install --cask qt-creator</code>.</p>
+
+<p>Once installed, open Qt Creator (found in Applications) and navigate to the Extensions menu. Once there, you will need to activate the Meson extension.</p>
+
+<p><img src="figures/qtcreator-ext.png" /></p>
+
+<p>Now, make your way back to the Welcome menu. Once there, click Open Project and navigate to where your revbayes repository was stored. Select <code class="language-plaintext highlighter-rouge">meson.build</code> and Open.</p>
+
+<p><img src="figures/qtcreator-open.png" /></p>
+
+<p>Next, navigate to the Projects menu and click Manage Kits…</p>
+
+<p><img src="figures/qtcreator-kits.png" /></p>
+
+<p>Navigate to the Meson menu. Once there, you should see the path to your installed meson. If it is not there, manually add it as pictured below.</p>
+
+<p><img src="figures/qtcreator-meson.png" /></p>
+
+<p>Then, make our way to the Terminal menu and deselect Use internal terminal.</p>
+
+<p><img src="figures/qtcreator-terminal.png" /></p>
+
+<p>QT Creator will likely not be able to build yet as it struggles to understand where to find your boost. In this event, you will need to manually add the <code class="language-plaintext highlighter-rouge">BOOST_ROOT</code> path to the Build Environment, as pictured below.</p>
+
+<p><img src="figures/qtcreator-env.png" /></p>
+
+<p>Now, navigate to the Projects menu. Once there, select Run Settings. Click Run in terminal.</p>
+
+<p><img src="figures/qtcreator-run.png" /></p>
+
+<p>You are finally ready to build RevBayes! Navigate to the Edit menu. Once there, click the green triangle with the bug to run.</p>
+
+<p><img src="figures/qtcreator-build.png" /></p>
+
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://github.com/revbayes/revbayes/discussions">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "default highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "default highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

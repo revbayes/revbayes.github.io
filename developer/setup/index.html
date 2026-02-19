@@ -68,7 +68,7 @@
 	<h1 class="maintitle">Setting up an IDE for RevBayes</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on September  3, 2021</h5>
+  <h5>Last modified on January 13, 2026</h5>
 </div>
 
 <p>The easiest way to get started developing in RevBayes is to use an IDE such as XCode or Eclipse.
@@ -400,6 +400,34 @@ If YCM is working, when you open a revbayes <code class="language-plaintext high
 </code></pre></div></div>
 
 <p>See <a href="https://www.cs.cmu.edu/~gilpin/tutorial/">here</a> for more on using GDB.</p>
+
+<p class="section maintitle" id="clion">Setting up CLion for RevBayes development</p>
+<p>Clion is a paid IDE from JetBrains. Your insititution may provide free access you can access <a href="https://www.jetbrains.com/shop/eform/students?_gl=1*1nostx5*_gcl_au*MzIwMjM3NTI1LjE3NjgzMTkxNDQ.*FPAU*MzIwMjM3NTI1LjE3NjgzMTkxNDQ.*_ga*MTIxMDc1MTAyOC4xNzY4MzE5MTUy*_ga_9J976DJZ68*czE3NjgzMzM3MTQkbzIkZzEkdDE3NjgzMzM4NzYkajE4JGwwJGgw&amp;_cl=MTsxOzE7UTVMaFhCb0lBT0tMTWlDaXpWelRIUjFuaWZXdWhrYkxLMUVuUFpmUFp3Z1RjRnpET2tEUGpBSjF0czB1QzU4czs=">here</a>.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. <code class="language-plaintext highlighter-rouge">./build.sh</code>). For this tutorial I used CMake which I recommend for CLion but steps are likely similar for meson. Next, open Clion and open a project selecting the <code class="language-plaintext highlighter-rouge">revbayes/src</code> folder from wherever you have stored it on your computer.</p>
+
+<p>CLion will likely not be able to build yet as it struggles to understand what you are using to build RevBayes that we will fix next. In the meantime close CLion and open your preffered terminal application, changing the directory to where you installed RevBayes.</p>
+
+<h2 id="getting-revbayes-working">Getting RevBayes working</h2>
+
+<p>Once here you will need to build using CMake once again in the revbayes directory this time using the following commands:</p>
+
+<p><code class="language-plaintext highlighter-rouge">cmake -S src -B build-cmake -G Ninja -DCMAKE_BUILD_TYPE=Release</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">cmake --build build-cmake -j</code></p>
+
+<p>The first command is doing a few different things but the most important is the <code class="language-plaintext highlighter-rouge">-S src</code> portion. This will tell CLion that <code class="language-plaintext highlighter-rouge">revbayes/src</code> is the actualy project root for the C++ project. CLion was expection the <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> to be in the <code class="language-plaintext highlighter-rouge">revbayes</code> directory even though its in the <code class="language-plaintext highlighter-rouge">revbayes/src</code>. The secone command is more of a organizational step that is creating a CMake build in the revbayes directory so it is explicitly seperate from a meson build.</p>
+
+<p>Before we can fully utilize CLion, we need to remove a hidden file that was created when we opened our <code class="language-plaintext highlighter-rouge">src</code> project. First change your directory into the <code class="language-plaintext highlighter-rouge">src</code> directory and type the command <code class="language-plaintext highlighter-rouge">ls -a</code>. You should see the files contained in the directory including a directory called <code class="language-plaintext highlighter-rouge">.idea</code>. Many IDEs create ‘hidden’ files that stores configuration information about the project. The next command can be dangerous so please be careful in its use. 
+In your <code class="language-plaintext highlighter-rouge">src</code> directory type the command <code class="language-plaintext highlighter-rouge">rm -rf .idea</code> to remove this config information as we will want a ‘clean slate’ when we open the project. Now you are ready to launch CLion again! Launch the program and open the project using the <code class="language-plaintext highlighter-rouge">revbayes/src</code> directory. You should see the following pop-up just click ok!</p>
+
+<p><img src="figures/clion-launch.png" width="100%" /></p>
+
+<p>Finally we can build IN CLion! Click the build button shown here. You can also launch in debug mode but if everything has gone smoothly your now ready to start developing!</p>
+
+<p><img src="figures/clion-build.png" /></p>
 
 
 <ol class="bibliography"></ol>
