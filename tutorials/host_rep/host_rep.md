@@ -222,7 +222,7 @@ We have fully specified all of the parameters of our phylogenetic model. Our mod
 
 Once the `PhyloCTMCDASequence` variable has been created, we can attach our observed host repertoires (interaction matrix) to the tip nodes in the parasite tree
    
-    m_host.clamp(dat_parasite)
+    m_host.setValue(dat_parasite)
 
 
     
