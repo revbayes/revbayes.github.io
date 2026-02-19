@@ -1,11 +1,12 @@
-@use 'colors';
+@use "sass:color";
+@use "colors";
 
 $codeblock-padding: 5px !default;
 
 @mixin bkSetup($color, $glyph) {
 
   $gradientcolor1: $color;
-  $gradientcolor2: scale-color($color, $lightness: 10%);
+  $gradientcolor2: color.scale($color, $lightness: 10%);
 
   display: flow-root; // Fix for float overlap
 
@@ -82,7 +83,7 @@ $codeblock-padding: 5px !default;
 
     &:hover {
         text-decoration: underline;
-        color: scale-color(colors.$info, $lightness: -20%);
+        color: color.scale(colors.$info, $lightness: -20%);
     }
 
     .toggle-icon {
