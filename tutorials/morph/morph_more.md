@@ -340,7 +340,7 @@ for (i in 1:4) {
     }
 }
 ```
-Populate the elements of {\tt rates}
+Populate the elements of `rates`.
 ```
 rates[1][2] := r[1] * pi[2] * pi[1] # 00->10
 rates[1][3] := r[1] * pi[1] * pi[2] # 00->01
@@ -559,7 +559,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.
 
 {% subsection Getting Started | subsec_get_start %}
 
->Create a new directory (in `RB_DiscreteMorphology_RateASE_Tutorial) called `scripts`.
+>Create a new directory (in `RB_DiscreteMorphology_RateASE_Tutorial`) called `scripts`.
 >(If you do not have this folder, please refer to the directions in section {% ref subsec_data_files %}.)
 {:.instruction}
 
@@ -591,54 +591,54 @@ Once the model files are complete, you will return to editing `mcmc_ase_Mk.Rev` 
 RevBayes uses the function `readDiscreteCharacterData()` to load a data matrix to the workspace from a formatted file.
 This function can be used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable `morpho`.
-```
-morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
+{% endsnippet %}
 
 {% subsubsection Create Helper Variables | subsubsec_var %}
 
 Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors
-```
-moves = VectorMoves()
-monitors = VectorMonitors()
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    moves    = VectorMoves()
+    monitors = VectorMonitors()
+{% endsnippet %}
 
 
 
 {% subsection The Mk Model | subsec_Mk_Model %}
 
 First, we read in the tree topology:
-```
-phylogeny <- readTrees("data/mammals_thinned.tree")[1]
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    phylogeny <- readTrees("data/mammals_thinned.tree")[1]
+{% endsnippet %}
 
 Next, we will create a Q matrix.
 Recall that the Mk model is simply a generalization of the JC model.
 Therefore, we will create a 3x3 Q matrix using `fnJC`, which initializes $Q$-matrices with equal transition probabilities between all states.
-```
-Q_morpho <- fnJC(3)
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    Q_morpho <- fnJC(3)
+{% endsnippet %}
 
 Now that we have the basics of the model specified, we will specify the only parameter of the model, $\mu$.
 The parameter specifies all the rates of morphological evolution:
-```
-mu_morpho ~ dnExponential( 1.0 )
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    mu_morpho ~ dnExponential( 1.0 )
+{% endsnippet %}
 Since $\mu$ is a rate parameter, we will apply a scaling move to update it.
-```
-moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
+{% endsnippet %}
 
 Lastly, we set up the CTMC.
 This should be familiar from the {% page_ref ctmc %} tutorial.
 We see some familiar pieces: tree and Q matrix.
 We also have two new keywords: data type and coding.
 The data type argument specifies the type of data - in our case, "Standard", the specification for morphology.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, branchRates=mu_morpho, Q=Q_morpho, type="Standard")
-phyMorpho.clamp(morpho)
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, branchRates=mu_morpho, Q=Q_morpho, type="Standard")
+    phyMorpho.clamp(morpho)
+{% endsnippet %}
 
 All of the components of the model are now specified.
 
@@ -648,9 +648,9 @@ All of the components of the model are now specified.
 
 We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the `model()` function and provide a single node in the graph (`phylogeny`).
-```
-mymodel = model(phylogeny)
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    mymodel = model(phylogeny)
+{% endsnippet %}
 
 The object `mymodel` is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.
 
@@ -664,26 +664,26 @@ This will include every stochastic and deterministic node using the `mnModel` mo
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
 We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.
-```
-monitors.append( mnModel(filename="output/mk.log", printgen=10) )
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    monitors.append( mnModel(filename="output/mk.log", printgen=1) )
+{% endsnippet %}
 
 The second monitor we will add to our analysis will print information to the screen.
 Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen.
-```
-monitors.append( mnScreen(printgen=100) )
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    monitors.append( mnScreen(printgen=100) )
+{% endsnippet %}
 
 The third and final monitor might be new to you: the `mnJointConditionalAncestralState` monitor computes and writes the ancestral states to file.
-```
-monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
                                                    ctmc=phyMorpho,
                                                    filename="output/mk.states.txt",
                                                    type="Standard",
                                                    printgen=1,
                                                    withTips=true,
                                                    withStartStates=false) )
-```
+{% endsnippet %}
 
 The core arguments this monitor needs are a tree object (`tree=phylogeny`),
 the phylogenetic model (`ctmc=phyMorpho`), an output filename (`filename="output/mk.states.txt"`),
@@ -715,31 +715,31 @@ Iteration	end_1	end_2	end_3	end_4	end_5	...
 
 Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run.
 We do this using the `mcmc()` function that simply takes the three main analysis components as arguments.
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+{% endsnippet %}
 
 The MCMC object that we named `mymcmc` has a member method called `.run()`.
 This will execute our analysis and we will set the chain length to `10000` cycles using the `generations` option.
-```
-mymcmc.run(generations=10000, tuningInterval=200)
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    mymcmc.run(generations=5000, tuningInterval=200)
+{% endsnippet %}
 
 Once our Markov chain has terminated, we will process the ancestral state samples.
 This function will compute the posterior probabilities of the ancestral states from the samples.
 Later we can visuallize our ancestral states.
-```
-anc_states = readAncestralStateTrace("output/mk.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
-writeNexus( anc_tree, filename="output/ase_mk.tree" )
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    anc_states = readAncestralStateTrace("output/mk.states.txt")
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
+    writeNexus( anc_tree, filename="output/ase_mk.tree" )
+{% endsnippet %}
 
 
 Finally we can close RevBayes.
 Tell the program to quit using the `q()` function.
-```
-q()
-```
+{% snippet scripts/mcmc_ase_mk.Rev %}
+    q()
+{% endsnippet %}
 
 >You made it! Save your file.
 {:.instruction}
@@ -755,7 +755,7 @@ The Rev script you just created will be used by RevBayes and loaded in the appro
 
 Provided that you started RevBayes from the correct directory (`RB_DiscreteMorphology_RateASE_Tutorial`),
 you can then use the `source()` function to feed RevBayes your master script file (`mcmc_ase_mk.Rev`).
-```
+```{bash}
 source("scripts/mcmc_ase_mk.Rev")
 ```
 This will execute the analysis and you should see the following output (though not the exact same values):
@@ -808,33 +808,33 @@ We have written a little R package called \RevGadgets that can be used to visual
 {:.instruction}
 
 First, we need to load the R package RevGadgets
-```{R}
-library(RevGadgets)
-```
+{% snippet scripts/plot_anc_states.R %}
+    library(RevGadgets)
+{% endsnippet %}
 
 Second, we specify the name of the tree file.
-```{R}
-tree_file = "output/ase_mk.tree"
-```
+{% snippet scripts/plot_anc_states.R %}
+    tree_file = "output/ase_mk.tree"
+{% endsnippet %}
 
 Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
 For example, if you set `show_posterior_legend=TRUE` and `node_size_range=c(1, 3)`,
 then the size of the circles will represent the posterior probability.
-```{R}
-g <- plot_ancestral_states(tree_file, summary_statistic="MAP",
+{% snippet scripts/plot_anc_states.R %}
+    g <- plot_ancestral_states(tree_file, summary_statistic="MAP",
                       tip_label_size=1,
                       xlim_visible=NULL,
                       node_label_size=0,
-                      show_posterior_legend=FALSE,
-                      node_size_range=c(2.5, 2.5),
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(1, 3),
                       alpha=0.75)
-```
+{% endsnippet %}
 
 Finally, we save the output into a PDF.
-```{R}
-ggsave("Mammals_ASE_MK.pdf", g, width = 11, height = 9)
-```
+{% snippet scripts/plot_anc_states.R %}
+    ggsave("Mammals_ASE_MK.pdf", g, width = 11, height = 9)
+{% endsnippet %}
 
 
 >You can also find all these commands in the file called **plot_anc_states.R** which you can run as a script in R.
@@ -882,48 +882,49 @@ Our goal here is to create a rate matrix with 6 free parameters.
 We will assume an exponential prior distribution for each of the rates.
 Thus, we start be specifying the rate of this exponential prior distribution.
 A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.
-```
-rate_pr := phylogeny.treeLength() / 10
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+{% endsnippet %}
 
 Now we can create our six independent rate variables drawn from an identical exponential distribution
-```
-rate_12 ~ dnExponential(rate_pr)
-rate_13 ~ dnExponential(rate_pr)
-rate_21 ~ dnExponential(rate_pr)
-rate_23 ~ dnExponential(rate_pr)
-rate_31 ~ dnExponential(rate_pr)
-rate_32 ~ dnExponential(rate_pr)
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    rate_12 ~ dnExponential(rate_pr)
+    rate_13 ~ dnExponential(rate_pr)
+    rate_21 ~ dnExponential(rate_pr)
+    rate_23 ~ dnExponential(rate_pr)
+    rate_31 ~ dnExponential(rate_pr)
+    rate_32 ~ dnExponential(rate_pr)
+{% endsnippet %}
+
 As usual, we will apply a scaling move to each of the rate variables.
-```
-moves.append( mvScale( rate_12, weight=2 ) )
-moves.append( mvScale( rate_13, weight=2 ) )
-moves.append( mvScale( rate_21, weight=2 ) )
-moves.append( mvScale( rate_23, weight=2 ) )
-moves.append( mvScale( rate_31, weight=2 ) )
-moves.append( mvScale( rate_32, weight=2 ) )
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    moves.append( mvScale( rate_12, weight=2 ) )
+    moves.append( mvScale( rate_13, weight=2 ) )
+    moves.append( mvScale( rate_21, weight=2 ) )
+    moves.append( mvScale( rate_23, weight=2 ) )
+    moves.append( mvScale( rate_31, weight=2 ) )
+    moves.append( mvScale( rate_32, weight=2 ) )
+{% endsnippet %}
 Next, we put all the rates together into our rate matrix.
 Don't forget to say that we do not rescale the rate matrix (`rescale=false`).
 We would only rescale if we use relative rates.
-```
-Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
+{% endsnippet %}
 
 In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.
-```
-rf_prior <- [1,1,1]
-rf ~ dnDirichlet( rf_prior )
-moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    rf_prior <- [1,1,1]
+    rf ~ dnDirichlet( rf_prior )
+    moves.append( mvBetaSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
+{% endsnippet %}
 
 We need to modify the `dnPhyloCTMC` to pass in our new root frequencies parameter.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
-```
+{% snippet scripts/mcmc_ase_freeK.Rev %}
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+{% endsnippet %}
 
 
 
@@ -953,59 +954,59 @@ For example, you might call your output file `output/freeK_ASE.log`.
 
 The only part in the model section that we are going to modify is the prior distributions and moves on the rate parameters.
 We will assume the same rate for the exponential prior distribution as before.
-```
-rate_pr := phylogeny.treeLength() / 10
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+{% endsnippet %}
 Next, we specify that we have a 0.5 probability, *a priori*, that a rate is equal to 0.
-```
-mix_pr <- 0.5
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    mix_pr <- 0.5
+{% endsnippet %}
 
 Now we can create our reversible-jump distributions, which take in a constant value, 0.0 in this case, and a distribution.
 Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).
-```
-rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+    rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+{% endsnippet %}
 
 Since we are interested in the probability that a rate is equal to 0.0, we want to compute this posterior probability directly.
 Therefore, we will use the `ifelse` function, which will return 1.0 if the rate is equal to 0.0, and 0.0 otherwise (if the rate is unequal to 0.0).
 Hence, the frequency with which we sample a 1.0 gives us the posterior probability that a given rate is equal to 0.0.
-```
-prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
-prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
-prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
-prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
-prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
-prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
+    prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
+    prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
+    prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
+    prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
+    prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
+{% endsnippet %}
 
 We also need to specify specific moves that ``jump'' in parameter dimension.
 We will use the `mvRJSwitch` move that changes the value to be either equal to the constant value
 provided from the `dnRJMixture` or a value drawn from the base distribution (the exponential distribution).
-```
-moves.append( mvRJSwitch( rate_12, weight=2 ) )
-moves.append( mvRJSwitch( rate_13, weight=2 ) )
-moves.append( mvRJSwitch( rate_21, weight=2 ) )
-moves.append( mvRJSwitch( rate_23, weight=2 ) )
-moves.append( mvRJSwitch( rate_31, weight=2 ) )
-moves.append( mvRJSwitch( rate_32, weight=2 ) )
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    moves.append( mvRJSwitch( rate_12, weight=2 ) )
+    moves.append( mvRJSwitch( rate_13, weight=2 ) )
+    moves.append( mvRJSwitch( rate_21, weight=2 ) )
+    moves.append( mvRJSwitch( rate_23, weight=2 ) )
+    moves.append( mvRJSwitch( rate_31, weight=2 ) )
+    moves.append( mvRJSwitch( rate_32, weight=2 ) )
+{% endsnippet %}
 
 Additionally, we also need to specify moves that change the rates if they are not equal to 0.0.
 As usual, we use the standard scaling moves.
-```
-moves.append( mvScale( rate_12, weight=2 ) )
-moves.append( mvScale( rate_13, weight=2 ) )
-moves.append( mvScale( rate_21, weight=2 ) )
-moves.append( mvScale( rate_23, weight=2 ) )
-moves.append( mvScale( rate_31, weight=2 ) )
-moves.append( mvScale( rate_32, weight=2 ) )
-```
+{% snippet scripts/mcmc_ase_freeK_RJ.Rev %}
+    moves.append( mvScale( rate_12, weight=2 ) )
+    moves.append( mvScale( rate_13, weight=2 ) )
+    moves.append( mvScale( rate_21, weight=2 ) )
+    moves.append( mvScale( rate_23, weight=2 ) )
+    moves.append( mvScale( rate_31, weight=2 ) )
+    moves.append( mvScale( rate_32, weight=2 ) )
+{% endsnippet %}
 
 
 >This is all that you need to do for this ``fancy'' reversible-jump model. Give it a try!

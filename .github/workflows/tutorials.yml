@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  test:
+  check-tutorials:
     strategy:
       matrix:
         name: [ubuntu-gcc-12]
@@ -52,8 +52,11 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
          key: ${{ matrix.name }}
+         max-size: 2G   # We only need about 500MB, usually
          restore-keys: |
            ${{ matrix.name }}
+         append-timestamp: false  # Don't keep more than one cache per branch
+         save: ${{ github.event_name == 'push' }}
 
     - name: Install BOOST (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
@@ -71,6 +74,27 @@ jobs:
           sudo apt-get install -y libboost-all-dev
         fi
 
+    - name: Clone and build Tensorphylo
+      run: |
+        if [ "${{ matrix.name }}" = "windows" ] ; then
+            meson_args=--cross-file=win64-cross.txt
+        fi
+        git clone https://bredelings@bitbucket.org/mrmay/tensorphylo.git
+        meson setup tpbuild tensorphylo --prefix=$HOME/local ${meson_args}
+        meson install -C tpbuild
+        if [ "${{ matrix.name }}" = "windows" ] ; then
+            # Get the user profile dir for windows, then find where it is as a Linux path
+            USERPROFILE=$(winepath -u $(wine cmd /c echo %USERPROFILE% | tr -d '\r'))
+            mkdir $USERPROFILE/.plugins
+            cp tpbuild/src/libTensorPhylo.dll $USERPROFILE/.plugins
+        elif [ "${{ runner.os }}" = macOS ] ; then
+            mkdir ~/.plugins
+            cp tpbuild/src/libTensorPhylo.dylib ~/.plugins
+        else
+            mkdir ~/.plugins
+            cp tpbuild/src/libTensorPhylo.so ~/.plugins
+        fi
+
     - name: Clone and build RevBayes development (Linux)
       if: runner.os == 'Linux' && matrix.name != 'windows'
       run: |
@@ -82,7 +106,7 @@ jobs:
           ccache -s
 
           cd projects/cmake
-          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local
+          BUILD_DIR=build exec_name=rb ./build.sh -DCMAKE_INSTALL_PREFIX=$HOME/local -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache
         
           cmake --install build
 

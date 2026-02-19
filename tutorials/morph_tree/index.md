@@ -400,8 +400,9 @@ Provided that you started RevBayes from the correct directory
 (`RB_DiscreteMorphology_Tutorial`), you can then use the `source()`
 function to feed RevBayes your Rev-script file (`mcmc_mk.Rev`).
 ```
-source("scripts/mcmc_mk.Rev")
+    source("scripts/mcmc_mk.Rev")
 ```
+
 This will execute the analysis and you should see the following output
 (though not the exact same values):
 ```
@@ -457,9 +458,8 @@ You only need to set the option `coding="variable"` in the `dnPhyloCTMC`. Coding
 what type of ascertainment bias is expected. We are using the `variable` correction,
 as we have no invariant character in our matrix. If we also lacked
 parsimony non-informative characters, we would use the coding `informative`.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
-```
+{{ "mcmc_mkv.Rev" | snippet:"line","65" }}
+
 >Remember to change all filenames for the output, e.g., from `output/mk.log` to `output/mkv.log`.
 {:.instruction}
 
@@ -572,7 +572,7 @@ the Mk model, due to increased model complexity.
 
 
 {% figure add_files %}
-<img src="figures/convergence.png" width="100%"/>
+<img src="figures/convergence.png" width="90%"/>
 {% figcaption %}
 Assessing convergence using `convenience` {% cite Fabreti2022 %}. Here we show the difference in split frequencies. These runs have converged for us.
 {% endfigcaption %}

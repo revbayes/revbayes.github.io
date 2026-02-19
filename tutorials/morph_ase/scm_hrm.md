@@ -96,20 +96,25 @@ In this tutorial, we show you the basic steps how to set up this hidden rates mo
 
 As before, use the function `readDiscreteCharacterData()` to load a data matrix to the workspace from a formatted file.
 Import the morphological character matrix and assign it to the variable `morpho`.
-```
-morpho <- readDiscreteCharacterData("data/primates_solitariness.nex")
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    CHARACTER = "solitariness"
+    NUM_STATES = 2
+    NUM_HIDDEN_STATES = 2
+
+    # Import the morphological character matrix #
+    morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
+{% endsnippet %}
 However, now we also need to *expand* the state space to include the 2 categories.
 In RevBayes, the character data matrix has a member function `.expandCharacters()` which will create these additional categories.
-```
-morpho_exp = morpho.expandCharacters( 2 )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    morpho_exp = morpho.expandCharacters( NUM_HIDDEN_STATES )
+{% endsnippet %}
 To understand better what has happened, let us look at the character data matrices in RevBayes.
 First, we look at the original character data matrix.
 ```
-morpho
+> morpho
 ```
-```   
+```
    Standard character matrix with 233 taxa and 1 characters
    ========================================================
    Origination:                   primates_solitariness.nex
@@ -125,17 +130,17 @@ Now look at the expanded character data matrix.
 ```
 > morpho_exp
 ```
-```   
+```
    NaturalNumbers character matrix with 233 taxa and 1 characters
    ==============================================================
-   Origination:                   
+   Origination:
    Number of taxa:                233
    Number of included taxa:       233
    Number of characters:          1
    Number of included characters: 1
    Datatype:                      NaturalNumbers
 ```
-{:.Rev-output}  
+{:.Rev-output}
 Notice that the *Datatype* here is *NaturalNumbers*.
 
 Let us now also look at how the states are *expanded*.
@@ -164,7 +169,7 @@ Again, we look first at the original character data matrix.
    ?
 ...
 ```
-{:.Rev-output}  
+{:.Rev-output}
 And next for the expanded character data matrix.
 ```
 > morpho_exp.show()
@@ -190,7 +195,7 @@ And next for the expanded character data matrix.
    ?
 ...
 ```
-{:.Rev-output}  
+{:.Rev-output}
 We see that state 0 (e.g., for *Allenopithecus nigroviridis*) was expanded to state (0 2) and that state 1 (e.g., *Allocebus trichotis*) was expanded to (1 3).
 The state (0 2) means that the species is either in state 0 or state 2, we don't know which.
 This is exactly how ambiguous data is coded.
@@ -202,18 +207,18 @@ It is important to remember how the state space was expanded to set the rates up
 
 As before, we need to instantiate a couple "helper variables" that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors
-```
-moves = VectorMoves()
-monitors = VectorMonitors()
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    moves    = VectorMoves()
+    monitors = VectorMonitors()
+{% endsnippet %}
 
 {% subsection The Phylogeny | subsec_phylogeny %}
 
 As usual for morphological analysis, we assume the phylogeny to be know.
 Thus, we read in the tree as a constant variable:
-```
-phylogeny <- readTrees("data/primates_tree.nex")[1]
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    phylogeny <- readTrees("data/primates_tree.nex")[1]
+{% endsnippet %}
 
 {% subsection The Hidden Rates Model (HRM) | subsec_HRM_Model %}
 
@@ -223,20 +228,20 @@ In the current example, we assume a binary morphological character and two rate 
 This gives 4 states in total and therefore a 4x4 rate matrix.
 
 Start with creating a matrix called `rates` where all elements are 0.0.
-```
-# we will fill the non-zero elements below
-for (i in 1:4) {
-  for (j in 1:4) {
-    rates[i][j] <- 0.0
-  }
-}
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    # we will fill the non-zero elements below
+    for (i in 1:4) {
+      for (j in 1:4) {
+        rates[i][j] <- 0.0
+      }
+    }
+{% endsnippet %}
 Next, we need to specify some priors for our rates.
 It is probably quite challenging to have a good idea of a reasonable rate for the *hidden* category changes, i.e., the rate of changing between the slow and the fast rate categories.
 We simply assume the same prior as before, that is, we assume on average 10 changes along the given phylogeny.
-```
-rate_pr := phylogeny.treeLength() / 10
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rate_pr := phylogeny.treeLength() / 10
+{% endsnippet %}
 Next, we need to assume some model how the fast and the slow rates are specified.
 If we simply use free parameters for $\mu_{1,s}$ and $\mu_{1,f}$, we could easily estimate that $\mu_{1,s} > \mu_{1,f}$ or the other way around.
 So this model is clearly non-identifiable and we need to restrict that $\mu_{1,s} < \mu_{1,f}$.
@@ -248,92 +253,92 @@ This approach is analogous in idea to the well known $+\Gamma$ model of among si
 We will use the second approach but give some thoughts below on how to specify the first approach.
 First, we need to specify the prior distribution on the standard deviation of the lognormal distribution.
 Let us assume an exponential that on standard deviation with mean of $0.587405$, which means that the 95% probability interval of the lognormal distribution spans 1 order of magnitude.
-```
-H <- 0.587405
-SD_PRIOR <- 1/H
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    H <- 0.587405
+    SD_PRIOR <- 1/H
+{% endsnippet %}
 Now that we have the hyper-prior parameters, we can start with the prior distribution.
 Let us start with the rate of gain.
-```
-rate_gain_median ~ dnExponential( rate_pr )
-rate_gain_sd ~ dnExponential( SD_PRIOR )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rate_gain_median ~ dnExponential( rate_pr )
+    rate_gain_sd ~ dnExponential( SD_PRIOR )
+{% endsnippet %}
 Since these are positive real variable, we apply scaling moves on them.
-```
-moves.append( mvScale( rate_gain_median, weight=2 ) )
-moves.append( mvScale( rate_gain_sd, weight=2 ) )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    moves.append( mvScale( rate_gain_median, weight=2 ) )
+    moves.append( mvScale( rate_gain_sd, weight=2 ) )
+{% endsnippet %}
 Next, we use the prior median and prior standard deviation to construct the median quantiles of the lognormal distribution.
 We will use the function `fnDiscretizeDistribution`, which takes as arguments the distribution and the number of quantiles, which is 2 in our case for 2 rate categories (slow vs fast).
-```
-rate_gain := fnDiscretizeDistribution( dnLognormal( ln(rate_gain_median), rate_gain_sd ), 2 )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rate_gain := fnDiscretizeDistribution( dnLognormal( ln(rate_gain_median), rate_gain_sd ), NUM_HIDDEN_STATES )
+{% endsnippet %}
 Now repeat exactly the same for the loss rate.
-```
-rate_loss_median ~ dnExponential( rate_pr )
-rate_loss_sd ~ dnExponential( SD_PRIOR )
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rate_loss_median ~ dnExponential( rate_pr )
+    rate_loss_sd ~ dnExponential( SD_PRIOR )
 
-moves.append( mvScale( rate_loss_median, weight=2 ) )
-moves.append( mvScale( rate_loss_sd, weight=2 ) )
+    moves.append( mvScale( rate_loss_median, weight=2 ) )
+    moves.append( mvScale( rate_loss_sd, weight=2 ) )
 
-rate_loss := fnDiscretizeDistribution( dnLognormal( ln(rate_loss_median), rate_loss_sd ), NUM_HIDDEN_STATES )
-```
+    rate_loss := fnDiscretizeDistribution( dnLognormal( ln(rate_loss_median), rate_loss_sd ), NUM_HIDDEN_STATES )
+{% endsnippet %}
 Finally, we create the two rate variables for the switching rates between the fast and slow rate categories.
 As mentioned before, we will simply assume an exponential prior distribution with a mean of 10 events along the phylogeny.
-```
-switch_slow_fast ~ dnExponential( rate_pr )
-switch_fast_slow ~ dnExponential( rate_pr )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    switch_slow_fast ~ dnExponential( rate_pr )
+    switch_fast_slow ~ dnExponential( rate_pr )
+{% endsnippet %}
 We also should not forget the moves on the switching rates.
 We will use as usual the scaling move since these are rate variables (positive real numbers).
-```
-moves.append( mvScale( switch_slow_fast, weight=2 ) )
-moves.append( mvScale( switch_fast_slow, weight=2 ) )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    moves.append( mvScale( switch_slow_fast, weight=2 ) )
+    moves.append( mvScale( switch_fast_slow, weight=2 ) )
+{% endsnippet %}
 Now we have created all the rate variables.
 We need to connect them to our rate matrix.
 As a help, look again at the rate matrix described in the introduction.
-```
-rates[1][2] := rate_gain[1]     # 0S->1S
-rates[1][3] := switch_slow_fast # 0S->0F
-rates[2][1] := rate_loss[1]     # 1S->0S
-rates[2][4] := switch_slow_fast # 1S->1F
-rates[3][1] := switch_fast_slow # 0F->0S
-rates[3][4] := rate_gain[2]     # 0F->1F
-rates[4][2] := switch_fast_slow # 1F->1S
-rates[4][3] := rate_loss[2]     # 1F->2F
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rates[1][2] := rate_gain[1]     # 0S->1S
+    rates[1][3] := switch_slow_fast # 0S->0F
+    rates[2][1] := rate_loss[1]     # 1S->0S
+    rates[2][4] := switch_slow_fast # 1S->1F
+    rates[3][1] := switch_fast_slow # 0F->0S
+    rates[3][4] := rate_gain[2]     # 0F->1F
+    rates[4][2] := switch_fast_slow # 1F->1S
+    rates[4][3] := rate_loss[2]     # 1F->2F
+{% endsnippet %}
 Finally, we can create our transition rate matrix `Q` using the rate matrix function `fnFreeK`.
-```
-Q_morpho := fnFreeK(rates, rescaled=FALSE)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    Q_morpho := fnFreeK(rates, rescaled=FALSE)
+{% endsnippet %}
 
 For this model, we also want to specify parameters for the root frequencies $\pi$, and thus also their prior distributions.
 We assume a flat Dirichlet distribution, which assigns each combination of root frequencies the exact same prior probability.
 Remember that we 2 states for the observed characters and 2 states for the rate categories.
 Thus we need a vector of 2*2 filled with ones.
-```
-rf_prior <- rep(1,2*2)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rf_prior <- rep(1,NUM_STATES*NUM_HIDDEN_STATES)
+{% endsnippet %}
 We use this for our Dirichlet distribution.
-```
-rf ~ dnDirichlet( rf_prior )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    rf ~ dnDirichlet( rf_prior )
+{% endsnippet %}
 We apply two different moves to the root frequencies, a `mvBetaSimplex` that changes a single frequencies and rescales the other frequencies, and a `mvDirichletSimplex` that redraws all root frequencies together.
-```
-moves.append( mvBetaSimplex( rf, weight=2 ) )
-moves.append( mvDirichletSimplex( rf, weight=2 ) )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    moves.append( mvBetaSimplex( rf, weight=2 ) )
+    moves.append( mvDirichletSimplex( rf, weight=2 ) )
+{% endsnippet %}
 
 Lastly, we set up the CTMC.
 Not that this time we need to specify the `type=NaturalNumbers`, as we saw this is used in the *expanded* data matrix.
-```
-phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="NaturalNumbers")
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="NaturalNumbers")
+{% endsnippet %}
 We conclude the model specification by attaching the *expanded* data matrix to the CTMC object.
-```
-phyMorpho.clamp(morpho_exp)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    phyMorpho.clamp(morpho_exp)
+{% endsnippet %}
 
 
 {% subsection Complete MCMC Analysis | subsec_complete_MCMC %}
@@ -342,9 +347,9 @@ phyMorpho.clamp(morpho_exp)
 
 We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the `model()` function and provide a single node in the graph (`phylogeny`).
-```
-mymodel = model(phylogeny)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    mymodel = model(phylogeny)
+{% endsnippet %}
 
 The object `mymodel` is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.
 
@@ -356,29 +361,29 @@ In this exercise we wanted to explore stochastic character mapping.
 Stochastic character mapping, similar to ancestral state estimation, is achieved in RevBayes using the help of monitors, specifically the `mnStochasticCharacterMap` monitor.
 
 We will specify the same model monitor (`mnModel`), screen monitor (`mnScreen`) and ancestral state monitor (`mnJointConditionalAncestralState`) as before ({% page_ref morph_ase/ase %}).
-```
-# 1. for the full model #
-monitors.append( mnModel(filename="output/solitariness_hrm.log", printgen=1) )
-# 2. and a few select parameters to be printed to the screen #
-monitors.append( mnScreen(printgen=10) )
-# 3. add an ancestral state monitor
-monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
-                                                  ctmc=phyMorpho,
-                                                  filename="output/solitariness_hrm.states.txt",
-                                                  type="NaturalNumbers",
-                                                  printgen=1,
-                                                  withTips=true,
-                                                  withStartStates=false) )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    # 1. for the full model #
+    monitors.append( mnModel(filename="output/"+CHARACTER+"_hrm.log", printgen=1) )
+    # 2. and a few select parameters to be printed to the screen #
+    monitors.append( mnScreen(printgen=100) )
+    # 3. add an ancestral state monitor
+    monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                      ctmc=phyMorpho,
+                                                      filename="output/"+CHARACTER+"_hrm.states.txt",
+                                                      type="NaturalNumbers",
+                                                      printgen=1,
+                                                      withTips=true,
+                                                      withStartStates=false) )
+{% endsnippet %}
 Now add the new stochastic character mapping monitor, `mnStochasticCharacterMap`.
 This monitor also requires that you specify the `CTMC` object, which is `phyMorpho` in our example, and output filename, the frequency how often you want to generate stochastic character maps, e.g., once every iteration or every 10 generations, and whether we want to include the simmap states (yes, very important).
-```
-# 4. add an stochastic character map monitor
-monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
-                                          filename="output/solitariness_hrm_stoch_char_map.log",
-                                          printgen=1,
-                                          include_simmap=true) )
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    # 4. add an stochastic character map monitor
+    monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
+                                              filename="output/"+CHARACTER+"_hrm_stoch_char_map.log",
+                                              printgen=1,
+                                              include_simmap=true) )
+{% endsnippet %}
 This monitor will create the `output/solitariness_hrm_stoch_char_map.log` file.
 Just like the other log files, each row in this file represents a different sample from the MCMC.
 Each column in the file, though, is the character history for a different node in the phylogeny.
@@ -388,47 +393,47 @@ Each column in the file, though, is the character history for a different node i
 
 Setup the MCMC analysis as before ({% page_ref morph_ase/ase %}).
 This will run 2 replicated MCMC runs with 5,000 iterations and auto-tuning the moves every 200 iterations.
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-mymcmc.run(generations=5000, tuningInterval=200)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+    mymcmc.run(generations=5000, tuningInterval=200)
+{% endsnippet %}
 
 
 {% subsubsection Summarizing the MCMC output %}
 After the MCMC simulation, we can calculate the maximum a posteriori
 *marginal*, *joint*, or *conditional* character history.
 As before ({% page_ref morph_ase/ase %}), we will compute the ancestral state estimates.
-```
-# Read in the tree trace and construct the ancestral states (ASE) #
-anc_states = readAncestralStateTrace("output/solitariness_hrm.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/solitariness_ase_hrm.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=2*2)
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    # Read in the tree trace and construct the ancestral states (ASE) #
+    anc_states = readAncestralStateTrace("output/"+CHARACTER+"_hrm.states.txt")
+    anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_hrm.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=NUM_STATES*NUM_HIDDEN_STATES)
+{% endsnippet %}
 In a very similar way, we summarize the output of the stochastic character mapping.
 First, we load in the ancestral state trace (sampled character histories)
-```
-anc_states_stoch_map = readAncestralStateTrace("output/solitariness_hrm_stoch_char_map.log")
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    anc_states_stoch_map = readAncestralStateTrace("output/"+CHARACTER+"_hrm_stoch_char_map.log")
+{% endsnippet %}
 Then we use the `characterMapTree` function.
 This generates two **SIMMAP** {% cite Bollback2006 %}
 formatted files:
 1) the maximum a posteriori character history,
 and 2) the posterior probabilities of the entire character history.
 These can be plotted using the **phytools** R package {% cite Revell2012 %}.
-```
-char_map_tree = characterMapTree(tree=phylogeny,
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    char_map_tree = characterMapTree(tree=phylogeny,
                  ancestral_state_trace_vector=anc_states_stoch_map,
-                 character_file="output/solitariness_hrm_marginal_character.tree",
-                 posterior_file="output/solitariness_hrm_marginal_posterior.tree",
+                 character_file="output/"+CHARACTER+"_hrm_marginal_character.tree",
+                 posterior_file="output/"+CHARACTER+"_hrm_marginal_posterior.tree",
                  burnin=0.25,
                  num_time_slices=500)
-```
+{% endsnippet %}
 
 This is all you need for this analysis.
 Don't forget to quit RevBayes at the end of the script.
-```
-# Quit RevBayes #
-q()
-```
+{% snippet scripts/mcmc_scm_hrm.Rev %}
+    # Quit RevBayes #
+    q()
+{% endsnippet %}
 
 >This is all that you need to do for the rate variation analysis with hidden rate categories and stochastic character mapping. Save your script and give it a try!
 {:.instruction}
