@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Setting up vim for RevBayes development (non-IDE)</title>
+    <title>RevBayes: Setting up the build environment</title>
   </head>
   <body>
     <div class="container">
@@ -65,88 +65,24 @@
       <!-- adds margin to main content -->
       <div class="container" style="padding-left:20px padding-right:20px;">
           <div class="titlebar">
-	<h1 class="maintitle">Setting up vim for RevBayes development (non-IDE)</h1>
+	<h1 class="maintitle">Setting up the build environment</h1>
 	
 	<h4 class="authors"></h4>
   <h5>Last modified on February 19, 2026</h5>
 </div>
 
-<p><a href="http://www.vim.org">Vim</a> is a text editor that some people love.
-It’s not an IDE, but it can provide useful IDE-like behaviors.
-If you are reading this, you are probably a vim-lover and already have a set of customizations that you like.
-Here are some more to consider.</p>
+<p>Before you can set up any of the IDEs you need to set up the build environment.
+First you need to <a href="/download">download</a> the RevBayes source code.
+Then you need to compile the source code using the command line.
+There are slightly different instructions for <a href="/compile-linux">Linux</a>, <a href="/compile-osx">Mac</a>, and <a href="/compile-windows">Windows</a>.
+You can compile the source code with either CMake (via <code class="language-plaintext highlighter-rouge">build.sh</code>) or Meson to perform the compilation.</p>
 
-<h2 id="youcompleteme">YouCompleteMe</h2>
+<p>Once you have successfully compiled and installed RevBayes, you can proceed to setting up an IDE.</p>
 
-<p><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a> is an extremely useful plugin that provides suggestions as you type for function names, prompts about their arguments, etc.
-There are several steps to get it working.</p>
+<p>Although IDEs are useful, they are not a requirement.
+Some developers do not use an IDE.
+Instead they use the command line to compile, and use a separate editor (e.g. emacs or vim) for editing, and gdb or lldb for debugging.</p>
 
-<h3 id="install-dependencies">Install dependencies</h3>
-
-<p>This seems to be sufficient on Ubuntu 16.04:</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install build-essential cmake python-dev python3-dev clang
-</code></pre></div></div>
-
-<h3 id="get-the-vim-code-itself">Get the vim code itself</h3>
-
-<p>Grab these two plugins:</p>
-
-<ul>
-  <li><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a></li>
-  <li><a href="https://github.com/rdnetto/YCM-Generator">YCM-Generator</a></li>
-</ul>
-
-<p>Put them wherever you put your plugins, e.g., <code class="language-plaintext highlighter-rouge">.vim/bundle/</code> if you’re using <a href="https://github.com/tpope/vim-pathogen">Pathogen</a>.</p>
-
-<p>For YCM, you also need to get its submodules:</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
-git submodule update --init --recursive
-</code></pre></div></div>
-<p>(If you manage your plugins as git subtrees, note that you probably can’t for YouCompleteMe because it contains submodules itself.)</p>
-
-<h3 id="compile-the-ycm-plugin">Compile the YCM plugin</h3>
-
-<p>YCM has a compiled component as well as vim code.  This may take a few minutes to run.</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
-./install.py --clang-completer
-</code></pre></div></div>
-
-<h3 id="provide-the-compilation-flags-to-ycm">Provide the compilation flags to YCM</h3>
-
-<p>The above was to install YCM in general.
-To use it specifically with RevBayes (or any other project), you need to give it information about the codebase.
-YCM-Generator is one way to do this.</p>
-
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/  # or wherever you keep revbayes
-cd projects/cmake/build/
-~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
-</code></pre></div></div>
-
-<p>That should take a few seconds to run.
-Then move the result to the top-level directory:</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../../
-</code></pre></div></div>
-
-<h3 id="try-it-out">Try it out</h3>
-
-<p>That should be it.
-If YCM is working, when you open a revbayes <code class="language-plaintext highlighter-rouge">.cpp</code> or <code class="language-plaintext highlighter-rouge">.h</code> file, vim will ask <code class="language-plaintext highlighter-rouge">Found revbayes/.ycm_extra_conf.py. Load?</code></p>
-
-<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="language-plaintext highlighter-rouge">.vimrc</code>.</p>
-<div class="language-plaintext vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
-</code></pre></div></div>
-
-<h3 id="debugging-with-gdb">Debugging with GDB</h3>
-
-<p>If you use vim, we recommend debugging in GDB. You’ll need to compile RevBayes with the <code class="language-plaintext highlighter-rouge">-debug true</code> flag:</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -debug true
-</code></pre></div></div>
-
-<p>The you can debug RevBayes with GDB:</p>
-<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb rb
-</code></pre></div></div>
-
-<p>See <a href="https://www.cs.cmu.edu/~gilpin/tutorial/">here</a> for more on using GDB.</p>
 
 <ol class="bibliography"></ol>
 

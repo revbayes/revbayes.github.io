@@ -68,46 +68,48 @@
 	<h1 class="maintitle">Setting up Qt Creator for RevBayes development</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on January 22, 2026</h5>
+  <h5>Last modified on February 19, 2026</h5>
 </div>
 
 <p>Qt Creator is a free IDE from Qt Group.</p>
 
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. <code class="language-plaintext highlighter-rouge">./build.sh</code>). For this tutorial I used Meson which I recommend for Qt Creator. To install Qt Creator using homebrew, type the following into your local terminal: <code class="language-plaintext highlighter-rouge">brew install --cask qt-creator</code>.</p>
+<p>You will first need to <a href="#cmdline">set up the build environment</a> by compiling RevBayes on the command line.
+For this tutorial I used Meson which I recommend for Qt Creator. 
+To install Qt Creator using homebrew, type the following into your local terminal: <code class="language-plaintext highlighter-rouge">brew install --cask qt-creator</code>.</p>
 
 <p>Once installed, open Qt Creator (found in Applications) and navigate to the Extensions menu. Once there, you will need to activate the Meson extension.</p>
 
-<p><img src="figures/qtcreator-ext.png" /></p>
+<p><img src="figures/qtcreator-ext.png" alt="" /></p>
 
 <p>Now, make your way back to the Welcome menu. Once there, click Open Project and navigate to where your revbayes repository was stored. Select <code class="language-plaintext highlighter-rouge">meson.build</code> and Open.</p>
 
-<p><img src="figures/qtcreator-open.png" /></p>
+<p><img src="figures/qtcreator-open.png" alt="" /></p>
 
 <p>Next, navigate to the Projects menu and click Manage Kits…</p>
 
-<p><img src="figures/qtcreator-kits.png" /></p>
+<p><img src="figures/qtcreator-kits.png" alt="" /></p>
 
 <p>Navigate to the Meson menu. Once there, you should see the path to your installed meson. If it is not there, manually add it as pictured below.</p>
 
-<p><img src="figures/qtcreator-meson.png" /></p>
+<p><img src="figures/qtcreator-meson.png" alt="" /></p>
 
 <p>Then, make our way to the Terminal menu and deselect Use internal terminal.</p>
 
-<p><img src="figures/qtcreator-terminal.png" /></p>
+<p><img src="figures/qtcreator-terminal.png" alt="" /></p>
 
 <p>QT Creator will likely not be able to build yet as it struggles to understand where to find your boost. In this event, you will need to manually add the <code class="language-plaintext highlighter-rouge">BOOST_ROOT</code> path to the Build Environment, as pictured below.</p>
 
-<p><img src="figures/qtcreator-env.png" /></p>
+<p><img src="figures/qtcreator-env.png" alt="" /></p>
 
 <p>Now, navigate to the Projects menu. Once there, select Run Settings. Click Run in terminal.</p>
 
-<p><img src="figures/qtcreator-run.png" /></p>
+<p><img src="figures/qtcreator-run.png" alt="" /></p>
 
 <p>You are finally ready to build RevBayes! Navigate to the Edit menu. Once there, click the green triangle with the bug to run.</p>
 
-<p><img src="figures/qtcreator-build.png" /></p>
+<p><img src="figures/qtcreator-build.png" alt="" /></p>
 
 
 <ol class="bibliography"></ol>
