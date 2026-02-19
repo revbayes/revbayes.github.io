@@ -58,7 +58,7 @@ Q := fnFreeK( rate, rescale=false )
 
 # make the data-augmented CTCM model
 X ~ dnPhyloCTMCDASiteIID(tree, Q, type="Standard", nSites=1)
-X.clamp(disc)
+X.setValue(disc)
 
 # include proposals for the discrete character history
 moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=20.0) )

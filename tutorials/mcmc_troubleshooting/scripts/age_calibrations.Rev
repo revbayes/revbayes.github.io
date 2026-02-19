@@ -1,11 +1,12 @@
 #### Interacting priors - age calibrations
 
 # Read the full list of taxa (including all fossils and extant species #
-taxa <- readTaxonData("/users/biodiv/barido/Downloads/FBD/data/bears_taxa.tsv")
+seed(1)
+taxa <- readTaxonData("data/bears_taxa.tsv")
 
 # Import the morphological character matrix #
 # this file contains only the taxa for which morphological characters are available #
-morpho <- readDiscreteCharacterData("/users/biodiv/barido/Downloads/FBD/data/bears_morphology.nex")
+morpho <- readDiscreteCharacterData("data/bears_morphology.nex")
 
 # Add the missing taxa to each data partition #
 morpho.addMissingTaxa( taxa )
@@ -74,7 +75,7 @@ phyMorpho.clamp(morpho)
 ### MCMC 
 mymodel = model(fbd_tree)
 monitors = VectorMonitors()
-monitors.append( mnModel(filename="/users/biodiv/barido/Downloads/FBD/output/bears_orig.log", printgen=1000) )
+monitors.append( mnModel(filename="output/bears_orig.log", printgen=1000) )
 mymcmc = mcmc(mymodel, monitors, moves)
 
 mymcmc.run(generations=1000000)

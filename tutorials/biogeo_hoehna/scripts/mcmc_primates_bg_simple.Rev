@@ -1,0 +1,144 @@
+#!/usr/bin/rb
+
+# filenames
+range_fn = "data/primates.bg.nex"
+tree_fn  = "data/primates_tree.nex"
+out_fn   = "output/primates_simple"
+
+# read binary (01) presence-absence range data
+dat_range_01 = readDiscreteCharacterData(range_fn)
+
+# convert binary ranges into NaturalNumbers
+dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
+
+
+# data dimensions
+n_areas  = dat_range_01.nchar()
+n_states = floor(2^n_areas)
+
+# get the converted state descriptions
+state_desc = dat_range_n.getStateDescriptions()
+
+# write the state descriptions to file
+state_desc_str = "state,range\n"
+for (i in 1:state_desc.size())
+{
+    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+
+# helper variables
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+###############
+# Tree models #
+###############
+
+# read tree
+tree <- readTrees(tree_fn)[1]
+
+
+#######################
+# Biogeography models #
+#######################
+
+# the dispersal rate
+dispersal_rate ~ dnLoguniform(1E-4,1E2)
+dispersal_rate.setValue(1.0)
+#moves.append( mvScale(dispersal_rate, weight=2) )
+
+# build the relative dispersal rate matrix
+for (i in 1:n_areas) {
+    for (j in 1:n_areas) {
+        dr[i][j] := dispersal_rate
+    }
+}
+
+# then the extirpation rate (or per-area extinction rates)
+extirpation_rate ~ dnLoguniform(1E-4,1E2)
+extirpation_rate.setValue(1E-2)
+moves.append( mvScale(extirpation_rate, weight=2) )
+
+#mv_up_down = mvUpDownScale( weight=2 )
+#mv_up_down.addVariable( dispersal_rate, up=TRUE )
+#mv_up_down.addVariable( extirpation_rate, up=TRUE )
+#moves.append( mv_up_down )
+
+# build the relative extirpation rate matrix
+for (i in 1:n_areas) {
+    for (j in 1:n_areas) {
+        er[i][j] <- 0.0
+    }
+    er[i][i] := extirpation_rate
+}
+
+# build the DEC rate matrix
+Q_DEC := fnDECRateMatrix(dispersalRates=dr,
+                         extirpationRates=er)
+
+# build cladogenetic transition probabilities
+clado_event_types <- [ "s", "a", "f", "j" ]
+clado_event_probs_prior <- simplex(1,1,1,1)
+clado_event_probs ~ dnDirichlet( clado_event_probs_prior )
+moves.append( mvBetaSimplex( clado_event_probs, weight=2 ) )
+moves.append( mvDirichletSimplex( clado_event_probs, weight=2 ) )
+
+#clado_event_types <- [ "s", "a" ]
+#clado_event_probs <- simplex(1,1)
+
+P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
+                         eventTypes=clado_event_types,
+                         numCharacters=n_areas)
+
+
+# the dispersal rate
+rate_bg ~ dnLoguniform(1E-4,1E2)
+rate_bg.setValue(1.0)
+moves.append( mvScale(rate_bg, weight=2) )
+
+# the phylogenetic CTMC with cladogenetic events
+m_bg ~ dnPhyloCTMCClado(tree=tree,
+                        Q=Q_DEC,
+                        branchRates=rate_bg,
+                        cladoProbs=P_DEC,
+                        type="NaturalNumbers",
+                        nSites=1)
+
+# attach the range data
+m_bg.clamp(dat_range_n)
+
+############
+# Monitors #
+############
+
+monitors.append( mnScreen(printgen=100, dispersal_rate, extirpation_rate) )
+monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+monitors.append( mnJointConditionalAncestralState(tree=tree,
+                                                  ctmc=m_bg,
+                                                  type="NaturalNumbers",
+                                                  withTips=true,
+                                                  withStartStates=true,
+                                                  filename=out_fn+".states.log",
+                                                  printgen=10) )
+monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                          filename=out_fn+".stoch.log",
+                                          printgen=100) )
+
+############
+# Analysis #
+############
+
+# build the model analysis object from the model graph
+mymodel = model(m_bg)
+
+# create the MCMC analysis object
+mymcmc = mcmc(mymodel, monitors, moves)
+
+# run the MCMC analysis
+mymcmc.burnin(500, tuningInterval=100)
+mymcmc.run(5000, tuningInterval=200)
+
+# exit
+quit()

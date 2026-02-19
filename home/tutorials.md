@@ -125,12 +125,13 @@ The following tutorials are to be picked based on your intended analyses, as the
 
 {% aside Total-evidence analysis with tip-dating %}
 
-This module is intended for users looking to infer a time-calibrated phylogenetic tree with both molecular and fossil data, and fossil ages. 
+This module is intended for users looking to infer a time-calibrated phylogenetic tree with morphological data, fossil ages, and (optionally) molecular data. 
 
 - Pre-requisites: **Dating a phylogeny** (and both **Molecular phylogenetic inference** and **Morphological phylogenetic inference**), and **Estimating diversification rates**.
 
 1. [The fossilized birth-death model]({{ base.url }}/tutorials/fbd/fbd_specimen). This tutorial will push you to put together the skills learned in many previous tutorials, including setting up molecular and morphological evolution, clock, and birth-death models.
 
+- If interested in a gentler introduction to fossilized birth-death analyses without molecular data, including videos walking you through the tutorial: [FBD with morphological data]({{ base.url }}/tutorials/fbd_simple).
 - If interested in more complex diversification dynamics, explore the advanced tutorials in **Estimating diversification rates**. Note that `dnFBDP` should be used instead of `dnBDP`/`dnEBDP`.
 
 {% endaside %}
@@ -147,6 +148,7 @@ This module is intended for users looking to infer trait-dependent diversificati
 - If interested in testing whether unobserved effects might impact diversification for your data: [State-dependent diversification with hidden SSE (HiSSE)]({{ base.url }}/tutorials/sse/hisse).
 - If interested in the presence of cladogenetic state transitions: [State-dependent diversification with cladogenetic SSE (ClaSSE)]({{ base.url }}/tutorials/sse/classe).
 - If interested in the effect of chromosome number on diversification: [Chromosome evolution]({{ base.url }}/tutorials/chromo).
+- If interested in performing SSE analyses in trees including serially-sampled/fossil tips: [SSE with fossils]({{ base.url }}/tutorials/sse/fossils).
 - If interested in jointly estimating topology and state-dependent diversification rates, adapt [Relaxed clocks & time-trees]({{ base.url }}/tutorials/clocks) to use `dnCDBDP` or `dnGLHBDSP` instead of `dnBDP` (consider completing the **Molecular phylogenetic inference** and **Dating a phylogeny** modules).
 
 {% endaside %}
@@ -182,6 +184,7 @@ This module is intended for users looking to estimate rates of evolution for con
 - If interested in relaxed clock models, with different branches of the phylogeny having different evolutionary rates: [Relaxed Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/relaxed_bm) and [Relaxed OU models]({{ base.url }}/tutorials/cont_traits/relaxed_ou).
 - If interested in multiple continuous traits: [Multivariate Brownian motion]({{ base.url }}/tutorials/cont_traits/multivariate_bm). 
 - If interested in making Brownian rates state-dependent: [State-dependent Brownian rate estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm).
+- If interested in making all OU parameters state-dependent: [State-dependent OU models]({{ base.url }}/tutorials/cont_traits/state_dependent_ou).
 
 {% endaside %}
 
@@ -196,16 +199,16 @@ Geographic State-dependent Speciation Extinction (GeoSSE), and Feature-Informed 
 
 - Pre-requisites: **RevBayes fundamentals**, **Molecular phylogenetic analysis**, and **Background on state-dependent diversification-rate estimation**.
 
-Those interested in Dispersal-Extinction-Cladogenesis models should read:
-- [Introduction to DEC models]({{ base.url }}/tutorials/biogeo/biogeo_intro)
-- [Simple DEC]({{ base.url }}/tutorials/biogeo/biogeo_simple)
-- [Epoch DEC]({{ base.url }}/tutorials/biogeo/biogeo_epoch)
-- [Biogeographic Dating with DEC]({{ base.url }}/tutorials/biogeo/biogeo_dating)
+These tutorials are for those interested in DEC models:
+- Provides a basic background for discrete biogeography models, with an emphasis on DEC: [Introduction to DEC models]({{ base.url }}/tutorials/biogeo/biogeo_intro)
+- A simple time-constant DEC analysis on a fixed phylogeny within a 4-region system: [Simple DEC]({{ base.url }}/tutorials/biogeo/biogeo_simple)
+- A paleogeography-informed DEC analysis on a fixed phylogeny within a 6-region system: [Epoch DEC]({{ base.url }}/tutorials/biogeo/biogeo_epoch)
+- A paleogeography-informed DEC analysis on a jointly inferred phylogeny (topology, divergence times) within a 6-region system: [Biogeographic Dating with DEC]({{ base.url }}/tutorials/biogeo/biogeo_dating)
 
-Those interested in GeoSSE/FIG models should read:
-- [Simple GeoSSE]({{ base.url }}/tutorials/geosse)
-- [MultiFIG]({{ base.url }}/tutorials/multifig)
-- [TimeFIG]({{ base.url }}/tutorials/timefig)
-- [Biogeographic Dating with TimeFIG]({{ base.url }}/tutorials/timefig_dating)
+These tutorials are for those interested in GeoSSE/FIG models:
+- A simple GeoSSE analysis using a 2-region system: [Simple GeoSSE]({{ base.url }}/tutorials/geosse)
+- A time-constant FIG analysis in a 7-region system with multiple regional features:  [MultiFIG]({{ base.url }}/tutorials/multifig)
+- A paleogeography-informed FIG analysis on a fixed phylogeny in a 7-region system with multiple regional features:  [TimeFIG]({{ base.url }}/tutorials/timefig_simple)
+- A paleogeography-informed FIG analysis on a jointly inferred phylogeny (topology, divergence times) within a 7-region system with multiple regional features [Biogeographic Dating with TimeFIG]({{ base.url }}/tutorials/timefig_dating)
 
 {% endaside %}

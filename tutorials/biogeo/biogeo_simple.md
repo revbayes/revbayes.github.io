@@ -289,9 +289,11 @@ that fixes all cladogenetic events to be equiprobable.
 Finally, all our DEC model components are encapsulated in the
 `dnPhyloCTMCClado` distribution, which is similar to
 `dnPhyloCTMC` except specialized to integrate over
-cladogenetic events. Although this dataset has four areas, it is
-recognized single character with states valued from 1 to $2^4$, hence
-`nSites=1`.
+cladogenetic events. This analysis uses presence/absence information
+for four areas to represent the species range. The model encodes
+each range into a single character with states valued from 1 to $2^4$.
+As such, we tell the phylogenetic model there is only one character
+(`nSites=1`).
 
     m_bg ~ dnPhyloCTMCClado(tree=tree,
                                Q=Q_DEC,
@@ -428,7 +430,7 @@ suitable for publication using the `R` package
 To create build this figure, open an `R` session and load the plotting
 script with the source function
 
-    source("scripts/plot_anc_state.simple.R")
+    source("scripts/plot_anc_range.simple.R")
 
 {% figure simple_RevGadgets_ase %}
 <img src="figures/fig_simple.range.png" >
