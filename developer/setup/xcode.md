@@ -45,7 +45,7 @@ Set up the XCode Project with an internal build system
 
 1. Select the RevBayes project and go to the **Build Settings**.
 2. Search or scroll to: **Apple Clang - Language - C++**.
-3. Make sure C++ Language Dialect is set to **GNU++17 [-std=gnu++17]**.
+3. Make sure C++ Language Dialect is set to **GNU++23 [-std=gnu++23]**.
 ![](figures/xcode-cpp_lang_options.png)
 
 At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
