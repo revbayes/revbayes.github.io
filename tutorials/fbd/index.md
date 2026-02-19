@@ -13,6 +13,7 @@ exclude_files:
 index: false
 title-old: RB_TotalEvidenceDating_FBD_Tutorial
 redirect: false
+canonical: https://revbayes.github.io/tutorials/fbd/fbd_specimen.html
 ---
 
 {% section Overview | overview %}
