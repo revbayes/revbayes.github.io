@@ -1,6 +1,6 @@
 ---
 title: Setting up Visual Studio Code for RevBayes development
-order: 1
+order: 2
 ---
 
 Visual Studio Code (or VSCode) is an open-source text editor by Microsoft. You can download and install it <a href="https://code.visualstudio.com/Download">here</a>. 
@@ -8,7 +8,9 @@ Visual Studio Code (or VSCode) is an open-source text editor by Microsoft. You c
 Prerequisites
 ----------------------
 
-You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Once RevBayes is installed (i.e. once you have successfully ran `./build.sh`), open VSCode. Once VSCode is open you will need to select the RevBayes folder from wherever you have stored it on your computer. 
+You will first need to [set up the build environment](#cmdline) by compiling RevBayes on the command line.
+Once you have compiled RevBayes, open VSCode. 
+Once VSCode is open you will need to select the RevBayes folder from wherever you have stored it on your computer. 
 
 Now you will need to install three extensions to get RevBayes to work nicely. To do this click on the button shown below in VSCode. 
 

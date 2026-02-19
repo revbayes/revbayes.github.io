@@ -8,7 +8,9 @@ Qt Creator is a free IDE from Qt Group.
 Prerequisites
 ----------------------
 
-You will first need to <a href="https://revbayes.github.io/compile-windows">install</a> RevBayes from <a href="https://revbayes.github.io/download">source</a>. Next you should install and build RevBayes (i.e. `./build.sh`). For this tutorial I used Meson which I recommend for Qt Creator. To install Qt Creator using homebrew, type the following into your local terminal: `brew install --cask qt-creator`.
+You will first need to [set up the build environment](#cmdline) by compiling RevBayes on the command line.
+For this tutorial I used Meson which I recommend for Qt Creator. 
+To install Qt Creator using homebrew, type the following into your local terminal: `brew install --cask qt-creator`.
 
 Once installed, open Qt Creator (found in Applications) and navigate to the Extensions menu. Once there, you will need to activate the Meson extension.
 
