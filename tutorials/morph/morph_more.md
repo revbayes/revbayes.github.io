@@ -680,14 +680,14 @@ The third and final monitor might be new to you: the `mnJointConditionalAncestra
                                                    ctmc=phyMorpho,
                                                    filename="output/mk.states.txt",
                                                    type="Standard",
-                                                   printgen=1,
+                                                   printgen=10,
                                                    withTips=true,
                                                    withStartStates=false) )
 {% endsnippet %}
 
 The core arguments this monitor needs are a tree object (`tree=phylogeny`),
 the phylogenetic model (`ctmc=phyMorpho`), an output filename (`filename="output/mk.states.txt"`),
-the data type for the characters (`type="Standard"`), and the sampling frequency (`printgen=10}`.
+the data type for the characters (`type="Standard"`), and the sampling frequency (`printgen=10`).
 The final argument, `withTips=true`, indicates that we do wish to record the tip states because we didn't know all tip values and might be interested in the most plausible values.
 
 The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node),
