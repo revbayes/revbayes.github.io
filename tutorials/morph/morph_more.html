@@ -68,7 +68,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation</h1>
 	<h3 class="subtitle">Ancestral State Estimation and Testing for Irreversibility</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis</h4>
-  <h5>Last modified on January 13, 2026</h5>
+  <h5>Last modified on February 20, 2026</h5>
 </div>
 
 
@@ -735,14 +735,14 @@ Like with <code class="language-plaintext highlighter-rouge">mnFile</code> we mu
                                                    ctmc=phyMorpho,
                                                    filename="output/mk.states.txt",
                                                    type="Standard",
-                                                   printgen=1,
+                                                   printgen=10,
                                                    withTips=true,
                                                    withStartStates=false) )
 </code></pre></div></div>
 
 <p>The core arguments this monitor needs are a tree object (<code class="language-plaintext highlighter-rouge">tree=phylogeny</code>),
 the phylogenetic model (<code class="language-plaintext highlighter-rouge">ctmc=phyMorpho</code>), an output filename (<code class="language-plaintext highlighter-rouge">filename="output/mk.states.txt"</code>),
-the data type for the characters (<code class="language-plaintext highlighter-rouge">type="Standard"</code>), and the sampling frequency (<code class="language-plaintext highlighter-rouge">printgen=10}</code>.
+the data type for the characters (<code class="language-plaintext highlighter-rouge">type="Standard"</code>), and the sampling frequency (<code class="language-plaintext highlighter-rouge">printgen=10</code>).
 The final argument, <code class="language-plaintext highlighter-rouge">withTips=true</code>, indicates that we do wish to record the tip states because we didn’t know all tip values and might be interested in the most plausible values.</p>
 
 <p>The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node),
