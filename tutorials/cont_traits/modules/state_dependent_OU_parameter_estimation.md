@@ -17,7 +17,7 @@ The graphical model representation of the state-dependent Ornstein-Uhlenbeck (OU
 {% endfigcaption %}
 {% endfigure %}
 
-In this tutorial, we use a time-calibrated phylogeny, the hypsodonty index, and the diet of 82 ruminants (Artiodactyla) from { % citet toljagic2018 % } as data.
+In this tutorial, we use a time-calibrated phylogeny, the hypsodonty index, and the diet of 82 ruminants (Artiodactyla) from {% citet toljagic2018 %} as data.
 
 
 {% subsection Read the data %}
@@ -67,7 +67,7 @@ We specify a scaling factor for the transition rates.
 ```
 lambda ~ dnLognormal(ln(0.4), 0.05)
 moves.append( mvScale(lambda, weight=1.0) )
-avmvn_rates.addVariable(lambda)
+avmvn.addVariable(lambda)
 ```
 
 Now, we specify a data augmentation-based CTMC model.
@@ -116,7 +116,7 @@ For the optimum parameter ($\theta$), we use a uniform distribution that covers 
 for (i in 1:num_disc_states){
   theta[i] ~ dnUniform(0, 10)
   moves.append(mvSlide(theta[i], weight = 1.0) )
-  avmvn_cont.addVariable(theta[i])
+  avmvn.addVariable(theta[i])
 }
 ```
 
@@ -128,12 +128,12 @@ for (i in 1:num_disc_states){
   a <- ln(2) / root_age
   alpha[i] ~ dnLognormal(ln(a), 0.587405) # the median of the phylogenetic half-life is equal to one tree height
   moves.append(mvScale(alpha[i], weight = 1.0) )
-  avmvn_cont.addVariable(alpha[i])
+  avmvn.addVariable(alpha[i])
   
   s <- across_species_variance * 2 * a
   sigma2[i] ~ dnLognormal(ln(s), 0.587405)
   moves.append(mvScale(sigma2[i], weight = 1.0) )
-  avmvn_cont.addVariable(sigma2[i])
+  avmvn.addVariable(sigma2[i])
   
 }
 ```
@@ -145,13 +145,13 @@ for (i in 1:num_disc_states){
 
   t_half[i] ~ dnLognormal(ln(root_age), 0.587405)  # the median of the phylogenetic half-life is equal to one tree height
   moves.append(mvScale(t_half[i], weight = 1.0) )
-  avmvn_cont.addVariable(t_half[i])
+  avmvn.addVariable(t_half[i])
   
   alpha[i] := abs(ln(2)/t_half[i])
 
   Vy[i] ~ dnLognormal(ln(across_species_variance), 0.587405)  # the median of the stationary variance is equal to the across-species variance
   moves.append(mvScale(Vy[i], weight = 3.0) )
-  avmvn_cont.addVariable(Vy[i])
+  avmvn.addVariable(Vy[i])
   
   sigma2[i] := Vy[i] * 2 * alpha[i]
   
