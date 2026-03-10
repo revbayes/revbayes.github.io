@@ -52,10 +52,8 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
          key: ${{ matrix.name }}
-         max-size: 2G   # We only need about 500MB, usually
          restore-keys: |
            ${{ matrix.name }}
-         append-timestamp: false  # Don't keep more than one cache per branch
          save: ${{ github.event_name == 'push' }}
 
     - name: Install BOOST (Linux)
