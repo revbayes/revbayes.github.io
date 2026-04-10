@@ -24,10 +24,10 @@ observed_phylogeny <- readTrees("data/MCC_AFRICANRESTIOS.tre")[1]
 # 1 = Montane
 
 data <- readCharacterDataDelimited("data/Elevation_322spp.tsv",
-stateLabels=2,
-type="NaturalNumbers",
-delimiter="\t",
-header=FALSE)
+                                   stateLabels=2,
+                                   type="NaturalNumbers",
+                                   delimiter="\t",
+                                   header=FALSE)
 
 # Expand 0 and 1 to have A and B hidden states
 data_exp <- data.expandCharacters(NUM_HIDDEN)
@@ -124,9 +124,9 @@ moves.append(mvSlice(q_1D1C, window = 0.1, weight=2, search_method = "stepping_o
 
 # first initialize the matrix with all zeros:
 for (i in 1:NUM_RATES) {
-for (j in 1:NUM_RATES) {
-q[i][j] := 0.0
-}
+    for (j in 1:NUM_RATES) {
+        q[i][j] := 0.0
+    }
 }
 
 ## Indices for states: 1=0A, 2=1A, 3=0B,4=1B, 5=0C, 6=1C, 7=0D, 8=1D
@@ -184,38 +184,39 @@ rate_sd <- 2 * half_sd
 
 for (i in 1:NUM_STATES) {
 
-speciation_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
-moves.append(mvSlide(speciation_alpha[i],delta=0.20,tune=true,weight=2.0))
-moves.append(mvSlice(speciation_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    speciation_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
+    moves.append(mvSlide(speciation_alpha[i],delta=0.20,tune=true,weight=2.0))
+    moves.append(mvSlice(speciation_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
 
-extinction_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
-moves.append(mvSlide(extinction_alpha[i],delta=0.20,tune=true,weight=2.0))
-moves.append(mvSlice(extinction_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    extinction_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
+    moves.append(mvSlide(extinction_alpha[i],delta=0.20,tune=true,weight=2.0))
+    moves.append(mvSlice(extinction_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
+
 }
 
 for (i in 1:(NUM_HIDDEN-1)) {
 
-speciation_beta[i] ~ dnNormal(0.0,1.0)
-moves.append(mvSlice(speciation_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
-moves.append(mvSlide(speciation_beta[i],delta=0.20,tune=true,weight=2.0))
+    speciation_beta[i] ~ dnNormal(0.0,1.0)
+    moves.append(mvSlice(speciation_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    moves.append(mvSlide(speciation_beta[i],delta=0.20,tune=true,weight=2.0))
 
-extinction_beta[i] ~ dnNormal(0.0,1.0)
-moves.append(mvSlice(extinction_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
-moves.append(mvSlide(extinction_beta[i],delta=0.20,tune=true,weight=2.0))
+    extinction_beta[i] ~ dnNormal(0.0,1.0)
+    moves.append(mvSlice(extinction_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    moves.append(mvSlide(extinction_beta[i],delta=0.20,tune=true,weight=2.0))
 
 }
 
 for (j in 1:NUM_HIDDEN) {
-for (i in 1:NUM_STATES) {
-if ( j == 1) {
-speciation[i] := exp( speciation_alpha[i] )
-extinction[i] := exp( extinction_alpha[i] )
-} else {
-index = i+(j*NUM_STATES)-NUM_STATES
-speciation[index] := exp( speciation_alpha[i] + speciation_beta[j-1] )
-extinction[index] := exp( extinction_alpha[i] + extinction_beta[j-1] )
-}
-}
+    for (i in 1:NUM_STATES) {
+        if ( j == 1) {
+            speciation[i] := exp( speciation_alpha[i] )
+            extinction[i] := exp( extinction_alpha[i] )
+        } else {
+            index = i+(j*NUM_STATES)-NUM_STATES
+            speciation[index] := exp( speciation_alpha[i] + speciation_beta[j-1] )
+            extinction[index] := exp( extinction_alpha[i] + extinction_beta[j-1] )
+        }
+    }
 }
 
 net_diversification := speciation - extinction
@@ -261,8 +262,8 @@ hisse4 ~ dnGLHBDSP(rootAge = root_age,
                    nStates = NUM_RATES)
 
 # clamp the model with the "observed" tree
-hisse.clamp(observed_phylogeny)
-hisse.clampCharData(data_exp) 
+hisse4.clamp(observed_phylogeny)
+hisse4.clampCharData(data_exp) 
 
 #############
 # The Model #
@@ -286,7 +287,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, moveschedule="random")
 
 # Checkpoint and stopping rule
 if ( fileExists("output_hisse4/hisse4.state") ) {
-  mymcmc.initializeFromCheckpoint("output_hisse4/hisse4.state")
+    mymcmc.initializeFromCheckpoint("output_hisse4/hisse4.state")
 }
 
 stopping_rules[1] = srMinESS(250, file = "output_hisse4/hisse4.log", freq = 10000)
