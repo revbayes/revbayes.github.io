@@ -1,7 +1,7 @@
 ---
 title: Hypothesis testing of state-dependent diversification with a full HiSSE model
 subtitle: Specification of a hidden state-dependent speciation and extinction (HiSSE) model with all transitions free and two hidden states
-authors:  Rosana Zenil-Ferguson and Nicolás Castillo-Rodríguez
+authors: Rosana Zenil-Ferguson and Nicolás Castillo-Rodríguez
 level: 7
 order: 3.2
 prerequisites:
