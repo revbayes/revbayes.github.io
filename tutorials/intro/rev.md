@@ -15,7 +15,7 @@ Basic Rev Commands
 
 This tutorial demonstrates the basic syntactical features of RevBayes
 and the Rev scripting language. A good reference for probabilistic graphical models for
-Bayesian phylogenetic inference is given in {% cite Hoehna2014b %}. Let’s start with the basic concepts
+Bayesian phylogenetic inference is given in {% citet Hoehna2014b %}. Let’s start with the basic concepts
 for the interactive use of RevBayes with Rev (the language of
 RevBayes). You should try to execute the statements step by step, look
 at the output and try to understand what and why things are happening.
@@ -48,7 +48,7 @@ From now on, we will omit images of the terminal.
 
 Each set of operations constitutes a *statement*. As you work through
 these tutorials, it is helpful to write the statements you enter into a
-blank text file, then copy-and-paste the statements into to execute
+blank text file, then copy-and-paste the statements into the terminal to execute
 them. This way, you have a complete history of everything you’ve done,
 and can easily start over without having to rewrite everything. We refer
 to the text file containing the list of commands as a *script*, because
@@ -83,7 +83,7 @@ Variable Declaration and Assignment
 -----------------------------------
 {:.subsection}
 
-One of the most important features of (or any programming language,
+One of the most important features of Rev (or any programming language,
 really) is the ability to declare and assign variables. Variables store
 information to be referenced later, and can change throughout the
 execution of the program. There are three kinds of variables in RevBayes, called
@@ -102,12 +102,12 @@ always creates a constant variable, and automatically assigns the
 following value to it.
 ```
 # Variable assignment: constant
-a <- 1                           # assignment of constant node `a'
+a <- 1                           # assignment of constant node 'a'
 ```
-You see the value of ‘a’ by just typing in the variable name and
+You see the value of 'a' by just typing in the variable name and
 pressing enter.
 ```
-a                                # printing the value of `a'
+a                                # printing the value of 'a'
 ```
 Next, we create a deterministic variable `b` using the `:=` assignment
 computed by `exp(a)` and another deterministic variable `c` computed by
@@ -116,13 +116,13 @@ colon-equal assignment (`:=`).
 ```
 # Variable assignment: deterministic
 
-# assignment of deterministic node `b' with
-# the exponential function with parameter `a'
+# assignment of deterministic node 'b' with
+# the exponential function with parameter 'a'
 b := exp(a)  
 b
 
-# assignment of deterministic node `c' with
-# logarithmic function with parameter `b'
+# assignment of deterministic node 'c' with
+# logarithmic function with parameter 'b'
 c := ln(b)              
 c 
 ```
@@ -133,20 +133,20 @@ $\sim$ operation.
 ```
 # Variable assignment: stochastic
 
-# assign constant node `lambda' with value `1'
+# assign constant node 'lambda' with value '1'
 lambda <- 1.0
 
 # create stochastic node with exponential 
-# distribution and parameter `lambda'
+# distribution and parameter 'lambda'
 x ~ dnExponential(lambda)
 ```
 The value of `x` is a random draw from the distribution. You can see the
 value and the probability (or log-probability) of the current value
 under the current parameter values by
 ```
-x                                # print value of stochastic node `x'
-x.probability()                  # print the probability if `x'
-x.lnProbability()                # print the log-probability if `x'
+x                                # print value of stochastic node 'x'
+x.probability()                  # print the probability if 'x'
+x.lnProbability()                # print the log-probability if 'x'
 ```
 
 

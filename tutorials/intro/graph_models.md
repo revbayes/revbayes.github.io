@@ -49,7 +49,7 @@ This means the learning curve is steep, however there are a number of benefits:
 
 2. Flexibility: Users are not limited by a small set of models the programmers hard coded, instead users can specify their own custom models uniquely tailored to their hypotheses and datasets. 
 
-3. Modularity: Each model component can be combined with others in an endless number of new ways like a LEGO kit. Testing many complex evolutionary hypotheses require tying different models together. For example, suppose you wish to test how the effect of biographic range on trait evolution changes through time. In [RevBayes](http://revbayes.com) you could simultaneously infer a time-calibrated phylogeny and estimate biogeography-dependent trait evolution using molecular data, biogeographic range data, and morphological data from both fossils and extant lineages.
+3. Modularity: Each model component can be combined with others in an endless number of new ways like a LEGO kit. Testing many complex evolutionary hypotheses require tying different models together. For example, suppose you wish to test how the effect of biogeographic range on trait evolution changes through time. In [RevBayes](http://revbayes.com) you could simultaneously infer a time-calibrated phylogeny and estimate biogeography-dependent trait evolution using molecular data, biogeographic range data, and morphological data from both fossils and extant lineages.
 
 
 What is a Graphical Model?
@@ -65,7 +65,7 @@ Right: the same graphical model using plate notation to represent the $N$ repeat
 These graphical models represent the joint probability distribution
 $$p(\theta,X_1,\dots,X_N)$$.
 See {% ref legend %} for a description of the visual symbols.
-Image from {% citet murphy2012machine %}*
+Image from {% citet murphy2012machine %}.*
 {% endfigcaption %}
 {% endfigure %}
 
@@ -113,8 +113,7 @@ will likely be the most useful aspect of graphical models to most readers.
 <img src="figures/graphical_model_legend.png" width="400" />  
 {% figcaption %}
 *The symbols for a visual representation of a graphical
-model. a) Solid squares represent constant nodes, which specify fixed-
-valued variables. b) Stochastic nodes are represented by solid circles.
+model. a) Solid squares represent constant nodes, which specify fixed-valued variables. b) Stochastic nodes are represented by solid circles.
 These variables correspond to random variables and may depend on
 other variables. c) Deterministic nodes (dotted circles) indicate variables
 that are determined by a specific function applied to another variable.
@@ -188,7 +187,7 @@ Most `Rev` scripts consist of two different parts:
 1. Model specification. This part of the script defines the constant, stochastic, and determinstic nodes that make up the model.
 2. Inference algorithm specification. This part of the script specifies what sort of inference algorithm we want to use with the model. Typically this is a Markov chain Monte Carlo algorithm, and we need to specify what sort of proposals (or moves) will operate on each variable.
 
-In more complex `Rev` scripts, these two different elements (model specification and infernence algorithm specification) will be woven together.
+In more complex `Rev` scripts, these two different elements (model specification and inference algorithm specification) will be woven together.
 In the example for this tutorial we will keep the two parts separate.
 
 

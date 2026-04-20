@@ -31,8 +31,8 @@ simple parts (random variables, variable/parameter transformations, models,
 and constants of different sorts).
 
 Here we assume that you have successfully installed RevBayes. If this
-isn't the case, then please consult our website on how to install
-RevBayes.
+isn't the case, then please consult our website on how to [install
+RevBayes]({{ base.url }}/download).
 
 
 Getting Started
@@ -63,7 +63,7 @@ rb my_analysis.Rev
 
 then RevBayes will run all commands specified in your file.
 
-You may want to run RevBayes in parallel using multiple processes.
+Sometimes, you may want to run RevBayes in parallel using multiple processes.
 This can be done by starting RevBayes with
 
 ```
@@ -74,9 +74,8 @@ mpirun -np 4 rb-mpi
 which starts 4 processes of RevBayes. You may want to change the
 number of processes depending on your available hardware.
 
-The format of the exercises uses to delineate code examples that you
-should type into RevBayes. For example, after opening the RevBayes
-program, you can load your data file:
+The exercises in the tutorials use code block format (as the one shown below) to delineate code that you should type into RevBayes. For example, after opening the RevBayes
+program, you can load your data file with this code:
 ```
 data <- readDiscreteCharacterData("data/primates_cytb.nex")
 ```
@@ -193,11 +192,10 @@ language called `Rev`. `Rev` bears similarities to the compiled language
 in WinBUGS and the interpreted `R`language. Setting up and
 executing a statistical analysis in RevBayes requires the user to
 specify all of the parameters of their model and the type of analysis
-(*e.g.,*an MCMC run). By using an interpreted
+(*e.g.,* an MCMC run). By using an interpreted
 language, RevBayes enables the practitioner to build complex,
 hierarchical models and to check the current states of variables while
-building the model. This will be very useful in the beginning. Later on
-you, when you run very complex analyses, you may want to write
+building the model. This will be very useful in the beginning. Later on, when you run very complex analyses, you may want to write
 `Rev`-scripts.
 
 Differently to `R`and BUGS, `Rev` is a strongly but
@@ -234,9 +232,9 @@ Specifying Models
 {% endtable %}
 
 The variables/parameters of a statistical model are created using
-different operators in `Rev` ({% ref tab_notation %}). In Figure
-[revgmexample], the `Rev` syntax for creating the model in Figure
-[simpleGM] is provided. Because `Rev` is an interpreted language, it
+different operators in `Rev` ({% ref tab_notation %}). In {% ref revgmexample %}
+ the `Rev` syntax for creating the model in
+{% ref simpleGM %} is provided. Because `Rev` is an interpreted language, it
 is important to consider the order in which you specify your variables
 (*cf.*BUGS where the order is not important).
 Thus, typically the first variables that are instantiated are *constant
@@ -252,7 +250,7 @@ assigned a gamma-distributed hyperprior, with shape `alpha` and rate
 `beta`:
 ```
 alpha <- 2.0
-beta <- 4.0
+beta  <- 4.0
 M ~ dnGamma(alpha, beta)
 ```
 The flexibility gained from the graphical model framework and the
@@ -264,8 +262,8 @@ initializing the bimodal lognormal hyperparameters):
 ```
 mean_1 <- 0.5
 mean_2 <- 2.0
-sd_1 <- 1.0
-sd_2 <- 1.0
+sd_1   <- 1.0
+sd_2   <- 1.0
 weight <- 0.5
 M ~ dnBimodalLognormal(mean_1, mean_2, sd_1, sd_2, weight)
 ```
@@ -277,7 +275,7 @@ M ~ dnBimodalLognormal(0.5, 2.0, 1.0, 1.0, 0.5)
 Both ways to specify priors are equivalent. The only difference is that
 one code may be more readable than the other.
 
-{% figure simpleGM %}
+{% figure revgmexample %}
 <img src="figures/simple_GM_rev.png" width="600" />  
 {% figcaption %}
 Specifying a model with
