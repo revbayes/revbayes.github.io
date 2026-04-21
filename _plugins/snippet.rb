@@ -23,7 +23,9 @@ module Liquid
         raise IOError, "❌ Error: File '#{@filename}' not found at #{file_path}."
       end
 
-      file_lines = File.readlines(file_path).map{ |l| l.strip }
+      site = context.registers[:site]
+      site.config['snippet_lines_cache'] ||= {}
+      file_lines = site.config['snippet_lines_cache'][file_path] ||= File.readlines(file_path).map{ |l| l.strip }
 
       check_sequence(code_lines, file_lines, code_block)
 
