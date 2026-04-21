@@ -17,6 +17,11 @@ module RevBayes
 
         file_string = file_identifier.sub(/^(?!\/)/,'/').sub(/^(\/tutorials)?\//,'/').gsub(/\//,'\/')
         
+        site.config['file_match_cache'] ||= {}
+        if hit = site.config['file_match_cache'][file_string]
+          return hit
+        end
+
         matches = site.static_files.find_all {|file| file.relative_path.match(Regexp.new(file_string)) }
 
         if matches.size > 1
@@ -24,6 +29,7 @@ module RevBayes
 Multiple files match '#{file_identifier}'
 MSG
         elsif matches.size > 0
+          site.config['file_match_cache'][file_string] = matches[0]
           return matches[0]
         end
         
@@ -45,6 +51,11 @@ MSG
         
         tag_string = @tag_name ? "tag '"+@tag_name+"'" : "filter 'match_page'"
 
+        site.config['page_match_cache'] ||= {}
+        if hit = site.config['page_match_cache'][page_string]
+          return hit
+        end
+
         matches = site.pages.find_all {|page| page.relative_path.match(Regexp.new(page_string)) }
 
         if matches.size > 1
@@ -52,6 +63,7 @@ MSG
 Multiple pages match '#{page_identifier}' in #{tag_string}
 MSG
         elsif matches.size > 0
+          site.config['page_match_cache'][page_string] = matches[0]
           return matches[0]
         end
         
@@ -83,7 +95,8 @@ MSG
           file = match_file(file)
         end
 
-        content = File.read(site.in_source_dir(file.path))
+        site.config['file_content_cache'] ||= {}
+        content = site.config['file_content_cache'][file.path] ||= File.read(site.in_source_dir(file.path))
 
         ret = ""
 
@@ -101,14 +114,15 @@ MSG
         range = from..to
 
         if type =~ /^line/
-          if to > content.lines.count
-            raise ArgumentError, <<-MSG
-Line number out of range in 'snippet' filter
-MSG
+          site.config['snippet_lines_filter_cache'] ||= {}
+          lines = site.config['snippet_lines_filter_cache'][file.path] ||= content.lines.to_a
+          
+          if to > lines.count
+            raise ArgumentError, "Line number out of range in 'snippet' filter"
           end
 
           i = 1
-          for line in content.each_line do
+          for line in lines do
             ret += line if range.include? i
             i += 1
           end
@@ -117,13 +131,21 @@ MSG
         elsif type =~ /^block/
           i = 1
           
-          if m = type.match(/block(.)$/)
-            content = content.gsub(Regexp.new('^\s*'+m[1]+'.*'),'')
+          site.config['snippet_blocks_cache'] ||= {}
+          cache_key = "#{file.path}_#{type}"
+          
+          blocks = site.config['snippet_blocks_cache'][cache_key]
+          if blocks.nil?
+            processed_content = content.dup
+            if m = type.match(/block(.)$/)
+              processed_content = processed_content.gsub(Regexp.new('^\s*'+m[1]+'.*'),'')
+            end
+            processed_content = processed_content.gsub(/\A\n*/m,'')
+            blocks = processed_content.gsub(/\n\n+/m,"\n\n").each_line("\n\n").to_a
+            site.config['snippet_blocks_cache'][cache_key] = blocks
           end
 
-          content = content.gsub(/\A\n*/m,'')
-
-          for block in content.gsub(/\n\n+/m,"\n\n").each_line("\n\n") do
+          for block in blocks do
             ret += block if range.include? i
             i += 1
           end
@@ -143,7 +165,8 @@ MSG
           file = match_file(file)
         end
 
-        content = File.read(site.in_source_dir(file.path))
+        site.config['file_content_cache'] ||= {}
+        content = site.config['file_content_cache'][file.path] ||= File.read(site.in_source_dir(file.path))
 
         ret = ""
 
