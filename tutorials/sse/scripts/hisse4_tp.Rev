@@ -1,0 +1,313 @@
+########################################################################################
+# RevBayes Analysis: HiSSE with 4 hidden states to check for CID-4 - RevBayes tutorial
+# Authors: Rosana Zenil-Ferguson and Nicolás Castillo Rodríguez
+# Last modified: 01/30/2026
+########################################################################################
+
+loadPlugin("TensorPhylo")
+
+##############################
+# Number of states and rates #
+##############################
+
+NUM_STATES <- 2
+NUM_HIDDEN <- 4
+NUM_RATES = NUM_STATES * NUM_HIDDEN
+
+#######################
+# Reading in the Data #
+#######################
+
+observed_phylogeny <- readTrees("data/MCC_AFRICANRESTIOS.tre")[1]
+
+# 0 = Coast
+# 1 = Montane
+
+data <- readCharacterDataDelimited("data/Elevation_322spp.tsv",
+                                   stateLabels=2,
+                                   type="NaturalNumbers",
+                                   delimiter="\t",
+                                   header=FALSE)
+
+# Expand 0 and 1 to have A and B hidden states
+data_exp <- data.expandCharacters(NUM_HIDDEN)
+
+# Get some useful variables from the data. We need these later on.
+taxa <- observed_phylogeny.taxa()
+
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+#####################################
+# Set up the transition rate matrix #
+#####################################
+
+# Gamma priors for rates in the Q-matrix with shape and rate parameters
+shape_pr <- 0.5
+rate_pr := observed_phylogeny.treeLength()/10
+
+q_0A1A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Coast to Montane A
+q_1A0A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Montane to Coast A
+q_0B1B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Coast to Montane B
+q_1B0B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Montane to Coast B
+q_0C1C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Coast to Montane C
+q_1C0C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Montane to Coast C
+q_0D1D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Coast to Montane D
+q_1D0D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Montane to Coast D
+
+q_0A0B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0B0A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0A0C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0C0A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0A0D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0D0A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+
+q_0B0C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0C0B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0B0D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0D0B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0C0D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_0D0C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+
+q_1A1B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1B1A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1A1C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1C1A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1A1D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1D1A ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+
+q_1B1C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1C1B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1B1D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1D1B ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1C1D ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+q_1D1C ~ dnGamma(shape=shape_pr, rate=rate_pr) # Between hidden states
+
+### Moves transitions between observed states
+moves.append(mvSlice(q_0A1A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1A0A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0B1B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1B0B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0C1C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1C0C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0D1D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1D0D, window = 0.1, weight=2, search_method = "stepping_out"))
+
+### Moves transitions between hidden states
+moves.append(mvSlice(q_0A0B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0B0A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0A0C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0C0A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0A0D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0D0A, window = 0.1, weight=2, search_method = "stepping_out"))
+
+moves.append(mvSlice(q_0B0C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0C0B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0B0D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0D0B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0C0D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_0D0C, window = 0.1, weight=2, search_method = "stepping_out"))
+
+moves.append(mvSlice(q_1A1B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1B1A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1A1C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1C1A, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1A1D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1D1A, window = 0.1, weight=2, search_method = "stepping_out"))
+
+moves.append(mvSlice(q_1B1C, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1C1B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1B1D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1D1B, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1C1D, window = 0.1, weight=2, search_method = "stepping_out"))
+moves.append(mvSlice(q_1D1C, window = 0.1, weight=2, search_method = "stepping_out"))
+
+# first initialize the matrix with all zeros:
+for (i in 1:NUM_RATES) {
+    for (j in 1:NUM_RATES) {
+        q[i][j] := 0.0
+    }
+}
+
+## Indices for states: 1=0A, 2=1A, 3=0B,4=1B, 5=0C, 6=1C, 7=0D, 8=1D
+
+q[1][2] := q_0A1A
+q[2][1] := q_1A0A
+q[3][4] := q_0B1B
+q[4][3] := q_1B0B
+q[5][6] := q_0C1C
+q[6][5] := q_1C0C
+q[7][8] := q_0D1D
+q[8][7] := q_1D0D
+
+q[1][3] := q_0A0B
+q[3][1] := q_0B0A
+q[1][5] := q_0A0C
+q[5][1] := q_0C0A
+q[1][7] := q_0A0D
+q[7][1] := q_0D0A
+q[2][4] := q_1A1B
+q[4][2] := q_1B1A
+q[2][6] := q_1A1C
+q[6][2] := q_1C1A
+q[2][8] := q_1A1D
+q[8][2] := q_1D1A
+q[3][5] := q_0B0C
+q[5][3] := q_0C0B
+q[3][7] := q_0B0D
+q[7][3] := q_0D0B
+q[4][6] := q_1B1C
+q[6][4] := q_1C1B
+q[4][8] := q_1B1D
+q[8][4] := q_1D1B
+q[5][7] := q_0C0D
+q[7][5] := q_0D0C
+q[6][8] := q_1C1D
+q[8][6] := q_1D1C
+
+# Generate the actual matrix
+rate_matrix := fnFreeK(q, rescaled=false, matrixExponentialMethod="scalingAndSquaring")
+
+#########################
+# Diversification rates #
+#########################
+
+# Specify a prior on the diversification and turnover rate
+# Create the constant prior parameters of the diversification rates
+
+total_taxa <- observed_phylogeny.ntips()
+half_sd <- 0.5
+rate_mean <- ln(ln(total_taxa/2.0) / observed_phylogeny.rootAge())
+rate_sd <- 2 * half_sd
+
+# Create a normal distributed variable for the diversification and turnover rates
+
+for (i in 1:NUM_STATES) {
+
+    speciation_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
+    moves.append(mvSlide(speciation_alpha[i],delta=0.20,tune=true,weight=2.0))
+    moves.append(mvSlice(speciation_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
+
+    extinction_alpha[i] ~ dnNormal(mean=rate_mean,sd=rate_sd)
+    moves.append(mvSlide(extinction_alpha[i],delta=0.20,tune=true,weight=2.0))
+    moves.append(mvSlice(extinction_alpha[i],window = 0.1, weight=2, search_method = "stepping_out"))
+
+}
+
+for (i in 1:(NUM_HIDDEN-1)) {
+
+    speciation_beta[i] ~ dnNormal(0.0,1.0)
+    moves.append(mvSlice(speciation_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    moves.append(mvSlide(speciation_beta[i],delta=0.20,tune=true,weight=2.0))
+
+    extinction_beta[i] ~ dnNormal(0.0,1.0)
+    moves.append(mvSlice(extinction_beta[i],window = 0.1, weight=2, search_method = "stepping_out"))
+    moves.append(mvSlide(extinction_beta[i],delta=0.20,tune=true,weight=2.0))
+
+}
+
+for (j in 1:NUM_HIDDEN) {
+    for (i in 1:NUM_STATES) {
+        if ( j == 1) {
+            speciation[i] := exp( speciation_alpha[i] )
+            extinction[i] := exp( extinction_alpha[i] )
+        } else {
+            index = i+(j*NUM_STATES)-NUM_STATES
+            speciation[index] := exp( speciation_alpha[i] + speciation_beta[j-1] )
+            extinction[index] := exp( extinction_alpha[i] + extinction_beta[j-1] )
+        }
+    }
+}
+
+net_diversification := speciation - extinction
+
+#######################################
+# Estimate the root state frequencies #
+#######################################
+
+# Create a constant variable with the prior probabilities of each rate category at the root.
+
+root_frequencies ~ dnDirichlet(rep(1,NUM_RATES))
+moves.append(mvDirichletSimplex(root_frequencies,tune=true,weight=2))
+moves.append(mvElementSwapSimplex(root_frequencies, weight=2))
+
+# Create the fix parameter for the age of the root set to the observed age
+
+root_age <- observed_phylogeny.rootAge()
+
+##############################
+# Indicate sampling fraction #
+##############################
+
+# Extant_sampling is the probability of sampling species at the present
+# This number is to make it comparable with Bouchenak and Linder's sampling of 98% but new reports is that this clade has 585 taxa PlantNet
+
+total_clade <- 350
+extant_sampling <- total_taxa/total_clade
+
+#########################
+# dnGLHBDSP = The model #
+#########################
+
+# Construct a variable for the tree drawn from a birth death process
+
+hisse4 ~ dnGLHBDSP(rootAge = root_age,
+                   lambda  = speciation,
+                   mu      = extinction,
+                   eta     = rate_matrix,
+                   pi      = root_frequencies,
+                   rho     = extant_sampling,
+                   taxa    = taxa,
+                   nProc   = 4,
+                   nStates = NUM_RATES)
+
+# clamp the model with the "observed" tree
+hisse4.clamp(observed_phylogeny)
+hisse4.clampCharData(data_exp) 
+
+#############
+# The Model #
+#############
+
+# Workspace model wrapper
+mymodel = model(rate_matrix)
+
+# Set up the monitors that will output parameter values to file and screen
+monitors.append(mnModel(filename="output_hisse4/hisse4.log", printgen=10))
+#monitors.append(mnJointConditionalAncestralState(tree=hisse4, glhbdsp=hisse4, type="NaturalNumbers", printgen=500, withTips=true, withStartStates=false, filename="output_hisse4/asr_hisse4.log"))
+#monitors.append(mnStochasticCharacterMap(glhbdsp=hisse4,printgen=500,filename="output_hisse4/stochmap_hisse4.log", include_simmap=true))
+monitors.append(mnScreen(printgen=10, net_diversification))
+
+################
+# The Analysis #
+################
+
+# Creating the MCMC object
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, moveschedule="random")
+
+# Checkpoint and stopping rule
+if ( fileExists("output_hisse4/hisse4.state") ) {
+    mymcmc.initializeFromCheckpoint("output_hisse4/hisse4.state")
+}
+
+stopping_rules[1] = srMinESS(250, file = "output_hisse4/hisse4.log", freq = 10000)
+
+# Run the MCMC
+mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_hisse4/hisse4.state")
+
+##############################
+# Summarize ancestral states #
+##############################
+
+#observed_phylogeny <- readTrees("data/MCC_AFRICANRESTIOS.tre")[1]
+
+#anc_states = readAncestralStateTrace("output_hisse4/asr_hisse4.log")
+
+#anc_tree = ancestralStateTree(tree=observed_phylogeny,ancestral_state_trace_vector=anc_states, include_start_states=false, file="output_hisse4/asr_summary_hisse4_run_1.tree", burnin=0.1, summary_statistic="MAP", site = 1)
+
+#anc_state_trace = readAncestralStateTrace("output_hisse4/stochmap_hisse4.log")
+
+#characterMapTree(observed_phylogeny, anc_state_trace, character_file="output_hisse4/stochmap_hisse4_run_1.tree", posterior_file="output_hisse4/posterior_stochmap_hisse4_run_1.tree", burnin=0.1, reconstruction="marginal")
+
+q()
+
