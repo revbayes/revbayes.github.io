@@ -1,10 +1,11 @@
 ---
 title: Overview of Moves in MCMC
 subtitle: Guidelines and Recommendation
-authors:  Sebastian H&#246;hna
+authors:  Sebastian Höhna and Basanta Khakurel
 level: 1
 order: 0.4
 index: true
+include_all: false
 prerequisites:
 - intro
 redirect: false
@@ -14,12 +15,13 @@ Overview
 ========
 {:.section}
 
-This is the very first tutorial for you in `RevBayes`. The goal of this set of tutorials is
+This page gives a brief overview of all the moves available in `RevBayes`.
+
+
+<!-- This is the very first tutorial for you in `RevBayes`. The goal of this set of tutorials is
 getting you started and familiar with the basics in `RevBayes`. If you have some familiarity
 with `R` or similar software, then this should be straight forward. Nevertheless, we recommend
-you to work through these tutorials to learn all the specific quirks of `RevBayes`.
-
-
+you to work through these tutorials to learn all the specific quirks of `RevBayes`. -->
 
 # Continuous Variables
 
@@ -32,11 +34,11 @@ Moves available in RevBayes for continuous variables.
 
  |   **Move**      |        **Description**        |    **Citation**   |
  |:---------------:|:-----------------------------:|:-----------------:|
- |    `mvMirror`    |                               |  {% cite  %} |
- |    `mvRandomDive`    |                               |  {% cite  %} |
- |    `mvSlice`    |                               |  {% cite  %} |
- |    `mvSlide`    |                               |  {% cite  %} |
- |    `mvSlideBactrian`    |                               |  {% cite  %} |
+ |    `mvMirror`    | Proposes a new state by reflecting the current value across a specified boundary. |  {% cite Metropolis1953 %} |
+ |    `mvRandomDive`    | Proposes a new value by executing a random dive along the real line. |  {% cite Metropolis1953 %} |
+ |    `mvSlice`    | Draws a new value from a uniform slice of the probability density. |  {% cite neal2003slice %} |
+ |    `mvSlide`    | Symmetric sliding window random walk proposal along the real line. |  {% cite Metropolis1953 %} |
+ |    `mvSlideBactrian`    | Sliding window proposal drawing from a bimodal Bactrian distribution to avoid small steps. |  {% cite yang2013searching %} |
 
  {% endtable %}
 
@@ -54,13 +56,13 @@ Moves available in RevBayes for positive continuous variables.
 
  |   **Move**      |        **Description**        |    **Citation**   |
  |:---------------:|:-----------------------------:|:-----------------:|
- |    `mvGammaScale`    |                               |  {% cite  %} |
- |    `mvLevyJump`    |                               |  {% cite  %} |
- |    `mvLevyJumpSum`    |                               |  {% cite  %} |
- |    `mvMirrorMultiplier`    |                               |  {% cite  %} |
- |    `mvScale`    |                               |  {% cite  %} |
- |    `mvScaleBactrian`    |                               |  {% cite  %} |
- |    `mvScaleBactrianCauchy`    |                               |  {% cite  %} |
+ |    `mvGammaScale`    | Proposes a scaled value where the scaling factor is drawn from a Gamma distribution. |  {% cite Hastings1970 %} |
+ |    `mvLevyJump`    | Proposes a new value by adding a jump drawn from a Lévy process. |  {% cite Hastings1970 %} |
+ |    `mvLevyJumpSum`    | Proposes jumps based on a Lévy process for a sum of variables. |  {% cite Hastings1970 %} |
+ |    `mvMirrorMultiplier`    | A combination of an asymmetric multiplier proposal and mirroring across boundaries. |  {% cite Hastings1970 %} |
+ |    `mvScale`    | Asymmetric multiplier proposal that scales the current value by a random factor. |  {% cite Hastings1970 %} |
+ |    `mvScaleBactrian`    | Multiplier proposal using a bimodal Bactrian distribution |  {% cite yang2013searching %} |
+ |    `mvScaleBactrianCauchy`    | Multiplier proposal using a heavy-tailed Bactrian Cauchy distribution |  {% cite yang2013searching %} |
 
  {% endtable %}
 
@@ -70,27 +72,26 @@ Moves available in RevBayes for positive continuous variables.
 
 {% table tab_cont %}
 {% tabcaption %}
-Moves available in RevBayes for positive continuous variables.
+Moves available in RevBayes for multiple continuous variables.
 {% endtabcaption %}
 
  |   **Move**      |        **Description**        |    **Citation**   |
  |:---------------:|:-----------------------------:|:-----------------:|
- |    `mvAVMVN`    |                               |  {% cite  %} |
- |    `mvEllipticalSliceSamplingSimple`    |                               |  {% cite  %} |
- |    `mvMultipleElementVectorScale`    |                               |  {% cite  %} |
- |    `mvUpDownScale`    |                               |  {% cite  %} |
- |    `mvShrinkExpand`    |                               |  {% cite  %} |
- |    `mvShrinkExpandScale`    |                               |  {% cite  %} |
- |    `mvUpDownScale`    |                               |  {% cite  %} |
- |    `mvSynchronizedVectorFixedSingleElementSlide`    |                               |  {% cite  %} |
- |    `mvUpDownSlide`    |                               |  {% cite  %} |
- |    `mvUpDownSlideBactrian`    |                               |  {% cite  %} |
- |    `mvVectorBinarySwitch`    |                               |  {% cite  %} |
- |    `mvVectorFixedSingleElementSlide`    |                               |  {% cite  %} |
- |    `mvVectorScale`    |                               |  {% cite  %} |
- |    `mvVectorSingleElementSlide`    |                               |  {% cite  %} |
- |    `mvVectorSlide`    |                               |  {% cite  %} |
- |    `mvVectorSlideRecenter`    |                               |  {% cite  %} |
+ |    `mvAVMVN`    | Adaptive Variance Multivariate Normal proposal; learns covariance during MCMC. |  {% cite haario2001adaptive %} |
+ |    `mvEllipticalSliceSamplingSimple`    | Elliptical slice sampling for strongly correlated Gaussian priors. |  {% cite murray2010elliptical %} |
+ |    `mvMultipleElementVectorScale`    | Scales multiple elements of a vector simultaneously by the same factor. |  {% cite Hastings1970 %} |
+ |    `mvUpDownScale`    | Scales two variables (or vectors) in opposite directions to preserve their product. |  {% cite Hastings1970 %} |
+ |    `mvShrinkExpand`    | Shrinks or expands the variance/scale of a set of continuous variables. |  {% cite Hastings1970 %} |
+ |    `mvShrinkExpandScale`    | A scaled version of the shrink-expand proposal. |  {% cite Hastings1970 %} |
+ |    `mvSynchronizedVectorFixedSingleElementSlide`    | Slides a single fixed element while synchronizing updates across a vector. |  {% cite Metropolis1953 %} |
+ |    `mvUpDownSlide`    | Slides two variables in opposite directions to preserve their sum. |  {% cite Metropolis1953 %} |
+ |    `mvUpDownSlideBactrian`    | Up-down slide proposal using a bimodal Bactrian distribution |  {% cite yang2013searching %} |
+ |    `mvVectorBinarySwitch`    | Switches binary states (0/1) for elements within a vector. |  {% cite Metropolis1953 %} |
+ |    `mvVectorFixedSingleElementSlide`    | Applies a sliding window proposal to a specific, fixed element of a vector. |  {% cite Metropolis1953 %} |
+ |    `mvVectorScale`    | Applies an asymmetric multiplier proposal to all elements of a vector. |  {% cite Hastings1970 %} |
+ |    `mvVectorSingleElementSlide`    | Randomly selects one element of a vector and applies a sliding window proposal. |  {% cite Metropolis1953 %} |
+ |    `mvVectorSlide`    | Applies a symmetric sliding window proposal to all elements of a vector simultaneously. |  {% cite Metropolis1953 %} |
+ |    `mvVectorSlideRecenter`    | Slides all vector elements and then recenters them to a specified mean. |  {% cite Metropolis1953 %} |
 
  {% endtable %}
 
@@ -101,16 +102,16 @@ Moves available in RevBayes for positive continuous variables.
 
 {% table tab_cont %}
 {% tabcaption %}
-Moves available in RevBayes for positive continuous variables.
+Moves available in RevBayes for Gaussian and Horseshoe Markov Random Fields.
 {% endtabcaption %}
 
  |   **Move**      |        **Description**        |    **Citation**   |
  |:---------------:|:-----------------------------:|:-----------------:|
- |    `mvGMRFHyperpriorGibbs`    |                               |  {% cite  %} |
- |    `mvGMRFUnevenGridHyperpriorGibbs`    |                               |  {% cite  %} |
- |    `mvHSRFHyperpriorsGibbs`    |                               |  {% cite  %} |
- |    `mvHSRFIntervalSwap`    |                               |  {% cite  %} |
- |    `mvHSRFUnevenGridHyperpriorsGibbs`    |                               |  {% cite  %} |
+ |    `mvGMRFHyperpriorGibbs`    | Gibbs sampler update for the hyperprior of a Gaussian Markov Random Field. |  {% cite geman1984stochastic %} |
+ |    `mvGMRFUnevenGridHyperpriorGibbs`    | Gibbs update for a GMRF hyperprior on an uneven temporal/spatial grid. |  {% cite geman1984stochastic %} |
+ |    `mvHSRFHyperpriorsGibbs`    | Gibbs sampler for the global/local hyperpriors of a Horseshoe Markov Random Field |  {% cite Faulkner2020 %} |
+ |    `mvHSRFIntervalSwap`    | Swaps local shrinkage parameters between adjacent intervals in an HSMRF. |  {% cite Faulkner2020 %} |
+ |    `mvHSRFUnevenGridHyperpriorsGibbs`    | Gibbs update for HSMRF hyperpriors on an uneven grid. |  {% cite Faulkner2020 %} |
 
  {% endtable %}
 
@@ -119,7 +120,7 @@ Moves available in RevBayes for positive continuous variables.
 
 {% table tab_cont %}
 {% tabcaption %}
-Moves available in RevBayes for positive continuous variables.
+Moves available in RevBayes for matrix variables.
 {% endtabcaption %}
 
  |   **Move**      |        **Description**        |    **Citation**   |
