@@ -38,6 +38,8 @@ moves.append( mvNNI(psi, weight=num_taxa) )
 moves.append( mvSPR(psi, weight=num_taxa/10.0) )
 moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 
+moves    = VectorMoves()  # Drop the non-clock moves for the later timetree-based analysis.
+
 ###
 # Alternative branch-length priors
 
@@ -89,13 +91,9 @@ moves.append( mvScale(kappa, weight=1.0) )
 # define Q
 Q := fnK80(kappa)
 
-# set up ctmc so this doesn't error
-topology ~ dnUniformTopology(taxa)
-psi := fnTreeAssembly(topology, br_lens)
+# set up an ctmc so the script runs
 seq ~ dnPhyloCTMC(tree = psi, Q = Q, branchRates = clock_rate, siteRates = br_lens, type = "DNA")
-data <- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 seq.clamp(data) 
-# this is not meant to be a functioning CTMC, just to make this script run for testing
 
 ###
 # Saving and restarting analyses
