@@ -81,7 +81,6 @@ Specific functions for substitution models available in RevBayes.
 {% assign gtr_script = "mcmc_GTR.Rev" %}
 {% assign gtrgi_script = "mcmc_GTR_Gamma_Inv.Rev" %}
 {% assign hky_script = "mcmc_HKY.Rev" %}
-{% assign asides_script = "asides.Rev" %}
 
 The first section of this exercise involves:
 1. setting up a Jukes-Cantor (JC) substitution model for an alignment of the cytochrome b subunit;
@@ -179,7 +178,9 @@ getwd()
 First load in the sequences using the `readDiscreteCharacterData()`
 function.
 
-{{ jc_script | snippet:"block#","1" }}
+{% snippet scripts/mcmc_JC.Rev %}
+data = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
+{% endsnippet %}
 
 Executing these lines initializes the data matrix as the respective
 Rev variables. To report the current value of any variable, simply
@@ -213,14 +214,21 @@ data.methods()
 
 We will need taxon information for setting up different parts of our model.
 
-{{ jc_script | snippet:"block#", "2" }}
+{% snippet scripts/mcmc_JC.Rev %}
+num_taxa <- data.ntaxa()
+num_branches <- 2 * num_taxa - 3
+taxa <- data.taxa()
+{% endsnippet %}
 
 Additionally, we set up a (vector) variable that holds all the moves for our analysis.
 Recall that moves are algorithms used to propose new parameter values during the MCMC simulation.
 Similarly, we set up a variable for the monitors.
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.
 
-{{ jc_script | snippet:"block#", "3" }}
+{% snippet scripts/mcmc_JC.Rev %}
+moves    = VectorMoves()
+monitors = VectorMonitors()
+{% endsnippet %}
 
 You may have noticed that we used the `=` operator to create the move index.
 This simply means that the variable is not part of the model.
@@ -245,7 +253,9 @@ magnitude), so we can define it as a constant variable. The function
 $n$ states. Since we use DNA data here, we create a 4x4
 instantaneous-rate matrix:
 
-{{ jc_script | snippet:"block#", "4" }}
+{% snippet scripts/mcmc_JC.Rev %}
+Q <- fnJC(4)
+{% endsnippet %}
 
 You can see the rates of the $Q$ matrix by typing
 
@@ -279,7 +289,10 @@ thus making the trees easier to visualize.
 Specify the `topology` stochastic node by passing in the list of `taxa`
 to the `dnUniformTopology()` distribution:
 
-{{ jc_script | snippet:"block#", "5" }}
+{% snippet scripts/mcmc_JC.Rev %}
+out_group = clade("Galeopterus_variegatus")
+topology ~ dnUniformTopology(taxa, outgroup=out_group)
+{% endsnippet %}
 
 Some types of stochastic nodes can be updated by a number of alternative moves.
 Different moves may explore parameter space in different ways,
@@ -287,27 +300,49 @@ and it is possible to use multiple different moves for a given parameter to impr
 (the efficiency of the MCMC simulation).
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
-{{ jc_script | snippet:"block#", "6" }}
+{% snippet scripts/mcmc_JC.Rev %}
+moves.append( mvNNI(topology, weight=num_taxa) )
+moves.append( mvSPR(topology, weight=num_taxa/10) )
+{% endsnippet %}
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
 
 Next we have to create a stochastic node representing the length of each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:
 
-{{ jc_script | snippet:"block#", "7" }}
+{% snippet scripts/mcmc_JC.Rev %}
+for (i in 1:num_branches) {
+    bl[i] ~ dnExponential(10.0)
+    moves.append( mvScale(bl[i]) )
+}
+{% endsnippet %}
 
 It is convenient for monitoring purposes to add the tree length as deterministic variable. The tree length is simply the sum of all branch lengths. Accordingly, the tree length can be computed using the `sum()` function, which calculates the sum of any vector of values.
 
-{{ jc_script | snippet:"block#", "8" }}
+{% snippet scripts/mcmc_JC.Rev %}
+TL := sum(bl)
+{% endsnippet %}
+
 
 Finally, we can create a *phylogram* (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the `treeAssembly()` function, which applies the value of the $i^{th}$ member of the `br_lens` vector to the branch leading to the $i^{th}$ node in `topology`. Thus, the `psi` variable is a deterministic node:
 
-{{ jc_script | snippet:"block#", "9" }}
+{% snippet scripts/mcmc_JC.Rev %}
+psi := treeAssembly(topology, bl)
+{% endsnippet %}
+
 
 {% aside Alternative tree priors %}
 For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
 We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
 
-{{ asides_script | snippet:"block#", "4-6" }}
+{% snippet scripts/asides.Rev %}
+br_len_lambda <- 10.0
+
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/10.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches) )
+{% endsnippet %}
 
 You might think that this approach is in fact simpler than the `for` loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
@@ -325,15 +360,24 @@ the corresponding branch lengths {% cite Zhang2012 %}.
 First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.
 
-{{ asides_script | snippet:"block#", "7" }}
+{% snippet scripts/asides.Rev %}
+TL ~ dnGamma(2,4)
+moves.append( mvScale(TL) )
+{% endsnippet %}
 
 Now we create a random variable for the relative branch lengths.
 
-{{ asides_script | snippet:"block#", "8" }}
+{% snippet scripts/asides.Rev %}
+rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
+moves.append( mvBetaSimplex(rel_branch_lengths, weight=num_branches) )
+moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
+{% endsnippet %}
 
 Finally, transform the relative branch lengths into actual branch lengths
 
-{{ asides_script | snippet:"block#", "9" }}
+{% snippet scripts/asides.Rev %}
+br_lens := rel_branch_lengths * TL
+{% endsnippet %}
 
 {% endaside %}
 
@@ -349,11 +393,15 @@ Fore more information on tree priors, such as birth-death processes, please read
 
 First, we need to specify the age of the tree:
 
-{{ asides_script | snippet:"block#", "10" }}
+{% snippet scripts/asides.Rev %}
+root_age <- 10.0
+{% endsnippet %}
 
 Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
 
-{{ asides_script | snippet:"block#", "11" }}
+{% snippet scripts/asides.Rev %}
+psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
+{% endsnippet %}
 
 Some types of stochastic nodes can be updated by a number of alternative moves.
 Different moves may explore parameter space in different ways,and it is possible to use
@@ -366,7 +414,14 @@ We also need moves that change the ages of the internal nodes, for example, `mvS
 and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with
 them, thus you only need to pass in the `psi` node and proposal `weight`.
 
-{{ asides_script | snippet:"block#", "12" }}
+{% snippet scripts/asides.Rev %}
+moves.append( mvNarrow(psi, weight=num_taxa) )
+moves.append( mvNNI(psi, weight=num_taxa/5.0) )
+moves.append( mvFNPR(psi, weight=num_taxa/5.0) )
+moves.append( mvGPR(psi, weight=num_taxa/30.0) )
+moves.append( mvSubtreeScale(psi, weight=num_taxa/3.0) )
+moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
+{% endsnippet %}
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the {% page_ref mcmc %} for more details about moves and MCMC strategies.
 
@@ -374,7 +429,13 @@ The weight specifies how often the move will be applied either on average per it
 
 Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
 
-{{ asides_script | snippet:"block#", "13-15" }}
+{% snippet scripts/asides.Rev %}
+log_clock_rate ~ dnUniform(-6,1)
+
+moves.append( mvSlide(log_clock_rate, weight=2.0) )
+
+clock_rate := 10^log_clock_rate
+{% endsnippet %}
 
 Instead, you could also fix the clock rate and estimate the root age.
 For more information on molecular clocks please read the {% page_ref clocks %} tutorial.
@@ -486,21 +547,31 @@ When the analysis is complete, you will have the monitored files in your output 
 
 MCMC analyses can take a long time to converge, and it is usually difficult to predict how many generations will be needed to obtain results. In addition, many analyses are run on computer clusters with time limits, and so may be stopped by the cluster partway through. For all of these reasons, it is useful to save the state of the chain regularly through the analysis.
 
-{{ asides_script | snippet:"block#", "21" }}
+{% snippet scripts/asides.Rev %}
+mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+{% endsnippet %}
+
 
 The `checkpointInterval` and `checkpointFile` inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions `_mcmc` and `_moves`.
 When multiple independent runs are specified, they will automatically be saved in separate files (with extensions `_run_1`, `_run_2`, etc.).
 
 Restarting the chain from a previous run is done by adding this line:
 
-{{ asides_script | snippet:"block#", "22" }}
+{% snippet scripts/asides.Rev %}
+mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
+{% endsnippet %}
 
 before calling the function `mcmc.run()`. The file name should match what was given as `checkpointFile` when running the previous analysis. **NB:** Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.
 
 The full MCMC block thus becomes:
 
-{{ asides_script | snippet:"block#", "20" }}
-{{ asides_script | snippet:"block#", "22-23" }}
+{% snippet scripts/asides.Rev %}
+mymcmc = mcmc(mymodel, monitors, moves)
+
+mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
+
+mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+{% endsnippet %}
 
 {% endaside %}
 
@@ -622,7 +693,12 @@ $$
 
 Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:
 
-{{ asides_script | snippet:"block#", "16-17" }}
+{% snippet scripts/asides.Rev %}
+kappa ~ dnExp(1)
+moves.append( mvScale(kappa, weight=1.0) )
+
+Q := fnK80(kappa)
+{% endsnippet %}
 
 {% endaside %}
 
