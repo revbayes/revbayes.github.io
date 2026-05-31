@@ -16,8 +16,8 @@
 # Datasets: Female Mass, Tail Length – Body Length Residuals, Body Length – Mass Residuals, Maximum Age, Sexual Dimorphism, Geographic Range Size, Latitudinal Midpoint, Distance to Continental Centroid, Population Density, Home Range Size, Group Size, Gestation Duration, Litter size
 trait <- 1
 
-### Read in the trees
-T <- readTrees("data/primates_tree.nex")[1]
+### Read in the trees and specify the tree model
+tree <- readTrees("data/primates_tree.nex")[1]
 
 ### Read in the character data
 data <- readContinuousCharacterData("data/primates_cont_traits.nex")
@@ -30,21 +30,15 @@ monitors = VectorMonitors()
 
 
 ##########################
-# Specify the tree model #
-##########################
-
-tree <- T
-
-##########################
 # Specify the rate model #
 ##########################
 
 root_age := tree.rootAge()
 
-sigma2 ~ dnLoguniform(1e-3, 1)
+sigma2 ~ dnLognormal( ln( data.var(trait) / root_age ), 1.1748 )
 moves.append( mvScale(sigma2, weight=2.0) )
 
-alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+alpha ~ dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 )
 moves.append( mvScale(alpha, weight=2.0) )
 
 theta ~ dnUniform(-10, 10)
@@ -60,6 +54,7 @@ moves.append( avmvn_move )
 # some useful variable transformations to monitor
 t_half := ln(2) / alpha
 p_th := 1 - (1 - exp(-2.0*alpha*root_age)) / (2.0*alpha*root_age)
+vy := sigma2 / ( 2 * alpha )
 
 
 ##########################

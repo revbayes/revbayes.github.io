@@ -1,7 +1,7 @@
 ---
 title: Simple Ornstein-Uhlenbeck Models
 subtitle: Estimating optima under Ornstein-Uhlenbeck evolution
-authors: Michael R. May and Sebastian Höhna
+authors: Michael R. May, Sebastian Höhna, and Priscilla Lau
 level: 6
 order: 1.7
 prerequisites:
