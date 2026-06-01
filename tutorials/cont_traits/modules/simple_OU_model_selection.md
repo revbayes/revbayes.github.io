@@ -14,12 +14,20 @@ $$
 
 where $P( \text{OU model} \mid X)$ and $P( \text{OU model})$ are the posterior probability and prior probability of the OU model, respectively.
 
+{% figure fig_rjoubm_gm %}
+<img src="figures/rjoubm_gm.png" width="50%" height="50%" />
+{% figcaption %}
+The graphical model representation of the mixture model for Ornstein-Uhlenbeck (OU) and Brownin motion (BM) processes using a reversible-jump algorithm.
+For more information about graphical model representations see {% citet Hoehna2014b %}.
+{% endfigcaption %}
+{% endfigure %}
+
 {% subsubsection Reversible-jump between OU and BM models %}
 
 To enable rjMCMC, we simply have to place a reversible-jump prior on the relevant parameter, $\alpha$. We can modify the prior on `alpha` so that it takes either a constant value of 0, or is drawn from a prior distribution. Finally, we specify a prior probability on the OU model of `p = 0.5`.
 
 ```
-alpha ~ dnReversibleJumpMixture(0.0, dnExponential( abs(root_age / 2.0 / ln(2.0)) ), 0.5)
+alpha ~ dnReversibleJumpMixture(0.0, dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 ), 0.5)
 ```
 We then provide a reversible-jump proposal on `alpha` that proposes changes between the two models.
 ```

@@ -22,8 +22,9 @@ trait <- 1
 ```
 
 Now, we read in the (time-calibrated) tree corresponding.
+In this tutorial, we assume the tree is known without error. We create a constant node for the tree that corresponds to the observed phylogeny.
 ```
-T <- readTrees("data/primates_tree.nex")[1]
+tree <- readTrees("data/primates_tree.nex")[1]
 ```
 
 Next, we read in the character data for the same dataset.
@@ -45,22 +46,16 @@ moves    = VectorMoves()
 monitors = VectorMonitors()
 ```
 
-{% subsection Specifying the model %}
+{% subsection Specifying the OU model %}
 
-{% subsubsection Tree model %}
 
-In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.
+{% subsubsection Diffusion parameter %}
 
-```
-tree <- T
-```
-
-{% subsubsection Rate parameter %}
-
-The stochastic rate of evolution is controlled by the rate parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate.
+The stochastic rate of evolution is controlled by the rate parameter $\sigma^2$, which represents the diffusion variance per unit time. We draw the rate parameter from a log-normal distribution, where the median is the non-phylogenetic across-species variance scaled by the root age. We use $2*H \approx 1.1748$ as the spread parameter such that the 95% interval span $\approx 2$ orders of magnitude.
 
 ```
-sigma2 ~ dnLoguniform(1e-3, 1)
+root_age := tree.rootAge()
+sigma2 ~ dnLognormal(ln(data.var(trait) / root_age), 1.1748)
 ```
 
 In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
@@ -68,14 +63,24 @@ In order to estimate the posterior distribution of $\sigma^2$, we must provide a
 moves.append( mvScale(sigma2, weight=2.0) )
 ```
 
-{% subsubsection Adaptation parameter %}
+{% subsubsection Attraction rate parameter %}
 
-The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. We specify the mean of the exponential prior distribution on $\alpha$ to be half the root age divided by $\ln(2)$, which means that we expect a phylogenetic half life of half the tree age.
+The rate of attraction toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from a log-normal prior distribution, and place a scale proposal on it. We specify the median of the log-normal prior distribution on $\alpha$ to be $\ln(2)$ divided by half the root age, which means that we expect a phylogenetic half life of half the tree age. We specify the spread parameter to be $2*H \approx 1.1748$ , such that the 95% interval spans $\approx 2$ orders of magnitude.
 ```
-root_age := tree.rootAge()
-alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+alpha ~ dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 )
 moves.append( mvScale(alpha, weight=2.0) )
 ```
+
+{% aside Alternative: Prior distributions on phylogenetic half-life and/or stationary variance%}
+
+Alternatively, you can draw the phylogenetic half-life and/or stationary variance from some prior distributions, and transform them to $\alpha$ and $\sigma^2$ respectively using the equations below.
+```
+alpha := ln(2) / t_half
+sigma2 := alpha * 2 * vy
+```
+
+{% endaside %}
+
 
 {% subsubsection Optimum %}
 
@@ -98,7 +103,7 @@ moves.append( avmvn_move )
 
 {% subsubsection Assessing the phylogenetic half-life and decrease in variance due to selection %}
 
-For our OU model, we are going to add two variables which are transformations primarily of the strength of selection $\alpha$.
+For our OU model, we are going to add three variables which are transformations of the rate of attraction $\alpha$ and/or the diffusion variance $\sigma^2$.
 First, we add the phylogenetic half-life $t_{1/2} = \ln(2)/\alpha$, which represents the expected time needed for a trait to cover half the distance between root state and the selective optimum $\theta$.
 ```
 t_half := ln(2) / alpha
@@ -107,6 +112,10 @@ t_half := ln(2) / alpha
 Second, we add the metric $p_{th}$ which represents the percent decrease in trait variance caused by selection over the study period, as compared to the variance expected under pure drift (i.e. under BM). For instance, $p_{th} = 0.25$ means that selection has reduced the variance of traits by 25% over period tH.
 ```
 p_th := 1 - (1 - exp(-2.0*alpha*root_age)) / (2.0*alpha*root_age)
+```
+Lastly, we add the stationary variance which represents the trait variance at stationarity. Recall that unlike the Brownian motion process, the OU process is stationary, i.e., the variance does not increase indefinitely
+```
+vy := sigma2 / ( 2 * alpha )
 ```
 
 {% subsubsection Ornstein-Uhlenbeck model %}
