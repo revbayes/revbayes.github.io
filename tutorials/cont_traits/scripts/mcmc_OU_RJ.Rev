@@ -3,7 +3,7 @@
 # RevBayes Example: Model selection between OU and BM
 #
 #
-# authors: Michael R. May and Sebastian Höhna
+# authors: Michael R. May, Sebastian Höhna, and Priscilla Lau
 #
 ################################################################################
 
@@ -14,8 +14,8 @@
 ### Select the trait to analyze
 trait <- 1
 
-### Read in the trees
-T <- readTrees("data/primates_tree.nex")[1]
+### Read in the trees and specify the tree model
+tree <- readTrees("data/primates_tree.nex")[1]
 
 ### Read in the character data
 data <- readContinuousCharacterData("data/primates_cont_traits.nex")
@@ -26,22 +26,17 @@ data.includeCharacter( trait )
 moves    = VectorMoves()
 monitors = VectorMonitors()
 
-##########################
-# Specify the tree model #
-##########################
-
-tree <- T
 
 ##########################
 # Specify the rate model #
 ##########################
 
-sigma2 ~ dnLoguniform(1e-3, 1e1)
+sigma2 ~ dnLognormal( ln( data.var(trait) / root_age ), 1.1748 )
 moves.append( mvScale(sigma2, weight=1.0) )
 
 root_age := tree.rootAge()
 
-alpha ~ dnReversibleJumpMixture(0.0, dnExponential( abs(root_age / 2.0 / ln(2.0)) ), 0.5)
+alpha ~ dnReversibleJumpMixture(0.0, dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 ), 0.5)
 moves.append( mvRJSwitch(alpha, weight=1.0) )
 moves.append( mvScale(alpha, weight=1.0) )
 
