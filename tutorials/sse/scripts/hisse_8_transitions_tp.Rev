@@ -205,15 +205,13 @@ monitors.append(mnScreen(printgen=10, speciation, extinction, net_diversificatio
 # Creating the MCMC object
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, moveschedule="random")
 
-# Checkpoint and stopping rule
-if ( fileExists("output_tp/hisse_8_transitions.state") ) {
-    mymcmc.initializeFromCheckpoint("output_tp/hisse_8_transitions.state")
-}
+#mymcmc.initializeFromCheckpoint("output_tp/hisse_8_transitions.state")
 
-stopping_rules[1] = srMinESS(250, file = "output_tp/hisse_8_transitions.log", freq = 10000)
+#stopping_rules[1] = srMinESS(250, file = "output_tp/hisse_8_transitions.log", freq = 10000)
 
-# Run the MCMC
-mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_tp/hisse_8_transitions.state")
+#mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output_tp/hisse_8_transitions.state")
+
+mymcmc.run(generations = 250000, checkpointInterval = 1000, checkpointFile = "output_tp/hisse_8_transitions.state")
 
 ##############################
 # Summarize ancestral states #

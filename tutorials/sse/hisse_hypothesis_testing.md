@@ -25,12 +25,12 @@ index: true
 
 {% citet Beaulieu2016 %} introduced an extension of the Binary State-Dependent Speciation and Extinction (BiSSE) model that incorporates unobserved (hidden) traits. This development provided a more appropriate null model, reducing the high Type I error rate previously identified for BiSSE by {% citet Rabosky2015 %}. The Character-Independent Diversification (CID) model and the Hidden State-Dependent Speciation and Extinction (HiSSE) model incorporate a hidden trait with the same number of states and freely varying diversification rates as in BiSSE or MuSSE (Multi-State-Dependent Speciation and Extinction). Because these models have the same number of parameters as BiSSE/MuSSE, they allow fair model comparisons and enable the detection of diversification-rate variation arising from unmeasured factors.
 
-As illustrated in Figure 1, when diversification rates do not differ among the observed states (0 and 1), the resulting model is a CID model, indicating that diversification-rate variation across the phylogeny is better explained by unmeasured factors rather than by the observed trait. In contrast, when diversification rates differ between observed states, the resulting model may correspond to a HiSSE or a BiSSE model, depending on whether the hidden states (A and B) differ or are equal, respectively. In both cases, variation in diversification rates across the phylogeny is associated with the observed trait, although it may also be influenced by unobserved factors when a HiSSE model is supported. Additionally, some cases exhibit mixed patterns in which diversification rates differ for certain states but not for others, either within some or all hidden states. For example, {% citet tribble2025 %} investigated diversification in sedges of the genus Carex and found that some speciation rates were correlated with single-chromosome changes, whereas others were unrelated to aneuploidy. Such intermediate cases are expected to become increasingly common and have recently been described as “gray zone” models.
+As illustrated in {% ref fig_rates%}, when diversification rates do not differ among the observed states (0 and 1), the resulting model is a CID model, indicating that diversification-rate variation across the phylogeny is better explained by unmeasured factors rather than by the observed trait. In contrast, when diversification rates differ between observed states, the resulting model may correspond to a HiSSE or a BiSSE model, depending on whether the hidden states (A and B) differ or are equal, respectively. In both cases, variation in diversification rates across the phylogeny is associated with the observed trait, although it may also be influenced by unobserved factors when a HiSSE model is supported. Additionally, some cases exhibit mixed patterns in which diversification rates differ for certain states but not for others, either within some or all hidden states. For example, {% citet tribble2025 %} investigated diversification in sedges of the genus *Carex* and found that some speciation rates were correlated with single-chromosome changes, whereas others were unrelated to aneuploidy. Such intermediate cases are expected to become increasingly common and have recently been described as “gray zone” models.
 
-{% figure fig_model %}
-<img src="figures/rate_comparisons.png" width="100%">
+{% figure fig_rates %}
+<img src="figures/rate_comparisons.png" width="80%">
 {% figcaption %}
-When we fit a full HiSSE model we can identify four different state-dependent diversification models using the posterior net diversification rates. (A) A BiSSE is identified if d<sub>0</sub> ≠ d<sub>1</sub> for A and B but d<sub>A</sub> = d<sub>B</sub> for 0 and 1. (B) A CID-2 occurs if d<sub>0</sub> = d<sub>1</sub> for A and B but d<sub>A</sub> ≠ d<sub>B</sub> for 0 and 1. (C) A grey zone model is a model that has some net diversifications equal and some different. (D) The resulting model of diversification is HiSSE if the four posterior distributions for net diversifications are different. (E) Matrices with valid rate comparisons, indicating what rates are equal or different, to determine what is the best model of state-dependent diversification.
+When we fit a full HiSSE model we can identify four different state-dependent diversification models using the posterior net diversification rates. a) If $d_0\neq d_1$ for $A$ and $B$ but $d_A=d_B$ equal for $0$ and $1$, then we have BiSSE. b) If $d_0= d_1$ for $A$ and $B$ but $d_A\neq d_B$ for $0$ and $1$, then we have CID-2. c) A grey zone model is a model that has some net diversifications equal and some different. d) If the four posterior distributions for net diversifications are different, then the resulting model of diversification is HiSSE. Matrices with valid rate comparisons are shown for each model, indicating what rates are equal or different, to determine what is the best model of state-dependent diversification. Comparisons that are not considered are indicated with black dots.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -110,7 +110,7 @@ shape_pr <- 0.5
 rate_pr := observed_phylogeny.treeLength()/10
 {% endsnippet %}
 
-Next, we specify the transition rates between observed and hidden states, as previously illustrated in Figure 2:
+Next, we specify the transition rates between observed and hidden states, as previously illustrated in {% ref fig_model %}:
 
 {% snippet scripts/hisse_8_transitions.Rev %}
 #Transitions between observed states
@@ -168,7 +168,7 @@ rate_matrix := fnFreeK(q, rescaled=false, matrixExponentialMethod="scalingAndSqu
 
 #### **Diversification rates**
 
-We now specify speciation and extinction rates for each state. These parameters are sampled from log-normal distributions; we first define auxiliary parameters drawn from normal distributions and then exponentiate them to ensure positive values. We start by defining the following priors:
+We now specify speciation and extinction rates for each state. These parameters are sampled from log-normal distributions. To achieve this, we first define auxiliary parameters drawn from normal distributions and then exponentiate them to ensure positive values. We start by defining the following priors:
 
 {% snippet scripts/hisse_8_transitions.Rev %}
 total_taxa <- observed_phylogeny.ntips()
@@ -177,9 +177,10 @@ rate_mean <- ln(ln(total_taxa/2.0) / observed_phylogeny.rootAge())
 rate_sd <- 2 * half_sd
 {% endsnippet %}
 
-The mean of these distributions follows the statistic 
+The mean of these distributions is based on the statistic 
 $$\frac{\log(N/2)}{T}$$ 
-that represents the method of moments rate estimate from a birth–death model, which gives the expected number of lineages *N* after a time *T* when starting from a crown group {% cite magallon2001 %}. Here, the total number of surviving lineages (*N*)is stored in `total_taxa`, and the total time (*T*) is given by `observed_phylogeny.rootAge()`. The prior for standard deviation is set to represent uncertainty. 
+which represents the method of moments estimate of the diversification rate under a birth–death model when extinction is negligible. This estimator approximates the diversification rate based on the observed number of lineages *N* after a time *T* when starting from a crown group {% cite magallon2001 %}. Here, the total number of extant lineages (*N*) is stored in `total_taxa`, and the total time (*T*) is given by `observed_phylogeny.rootAge()`. Because speciation and extinction rates are modeled on the log scale, we defined `rate_mean`, the mean of the normal prior distributions, as 
+$${log(\frac{\log(N/2)}{T})}$$.  The standard deviation is chosed to represent uncertainty around the expected diversification rate. 
 
 Using a `for` loop, we first define speciation and extinction rates for the observed states and assign two types of moves to each parameter (`mvSlide` and `mvSlice`). The `mvSlide` move proposes a new value by sampling from a uniform distribution and adding it to the current value.
 
@@ -213,7 +214,7 @@ for (i in 1:(NUM_HIDDEN-1)) {
 }
 {% endsnippet %}
 
-Finally, we define the speciation and extinction rates using a `for` loop. The first set of rates, corresponding to 0A and 1A states, are simply the exponentiated values of `speciation_alpha` and `extinction_alpha`. For the states 0B and 1B, their diversification parameters include the additional variation from `speciation_beta` and `extinction_beta`.
+Finally, we define the speciation and extinction rates using a `for` loop. The first set of rates, corresponding to the states 0A and 1A, are simply the exponentiated values of `speciation_alpha` and `extinction_alpha`. For the states 0B and 1B, their diversification parameters include the additional variation from `speciation_beta` and `extinction_beta`.
 
 {% snippet scripts/hisse_8_transitions.Rev %}
 for (j in 1:NUM_HIDDEN) {
@@ -230,7 +231,7 @@ for (j in 1:NUM_HIDDEN) {
 }
 {% endsnippet %} 
 
-We conclude by defining a net diversification variable, calculated as the difference between speciation and extinction rates for each state. Likewise, turnover rates, defined as the ratio of extinction to speciation, could also be used.
+We conclude by defining a net diversification variable, calculated as the difference between speciation and extinction rates for each state. Turnover rates, defined as the ratio of extinction to speciation, could also be used.
 
 {% snippet scripts/hisse_8_transitions.Rev %}
 net_diversification := speciation - extinction
@@ -307,16 +308,10 @@ We create the MCMC workspace using the `mcmc` function, specifying the previousl
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, moveschedule="random")
 {% endsnippet %}
 
-We define the number of generations for our analysis using a stopping rule that specifies a minimum effective sample size (ESS) of 250 for each parameter, which is implemented with the `srMinESS` function. In addition, we create a checkpoint file to allow the analysis to be resumed in case it is interrupted for any reason.
+In this case, we define a total of 250,000 generations for our analyses. However, as an alternative approach, we recommend defining the number of generations using a stopping rule that specifies a minimum effective sample size (ESS) of 250 for each parameter, which can be implemented using the `srMinESS` function. In addition, it is also useful to create a checkpoint file to allow the analysis to be resumed in case it is interrupted for any reason.
 
 {% snippet scripts/hisse_8_transitions.Rev %}
-if ( fileExists("output/hisse_8_transitions.state") ) {
-    mymcmc.initializeFromCheckpoint("output/hisse_8_transitions.state")
-}
-
-stopping_rules[1] = srMinESS(250, file = "output/hisse_8_transitions.log", freq = 10000)
-
-mymcmc.run(rules = stopping_rules, checkpointInterval = 1000, checkpointFile = "output/hisse_8_transitions.state")
+mymcmc.run(generations = 250000, checkpointInterval = 1000, checkpointFile = "output/hisse_8_transitions.state")
 {% endsnippet %}
 
 {% aside Using TensorPhylo %}
@@ -325,7 +320,9 @@ Alternatively, we recommend using the TensorPhylo plugin {% cite May2022 %}. It 
 
 To use TensorPhylo, we need to make a few minor modifications to the previously presented script. First, we load the TensorPhylo plugin and specify its installation path using the `loadPlugin` function:
 
+```
 loadPlugin("TensorPhylo", "/path/to/tensorphylo/build/installer/lib")
+```
 
 Next, we create a node that specifies the taxa present in the phylogeny:
 
@@ -461,7 +458,7 @@ library(dplyr)
 hisse_run_1<- read.table("output/hisse_8_transitions_run_1.log", header=TRUE)
 hisse_run_1<- hisse_run_1[-seq(1,200,1),]
 ```
-Subsequently, we create a data frame containing the estimated transition rates and visualize them using `ggplot2`. As shown in Figure 5, the rate $q_{1A,0A}$ is higher than the others, suggesting asymmetry between the observed states within hidden state A. This distinction is important, as it indicates that transitions between coastal and montane ecosystems do not necessarily occur at the same evolutionary rate.
+Subsequently, we create a data frame containing the estimated transition rates and visualize them using `ggplot2`. As shown in {% ref fig_transitions %}, the rate $q_{1A,0A}$ is higher than the others, suggesting asymmetry between the observed states within hidden state A. This distinction is important, as it indicates that transitions between coastal and montane ecosystems do not necessarily occur at the same evolutionary rate.
 ```{R}
 #Transition rates
 
@@ -602,7 +599,7 @@ $$
 T_0 = d_{0A} - d_{0B} \text{   and   }\ T_1 = d_{1A} - d_{1B}
 $$
 
-Therefore, the null hypothesis $H_0$ can be evaluated using these statistics. A CID-2 model is supported when the 95% credible intervals for $T_A$ and $T_B$ include zero, whereas those for $T_0$ and $T_1$ exclude zero. As illustrated in Figure 1, fitting a HiSSE model within a Bayesian framework can yield multiple outcomes depending on the inferred relationships between observed and hidden states. To estimate these statistics, we first load and visualize the net diversification rate estimates in R.
+Therefore, the null hypothesis $H_0$ can be evaluated using these statistics. A CID-2 model is supported when the 95% credible intervals for $T_A$ and $T_B$ include zero, whereas those for $T_0$ and $T_1$ exclude zero. As illustrated in {% ref fig_rates %}, fitting a HiSSE model within a Bayesian framework can yield multiple outcomes depending on the inferred relationships between observed and hidden states. To estimate these statistics, we first load and visualize the net diversification rate estimates in R.
 
 ```{R}
 #Net diversification
@@ -635,7 +632,7 @@ Posterior distributions of the net diversification rates estimated under a full 
 {% endfigcaption %}
 {% endfigure %}
 
-As shown in Figure 7, net diversification rates for states 1A and 1B are higher than those for states 0A and 0B. Examination of the test statistics indicates that the 95% credible intervals for $T_A$, $T_B$, and $T_1$ do not include zero, whereas the credible interval for $T_0$ does include zero. This pattern does not fully correspond to either a HiSSE or a CID-2 model.
+As shown in {% ref fig_div %}, net diversification rates for states 1A and 1B are higher than those for states 0A and 0B. Examination of the test statistics indicates that the 95% credible intervals for $T_A$, $T_B$, and $T_1$ do not include zero, whereas the credible interval for $T_0$ does include zero. This pattern does not fully correspond to either a HiSSE or a CID-2 model.
 ```{R}
 #Is net diversification different?
 
@@ -674,7 +671,7 @@ Test for net diversification rates estimated under a full HiSSE model.
 {% endfigcaption %}
 {% endfigure %}
 
-To corroborate the visual interpretation of Figure 7, we additionally quantify the 95% credible intervals for $T_A$, $T_B$, $T_0$, and $T_1$.
+To corroborate the visual interpretation of {% ref fig_test_div %}, we additionally quantify the 95% credible intervals for $T_A$, $T_B$, $T_0$, and $T_1$.
 
 ```{R}
 quantile <- test_net_diversification_hisse_run_1 %>%
@@ -696,7 +693,7 @@ quantile
 ```
 Overall, fitting a single, fully parameterized HiSSE model with all transition and net diversification rates estimated freely is sufficient within a Bayesian framework to evaluate multiple hypotheses of anagenetic evolution and state-dependent diversification. In this example, we identify asymmetry in transition rates, with transitions from montane to coastal habitats occurring more frequently in lineages associated with hidden state A, and support the hypothesis of {% citet Bouchenak-Khelladi2017 %}, as montane ecosystems exhibit higher net diversification rates than coastal habitats.
 
-Furtheremore, we identified that the inferred model does not fully correspond to a HiSSE model (Figure 1), because $d_{0A}$ and $d_{0B}$ are not different. The ability to identify such gray zone models highlights an important advantage of applying a Bayesian framework, as these types of parameter specifications are rarely explored under frequentist approaches.
+Furtheremore, we identified that the inferred model does not fully correspond to a HiSSE model ({% ref fig_rates %}), because $d_{0A}$ and $d_{0B}$ are not different. The ability to identify such gray zone models highlights an important advantage of applying a Bayesian framework, as these types of parameter specifications are rarely explored under frequentist approaches.
 
 {% subsection HiSSE with four hidden states | subsec_hisse4 %}
 
@@ -838,20 +835,18 @@ Next, we construct the Q matrix using the `fnFreeK` function and then define the
 
 After completing the analyses, we extend the R code presented in the [Net diversification rates](#subsec_netdiv) subsection to define and evaluate the test statistics $T_A$, $T_B$, $T_C$, and $T_D$, which allows us to formally test the CID-4 model:
 
-{% figure fig_div %}
+{% figure fig_div_4 %}
 <img src="figures/net_diversification_hisse4.png" width="50%">
 {% figcaption %}
 Posterior distributions of the net diversification rates estimated under a full HiSSE model with four hidden states.
 {% endfigcaption %}
 {% endfigure %}
 
-As shown in Figures 8 and 9, we detect differences in net diversification rates between the observed states (0 and 1) across all hidden states (A, B, C, and D).
-
-{% figure fig_test_div %}
+{% figure fig_test_div_4 %}
 <img src="figures/test_net_diversification_hisse4.png" width="50%">
 {% figcaption %}
 Test for net diversification rates estimated under a full HiSSE model with four hidden states.
 {% endfigcaption %}
 {% endfigure %}
 
-Therefore, we conclude that the previous differences in net diversification rates that were identified with the simpler model are supported.
+As shown in {% ref fig_div_4 %} and {% ref fig_test_div_4 %}, we detect differences in net diversification rates between the observed states (0 and 1) across all hidden states (A, B, C, and D). Therefore, we conclude that the previous differences in net diversification rates that were identified with the simpler model are supported.
