@@ -1,6 +1,6 @@
 {% section Relaxing the OU Model %}
 
-Under a simple Ornstein-Uhlenbeck (OU) model, the optimal of a continuous character is determined by a single rate parameter, $\theta$. Many evolutionary questions are related to how the optimal phenotype changes among lineages. In a Bayesian setting, we can specify a ''relaxed'' OU prior model that allows the optimal phenotype to vary over the phylogeny.
+Under a simple Ornstein-Uhlenbeck (OU) model, the optimal of a continuous character is determined by a single location parameter, $\theta$. Many evolutionary questions are related to how the optimal phenotype changes among lineages. In a Bayesian setting, we can specify a ''relaxed'' OU prior model that allows the optimal phenotype to vary over the phylogeny.
 
 Here, we will use the ''random local clock'' model, similar to the one described by {% citet Uyeda2014 %} in the software `bayOU`. In this model, we assume that each branch in the phylogeny either does or does not have a optimum shift. When there is no shift on a branch, the optimum on the branch is inherited directly from its ancestral branch; when there _is_ a shift, the ancestral optimum is shifted by an amount that is drawn from a specified prior distribution. We specify a prior probability, $p$, that a given branch experiences a shift. For a tree with $n$ branches, the expected number of shifts is $E(k) = n \times p$. To control the number of shifts, we specify a prior on the _expected number of shifts_, $E(k)$, and then calculate the prior probability for a shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific optima and priors (fig_ou_relaxed_gm).
 
@@ -22,7 +22,8 @@ We begin by deciding which of the traits to use. Here, we assume we are analyzin
 trait <- 1
 ```
 
-Now, we read in the (time-calibrated) tree corresponding.
+Now, we read in the (time-calibrated) tree corresponding and specify the tree model.
+In this tutorial, we assume the tree is known without error. We create a constant node for the tree that corresponds to the observed phylogeny.
 ```
 T <- readTrees("data/primates_tree.nex")[1]
 ```
@@ -52,29 +53,22 @@ monitors = VectorMonitors()
 
 {% subsection Specifying the model %}
 
-{% subsubsection Tree model %}
+{% subsubsection Diffusion parameter %}
 
-In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.
-
-```
-tree <- T
-```
-
-{% subsubsection Rate parameter %}
-
-The stochastic rate of evolution is controlled by the rate parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate. As before, we provide a scale move that proposes changes to the parameter during MCMC.
+The stochastic rate of evolution is controlled by the rate parameter $\sigma^2$, which represents the diffusion variance per unit time. We draw the rate parameter from a log-normal distribution, where the median is the non-phylogenetic across-species variance scaled by the root age. We use $2*H \approx 1.1748$ as the spread parameter such that the 95% interval span $\approx 2$ orders of magnitude.
 
 ```
-sigma2 ~ dnLoguniform(1e-3, 1)
+root_age := tree.rootAge()
+sigma2 ~ dnLognormal(ln(data.var(trait) / root_age), 1.1748)
 moves.append( mvScale(sigma2, weight=1.0) )
 ```
 
-{% subsubsection Adaptation parameter %}
+{% subsubsection Attraction rate parameter %}
 
-The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary). We specify the mean of the exponential prior distribution on $\alpha$ to be half the root age divided by $\ln(2)$, which means that we expect a phylogenetic half life of half the tree age.
+The rate of attraction toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from a log-normal prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary). We specify the median of the log-normal prior distribution on $\alpha$ to be $\ln(2)$ divided by half the root age, which means that we expect a phylogenetic half life of half the tree age. We specify the spread parameter to be $2*H \approx 1.1748$ , such that the 95% interval spans $\approx 2$ orders of magnitude.
 ```
 root_age := tree.rootAge()
-alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+alpha ~ dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 )
 moves.append( mvScale(alpha, weight=1.0) )
 ```
 
@@ -92,7 +86,7 @@ expected_number_of_shifts <- 5
 shift_probability <- expected_number_of_shifts / nbranches
 ```
 
-Next, we specify the prior distribution on the size of shifts (when they occur). We draw each rate shift from a uniform distribution.
+Next, we specify the prior distribution on the size of shifts (when they occur). We draw each rate shift from a normal distribution.
 ```
 shift_distribution = dnNormal(0, 0.587)
 ```

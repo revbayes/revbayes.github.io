@@ -8,6 +8,7 @@ prerequisites:
 - ctmc
 include_all: false
 include_files:
+- data/photinus_COI.fas
 - scripts/mcmc_unrooted_gene_tree.Rev
 
 index: false

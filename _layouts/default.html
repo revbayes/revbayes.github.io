@@ -20,14 +20,19 @@
   </head>
   <body>
     <div class="container">
-      {% include navbar.html %}
+      {% if page.title == 404 %}
+        {% assign is_404 = true %}
+      {% else %}
+        {% assign is_404 = false %}
+      {% endif %}
+      {% include_cached navbar.html is_404=is_404 %}
       <!-- adds margin to main content -->
       <div class="container" style="padding-left:20px padding-right:20px;">
           {{content}}
       </div>
-      {% include footer.html %}
+      {% include_cached footer.html %}
     </div>
-    {% include javascript.html %}
-    {% include analytics.html %}
+    {% include_cached javascript.html code_layout=page.code_layout %}
+    {% include_cached analytics.html %}
   </body>
 </html>

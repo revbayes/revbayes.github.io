@@ -14,11 +14,6 @@ include_all: false
 include_files:
 ---
 
-> ## For your info
-> This tutorial and the included exercises are currently under construction.
-> If you want to run the analyses, please compile `RevBayes` from the [dev_stairwayplot](https://github.com/revbayes/revbayes/tree/dev_stairwayplot) branch as described [here](https://revbayes.github.io/compile-linux) (for the development branch). The code should hopefully be available in the next release (RevBayes v1.2.6).
-{:.info}
-
 {% section Overview %}
 This tutorial describes how to run a demographic analysis using the `StairwayPlot` approach {% cite Liu2015 Liu2015 %} in `RevBayes` {% cite Hoehna2016b %}.
 The `StairwayPlot` approach assumes an underlying coalescent for a single panmictic population and an infinite sites model.

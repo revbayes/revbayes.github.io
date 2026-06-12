@@ -4,7 +4,7 @@
 #                   Ornstein-Uhlenbeck model.
 #
 #
-# authors: Michael R. May and Sebastian Höhna
+# authors: Michael R. May, Sebastian Höhna, and Priscilla Lau
 #
 ################################################################################
 
@@ -15,8 +15,8 @@
 ### Select the trait to analyze
 trait <- 1
 
-### Read in the trees
-T <- readTrees("data/primates_tree.nex")[1]
+### Read in the trees and specify the tree model
+tree <- readTrees("data/primates_tree.nex")[1]
 ntips     <- T.ntips()
 nbranches <- 2 * ntips - 2
 
@@ -29,23 +29,18 @@ data.includeCharacter( trait )
 moves    = VectorMoves()
 monitors = VectorMonitors()
 
-##########################
-# Specify the tree model #
-##########################
-
-tree <- T
 
 ##########################
 # Specify the rate model #
 ##########################
 
-# specify the rate parameter
-sigma2 ~ dnLoguniform(1e-3, 1)
+# specify the diffusion parameter
+root_age := tree.rootAge()
+sigma2 ~ dnLognormal( ln( data.var(trait) / root_age ), 1.1748 )
 moves.append( mvScale(sigma2, weight=1.0) )
 
-# specify the strength parameter
-root_age := tree.rootAge()
-alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+# specify the attraction rate parameter
+alpha ~ dnLognormal( abs(ln(2.0) / (0.5 * root_age)), 1.1748 )
 moves.append( mvScale(alpha, weight=1.0) )
 
 # specify theta at the root of the tree

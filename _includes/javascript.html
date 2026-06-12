@@ -6,9 +6,9 @@
 <script type="text/javascript">
 // Add default language
 $(":not(code).highlighter-rouge").each(function() {
-  {% if page.code_layout %}
+  {% if include.code_layout %}
   if( this.classList == "highlighter-rouge") {
-    this.classList = "{{ page.code_layout }} highlighter-rouge";
+    this.classList = "{{ include.code_layout }} highlighter-rouge";
   }
   {% endif %}
 });
