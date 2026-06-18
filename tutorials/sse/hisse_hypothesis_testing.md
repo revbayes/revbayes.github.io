@@ -160,6 +160,15 @@ q[3][4] := q_0B1B
 q[4][3] := q_1B0B
 {% endsnippet %}
 
+Alternatively, the matrix can be specified directly as follows:
+
+```
+q := [ [0,      q_0A1A, q_0A0B, 0     ],
+       [q_1A0A, 0,      0,      q_1A1B],
+       [q_0B0A, 0,      0,      q_0B1B],
+       [0,      q_1B1A, q_1B0B, 0     ] ]
+```
+
 To generate the final rate matrix, we use the `fnFreeK` function instead of `fnHiddenStateRateMatrix`, since the latter does not allow all asymmetric transition rates.
 
 {% snippet scripts/hisse_8_transitions.Rev %}
