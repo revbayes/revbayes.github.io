@@ -1333,23 +1333,9 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">ConditionalPosteriorOrdinate</code> - Conditional posterior ordinate (a.k.a. cross-validation)</p>
+        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">stop</code></p>
 </h2>
 
-        
-            <div class="help-description">
-            Model selection via leave-one-out cross-validation. Cross-validation assesses
-the fit of a model by using a subset of the data to estimate parameters (i.e.,
-train the model) and the remaining observations to evaluate the predictive
-fitness. In the most extreme case of leave-­one-­out cross-­validation, we use all
-but one observation to estimate the parameters, P(\theta | X(−i)), then compute
-the probability of observing the removed data point, P(Xi | \theta), integrate
-over all parameters:
-    P(Xi | X(−i)) = \int p(Xi | \theta) p(\theta | X(−i)) d\theta
-    
-and repeat this process for all data points.
-
-            </div>
         
 
         
@@ -1358,42 +1344,22 @@ and repeat this process for all data points.
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            ConditionalPosteriorOrdinate(<a href="/documentation/String.html">String</a> filename, <a href="/documentation/String.html">String</a>[] columnNamesToSkip, <a href="/documentation/String.html">String</a> separator)
+            stop(<a href="/documentation/String.html">String</a> msg)
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
                 
                 <tr>
-                    <td class="lhs argument">filename : </td>
+                    <td class="lhs argument">msg : </td>
                     <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The name of the file where the likelhood samples are stored.</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">columnNamesToSkip : </td>
-                    <td class="rhs argument"><a href="/documentation/String.html">String</a>[] (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The names of the columns that we are going to skip.</td>
+                    <td class="lhs"/><td class="rhs">The error message to display.</td>
                 </tr>
                 
                 <tr>
-                    <td class="lhs"/><td class="rhs">Default : [ Iteration, Posterior, Likelihood, Prior, Replicate_ID ]</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">separator : </td>
-                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is 'white space', that is one or more spaces, tabs, newlines or carriage returns.</td>
+                    <td class="lhs"/><td class="rhs">Default : Execution halted by user.</td>
                 </tr>
                 
                 
@@ -1403,64 +1369,18 @@ and repeat this process for all data points.
         
 
         
-
-        
-            <h3 class="help-section-header">Details</h3>
+            <h3 class="help-section-header">Return Type</h3>
             <div class="help-section-body">
-            A cross-validation analysis assumes that one has a trace of samples of the
-probabilities for each data point (e.g., site or column) from one's data stored
-in a file. Each data point probability is important for the computation of the
-leave-one-out cross-validation probability. We read in this trace using the
-function `ConditionalPosteriorOrdinate`. This "constructor" function requires
-the `filename` as an argument.
-
-Then, you can calculate the leave-one-out cross-validation probability using
-the member method `.predictiveProbability()`. In the current implementation,
-the member method `.predictiveProbability()` requires two arguments:
-the `counts`, which are a vector of observations as real numbers; and `log`,
-which indicates whether the probabilities in the trace are log-transformed.
-The method returns the leave-one-out cross-validation probability.
-
+            <a href="void.html">void</a>
             </div>
         
 
         
-            <h3 class="help-section-header">Example</h3>
-            
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create a vector of observations (e.g., site frequency spectrum)
-obs_sfs = [ 305082, 44248, 32223, 28733, 28220, 26205, 27477, 26618, 27533, 26945, 28736, 28671, 31277, 31250, 34352, 34859, 38331 ]
-
-# Read a pre-existing trace and construct the analysis object
-cpo = ConditionalPosteriorOrdinate( filename="output/StairwayPlot_esfs.log" )
-
-# Calculate the leave-one-out cross-validation probability
-cpo.predictiveProbability( obs_sfs, log=FALSE )
-</code></pre></div></div>
 
         
 
         
-            <h3 class="help-section-header">Methods</h3>
-            <div class="help-section-body">
-            <ul class="list-unstyled methods">
-            
-            <li>predictiveProbability(<a href="/documentation/RealPos.html">RealPos</a>[] counts, <a href="/documentation/Bool.html">Bool</a> log, <a href="/documentation/Bool.html">Bool</a> folded)</li>
-            
-            </ul>
-            </div>
-        
 
-        
-            <h3 class="help-section-header">See Also</h3>
-            <div class="help-section-body">
-            <ul class="list-unstyled">
-            
-            <li><a href="pathSampler.html">pathSampler</a></li>
-            
-            <li><a href="steppingStoneSampler.html">steppingStoneSampler</a></li>
-            
-            </ul>
-            </div>
         
 
         
@@ -1471,7 +1391,7 @@ cpo.predictiveProbability( obs_sfs, log=FALSE )
 
         <h3 class="help-section-header"></h3>
         <div class="help-section-header" text-align="right">
-        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/ConditionalPosteriorOrdinate.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/stop.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
         </div>
     
 </div>
