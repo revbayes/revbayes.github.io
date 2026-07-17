@@ -10377,6 +10377,28 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'stop'
+  return_type: 'void'
+  usage: 'stop(String<any> msg)'
+  arguments:
+    - label: 'msg'
+      description: 'The error message to display.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'String'
+      default: 'Execution halted by user.'
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'structure'
   return_type: 'void'
   usage: 'structure(RevObject<any> x, Bool<any> verbose)'
@@ -15679,6 +15701,22 @@
           value_type: 'RealPos'
           default:
           options:
+    - usage: '_add(Distribution__Real|Distribution__RealPos|Distribution__Probability<any> baseDistribution, Real<any> delta)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'delta'
+          description: 'The amount added to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
   methods:
   references:
 - name: '_mul'
@@ -15708,6 +15746,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
+          options:
+    - usage: '_mul(Distribution__RealPos|Distribution__Probability<any> baseDistribution, RealPos<any> lambda)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The amount muled to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+    - usage: '_mul(Distribution__Real|Distribution__RealPos|Distribution__Probability<any> baseDistribution, Real<any> lambda)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The amount muled to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
           default:
           options:
   methods:
@@ -15740,6 +15810,22 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
+          options:
+    - usage: '_sub(Real<any> first, Distribution__Real|Distribution__RealPos|Distribution__Probability<any> secondDistribution)'
+      arguments:
+        - label: 'first'
+          description: 'The amount sub2ed to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+        - label: 'secondDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
           default:
           options:
   methods:
@@ -17851,6 +17937,43 @@
           value_type: 'Bool'
           default: 'FALSE'
           options:
+    - usage: 'dnConstrainedTopology(Distribution__BranchLengthTree<any> treeDistribution, Clade[]<any> constraints, BranchLengthTree<any> initialTree, BranchLengthTree|BranchLengthTree[]<any> backbone, Bool<any> inverse)'
+      arguments:
+        - label: 'treeDistribution'
+          description: 'The base distribution for the tree.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Distribution__BranchLengthTree'
+          default:
+          options:
+        - label: 'constraints'
+          description: 'The topological constraints.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Clade[]'
+          default: '[ ]'
+          options:
+        - label: 'initialTree'
+          description: 'Instead of drawing a tree from the distribution, initialize distribution with this tree.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'BranchLengthTree'
+          default: 'NULL'
+          options:
+        - label: 'backbone'
+          description: 'The backbone topological constraints.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'BranchLengthTree'
+          default: 'NULL'
+          options:
+        - label: 'inverse'
+          description: 'Should the constraint be inverted?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
   methods:
   references:
 - name: 'dnConstrainedTopologySSE'
@@ -17980,6 +18103,121 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'numElements'
+          description: 'The number of elements drawn from this distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnDPP(RealPos<any> concentration, Distribution__RealPos<any> baseDistribution, Natural<any> numElements)'
+      arguments:
+        - label: 'concentration'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+        - label: 'numElements'
+          description: 'The number of elements drawn from this distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnDPP(RealPos<any> concentration, Distribution__Natural<any> baseDistribution, Natural<any> numElements)'
+      arguments:
+        - label: 'concentration'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'numElements'
+          description: 'The number of elements drawn from this distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnDPP(RealPos<any> concentration, Distribution__Integer<any> baseDistribution, Natural<any> numElements)'
+      arguments:
+        - label: 'concentration'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Integer'
+          default:
+          options:
+        - label: 'numElements'
+          description: 'The number of elements drawn from this distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnDPP(RealPos<any> concentration, Distribution__Probability<any> baseDistribution, Natural<any> numElements)'
+      arguments:
+        - label: 'concentration'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability'
+          default:
+          options:
+        - label: 'numElements'
+          description: 'The number of elements drawn from this distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnDPP(RealPos<any> concentration, Distribution__Simplex<any> baseDistribution, Natural<any> numElements)'
+      arguments:
+        - label: 'concentration'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Simplex'
           default:
           options:
         - label: 'numElements'
@@ -18199,6 +18437,51 @@
           value_type: 'Distribution__Natural'
           default:
           options:
+    - usage: 'dnEmpiricalSample(Distribution__Real<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+    - usage: 'dnEmpiricalSample(Distribution__RealPos<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+    - usage: 'dnEmpiricalSample(Distribution__TimeTree<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__TimeTree'
+          default:
+          options:
+    - usage: 'dnEmpiricalSample(Distribution__TimeTree[]<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__TimeTree[]'
+          default:
+          options:
+    - usage: 'dnEmpiricalSample(Distribution__BranchLengthTree<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__BranchLengthTree'
+          default:
+          options:
   methods:
   references:
 - name: 'dnEmpiricalTree'
@@ -18375,6 +18658,70 @@
           value_type: 'Distribution__Real'
           default:
           options:
+    - usage: 'dnEvent(Distribution__Natural<any> eventDistribution, Distribution__RealPos<any> valueDistribution)'
+      arguments:
+        - label: 'eventDistribution'
+          description: 'The prior on the number of events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+    - usage: 'dnEvent(Distribution__Natural<any> eventDistribution, Distribution__Natural<any> valueDistribution)'
+      arguments:
+        - label: 'eventDistribution'
+          description: 'The prior on the number of events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+    - usage: 'dnEvent(Distribution__Natural<any> eventDistribution, Distribution__Integer<any> valueDistribution)'
+      arguments:
+        - label: 'eventDistribution'
+          description: 'The prior on the number of events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Integer'
+          default:
+          options:
+    - usage: 'dnEvent(Distribution__Natural<any> eventDistribution, Distribution__Probability<any> valueDistribution)'
+      arguments:
+        - label: 'eventDistribution'
+          description: 'The prior on the number of events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability'
+          default:
+          options:
   methods:
   references:
 - name: 'dnExponential'
@@ -18413,6 +18760,22 @@
           pass_by: 'const reference'
           value_type: 'RealPos'
           default: '0'
+          options:
+    - usage: 'dnExponential(RealPos<any> lambda, Real<any> offset)'
+      arguments:
+        - label: 'lambda'
+          description: 'The rate parameter ( rate = 1/mean ) of the distribution.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'offset'
+          description: 'The offset parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
           options:
   methods:
   references:
@@ -19282,6 +19645,22 @@
           value_type: 'RealPos'
           default:
           options:
+    - usage: 'dnHalfCauchy(RealPos<any> location, RealPos<any> scale)'
+      arguments:
+        - label: 'location'
+          description: 'The location parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'scale'
+          description: 'The scale parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
   methods:
   references:
 - name: 'dnHalfNormal'
@@ -19333,6 +19712,22 @@
           value_type: 'RealPos'
           default:
           options:
+    - usage: 'dnHalfNormal(RealPos<any> offset, RealPos<any> sd)'
+      arguments:
+        - label: 'offset'
+          description: 'The offset parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'sd'
+          description: 'The standard deviation parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
   methods:
   references:
 - name: 'dnIID'
@@ -19363,6 +19758,70 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
+          options:
+    - usage: 'dnIID(Natural<any> numValues, Distribution__RealPos<any> valueDistribution)'
+      arguments:
+        - label: 'numValues'
+          description: 'The number of IID samples.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+    - usage: 'dnIID(Natural<any> numValues, Distribution__Natural<any> valueDistribution)'
+      arguments:
+        - label: 'numValues'
+          description: 'The number of IID samples.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+    - usage: 'dnIID(Natural<any> numValues, Distribution__Integer<any> valueDistribution)'
+      arguments:
+        - label: 'numValues'
+          description: 'The number of IID samples.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Integer'
+          default:
+          options:
+    - usage: 'dnIID(Natural<any> numValues, Distribution__Probability<any> valueDistribution)'
+      arguments:
+        - label: 'numValues'
+          description: 'The number of IID samples.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability'
           default:
           options:
   methods:
@@ -19629,6 +20088,15 @@
           value_type: 'Distribution__Real'
           default:
           options:
+    - usage: 'dnLog(Distribution__Real[]|Distribution__RealPos[]|Distribution__Probability[]<any> logDistribution)'
+      arguments:
+        - label: 'logDistribution'
+          description: 'The distribution in log-space.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
+          default:
+          options:
   methods:
   references:
 - name: 'dnLogExponential'
@@ -19711,6 +20179,29 @@
           value_type: 'RealPos'
           default: '0'
           options:
+    - usage: 'dnLognormal(Real<any> mean, RealPos<any> sd, Real<any> offset)'
+      arguments:
+        - label: 'mean'
+          description: 'The mean in log-space (observed mean is exp(m)).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+        - label: 'sd'
+          description: 'The standard deviation in log-space.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'offset'
+          description: 'The offset in real-space.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
   methods:
   references:
 - name: 'dnLoguniform'
@@ -19786,6 +20277,86 @@
           value_type: 'Distribution__Real'
           default:
           options:
+    - usage: 'dnMarkovEvents(OrderedEventTimes<any> eventTimes, Distribution__RealPos<any> baseDistribution)'
+      arguments:
+        - label: 'eventTimes'
+          description: 'The times of the events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'OrderedEventTimes'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per event values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+    - usage: 'dnMarkovEvents(OrderedEventTimes<any> eventTimes, Distribution__Probability<any> baseDistribution)'
+      arguments:
+        - label: 'eventTimes'
+          description: 'The times of the events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'OrderedEventTimes'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per event values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability'
+          default:
+          options:
+    - usage: 'dnMarkovEvents(OrderedEventTimes<any> eventTimes, Distribution__Real[]<any> baseDistribution)'
+      arguments:
+        - label: 'eventTimes'
+          description: 'The times of the events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'OrderedEventTimes'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per event values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
+          default:
+          options:
+    - usage: 'dnMarkovEvents(OrderedEventTimes<any> eventTimes, Distribution__RealPos[]<any> baseDistribution)'
+      arguments:
+        - label: 'eventTimes'
+          description: 'The times of the events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'OrderedEventTimes'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per event values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos[]'
+          default:
+          options:
+    - usage: 'dnMarkovEvents(OrderedEventTimes<any> eventTimes, Distribution__Probability[]<any> baseDistribution)'
+      arguments:
+        - label: 'eventTimes'
+          description: 'The times of the events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'OrderedEventTimes'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The base distribution for the per event values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability[]'
+          default:
+          options:
   methods:
   references:
 - name: 'dnMarkovTimes'
@@ -19850,6 +20421,150 @@
           value_type: 'Simplex'
           default:
           options:
+    - usage: 'dnMixture(RealPos[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(Natural[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(Integer[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Integer[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(Probability[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(Simplex[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(Real[][]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real[][]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(RealPos[][]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[][]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(RateGenerator[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RateGenerator[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixture(TimeTree[]<any> values, Simplex<any> probabilities)'
+      arguments:
+        - label: 'values'
+          description: 'The potential values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
   methods:
   references:
 - name: 'dnMixtureAnalytical'
@@ -19882,6 +20597,134 @@
           value_type: 'Simplex'
           default:
           options:
+    - usage: 'dnMixtureAnalytical(Distribution__RealPos[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__Natural[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__Integer[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Integer[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__Probability[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__Simplex[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Simplex[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__Real[][]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[][]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__RealPos[][]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos[][]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+    - usage: 'dnMixtureAnalytical(Distribution__TimeTree[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__TimeTree[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
   methods:
   references:
 - name: 'dnMixtureVector'
@@ -19905,6 +20748,29 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilities for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+        - label: 'numValues'
+          description: 'The number of values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+    - usage: 'dnMixtureVector(Distribution__RealPos[]<any> baseDistributions, Simplex<any> probabilities, Natural<any> numValues)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos[]'
           default:
           options:
         - label: 'probabilities'
@@ -20506,6 +21372,66 @@
           pass_by: 'const reference'
           value_type: 'RealPos'
           default: '1'
+          options:
+    - usage: 'dnNormal(Real<any> mean, RealPos<any> sd, Real<any> min, Real<any> max)'
+      arguments:
+        - label: 'mean'
+          description: 'The mean parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default: '0'
+          options:
+        - label: 'sd'
+          description: 'The standard deviation parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'min'
+          description: 'The minimum.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+        - label: 'max'
+          description: 'The maximum.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+    - usage: 'dnNormal(Real<any> mean, RealPos<any> sd, RealPos<any> min, RealPos<any> max)'
+      arguments:
+        - label: 'mean'
+          description: 'The mean parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default: '0'
+          options:
+        - label: 'sd'
+          description: 'The standard deviation parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'min'
+          description: 'The minimum.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'max'
+          description: 'The maximum.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -22639,6 +23565,15 @@
           value_type: 'Real'
           default:
           options:
+    - usage: 'dnPointMass(RealPos<any> value)'
+      arguments:
+        - label: 'value'
+          description: 'The value where mass is concentrated.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
   methods:
   references:
 - name: 'dnPoisson'
@@ -22703,6 +23638,190 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(RealPos<any> constantValue, Distribution__RealPos<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(Natural<any> constantValue, Distribution__Natural<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(Integer<any> constantValue, Distribution__Integer<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Integer'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Integer'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(Probability<any> constantValue, Distribution__Probability<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(Simplex<any> constantValue, Distribution__Simplex<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Simplex'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(Natural[]<any> constantValue, Distribution__Natural[]<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural[]'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural[]'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(TimeTree<any> constantValue, Distribution__TimeTree<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__TimeTree'
+          default:
+          options:
+        - label: 'p'
+          description: 'The probability of being the fixed value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+    - usage: 'dnReversibleJumpMixture(BranchLengthTree<any> constantValue, Distribution__BranchLengthTree<any> baseDistribution, Probability<any> p)'
+      arguments:
+        - label: 'constantValue'
+          description: 'The fixed value this distribution can take.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'BranchLengthTree'
+          default:
+          options:
+        - label: 'baseDistribution'
+          description: 'The distribution from which the value is alternatively drawn.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__BranchLengthTree'
           default:
           options:
         - label: 'p'
@@ -23283,6 +24402,38 @@
           value_type: 'Real'
           default:
           options:
+    - usage: 'dnUniform(RealPos<any> lower, RealPos<any> upper)'
+      arguments:
+        - label: 'lower'
+          description: 'The lower bound.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'upper'
+          description: 'The upper bound.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+    - usage: 'dnUniform(Probability<any> lower, Probability<any> upper)'
+      arguments:
+        - label: 'lower'
+          description: 'Lower bound.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
+        - label: 'upper'
+          description: 'Upper bound.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default:
+          options:
   methods:
   references:
 - name: 'dnUniformInteger'
@@ -23625,6 +24776,22 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
+          options:
+        - label: 'numSamples'
+          description: 'The number of samples in the weighted average.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
+          options:
+    - usage: 'dnWeightedSample(Distribution__AbstractHomologousDiscreteCharacterData|Distribution__AbstractHomologousDiscreteCharacterData[]<any> baseDistribution, Natural<any> numSamples)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The base distribution(s) for the sampled values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__AbstractHomologousDiscreteCharacterData'
           default:
           options:
         - label: 'numSamples'
@@ -34296,16 +35463,27 @@
     tends to unity (1) as the runs converge.
     
     The number of samples to be removed as burnin before calculating the test
-    statistic is determined using the `burninMethod`. Different burnin lengths are
-    tested, increasing from 0 to 50% (for `ESS`) or 100% (for `SEM`) of the length
-    of the trace in increments of 10 samples. If the `ESS` option is chosen
-    (default), effective sample sizes (ESS) are calculated for all monitored
-    parameters after removing the number of samples corresponding to each candidate
-    burnin length. The best burnin length for a given parameter is the one that
-    maximizes its ESS value. If the `SEM` option is chosen, the standard error of
-    the mean (SEM) is calculated instead, and the best burnin length for a given
-    parameter is the one that minimizes its SEM value. In both cases, the final
-    burnin length is set to the maximum of the parameter-specific burnin lengths.
+    statistic is determined using the `burninMethod`. If the `"ESS"` (default) or
+    `"SEM"` options are chosen, different burnin lengths are tested, increasing
+    from 0 to 50% (for `"ESS"`) or 100% (for `"SEM"`) of the length of the trace in
+    increments of 10 samples. The `"ESS"` option calculates effective sample sizes
+    (ESS) for all monitored parameters after removing the number of samples
+    corresponding to each candidate burnin length. The best burnin length for a
+    given parameter is the one that maximizes its ESS value. The `"SEM"` option
+    instead calculates the standard error of the mean (SEM), and the best burnin
+    length for a given parameter is the one that minimizes its SEM value. In both
+    cases, the final burnin length is set to the maximum of the parameter-specific
+    burnin lengths.
+    
+    Alternatively, the user may set `burninMethod` to `"fixed"`, which discards a
+    constant fraction of the samples collected up to that point. This fraction can
+    be specified using the `burnin` argument, and is set to 0.25 by default. The
+    `burnin` argument has no effect if the `"ESS"` or `"SEM"` options are chosen,
+    and a corresponding warning is displayed if the user explicitly sets the
+    argument without specifying `burninMethod="fixed"`. The `"fixed"` option is 
+    appropriate for analyses with very long parameter traces and large numbers of
+    monitored variables, for which the automatic burnin determination may be too
+    computationally demanding.
     
     See also the tutorial on [convergence assessment](https://revbayes.github.io/tutorials/convergence/).
   example: |
@@ -34347,7 +35525,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'srGelmanRubin(RealPos<any> R, String<any> filename, Natural<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"})'
+    - usage: 'srGelmanRubin(RealPos<any> R, String<any> filename, IntegerPos<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"|"fixed"}, Probability<any> burnin)'
       arguments:
         - label: 'R'
           description: 'The maximum allowed potential scale reduction factor.'
@@ -34367,7 +35545,7 @@
           description: 'The frequency how often to check for convergence.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'Natural'
+          value_type: 'IntegerPos'
           default: '10000'
           options:
         - label: 'burninMethod'
@@ -34379,6 +35557,14 @@
           options:
             - 'ESS'
             - 'SEM'
+            - 'fixed'
+        - label: 'burnin'
+          description: 'The fraction of samples to discard as burnin (only used when burninMethod is "fixed").'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.25'
+          options:
   methods:
   references:
     - citation: 'Gelman A, Rubin DB (1992). Inference from iterative simulation using multiple sequences. Statistical Science, 7(4):457--472.'
@@ -34408,16 +35594,27 @@
     be strictly less than 1.
     
     The number of samples to be removed as burnin before calculating the test
-    statistic is determined using the `burninMethod`. Different burnin lengths are
-    tested, increasing from 0 to 50% (for `ESS`) or 100% (for `SEM`) of the length
-    of the trace in increments of 10 samples. If the `ESS` option is chosen
-    (default), effective sample sizes (ESS) are calculated for all monitored
-    parameters after removing the number of samples corresponding to each candidate
-    burnin length. The best burnin length for a given parameter is the one that
-    maximizes its ESS value. If the `SEM` option is chosen, the standard error of
-    the mean (SEM) is calculated instead, and the best burnin length for a given
-    parameter is the one that minimizes its SEM value. In both cases, the final
-    burnin length is set to the maximum of the parameter-specific burnin lengths.
+    statistic is determined using the `burninMethod`. If the `"ESS"` (default) or
+    `"SEM"` options are chosen, different burnin lengths are tested, increasing
+    from 0 to 50% (for `"ESS"`) or 100% (for `"SEM"`) of the length of the trace in
+    increments of 10 samples. The `"ESS"` option calculates effective sample sizes
+    (ESS) for all monitored parameters after removing the number of samples
+    corresponding to each candidate burnin length. The best burnin length for a
+    given parameter is the one that maximizes its ESS value. The `"SEM"` option
+    instead calculates the standard error of the mean (SEM), and the best burnin
+    length for a given parameter is the one that minimizes its SEM value. In both
+    cases, the final burnin length is set to the maximum of the parameter-specific
+    burnin lengths.
+    
+    Alternatively, the user may set `burninMethod` to `"fixed"`, which discards a
+    constant fraction of the samples collected up to that point. This fraction can
+    be specified using the `burnin` argument, and is set to 0.25 by default. The
+    `burnin` argument has no effect if the `"ESS"` or `"SEM"` options are chosen,
+    and a corresponding warning is displayed if the user explicitly sets the
+    argument without specifying `burninMethod="fixed"`. The `"fixed"` option is 
+    appropriate for analyses with very long parameter traces and large numbers of
+    monitored variables, for which the automatic burnin determination may be too
+    computationally demanding.
     
     See also the tutorial on [convergence assessment](https://revbayes.github.io/tutorials/convergence/).
     
@@ -34460,7 +35657,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'srGeweke(Probability<any> prob, Probability<any> frac1, Probability<any> frac2, String<any> filename, Natural<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"})'
+    - usage: 'srGeweke(Probability<any> prob, Probability<any> frac1, Probability<any> frac2, String<any> filename, IntegerPos<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"|"fixed"}, Probability<any> burnin)'
       arguments:
         - label: 'prob'
           description: 'The significance level.'
@@ -34494,7 +35691,7 @@
           description: 'The frequency how often to check for convergence.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'Natural'
+          value_type: 'IntegerPos'
           default: '10000'
           options:
         - label: 'burninMethod'
@@ -34506,6 +35703,14 @@
           options:
             - 'ESS'
             - 'SEM'
+            - 'fixed'
+        - label: 'burnin'
+          description: 'The fraction of samples to discard as burnin (only used when burninMethod is "fixed").'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.25'
+          options:
   methods:
   references:
     - citation: 'Geweke J (1992). Evaluating the accuracy of sampling-based approaches to calculating posterior moments. Pp. 169--194 in Bernado M, Berger JO, Dawid AP, Smith AFM, eds. Bayesian Statistics 4. Clarendon Press, Oxford, UK.'
@@ -34643,16 +35848,27 @@
     the number of indepedent samples in the final, pooled posterior sample.
     
     The number of samples to be removed as burnin before calculating the test
-    statistic is determined using the `burninMethod`. Different burnin lengths are
-    tested, increasing from 0 to 50% (for `ESS`) or 100% (for `SEM`) of the length
-    of the trace in increments of 10 samples. If the `ESS` option is chosen
-    (default), ESS is calculated for all monitored parameters after removing the
-    number of samples corresponding to each candidate burnin length. The best
-    burnin length for a given parameter is the one that maximizes its ESS value.
-    If the `SEM` option is chosen, the standard error of the mean (SEM) is
-    calculated instead, and the best burnin length for a given parameter is the one
-    that minimizes its SEM value. In both cases, the final burnin length is set to
-    the maximum of the parameter-specific burnin lengths.
+    statistic is determined using the `burninMethod`. If the `"ESS"` (default) or
+    `"SEM"` options are chosen, different burnin lengths are tested, increasing
+    from 0 to 50% (for `"ESS"`) or 100% (for `"SEM"`) of the length of the trace in
+    increments of 10 samples. The `"ESS"` option calculates effective sample sizes
+    (ESS) for all monitored parameters after removing the number of samples
+    corresponding to each candidate burnin length. The best burnin length for a
+    given parameter is the one that maximizes its ESS value. The `"SEM"` option
+    instead calculates the standard error of the mean (SEM), and the best burnin
+    length for a given parameter is the one that minimizes its SEM value. In both
+    cases, the final burnin length is set to the maximum of the parameter-specific
+    burnin lengths.
+    
+    Alternatively, the user may set `burninMethod` to `"fixed"`, which discards a
+    constant fraction of the samples collected up to that point. This fraction can
+    be specified using the `burnin` argument, and is set to 0.25 by default. The
+    `burnin` argument has no effect if the `"ESS"` or `"SEM"` options are chosen,
+    and a corresponding warning is displayed if the user explicitly sets the
+    argument without specifying `burninMethod="fixed"`. The `"fixed"` option is 
+    appropriate for analyses with very long parameter traces and large numbers of
+    monitored variables, for which the automatic burnin determination may be too
+    computationally demanding.
     
     The [convergence assessment](https://revbayes.github.io/tutorials/convergence/)
     tutorial contains a discusson on the calculation and interpretation of the ESS
@@ -34695,7 +35911,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'srMinESS(RealPos<any> minEss, String<any> filename, Natural<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"})'
+    - usage: 'srMinESS(RealPos<any> minEss, String<any> filename, IntegerPos<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"|"fixed"}, Probability<any> burnin)'
       arguments:
         - label: 'minEss'
           description: 'The minimum ESS threshold when stopping is allowed.'
@@ -34715,7 +35931,7 @@
           description: 'The frequency how often to check for convergence.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'Natural'
+          value_type: 'IntegerPos'
           default: '10000'
           options:
         - label: 'burninMethod'
@@ -34727,6 +35943,14 @@
           options:
             - 'ESS'
             - 'SEM'
+            - 'fixed'
+        - label: 'burnin'
+          description: 'The fraction of samples to discard as burnin (only used when burninMethod is "fixed").'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.25'
+          options:
   methods:
   references:
     - citation: 'Guimarães Fabreti L, Höhna S (2022). Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution, 13(1):77--90.'
@@ -34745,16 +35969,27 @@
     calculated when two or more independent runs are performed.
     
     The number of samples to be removed as burnin before calculating the test
-    statistic is determined using the `burninMethod`. Different burnin lengths are
-    tested, increasing from 0 to 50% (for `ESS`) or 100% (for `SEM`) of the length
-    of the trace in increments of 10 samples. If the `ESS` option is chosen
-    (default), effective sample sizes (ESS) are calculated for all monitored
-    parameters after removing the number of samples corresponding to each candidate
-    burnin length. The best burnin length for a given parameter is the one that
-    maximizes its ESS value. If the `SEM` option is chosen, the standard error of
-    the mean (SEM) is calculated instead, and the best burnin length for a given
-    parameter is the one that minimizes its SEM value. In both cases, the final
-    burnin length is set to the maximum of the parameter-specific burnin lengths.
+    statistic is determined using the `burninMethod`. If the `"ESS"` (default) or
+    `"SEM"` options are chosen, different burnin lengths are tested, increasing
+    from 0 to 50% (for `"ESS"`) or 100% (for `"SEM"`) of the length of the trace in
+    increments of 10 samples. The `"ESS"` option calculates effective sample sizes
+    (ESS) for all monitored parameters after removing the number of samples
+    corresponding to each candidate burnin length. The best burnin length for a
+    given parameter is the one that maximizes its ESS value. The `"SEM"` option
+    instead calculates the standard error of the mean (SEM), and the best burnin
+    length for a given parameter is the one that minimizes its SEM value. In both
+    cases, the final burnin length is set to the maximum of the parameter-specific
+    burnin lengths.
+    
+    Alternatively, the user may set `burninMethod` to `"fixed"`, which discards a
+    constant fraction of the samples collected up to that point. This fraction can
+    be specified using the `burnin` argument, and is set to 0.25 by default. The
+    `burnin` argument has no effect if the `"ESS"` or `"SEM"` options are chosen,
+    and a corresponding warning is displayed if the user explicitly sets the
+    argument without specifying `burninMethod="fixed"`. The `"fixed"` option is 
+    appropriate for analyses with very long parameter traces and large numbers of
+    monitored variables, for which the automatic burnin determination may be too
+    computationally demanding.
     
     See also the tutorial on [convergence assessment](https://revbayes.github.io/tutorials/convergence/).
   example: |
@@ -34796,7 +36031,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'srStationarity(Probability<any> prob, String<any> filename, Natural<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"})'
+    - usage: 'srStationarity(Probability<any> prob, String<any> filename, IntegerPos<any> frequency, String<any> burninMethod {valid options: "ESS"|"SEM"|"fixed"}, Probability<any> burnin)'
       arguments:
         - label: 'prob'
           description: 'The significance level.'
@@ -34816,7 +36051,7 @@
           description: 'The frequency how often to check for convergence.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'Natural'
+          value_type: 'IntegerPos'
           default: '10000'
           options:
         - label: 'burninMethod'
@@ -34828,6 +36063,14 @@
           options:
             - 'ESS'
             - 'SEM'
+            - 'fixed'
+        - label: 'burnin'
+          description: 'The fraction of samples to discard as burnin (only used when burninMethod is "fixed").'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.25'
+          options:
   methods:
   references:
     - citation: 'Hill SD, Spall JC (2011). Stationarity and convergence of the Metropolis-Hastings algorithm: insights into theoretical aspects. IEEE Control Systems Magazine 39(1):56--67.'
@@ -35135,6 +36378,15 @@
           value_type: 'Distribution__Real'
           default:
           options:
+    - usage: 'tnExp(Distribution__Real[]|Distribution__RealPos[]|Distribution__Probability[]<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
+          default:
+          options:
   methods:
   references:
 - name: 'tnInvlogit'
@@ -35176,6 +36428,15 @@
           value_type: 'Distribution__Real'
           default:
           options:
+    - usage: 'tnInvlogit(Distribution__Real[]|Distribution__RealPos[]|Distribution__Probability[]<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
+          default:
+          options:
   methods:
   references:
 - name: 'tnLog'
@@ -35215,6 +36476,15 @@
           value_type: 'Distribution__RealPos'
           default:
           options:
+    - usage: 'tnLog(Distribution__RealPos[]|Distribution__Probability[]|Distribution__Simplex<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos[]'
+          default:
+          options:
   methods:
   references:
 - name: 'tnLogit'
@@ -35251,6 +36521,15 @@
           value_type: 'Distribution__Probability'
           default:
           options:
+    - usage: 'tnLogit(Distribution__Probability[]|Distribution__Simplex<any> baseDistribution)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Probability[]'
+          default:
+          options:
   methods:
   references:
 - name: 'tnScale'
@@ -35284,6 +36563,38 @@
           value_type: 'Probability'
           default:
           options:
+    - usage: 'tnScale(Distribution__RealPos|Distribution__Probability<any> baseDistribution, RealPos<any> lambda)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__RealPos'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The amount muled to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+    - usage: 'tnScale(Distribution__Real|Distribution__RealPos|Distribution__Probability<any> baseDistribution, Real<any> lambda)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The amount muled to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
   methods:
   references:
 - name: 'tnShift'
@@ -35315,6 +36626,22 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
+          options:
+    - usage: 'tnShift(Distribution__Real|Distribution__RealPos|Distribution__Probability<any> baseDistribution, Real<any> delta)'
+      arguments:
+        - label: 'baseDistribution'
+          description: 'The distribution to be transformed.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+        - label: 'delta'
+          description: 'The amount added to base random variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
           default:
           options:
   methods:
