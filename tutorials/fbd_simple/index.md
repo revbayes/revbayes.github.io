@@ -141,7 +141,7 @@ The Mk model assumes that all transitions from one state to another occur at the
 tutorial all have two states, we will specifically be using a model where $k=2$. 
 Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. 
 For this tutorial, we focus on binary (2-state) characters for simplicity, but it is important to note that RevBayes can also accommodate 
-[multistate characters]({% page_url morph_tree/V2 %}) as well.
+[multistate characters]({% page_url morph_tree/multistate %}) as well.
 
 The evolution of discrete morphological characters is thought to occur at a very slow rate.
 Moreover, once some characters transition to a certain state, they rarely transition back, which means that the assumption of symmetric rates is likely violated my many empirical datasets {% cite Wright2016 Wright2019 %}. 
