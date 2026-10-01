@@ -105,7 +105,7 @@ With these values, the threshold for the KS test is ${D}_{crit}$ = 0.0921.
 To date, the most often test to assess convergence of split frequencies is the *average standard deviation of split frequencies* (ASDSF) {% cite Nylander2008 %}. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure {% ref difference_split_frequencies %}).
 
 {% figure difference_split_frequencies %}
-<img src="figures/difference_split_frequencies.png" width="500"  />
+<img src="figures/difference_split_frequencies.jpg" width="500"  />
 {% figcaption %}
 The expected difference in split frequencies for ESS of 100, 200 and 625. The x-axis is the true value of the split frequency. The y-axis is the expected difference in split frequencies. The effect of increasing the ESS is the decrease of differences in frequency of sampled splits.
 {% endfigcaption %}
@@ -370,5 +370,3 @@ We can divide our MCMC that lack convergence by the number of parameters that fa
 
 For the first case, we should adjust the MCMC to be more efficient. This can be done by increasing the weights on the moves of the parameters that failed, using other MCMC algorithms (such as adaptive MCMC or Metropolis-Coupled MCMC), increasing the number of iterations, etc. 
 In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
-
-
