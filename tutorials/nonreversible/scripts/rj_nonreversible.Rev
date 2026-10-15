@@ -1,0 +1,74 @@
+################################################################################
+#
+# RevBayes tutorial: testing for non-reversible substitution
+#
+# Reversible-jump MCMC between the time-reversible and non-reversible nucleotide
+# substitution models, on a fixed tree topology with branch lengths and root
+# position sampled. The prior odds on the two models are adapted during burn-in
+# so that the chain visits both about equally often. The Bayes factor is recovered from
+# the frequency of visits and the frozen odds (see the tutorial text).
+#
+# authors: John Huelsenbeck, Sebastian Hohna, Matthias Koppe
+#
+################################################################################
+
+DATASET = "anolis"
+
+seed( 12345 )
+
+aln <- readDiscreteCharacterData("data/" + DATASET + ".nex")
+n_taxa <- aln.size()
+taxa <- aln.taxa()
+rooted_tree <- readBranchLengthTrees("data/" + DATASET + ".tre")[1]
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+# Tree: fixed topology; branch lengths and root position sampled
+tree ~ dnUniformTopologyBranchLength( branchLengthDistribution=dnExp(10.0), taxa, rooted=TRUE )
+tree.setValue( rooted_tree )
+TL := tree.treeLength()
+
+moves.append( mvBranchLengthScale( tree, weight=n_taxa*2-1 ) )
+moves.append( mvReversibilityAwareBranchLengthScale( tree, weight=n_taxa*2-1 ) )
+moves.append( mvMPQTree( tree=tree, updateRoot=TRUE, weight=n_taxa*2-1 ) )
+
+# Rate matrix: joint prior on model indicator and rate matrix
+# * For data sets that strongly favour the non-reversible model, add
+#      polyhedronCenter=v(u1,u2,u3), polyhedronAlpha=10.0
+#   with the centre taken from measure_center.Rev (see the tutorial).
+Q ~ dnQ( alpha=v(1,1,1,1) )
+moves.append( mvMPQRateMatrix( Q, weight=50, tune=TRUE, tuneModelPrior=TRUE ) )
+
+# Among-site rate variation
+alpha ~ dnUniform(0.0, 1E6)
+alpha.setValue( 1.0 )
+moves.append( mvScale(alpha, lambda=0.5, tune=true, weight=1.0) )
+rates := fnDiscretizeGamma(alpha, alpha, 4)
+
+# Likelihood
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=rates, type="DNA")
+seq.clamp(aln)
+
+# What to record
+prob_reversible := ifelse( Q.isReversible(), 1.0, 0.0 )   # 1 in the time-reversible model, 0 otherwise
+ln_prior_odds   := Q.lnPriorOdds()                        # log(rho_R / rho_N); adapted in burn-in, then frozen
+u               := Q.getU()                               # the point in the polyhedron
+pi              := Q.getPi()
+q_rates         := Q.getRates()
+
+monitors.append( mnModel(filename="output/" + DATASET + "_rj.log", printgen=10) )
+monitors.append( mnFile(filename="output/" + DATASET + "_rj.trees", printgen=10, tree) )
+monitors.append( mnScreen(printgen=100, prob_reversible, ln_prior_odds, TL) )
+
+# Set up model and MCMC objects
+mymodel = model(Q)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+
+# Burn-in tunes the step sizes and adapts the prior odds on the two models.
+# Both are then held fixed for the sampling phase
+mymcmc.burnin(generations=20000, tuningInterval=500)
+mymcmc.run(generations=50000)
+mymcmc.operatorSummary()
+
+q()
