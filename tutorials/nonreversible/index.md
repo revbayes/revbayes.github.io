@@ -198,6 +198,3 @@ Under the time-reversible model the likelihood is the same wherever the tree is 
 2. Set `tuneModelPrior=FALSE`, so that the prior odds stay at one, and rerun. How much of its time does the chain spend in each model? Is the Bayes factor estimate usable?
 3. Run [measure_center.Rev](scripts/measure_center.Rev) on *Anolis* and look at the posterior of `u`. How far are the three coordinates from one half? Relate this to the Bayes factor you found.
 4. Compare your $\ln BF_{NR}$ with the difference of the two marginal likelihoods from stepping-stone sampling, using the {% page_ref model_selection_bayes_factors/bf_intro %} tutorial with `fixedModel="reversible"` and `fixedModel="nonreversible"` in `dnQ`. Which method needed more computation to reach the same precision?
-
-{% section References %}
-{% bibliography %}
