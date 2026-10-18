@@ -115,7 +115,7 @@ module Jekyll
             if entry['type_spec'].include? 'Move'
               unless entry['constructor'].nil?
                 type = entry['constructor'].first['arguments'].first()['value_type'].gsub(/[\[\]]/,"")
-                unless entry[type].nil?
+                unless entries[type].nil?
                   if entries[type]['moves'].nil?
                     entries[type]['moves'] = Array.new
                   end
