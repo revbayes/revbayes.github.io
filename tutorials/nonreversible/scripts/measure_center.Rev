@@ -1,0 +1,55 @@
+################################################################################
+#
+# RevBayes tutorial: testing for non-reversible substitution
+#
+# Preliminary run confined to the non-reversible model, to find where its
+# posterior sits inside the polyhedron. The posterior mean of (u1,u2,u3) from
+# this run is the value to pass as polyhedronCenter in rj_nonreversible.Rev when
+# the default jump fails to move between models. A few thousand generations is
+# plenty: what is being estimated is a centre, not a distribution.
+#
+################################################################################
+
+DATASET = "anolis"
+
+aln <- readDiscreteCharacterData("data/" + DATASET + ".nex")
+n_taxa <- aln.size()
+taxa <- aln.taxa()
+rooted_tree <- readBranchLengthTrees("data/" + DATASET + ".tre")[1]
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+tree ~ dnUniformTopologyBranchLength( branchLengthDistribution=dnExp(10.0), taxa, rooted=TRUE )
+tree.setValue( rooted_tree )
+TL := tree.treeLength()
+moves.append( mvBranchLengthScale( tree, weight=n_taxa*2-1 ) )
+moves.append( mvReversibilityAwareBranchLengthScale( tree, weight=n_taxa*2-1 ) )
+moves.append( mvMPQTree( tree=tree, updateRoot=TRUE, weight=n_taxa*2-1 ) )
+
+# fixedModel confines the chain: it starts in the non-reversible model and never
+# proposes a jump out of it
+Q ~ dnQ( alpha=v(1,1,1,1), fixedModel="nonreversible" )
+moves.append( mvMPQRateMatrix( Q, weight=50, tune=TRUE, tuneModelPrior=FALSE ) )
+
+u      := Q.getU()
+is_rev := ifelse( Q.isReversible(), 1.0, 0.0 )       # must stay 0 throughout
+
+alpha ~ dnUniform(0.0, 1E6)
+alpha.setValue( 1.0 )
+moves.append( mvScale(alpha, lambda=0.5, tune=true, weight=1.0) )
+rates := fnDiscretizeGamma(alpha, alpha, 4)
+
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=rates, type="DNA")
+seq.clamp(aln)
+
+monitors.append( mnModel(filename="output/" + DATASET + "_center.log", printgen=10) )
+monitors.append( mnScreen(printgen=100, u, is_rev) )
+
+mymodel = model(Q)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+mymcmc.burnin(generations=1000, tuningInterval=100)
+mymcmc.run(generations=3000)
+
+# The centre: posterior mean of each coordinate of u, after burn-in
+q()
