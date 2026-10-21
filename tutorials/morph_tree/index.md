@@ -1,7 +1,7 @@
 ---
-title: Discrete morphology - Tree Inference
+title: Discrete morphology - The Mk model
 subtitle: Phylogenetic inference with discrete morphological data
-authors:  April M. Wright, Michael J. Landis and Sebastian Höhna
+authors:  April M. Wright, Michael J. Landis, and Sebastian Höhna
 level: 3
 order: 2
 prerequisites:
@@ -11,7 +11,11 @@ prerequisites:
 include_all: false
 include_files:
 - data/bears.nex
+- scripts/model_tree.Rev
+- scripts/model_Mk.Rev
+- scripts/model_Mkv.Rev
 - scripts/mcmc_mk.Rev
+- scripts/mcmc_mkv.Rev
 index: true
 redirect: false
 ---
@@ -35,6 +39,22 @@ morphological characters remains challenging. This tutorial will provide
 a discussion of modeling morphological characters, and will demonstrate
 how to perform Bayesian phylogenetic analysis with morphology using
 RevBayes {% cite Hoehna2016b %}.
+
+
+{% subsection Tutorial Roadmap %}
+
+This is the first of six tutorials on discrete morphological character
+evolution, each building on the previous one:
+
+1. **This tutorial** introduces the Mk model and ascertainment-bias correction.
+2. {% page_ref morph_tree/rates %} adds among-character rate variation (ACRV).
+3. {% page_ref morph_tree/multistate %} shows how to analyze characters with different numbers of states by partitioning the matrix.
+4. {% page_ref morph_tree/ordered %} models ordered characters, which can only change between adjacent states, alongside unordered ones.
+5. {% page_ref morph_tree/state_frequencies %} adds among-character state-frequency variation (asymmetric rates of change) for binary characters, and combines it with partitioning by number of states.
+6. {% page_ref morph_tree/covariomorph %} introduces the covariomorph model, in which a character's evolutionary rate can itself change over time.
+
+Each page in this series reuses the tree model (`scripts/model_tree.Rev`)
+introduced below, and only changes the morphological substitution model.
 
 
 
@@ -91,9 +111,10 @@ is in one of *k* states) model provided a mathematical formulation that
 could be used to estimate trees from morphological data in both
 likelihood and Bayesian frameworks. While this model is a useful step
 forward, as a generalization of the Jukes-Cantor, it still makes fairly
-simplistic assumptions. This tutorial will guide you through estimating
-a phylogeny with the Mk model, and two useful extensions to the model.
-
+simplistic assumptions. This tutorial series will guide you through
+estimating a phylogeny with the Mk model, and a series of increasingly
+realistic extensions to the model, culminating in the covariomorph model
+in {% page_ref morph_tree/covariomorph %}.
 
 
 
@@ -103,8 +124,11 @@ The Mk model is a generalization of the Jukes-Cantor model of nucleotide
 sequence evolution, which we discussed in {% page_ref ctmc %}.
 The Q matrix for a two-state Mk model looks like so:
 
-$$Q = \begin{pmatrix} -\mu_0 & \mu_{01} \\
-\mu_{10} & -\mu_1  &\\
+$$Q = 
+\begin{pmatrix}
+    -\mu_0 & \mu_{01} \\
+    \\
+    \mu_{10} & -\mu_1 \\
 \end{pmatrix} \mbox{  ,}$$
 
 This matrix can be expanded to accommodate multi-state data, as well:
@@ -126,18 +150,24 @@ $$Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu & \mu \\
 \end{pmatrix} \mbox{  ,}$$
 
 Because this is a Jukes-Cantor-like model {% cite Jukes1969 %}, state
-frequencies do not vary as a model parameter. These assumptions may seem
-unrealistic. However, all models are a compromise between reality and
-generalizability. Prior work has demonstrated that, in many conditions,
-the model does perform adequately {% cite Wright2014 %}. Because morphological
-characters do not carry common meaning across sites in a matrix in the
-way that nucleotide characters do, making assumptions that fit all
-characters is challenging. A visualization of this simple model can be
-seen in {% ref mk_graphical_model %}.
+frequencies do not vary as a model parameter, all characters share the
+same rate, and that rate does not change over time. The next four
+tutorials in this series relax these assumptions in turn: page 2 lets
+the rate vary among characters, page 3 shows how to analyze characters
+that have different numbers of states, page 4 shows how to model ordered 
+characters, page 5 lets the state frequencies of binary characters 
+vary among characters (and combines this with the
+partitioning scheme of page 3), and page 5 lets a character's rate
+change over time along the tree. These
+assumptions may seem unrealistic, but all models are a compromise between
+reality and generalizability. Prior work has demonstrated that, in many
+conditions, the Mk model (with some extensions) does perform adequately {% cite Wright2014 Mulvey2025 %}.
+Because morphological characters do not carry common meaning across
+sites in a matrix in the way that nucleotide characters do, making
+assumptions that fit all characters is challenging. A visualization of
+this simple model can be seen in {% ref mk_graphical_model %}.
 
-We will first perform a phylogenetic analysis using the Mk model. In
-further sections, we will explore how to relax key assumptions of the Mk
-model.
+We will first perform a phylogenetic analysis using the Mk model.
 
 {% subsection Ascertainment Bias | subsec_Ascertainment_Bias %}
 
@@ -166,6 +196,9 @@ likelihood, but does so faster.
 In this example, we will use morphological character data from 18 taxa
 of extinct bears {% cite abella2011 %}. The dataset contains 62 binary
 characters, a fairly typical dataset size for morphological characters.
+This is the same dataset that pages 2 and 3 of this tutorial series will
+also use, so that we can compare how each model extension affects the
+same data.
 
 
 
@@ -191,12 +224,6 @@ operator like this:
 ```
 example <- 1.0
 ```
-It is important to be aware that some PDF viewers may render some
-characters given as differently. Thus, if you copy and paste text from
-this PDF, you may introduce some incorrect characters. Because of this,
-we recommend that you type the instructions in this tutorial or copy
-them from the scripts provided.
-
 
 {% subsection Data and Files | subsec_data_files %}
 
@@ -226,32 +253,34 @@ the directory you stored the scripts and data in.
 {% subsection Creating Rev Files | subsec_creating_files %}
 
 In this exercise, you will work primarily in your text editor and
-create a set of files that will be easily managed and interchanged.
-In this first section, you will write the following file
-from scratch and save them in the `scripts` directory:
+create a set of files that will be easily managed and interchanged. As
+in the rest of this tutorial series, we split the analysis into a tree
+model, a substitution model, and an MCMC script that ties the two
+together:
 
--   `mcmc_mk.Rev`: the *Rev* file that loads the data,
-specifies the model describing discrete morphological
-character change (binary characters),
-and specifies the monitors and MCMC sampler.
+-   `model_tree.Rev`: specifies the tree topology and branch-length prior. This
+    file is reused, unchanged, by every page in this tutorial series.
+-   `model_Mk.Rev`: specifies the plain Mk substitution model for binary characters.
+-   `mcmc_mk.Rev`: loads the data, sources the two files above, and specifies
+    the monitors and MCMC sampler.
 
 All of the files that you will create are also provided in the
 RevBayes tutorial here (see the top of this webpage).
 Please refer to these files to verify or troubleshoot your own scripts.
 
->Open your text editor and create the Rev-script file called **mcmc_Mk.Rev** in the
->`scripts` directory.
+>Open your text editor and create the Rev-script files **model_tree.Rev**,
+>**model_Mk.Rev**, and **mcmc_mk.Rev** in the `scripts` directory.
 >
->Enter the Rev code provided in this section in the new file.
+>Enter the Rev code provided in this section in the new files.
 {:.instruction}
 
 
-In this section you will begin the file and write the Rev commands for
-loading in the taxon list and managing the data matrices. Then, starting
-in section {% ref subsec_Mk_model %}, you will move on to specifying each of
-the model components. Once the model specifications are
-complete, you will complete the script with the instructions given in section
-{% ref subsec_complete_MCMC %}.
+In this section you will begin the `mcmc_mk.Rev` file and write the Rev
+commands for loading in the taxon list and managing the data matrices.
+Then, starting in section {% ref subsec_Mk_model %}, you will move on to
+specifying the tree and substitution models in their own files. Once the
+model specifications are complete, you will complete the MCMC script
+with the instructions given in section {% ref subsec_complete_MCMC %}.
 
 
 {% subsection Load Data Matrices | subsec_load_data %}
@@ -261,7 +290,9 @@ data matrix to the workspace from a formatted file. This function can be
 used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable
 `morpho`.
-{{ "mcmc_mk.Rev" | snippet:"line","16" }}
+{% snippet scripts/mcmc_mk.Rev %}
+morpho <- readDiscreteCharacterData("data/bears.nex")
+{% endsnippet %}
 
 
 {% subsection Create Helper Variables | subsec_var %}
@@ -274,46 +305,75 @@ Create a new constant node called `num_taxa` that is equal to the number
 of species in our analysis (18) and a constant node called `num_branches` representing
 the number of branches in the tree. We will also create a constant node of
 the taxon names. This list will be used to initialize the tree.
-{{ "mcmc_mk.Rev" | snippet:"line","19-21" }}
+{% snippet scripts/mcmc_mk.Rev %}
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+{% endsnippet %}
 Next, create two workspace variables called `moves` and `monitors`. These variable
 vectors containing all of the MCMC moves and monitors used
 to propose new states for every stochastic node in the model graph.
-{{ "mcmc_mk.Rev" | snippet:"line","25-26" }}
+{% snippet scripts/mcmc_mk.Rev %}
+moves    = VectorMoves()
+monitors = VectorMonitors()
+{% endsnippet %}
 One important distinction here is that `moves` and `monitors` is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator `=` instead of the constant node assignment `<-`.
 
 
-{% subsection The Mk Model | subsec_Mk_model %}
+{% subsection The Tree Model | subsec_tree_model %}
 
-First, we will create a joint prior on the branch lengths and tree topology.
-This should be familiar from the {% page_ref ctmc %}
-{{ "mcmc_mk.Rev" | snippet:"line","35" }}
+We will use the same tree model throughout this tutorial series, so it
+lives in its own file, `model_tree.Rev`. First, we create a joint prior
+on the branch lengths and tree topology. This should be familiar from
+{% page_ref ctmc %}.
+{% snippet scripts/model_tree.Rev %}
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(10.0))
+{% endsnippet %}
 It is not necessary for this model, but often we want to monitor the tree length
 too. The tree length represents the number of transitions that we expect per
 character over the entire tree.
-{{ "mcmc_mk.Rev" | snippet:"line","38" }}
+{% snippet scripts/model_tree.Rev %}
+tree_length := phylogeny.treeLength()
+{% endsnippet %}
 We will also create several moves working on the topology and branch lengths.
-{{ "mcmc_mk.Rev" | snippet:"line","40-42" }}
+{% snippet scripts/model_tree.Rev %}
+moves.append( mvNNI(phylogeny, weight=num_branches) )
+moves.append( mvSPR(phylogeny, weight=num_branches/5.0) )
+moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
+{% endsnippet %}
+Back in `mcmc_mk.Rev`, we load this file with `source()`.
+{% snippet scripts/mcmc_mk.Rev %}
+source("scripts/model_tree.Rev")
+{% endsnippet %}
 
-Next, we will create a $Q$ matrix. Recall that the Mk model is simply a
-generalization of the JC model. Therefore, we will create a 2x2 $Q$ matrix
-using `fnJC`, which initializes Q-matrices with equal transition
-probabilities between all states.
-{{ "mcmc_mk.Rev" | snippet:"line","52" }}
-Now that we have the basics of the model specified, we will add
-Gamma-distributed rate variation. We will use a uniform prior between $0$ and $10^8$, as recommended by {% citet Fabreti2023 %} and initialize the value with $1.0$ to improve MCMC efficiency.
-{{ "mcmc_mk.Rev" | snippet:"line","55-57" }}
-As usual, we add a scaling move.
-{{ "mcmc_mk.Rev" | snippet:"line","60" }}
+
+{% subsection The Mk Model | subsec_Mk_model %}
+
+Next, in its own file `model_Mk.Rev`, we will create a $Q$ matrix.
+Recall that the Mk model is simply a generalization of the JC model.
+Therefore, we will create a 2x2 $Q$ matrix using `fnJC`, which
+initializes Q-matrices with equal transition probabilities between all
+states.
+{% snippet scripts/model_Mk.Rev %}
+Q_morpho <- fnJC(2)
+{% endsnippet %}
 
 Lastly, we set up the CTMC. This should also be familiar from the {% page_ref ctmc %}.
-We see some familiar pieces: tree, $Q$ matrix and site_rates.
-We also have two new keywords: data type and coding. The data type
+We see some familiar pieces: tree and $Q$ matrix.
+We also have a new keyword: data type. The data type
 argument specifies the type of data - in our case, "Standard", the
 specification for morphology.
-{{ "mcmc_mk.Rev" | snippet:"line","65-66" }}
-All of the components of the model are now specified.
+{% snippet scripts/model_Mk.Rev %}
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard")
+phyMorpho.clamp(morpho)
+{% endsnippet %}
+All of the components of the model are now specified. Back in
+`mcmc_mk.Rev`, load this file too.
+{% snippet scripts/mcmc_mk.Rev %}
+source("scripts/model_Mk.Rev")
+{% endsnippet %}
 
 
 
@@ -324,7 +384,9 @@ All of the components of the model are now specified.
 We can now create our workspace model variable with our fully specified
 model DAG. We will do this with the `model()` function and provide a
 single node in the graph (`phylogeny`).
-{{ "mcmc_mk.Rev" | snippet:"line","75" }}
+{% snippet scripts/mcmc_mk.Rev %}
+mymodel = model(phylogeny)
+{% endsnippet %}
 The object `mymodel` is a wrapper around the entire model graph and
 allows us to pass the model to various functions that are specific to
 our MCMC analysis.
@@ -345,7 +407,9 @@ parameters written to a tab-separated text file that can be opened by
 accessory programs for evaluating such parameters. We will also name the
 output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.
-{{ "mcmc_mk.Rev" | snippet:"line","78" }}
+{% snippet scripts/mcmc_mk.Rev %}
+monitors.append( mnModel(filename="output/mk.log", printgen=10) )
+{% endsnippet %}
 The `mnFile` monitor writes any parameter we specify to file. Thus, if
 we only cared about the branch lengths and nothing else (this is not a
 typical or recommended attitude for an analysis this complex) we
@@ -354,11 +418,15 @@ monitor to write a smaller and simpler output file. Since the tree
 topology is not included in the `mnModel` monitor (because it is not
 numerical), we will use `mnFile` to write the tree to file by specifying
 our `phylogeny` variable in the arguments.
-{{ "mcmc_mk.Rev" | snippet:"line","80" }}
+{% snippet scripts/mcmc_mk.Rev %}
+monitors.append( mnFile(filename="output/mk.trees", printgen=10, phylogeny) )
+{% endsnippet %}
 The third monitor we will add to our analysis will print information to
 the screen. Like with `mnFile` we must tell `mnScreen` which parameters
 we'd like to see updated on the screen.
-{{ "mcmc_mk.Rev" | snippet:"line","82" }}
+{% snippet scripts/mcmc_mk.Rev %}
+monitors.append( mnScreen(printgen=100) )
+{% endsnippet %}
 
 
 {% subsubsection Set-Up the MCMC %}
@@ -367,18 +435,30 @@ Once we have set up our model, moves, and monitors, we can now create
 the workspace variable that defines our MCMC run. We do this using the
 `mcmc()` function that simply takes the three main analysis components
 as arguments.
-{{ "mcmc_mk.Rev" | snippet:"line","85" }}
+{% snippet scripts/mcmc_mk.Rev %}
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+{% endsnippet %}
 The MCMC object that we named `mymcmc` has a member method called
 `.run()`. This will execute our analysis and we will set the chain
-length to `20000` cycles using the `generations` option.
-{{ "mcmc_mk.Rev" | snippet:"line","88" }}
+length to `30000` cycles using the `generations` option.
+{% snippet scripts/mcmc_mk.Rev %}
+mymcmc.run(generations=30000, tuningInterval=200)
+{% endsnippet %}
 Once our Markov chain has terminated, we will want to summarize our output.
 First, we load in the tree trace.
-{{ "mcmc_mk.Rev" | snippet:"line","94-95" }}
+{% snippet scripts/mcmc_mk.Rev %}
+trace = readTreeTrace("output/mk.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+{% endsnippet %}
 Then, we compute the *maximum a posteriori* (*MAP*) tree and the *majority rule consensus* (MRC) tree.
-{{ "mcmc_mk.Rev" | snippet:"line","98-99" }}
+{% snippet scripts/mcmc_mk.Rev %}
+mapTree(trace, file="output/mk.map.tre")
+consensusTree(trace, file="output/mk.majrule.tre")
+{% endsnippet %}
 Finally, tell the program to quit using the `q()` function.
-{{ "mcmc_mk.Rev" | snippet:"line","102" }}
+{% snippet scripts/mcmc_mk.Rev %}
+q()
+{% endsnippet %}
 
 >You made it! Save all of your files.
 {:.instruction}
@@ -406,26 +486,32 @@ function to feed RevBayes your Rev-script file (`mcmc_mk.Rev`).
 This will execute the analysis and you should see the following output
 (though not the exact same values):
 ```
+> source("scripts/mcmc_mk.Rev")
    Processing file "scripts/mcmc_mk.Rev"
    Successfully read one character matrix from file 'data/bears.nex'
-
+   Processing file "scripts/model_tree.Rev"
+   Processing of file "scripts/model_tree.Rev" completed
+   Processing file "scripts/model_Mk.Rev"
+   Processing of file "scripts/model_Mk.Rev" completed
+   
    Running MCMC simulation
    This simulation runs 2 independent replicates.
-   The simulator uses 4 different moves in a random move schedule with 56.4 moves per iteration
+   The simulator uses 3 different moves in a random move schedule with 74.8 moves per iteration
+   
 
 Iter        |      Posterior   |     Likelihood   |          Prior   |    elapsed   |        ETA   |
 ----------------------------------------------------------------------------------------------------
-0           |       -680.054   |       -649.452   |       -30.6022   |   00:00:00   |   --:--:--   |
-100         |       -419.885   |       -414.047   |       -5.83883   |   00:00:01   |   --:--:--   |
-200         |       -427.028   |       -417.426   |       -9.60277   |   00:00:01   |   00:00:49   |
-300         |       -421.585   |        -417.96   |        -3.6253   |   00:00:02   |   00:01:04   |
-400         |       -431.561   |       -427.124   |       -4.43711   |   00:00:03   |   00:01:12   |
-500         |       -423.507   |       -422.002   |       -1.50428   |   00:00:04   |   00:01:16   |
-600         |       -418.061   |       -419.644   |        1.58298   |   00:00:05   |   00:01:18   |
-700         |       -427.552   |       -423.884   |       -3.66793   |   00:00:05   |   00:01:06   |
-800         |        -437.39   |       -424.302   |       -13.0876   |   00:00:06   |   00:01:09   |
-900         |       -418.405   |       -413.872   |        -4.5323   |   00:00:07   |   00:01:10   |
-1000        |       -425.641   |       -411.291   |       -14.3491   |   00:00:08   |   00:01:12   |
+0           |       -656.742   |       -657.173   |       0.430997   |   00:00:00   |   --:--:--   |
+100         |       -412.078   |       -414.729   |         2.6513   |   00:00:00   |   --:--:--   |
+200         |       -422.389   |       -424.915   |        2.52586   |   00:00:00   |   00:00:00   |
+300         |       -433.957   |        -431.18   |        -2.7769   |   00:00:00   |   00:00:00   |
+400         |        -425.28   |       -427.092   |        1.81206   |   00:00:00   |   00:00:00   |
+500         |       -417.984   |       -415.711   |       -2.27329   |   00:00:01   |   00:00:59   |
+600         |       -414.983   |       -419.392   |        4.40913   |   00:00:01   |   00:00:49   |
+700         |       -422.544   |        -422.87   |       0.326072   |   00:00:01   |   00:00:41   |
+800         |       -422.549   |       -423.407   |       0.858141   |   00:00:01   |   00:00:36   |
+900         |       -414.236   |        -415.06   |       0.823311   |   00:00:01   |   00:00:32   |
+1000        |       -419.517   |       -418.972   |      -0.544754   |   00:00:01   |   00:00:29   |
 
 ...
 ```
@@ -448,9 +534,9 @@ specified with the monitors ({% ref subsubsec_Monitors %}).
 As discussed earlier in the section {% ref subsec_Ascertainment_Bias %}, we also need to
 correct for ascertainment bias.
 
->Create a copy of your previous `Rev` script, and call it *mcmc_Mkv.Rev*.
->You will need to modify the `Rev`
->code provided in this section in this file.
+>Create a copy of `model_Mk.Rev` and call it **model_Mkv.Rev**. Create a copy
+>of `mcmc_mk.Rev` and call it **mcmc_mkv.Rev**. You will need to modify the
+>`Rev` code provided in this section in these files.
 {:.instruction}
 
 In `RevBayes` it is actually very simple to add a correction for ascertainment bias.
@@ -458,262 +544,15 @@ You only need to set the option `coding="variable"` in the `dnPhyloCTMC`. Coding
 what type of ascertainment bias is expected. We are using the `variable` correction,
 as we have no invariant character in our matrix. If we also lacked
 parsimony non-informative characters, we would use the coding `informative`.
-{{ "mcmc_mkv.Rev" | snippet:"line","65" }}
+{% snippet scripts/model_Mkv.Rev %}
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard", coding="variable")
+{% endsnippet %}
 
->Remember to change all filenames for the output, e.g., from `output/mk.log` to `output/mkv.log`.
+>Remember to change all filenames for the output, e.g., from `output/mk.log` to `output/mkv.log`,
+>and to change the `source()` call in `mcmc_mkv.Rev` to load `model_Mkv.Rev` instead of `model_Mk.Rev`.
 {:.instruction}
 
 That’s all you need to do! Now run this script in RevBayes.
 
-
-
-{% section Example: Relaxing the Assumption of Equal Transition Probabilities | sec_disc_analysis %}
-
->Make a copy of the Rev script you made earlier. Call it
->`mcmc_mkv_dicretized.Rev`. This new script will
->contain the new model parameters and models.
-{:.instruction}
-
-
-{% figure morpho_graphical_model %}
-<img src="figures/tikz/morpho_gm.png" width="400" />
-{% figcaption %}
-Graphical model demonstrating the
-discretized Beta distribution for allowing variable state frequencies.
-{% endfigcaption %}
-{% endfigure %}
-
-The Mk model makes a number of assumptions, but one that may strike you
-as unrealistic is the assumption that characters are equally likely to
-change from any one state to any other state. That means that a trait is
-as likely to be gained as lost. While this may hold true for some
-traits, we expect that it may be untrue for many others.
-
-RevBayes has functionality to allow us to relax this assumption. We do
-this by specifying a Beta prior on state frequencies. Remember from the
-{% page_ref ctmc %} lesson that stationary frequencies impact how likely we are
-to see changes in a character. For example, it may be very likely, in a
-character, to change from 0 to 1. But if the frequency of 0 is very low,
-we will still seldom see this change.
-
-We can exploit the relationship between state frequencies and observed
-changes to allow for variable Q matrices across characters {% ref morpho_graphical_model %}.
-To do this, we generate a Beta distribution on state frequencies, and use
-the state frequencies from that Beta distribution to generate a series
-of Q-matrices to use to evaluate our data {% cite Pagel2004 %}.
-
-This type of model is called a **mixture model**. There are assumed to
-be subdivisions in the data, which may require different parameters (in
-this case, state frequencies). These subdivisions are not defined *a
-priori*. This model has previously been shown to be effective for a
-range of empirical and simulated datasets {% cite Wright2016 %}.
-
-
-
-{% subsection Modifying the Rev-script %}
-
-At each place in which the output files are specified in the MCMC file,
-change the output path so you do not overwrite the output from the
-previous exercise. For example, you might call your output file
-`output/mkv_discretized.log` and `output/mkv_discretized.trees`. Change
-source statement to indicate the new model file.
-
-
-We will use a discretized Beta distribution to place a prior on state frequencies.
-The Beta distribution has two parameters, $\alpha$ and $\beta$. These two
-parameters specify the shape of the distribution. State frequencies will
-be evaluated according to this distribution, in the same way that rate
-variation is evaluated according to the Gamma distribution. The
-discretized distribution is split into multiple classes, each with it's
-own set of frequencies for the 0 and 1 characters. The number of classes
-can vary; we have chosen 5 for tractability. Note that we need to make sure that this
-discretization results into a symmetric model, therefore we will use only one parameter
-for the Beta distribution: `beta_scale` so that $\alpha = \beta$.
-First, we initialized the number of categories.
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","54" }}
-Second, we specify that our parameter of the Beta distribution.
-This parameter `beta_scale` is drawn from the uniform distribution which we specify widely, similar to the suggestion of the prior on Gamma rate categories {% cite Fabreti2023 %}.
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","57-59" }}
-Next, we set the categories to each represent a quadrant of the Beta
-distribution specified by the `beta_scale`.
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","62" }}
-
-Using these state frequencies, we will generate a new vector of Q
-matrices. Because we are varying the state frequencies, we must use a Q
-matrix generation function that allows for state frequencies to vary as
-a parameter. We will, therefore, use the `fnF81` function.
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","68-71" }}
-Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
-of the $Q$-matrices. For this model the probabilities must be equal because we need to guarantee that
-the model is symmetric. This, we use a `simplex` function to create a vector that sums to 1.0.
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","75" }}
-
-The only other specification that needs to change in the model specification is
-the CTMC:
-{{ "mcmc_mkv_discretized.Rev" | snippet:"line","88-89" }}
-You will notice that we have added a command to tell the CTMC that we have
-multiple site matrices that will be applied to different characters in
-the matrix.
-
-
-{% subsection Set-Up the MCMC %}
-
-The MCMC chain set-up does not need to change. Run the new MCMC file,
-just as you ran the plain Mk file. This estimation will take longer than
-the Mk model, due to increased model complexity.
-
-
-
-
-{% subsection Evaluate and Summarize Your Results | trace %}
-
-
-{% subsubsection Checking Convergence | subsubsec_MCMC_conv %}
-
-
-{% figure add_files %}
-<img src="figures/convergence.png" width="90%"/>
-{% figcaption %}
-Assessing convergence using `convenience` {% cite Fabreti2022 %}. Here we show the difference in split frequencies. These runs have converged for us.
-{% endfigcaption %}
-{% endfigure %}
-
-
-{% subsubsection Evaluate MCMC | subsubsec_Eval_MCMC %}
-
-We will use `Tracer` to evaluate the MCMC samples from our
-three estimations. Load all three of the MCMC logs into the
-`Tracer` window. Highlight all three files in
-the upper left-hand viewer ({% ref add_files %}) by right- or
-command-clicking all three files.
-
-
-{% figure add_files %}
-<img src="figures/AddFiles.png" width="50%"/>
-{% figcaption %}
-Highlight all three files for model comparison.
-{% endfigcaption %}
-{% endfigure %}
-
-Once all three trace logs are loaded and highlighted, first look at the
-estimated likelihoods. You will notice that the Mk model, as
-originally proposed by {% cite Lewis2001 %} is improved by allowing any state
-frequency heterogeneity. The discretized model and the Dirichlet
-model both represent improvements, but are fairly close in likelihood
-score to each other ({% ref tracer_llik %}). Likely, we would need to
-perform stepping stone model assessment to truly tell if the more
-complicated model is statistically justified.
-This analysis is too complicated and time-consuming for this tutorial period,
-but you will find instructions for performing the analysis in
-{% page_ref model_selection_bayes_factors/bf_intro %}.
-
-{% figure tracer_llik %}
-<img src="figures/likelihoods.png" width="100%"/>
-{% figcaption %}
-Comparison of likelihood scores for all three models.
-{% endfigcaption %}
-{% endfigure %}
-
-
-Click on the `Trace` panel. In the lower left hand corner, you will
-notice an option to color each trace by the file it came from. Choose
-this option (you may need to expand the window slightly to see it). Next
-to this option, you can also see an option to add a legend to your trace
-window. The results of this coloring can be seen in
-{% ref coltrace %}. When the coloring is working, you will see that
-the Mk model mixes quite well, but that mixing becomes worse as we relax
-the assumption of equal state frequencies. This is because we are
-greatly increasing model complexity. Therefore, we would need to run the
-MCMC chains longer if we were to use these analyses in a paper.
-
-{% figure coltrace %}
-<img src="figures/colortrace.png" width="80%"/>
-{% figcaption %}
-The Trace window. The traces are colored by which version of the Mk model
-they correspond to.
-{% endfigcaption %}
-{% endfigure %}
-
-We are interested in two aspects of the posterior distribution. First,
-all analyses correct for the biased sampling of variable characters
-except for the simple analysis. Then, we expect the
-tree_length variable to be greater for simple
-than for the remaining analyses, because our data are enriched for
-variation. {% ref tracer_tree_length %} shows that
-`tree_length` is approximately 30% greater for
-simple than for `mk_simple`, which are
-identical except that `mk_simple` corrects for sampling
-bias. To compare these densities, click the “Marginal Prob Distribution”
-tab in the upper part of the window, highlight all of the loaded Trace
-Files, then select `tree_length` from the list of Traces.
-
-{% figure tracer_tree_length %}
-<img src="figures/results/tracer_tree_length.png" width="50%" />
-{% figcaption %}
-Posterior tree length estimates.
-{% endfigcaption %}
-{% endfigure %}
-
-Second, we are interested in characterizing the degree of heterogeneity
-estimated by the beta-discretized model. If the data were distributed by
-a single morphological rate matrix, then we would expect to see very
-little variation among the different values in cats, and
-very large values for the shape and scale parameters of the
-discrete-beta distribution. For example, if alpha_ofbeta =
-beta_ofbeta = 1000, then that would cause all discrete-beta
-categories to have values approaching 0.5, which approximates a
-symmetric Mk model.
-
-{% figure tracer_cats %}
-<img src="figures/results/cats.png" width="50%" />
-{% figcaption %}
-Posterior discretized state frequencies for the discrete-beta model.
-{% endfigcaption %}
-{% endfigure %}
-
-{% figure tracer_alpha_beta %}
-<img src="figures/results/alpha_beta.png" width="50%" />
-{% figcaption %}
-Posterior alpha and beta parameters for the discrete-beta model.
-{% endfigcaption %}
-{% endfigure %}
-
-{% ref tracer_cats %} shows that the four discrete-beta state
-frequencies do not all have the exact same value. In addition,
-{% ref tracer_alpha_beta %} shows that the priors on the
-discrete-beta distribution are small enough that we expect to see
-variance among cat values. If the data contained no
-information regarding the distribution of cat values, then
-the posterior estimates for alpha_ofbeta and
-beta_ofbeta would resemble the prior.
-
-
-{% subsubsection Summarizing tree estimates %}
-
-The morphology trees estimated in Section {% ref sec_mk_model_analysis %} and
-Section {% ref sec_discretized_analysis %} are summarized using a majority rule consensus tree
-(MRCT). Clades appearing in $p>0.5$ of posterior samples are resolved in
-the MRCT, while poorly support clades with $p \leq 0.5$ are shown as
-unresolved polytomies. Poor phylogenetic resolution might be caused by
-having too few phylogenetically informative characters, or it might be
-due to conflicting signals for certain species relationships. Because
-phylogenetic information is generated through model choice, let's
-compare our topological estimates across models.
-
-{% figure mk_discretized_majrule %}
-<img src="figures/results/mk_discretized_majrule_tre.png" width="75%" />
-{% figcaption %}
-Majority rule consensus tree for the beta-discretized Mkv analysis.
-{% endfigcaption %}
-{% endfigure %}
-
-The MRCTs for the simple model with and without the +v correction are
-very similar to that for the discretized-beta model
-({% ref mk_discretized_majrule %}). Note that the scale bars for
-branch lengths differ greatly, indicating that tree length estimates are
-inflated without the +v correction, just as we saw when comparing the
-posterior tree length densities. In general, it is important to assess
-whether your results are sensitive to model assumptions, such as the
-degree of model complexity, and any mechanistic assumptions that
-motivate the model's design. In this case, our tree estimate appears to
-be robust to model complexity.
+When you are ready, move on to {% page_ref morph_tree/rates %}, where we relax
+the assumption that every character shares exactly the same rate of change.
