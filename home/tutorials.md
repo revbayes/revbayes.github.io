@@ -81,13 +81,17 @@ This module is intended for users looking to infer a phylogenetic tree using mol
 
 This module is intended for users looking to infer a phylogenetic tree using morphological data.
 Users will learn how to set up basic morphological evolution models, including for characters
-with more than two states.
+with more than two states and characters whose rate of evolution can itself change over time.
 
 - Pre-requisites: **RevBayes fundamentals**.
 
 1. Theoretical background: [Understanding continuous-time Markov models]({{ base.url }}/tutorials/dice). This tutorial will get you up to speed with the theory behind morphological evolution models.
-2. Morphological phylogenetics with binary traits: [Tree inference with discrete morphology]({{ base.url }}/tutorials/morph_tree). This tutorial will walk you through a simple example of morphological phylogeny inference, using only binary (i.e. two-state) characters.
-3. Expanding your dataset: [Multistate characters]({{ base.url }}/tutorials/morph_tree/V2). This tutorial will teach you how to accommodate characters with more than two states in your morphological phylogenetics analyses.
+2. Morphological phylogenetics with binary traits: [The Mk model]({{ base.url }}/tutorials/morph_tree). This tutorial will walk you through a simple example of morphological phylogeny inference and ascertainment-bias correction, using only binary (i.e. two-state) characters.
+3. Relaxing rate homogeneity: [Among-character rate variation]({{ base.url }}/tutorials/morph_tree/rates). This tutorial lets characters evolve at different rates.
+4. Expanding your dataset: [Multistate characters]({{ base.url }}/tutorials/morph_tree/multistate). This tutorial shows how to analyze characters with different numbers of states by partitioning the matrix.
+5. Ordered characters: [Ordered characters]({{ base.url }}/tutorials/morph_tree/ordered). This tutorial shows how to model characters whose states form a sequence, so that a change from state 0 to state 2 has to pass through state 1.
+6. Relaxing state-frequency homogeneity: [Among-character state-frequency variation]({{ base.url }}/tutorials/morph_tree/state_frequencies). This tutorial lets binary characters have different equilibrium state frequencies, and combines this with partitioning by number of states.
+7. Letting rates change over time: [The covariomorph model]({{ base.url }}/tutorials/morph_tree/covariomorph). This tutorial introduces the covariomorph model, in which a character's rate of evolution can switch between hidden rate categories as it evolves along the tree.
 
 {% endaside %}
 
