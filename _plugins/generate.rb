@@ -85,6 +85,17 @@ module Tutorials
 
                 next if tutorial.data['files'].include? file
 
+                # label the file by the directory it lives in, as for include_all
+                if file.data['type'] == nil
+                  if file.relative_path.match(%r{(^|/)data/})
+                    file.data['type'] = 'data'
+                  elsif file.relative_path.match(%r{(^|/)scripts/})
+                    file.data['type'] = 'script'
+                  elsif file.relative_path.match(%r{(^|/)example_output/})
+                    file.data['type'] = 'example_output'
+                  end
+                end
+
                 tutorial.data['files'] << file
               end
             end
