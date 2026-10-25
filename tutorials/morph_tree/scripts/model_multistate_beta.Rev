@@ -1,0 +1,74 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna and Basanta Khakurel
+#
+################################################################################
+
+# Set up Gamma-distributed rate variation, shared by all partitions.
+alpha_morpho ~ dnUniform( 0.0, 1E6 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+# Moves on the parameter of the Gamma distribution.
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+
+# Set up the discretized-Beta state frequencies for the binary partition.
+num_cats = 5
+
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+beta_scale.setValue( 1.0 )
+moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+
+cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+
+for (j in 1:cats.size()) {
+    Q_binary[j] := fnF81(simplex(abs(1-cats[j]), cats[j]))
+}
+
+# a binary character is equally likely to be in any of the Beta categories
+matrix_probs <- simplex( rep(1, num_cats) )
+
+# We do not know in advance how many states the most variable character in our
+# matrix has, so we set an upper bound and simply skip any partition that turns
+# out to be empty.
+n_max_states <- 7
+idx = 1
+morpho_bystate[1] <- morpho
+for (i in 2:n_max_states) {
+    # make a local copy of the data, keeping only the characters with a state
+    # space of size i
+    morpho_bystate[i] <- morpho
+    morpho_bystate[i].setNumStatesPartition(i)
+
+    # get the number of characters with i-sized state spaces
+    nc = morpho_bystate[i].nchar()
+
+    # for non-empty character blocks
+    if (nc > 0) {
+
+        if (i == 2) {
+            # binary characters: a mixture of F81 matrices with
+            # Beta-distributed state frequencies
+            m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                        Q=Q_binary,
+                                        siteMatrices=matrix_probs,
+                                        nSites=nc,
+                                        siteRates=rates_morpho,
+                                        type="Standard")
+        } else {
+            # multistate characters: an i-by-i Jukes-Cantor matrix
+            m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                        Q=fnJC(i),
+                                        nSites=nc,
+                                        siteRates=rates_morpho,
+                                        type="Standard")
+        }
+
+        # attach the data
+        m_morph[idx].clamp(morpho_bystate[i])
+
+        # increment counter
+        idx = idx + 1
+    }
+}

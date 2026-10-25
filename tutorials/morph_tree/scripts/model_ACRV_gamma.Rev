@@ -1,0 +1,24 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- among-character rate variation (ACRV)
+#           using a discretized Gamma distribution
+#
+################################################################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor
+# matrix with two states.
+Q_morpho <- fnJC(2)
+
+# Set up Gamma-distributed rate variation, using a uniform prior between 0 and
+# 10^8, as recommended by Fabreti and Hoehna (2023)
+alpha_morpho ~ dnUniform( 0.0, 1E8 )
+alpha_morpho.setValue( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+# Moves on the parameter of the Gamma distribution.
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+
+# Combine all of our elements into a CTMC. Because we have not observed any
+# invariant sites, we specify the coding as 'variable'.
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)

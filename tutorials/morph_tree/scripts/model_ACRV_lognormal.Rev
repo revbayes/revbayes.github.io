@@ -1,0 +1,22 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- among-character rate variation (ACRV)
+#           using a discretized lognormal distribution
+################################################################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor
+# matrix with two states.
+Q_morpho <- fnJC(2)
+
+# Here we use a lognormal distribution instead of lognormal
+alpha_morpho ~ dnUniform( 0.0, 1E6 )
+alpha_morpho.setValue( 1.0 )
+rates_morpho := fnDiscretizeDistribution( dnLognormal(ln(alpha_morpho), 0.01), 4 )
+
+# Moves on the parameter of the lognormal distribution.
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+
+# Combine all of our elements into a CTMC. Because we have not observed any
+# invariant sites, we specify the coding as 'variable'.
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)

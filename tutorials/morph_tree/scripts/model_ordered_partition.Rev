@@ -1,0 +1,50 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- ordered and unordered characters
+#
+################################################################################
+
+# The characters that the authors of the matrix coded as ordered. RevBayes
+# does not read this information from the NEXUS file, so we specify it here.
+ordered_chars = v(1, 2, 3, 4, 7, 9, 11, 13, 14, 15, 16, 17, 19, 24, 41, 42)
+
+# a copy of the data containing only the ordered characters ...
+morpho_ordered <- morpho
+morpho_ordered.excludeAll()
+morpho_ordered.includeCharacter(ordered_chars)
+
+# ... and a copy containing all the other (unordered) characters
+morpho_unordered <- morpho
+morpho_unordered.excludeCharacter(ordered_chars)
+
+n_max_states <- morpho.getStateDescriptions().size()
+idx = 1
+morpho_unordered_bystate[1] <- morpho_unordered
+morpho_ordered_bystate[1] <- morpho_ordered
+
+for (i in 2:n_max_states) {
+
+    #### unordered characters with i states ####
+    morpho_unordered_bystate[i] <- morpho_unordered
+    morpho_unordered_bystate[i].setNumStatesPartition(i)
+    nc = morpho_unordered_bystate[i].nchar()
+
+    if (nc > 0) {
+        q[idx] <- fnJC(i)
+        m_morph[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=q[idx], nSites=nc, type="Standard")
+        m_morph[idx].clamp(morpho_unordered_bystate[i])
+        idx = idx + 1
+    }
+
+    #### ordered characters with i states ####
+    morpho_ordered_bystate[i] <- morpho_ordered
+    morpho_ordered_bystate[i].setNumStatesPartition(i)
+    nc = morpho_ordered_bystate[i].nchar()
+
+    if (nc > 0) {
+        q[idx] <- fnOrderedRateMatrix(i, 1.0, 1.0)
+        m_morph[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=q[idx], nSites=nc, type="Standard")
+        m_morph[idx].clamp(morpho_ordered_bystate[i])
+        idx = idx + 1
+    }
+}

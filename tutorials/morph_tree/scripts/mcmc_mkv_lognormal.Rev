@@ -1,0 +1,56 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Bears Using the Mk Model
+#                   with lognormally-distributed among-character rate variation
+#
+# This file: Runs the full MCMC.
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+morpho <- readDiscreteCharacterData("data/bears.nex")
+
+## helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+source("scripts/model_tree.Rev")
+
+###########################################
+# Binary morphological substitution model #
+###########################################
+
+source("scripts/model_ACRV_lognormal.Rev")
+
+########
+# MCMC #
+########
+
+mymodel = model(phylogeny)
+
+monitors.append( mnModel(filename="output/mkv_lognormal.log", printgen=10) )
+monitors.append( mnFile(filename="output/mkv_lognormal.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=30000, tuningInterval=200)
+mymcmc.operatorSummary()
+
+trace = readTreeTrace("output/mkv_lognormal.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+mapTree(trace, file="output/mkv_lognormal.map.tre")
+consensusTree(trace, file="output/mkv_lognormal.majrule.tre")
+
+q()
