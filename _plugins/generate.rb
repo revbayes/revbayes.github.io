@@ -52,6 +52,8 @@ module Tutorials
         found_includes = {}
         found_excludes = {}
 
+        include_matches = Hash.new { |h, k| h[k] = [] }
+
         # initialize includes to not found
         if tutorial.data['include_files']
           tutorial.data['include_files'].each do |include_file|
@@ -73,30 +75,15 @@ module Tutorials
             next if exclude
           end
 
-          # check if this file is one of the page's include_files
+          # collect every site file whose path ends with one of the page's
+          # include_files (matching at a directory boundary)
           if tutorial.data['include_files']
             tutorial.data['include_files'].each do |include_file|
               next unless include_file
 
-              if file.relative_path.match(Regexp.new(Regexp.escape(include_file)+"$"))
+              if file.relative_path.match(Regexp.new("(^|/)"+Regexp.escape(include_file)+"$"))
                 found_includes[include_file] = true
-
-                tutorial.data['files'] = [] if tutorial.data['files'] == nil
-
-                next if tutorial.data['files'].include? file
-
-                # label the file by the directory it lives in, as for include_all
-                if file.data['type'] == nil
-                  if file.relative_path.match(%r{(^|/)data/})
-                    file.data['type'] = 'data'
-                  elsif file.relative_path.match(%r{(^|/)scripts/})
-                    file.data['type'] = 'script'
-                  elsif file.relative_path.match(%r{(^|/)example_output/})
-                    file.data['type'] = 'example_output'
-                  end
-                end
-
-                tutorial.data['files'] << file
+                include_matches[include_file] << file
               end
             end
           end
@@ -107,6 +94,36 @@ module Tutorials
             raise Jekyll::Errors::FatalException, <<-MSG
 Could not locate file '#{key}' included in tutorial '#{tutorial.relative_path}'.
 MSG
+          end
+        end
+
+        # Several tutorials can contain a file with the same name (e.g.,
+        # data/primates_tree.nex). If any of the matches lives in this page's
+        # own directory, only use those; otherwise (e.g., for paths written
+        # relative to another directory) keep all matches.
+        tutorial_dir = tutorial.relative_path.sub(%r{^/}, '').sub(Regexp.new(Regexp.escape(tutorial.name)+"$"), '')
+
+        include_matches.each do |include_file, matches|
+          local = matches.select { |f| f.relative_path.sub(%r{^/}, '').start_with?(tutorial_dir) }
+          chosen = local.empty? ? matches : local
+
+          chosen.each do |file|
+            tutorial.data['files'] = [] if tutorial.data['files'] == nil
+
+            next if tutorial.data['files'].include? file
+
+            # label the file by the directory it lives in, as for include_all
+            if file.data['type'] == nil
+              if file.relative_path.match(%r{(^|/)data/})
+                file.data['type'] = 'data'
+              elsif file.relative_path.match(%r{(^|/)scripts/})
+                file.data['type'] = 'script'
+              elsif file.relative_path.match(%r{(^|/)example_output/})
+                file.data['type'] = 'example_output'
+              end
+            end
+
+            tutorial.data['files'] << file
           end
         end
 
