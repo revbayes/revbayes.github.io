@@ -130,7 +130,7 @@ We continue to reuse `model_tree.Rev`, unchanged, from
 
 `mcmc_ordered.Rev` starts exactly like the scripts on the previous pages:
 {% snippet scripts/mcmc_ordered.Rev %}
-morpho <- readDiscreteCharacterData("data/Ardeidae.nex")
+morpho = readDiscreteCharacterData("data/Ardeidae.nex")
 {% endsnippet %}
 {% snippet scripts/mcmc_ordered.Rev %}
 taxa <- morpho.names()

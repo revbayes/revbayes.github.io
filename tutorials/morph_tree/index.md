@@ -291,7 +291,7 @@ used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable
 `morpho`.
 {% snippet scripts/mcmc_mk.Rev %}
-morpho <- readDiscreteCharacterData("data/bears.nex")
+morpho = readDiscreteCharacterData("data/bears.nex")
 {% endsnippet %}
 
 
