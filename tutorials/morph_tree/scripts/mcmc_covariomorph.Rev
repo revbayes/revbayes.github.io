@@ -1,0 +1,63 @@
+################################################################################
+#
+# RevBayes Example: Inferring a phylogeny of snakes under the covariomorph
+#                   model, and under the simpler Mk and ACRV models for
+#                   comparison
+#
+# This file: Runs the full MCMC. Set MODEL to "Covariomorph", "ACRV", or "Mk".
+#
+# authors -- Basanta Khakurel and Sebastian Höhna
+#
+################################################################################
+
+# which substitution model to use: "Covariomorph", "ACRV", or "Mk"
+MODEL = "Covariomorph"
+
+# number of hidden rate categories (used by the Covariomorph and ACRV models)
+NUM_CATEGORIES = 3
+
+#######################
+# Reading in the Data #
+#######################
+morpho = readDiscreteCharacterData("data/snakes.nex")
+
+## helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+source("scripts/model_tree.Rev")
+
+#####################################################
+# Substitution model, partitioned by the number of  #
+# states per character                              #
+#####################################################
+
+source("scripts/model_" + MODEL + "_partition.Rev")
+
+########
+# MCMC #
+########
+
+mymodel = model(phylogeny)
+
+monitors.append( mnModel(filename="output/snakes_" + MODEL + ".log", printgen=10) )
+monitors.append( mnFile(filename="output/snakes_" + MODEL + ".trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=1000, tree_length) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=20000, tuningInterval=200)
+
+trace = readTreeTrace("output/snakes_" + MODEL + ".trees", treetype="non-clock")
+trace.setBurnin(0.25)
+mapTree(trace, file="output/snakes_" + MODEL + ".map.tre")
+consensusTree(trace, file="output/snakes_" + MODEL + ".majrule.tre")
+
+q()

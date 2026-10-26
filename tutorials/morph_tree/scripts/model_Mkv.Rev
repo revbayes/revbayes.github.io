@@ -1,0 +1,16 @@
+################################################################################
+#
+# RevBayes: Discrete morphology 
+# the Mk model with ascertainment-bias correction ("Mkv")
+#
+################################################################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor
+# matrix with two states.
+Q_morpho <- fnJC(2)
+
+# Combine the tree and the Q matrix into the phylogenetic CTMC. Because we have
+# not observed any invariant sites, we specify the coding as 'variable' to
+# correct for ascertainment bias.
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)

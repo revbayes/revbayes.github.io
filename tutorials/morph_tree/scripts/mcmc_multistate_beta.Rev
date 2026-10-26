@@ -1,0 +1,56 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# This file: Runs the full MCMC, partitioning characters by their number of
+#            observed states, with the discretized-Beta state-frequency model
+#            for the binary partition and Gamma-distributed ACRV.
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+morpho <- readDiscreteCharacterData("data/Cinctans.nex")
+
+## helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+source("scripts/model_tree.Rev")
+
+#################################################
+# Partitioned morphological substitution model  #
+#################################################
+
+source("scripts/model_multistate_beta.Rev")
+
+########
+# MCMC #
+########
+
+mymodel = model(phylogeny)
+
+monitors.append( mnModel(filename="output/multistate_beta.log", printgen=10) )
+monitors.append( mnFile(filename="output/multistate_beta.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=30000, tuningInterval=200)
+
+trace = readTreeTrace("output/multistate_beta.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+mapTree(trace, file="output/multistate_beta.map.tre")
+consensusTree(trace, file="output/multistate_beta.majrule.tre")
+
+q()

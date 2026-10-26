@@ -1,0 +1,31 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- among-character rate variation
+#           (ACRV), partitioned by the number of states, for comparison with
+#           the covariomorph model.
+################################################################################
+
+# rate multipliers are drawn from exactly the same discretized lognormal
+# distribution, with the same prior, as in model_Covariomorph_partition.Rev
+inverse_sd ~ dnUniform(0, 1E3)
+inverse_sd.setValue(1)
+moves.append( mvScale(inverse_sd, lambda=0.5, weight=4) )
+moves.append( mvScale(inverse_sd, lambda=2.0, weight=4) )
+sd_morpho := 1 / inverse_sd
+rate_scalars := normalize(fnDiscretizeDistribution(dnLognormal(0.0, sd_morpho), NUM_CATEGORIES))
+
+max_states = morpho.getStateDescriptions().size()
+idx = 1
+
+for (i in 1:(max_states-1)) {
+    partition_state[i] = morpho
+    partition_state[i].setNumStatesPartition(i+1)
+    nc = partition_state[i].nchar()
+
+    if (nc > 0) {
+        Q_morpho[idx] := fnJC(i+1)
+        phyMorpho[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho[idx], siteRates=rate_scalars, nSites=nc, type="Standard")
+        phyMorpho[idx].clamp(partition_state[i])
+        idx = idx + 1
+    }
+}

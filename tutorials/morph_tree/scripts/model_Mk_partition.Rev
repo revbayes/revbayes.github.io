@@ -1,0 +1,23 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- the plain Mk model, partitioned by
+#           the number of states (no rate variation, no ascertainment-bias
+#           correction), for comparison with the covariomorph model.
+#
+################################################################################
+
+max_states = morpho.getStateDescriptions().size()
+idx = 1
+
+for (i in 1:(max_states-1)) {
+    partition_state[i] = morpho
+    partition_state[i].setNumStatesPartition(i+1)
+    nc = partition_state[i].nchar()
+
+    if (nc > 0) {
+        Q_morpho[idx] := fnJC(i+1)
+        phyMorpho[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho[idx], nSites=nc, type="Standard")
+        phyMorpho[idx].clamp(partition_state[i])
+        idx = idx + 1
+    }
+}
