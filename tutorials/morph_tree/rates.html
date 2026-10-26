@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Among-character rate variation</title>
+  </head>
+  <body>
+    <div class="container">
+      
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Among-character rate variation</h1>
+	<h3 class="subtitle">Relaxing the assumption of a single rate across all characters</h3>
+	<h4 class="authors">April M. Wright, Michael J. Landis, and Sebastian Höhna</h4>
+  <h5>Last modified on October 22, 2026</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+            <strong>Data Files</strong>
+            <ul id="data_files" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/data/bears.nex">bears.nex</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+        
+            <strong>Scripts</strong>
+            <ul id="scripts" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_mkv_gamma.Rev">mcmc_mkv_gamma.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_mkv_lognormal.Rev">mcmc_mkv_lognormal.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_ACRV_gamma.Rev">model_ACRV_gamma.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_ACRV_lognormal.Rev">model_ACRV_lognormal.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_tree.Rev">model_tree.Rev</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+</blockquote>
+
+
+
+
+</div>
+<div class="tutorial-content">
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>In <a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a> we assumed that every character in our matrix
+evolves at the same rate. This is a strong assumption: some characters
+(e.g. an easily-lost bristle) may change far more readily than others
+(e.g. a fundamental skeletal element). Ignoring this heterogeneity can
+bias branch-length and topology estimates, in much the same way that
+ignoring among-site rate variation biases estimates from molecular data.</p>
+
+<p>This tutorial adds <strong>among-character rate variation</strong> (ACRV) to the Mkv
+model from the previous page. We continue to use the same 18-taxon,
+62-character bears dataset <a class="citation" href="#abella2011">(Abella et al. 2011)</a>, so that the effect of
+adding ACRV can be judged directly against the previous page’s results.</p>
+
+<h3 class="subsection" id="modeling-rate-variation">Modeling Rate Variation</h3>
+<hr class="subsection" />
+
+<p>Just as with nucleotide data, we can allow each character’s rate to be
+drawn from a distribution of rate multipliers, discretized into a small
+number of rate categories, each visited with equal probability. RevBayes
+lets us discretize essentially any distribution we like; the most common
+choice for molecular and morphological data alike is a Gamma
+distribution, but we will also try a lognormal distribution as an
+alternative.</p>
+
+<h2 class="section" id="sec_acrv_gamma">Example: Adding Gamma-Distributed Rate Variation</h2>
+<hr class="section" />
+
+<blockquote class="instruction">
+  <p>Create a new directory <strong>scripts</strong> (if you have not already), and create
+the Rev-script files <strong>model_ACRV_gamma.Rev</strong> and <strong>mcmc_mkv_gamma.Rev</strong>.</p>
+</blockquote>
+
+<p>We will use a discretized Gamma distribution to place a prior on the
+rate multipliers. The Gamma distribution has a single shape parameter,
+<code class="language-plaintext highlighter-rouge">alpha_morpho</code>; low values of <code class="language-plaintext highlighter-rouge">alpha_morpho</code> correspond to strong rate
+heterogeneity (most characters change slowly, a few change quickly),
+while high values correspond to roughly equal rates across characters
+(recovering the plain Mkv model as a limiting case). We use a uniform
+prior between 0 and $10^8$, as recommended by <a class="citation" href="#Fabreti2023">Fabreti and Höhna (2023)</a>, and
+initialize the value at 1.0 to improve MCMC efficiency.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0.0, 1E8 )
+alpha_morpho.setValue( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+</code></pre></div></div>
+
+<p>As usual, we add a scaling move on the new parameter.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+</code></pre></div></div>
+
+<p>The only change to the CTMC itself is that we now pass our discretized
+rates in as the <code class="language-plaintext highlighter-rouge">siteRates</code> argument.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+</code></pre></div></div>
+
+<p>The rest of <code class="language-plaintext highlighter-rouge">mcmc_mkv_gamma.Rev</code> is identical to <code class="language-plaintext highlighter-rouge">mcmc_mkv.Rev</code> from the
+previous page, except that it sources <code class="language-plaintext highlighter-rouge">model_ACRV_gamma.Rev</code> instead of
+<code class="language-plaintext highlighter-rouge">model_Mkv.Rev</code>, and the output filenames are changed to <code class="language-plaintext highlighter-rouge">mkv_gamma.*</code> so
+that they do not overwrite your previous results.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_ACRV_gamma.Rev")
+</code></pre></div></div>
+
+<p>Run this analysis in RevBayes with <code class="language-plaintext highlighter-rouge">source("scripts/mcmc_mkv_gamma.Rev")</code>,
+exactly as you did for the previous two scripts.</p>
+
+<h2 class="section" id="sec_acrv_lognormal">Choose Your Own Adventure: A Lognormal Alternative</h2>
+<hr class="section" />
+
+<p>RevBayes makes it very natural to discretize <em>any</em> distribution you
+might like to work with, not just the Gamma. As an exercise, try
+replacing the Gamma-distributed rates with a discretized lognormal
+distribution instead:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0.0, 1E6 )
+alpha_morpho.setValue( 1.0 )
+rates_morpho := fnDiscretizeDistribution( dnLognormal(ln(alpha_morpho), 0.01), 4 )
+</code></pre></div></div>
+
+<p>Everything else about the model and the MCMC analysis stays the same
+(see <code class="language-plaintext highlighter-rouge">model_ACRV_lognormal.Rev</code> and <code class="language-plaintext highlighter-rouge">mcmc_mkv_lognormal.Rev</code> for the full,
+runnable version). Load all three log files (<code class="language-plaintext highlighter-rouge">mkv</code>, <code class="language-plaintext highlighter-rouge">mkv_gamma</code>, and
+<code class="language-plaintext highlighter-rouge">mkv_lognormal</code>) into <code class="language-plaintext highlighter-rouge">Tracer</code> and compare the likelihoods and the
+posterior tree lengths: adding rate variation, in either form, should
+improve the likelihood over the plain Mkv model, since some of the
+excess homoplasy that the plain model could only explain by inflating
+branch lengths can now instead be explained by a subset of characters
+evolving faster.</p>
+
+<p>When you are ready, move on to <a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>,
+where we apply what we have learned so far to a matrix that mixes binary
+and multistate characters.</p>
+
+</div>
+<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de <i>Agriarctos</i> (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
+
+</li>
+<li><span id="Fabreti2023">Fabreti L.G., Höhna S. 2023. Nucleotide substitution model selection is not necessary for Bayesian inference of phylogeny with well-behaved priors. Systematic Biology. 72:1418–1432.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://github.com/revbayes/revbayes/discussions">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

@@ -611,7 +611,7 @@ In this example, we are effectively just rescaling the (global) molecular clock 
 This model component describes how morphological characters change among states.
 (We'll assume for simplicity that the characters are binary.
 These modules would have to be modified to accommodate multistate characters.
-See the [multistate tutorial]({{site.baseurl}}{% link tutorials/morph_tree/V2.md %}) for ideas of how to achieve this.)
+See the [multistate tutorial]({{site.baseurl}}{% link tutorials/morph_tree/multistate.md %}) for ideas of how to achieve this.)
 
 We source the morphological transition model:
 ```R

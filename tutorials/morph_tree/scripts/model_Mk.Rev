@@ -1,0 +1,14 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials
+# the plain Mk model
+#
+################################################################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor
+# matrix with two states.
+Q_morpho <- fnJC(2)
+
+# Combine the tree and the Q matrix into the phylogenetic CTMC.
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, type="Standard")
+phyMorpho.clamp(morpho)

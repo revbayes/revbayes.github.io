@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Ordered characters</title>
+  </head>
+  <body>
+    <div class="container">
+      
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Ordered characters</h1>
+	<h3 class="subtitle">Characters whose states evolve in a sequence</h3>
+	<h4 class="authors">Basanta Khakurel and April Wright</h4>
+  <h5>Last modified on October 25, 2026</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a></li>
+          
+            <li><a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+            <strong>Data Files</strong>
+            <ul id="data_files" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/data/Ardeidae.nex">Ardeidae.nex</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+        
+            <strong>Scripts</strong>
+            <ul id="scripts" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_ordered.Rev">mcmc_ordered.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_ordered_partition.Rev">model_ordered_partition.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_tree.Rev">model_tree.Rev</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+</blockquote>
+
+
+
+
+</div>
+<div class="tutorial-content">
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>The Mk model, which we have used throughout this tutorial series, treats
+the states of a character as unordered labels: a character can change
+from any state into any other state in a single step. For many
+characters this is exactly what we want. A character such as “shape of
+the bill tip: hooked / straight / curved upward” has no natural sequence;
+there is no reason to think that a hooked bill has to become straight
+before it can become curved upward.</p>
+
+<p>Other characters, however, describe a <em>sequence</em>. Think of a character
+like “relative length of a bone: short (0) / intermediate (1) / long
+(2)”. It seems reasonable to assume that a short bone cannot become long
+without passing through an intermediate length on the way. Characters
+like this are called <strong>ordered</strong> (in the parsimony literature also
+<em>additive</em>): changing from state 0 to state 2 requires two steps, 0 → 1
+and 1 → 2.</p>
+
+<p>The authors of a morphological matrix usually decide which characters
+are ordered when they define the characters, and record that decision
+in the matrix file. In this tutorial we will see how to model ordered
+characters in RevBayes and how to combine them with unordered characters
+in the same analysis.</p>
+
+<h3 class="subsection" id="subsec_ordered_Q">The Ordered Rate Matrix</h3>
+<hr class="subsection" />
+
+<p>For a three-state character, the Mk model of <a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a>
+uses the Jukes-Cantor-type rate matrix in which every state can change
+into every other state at the same rate:</p>
+
+\[Q_{\text{unordered}} = \begin{pmatrix}
+-2\mu &amp; \mu &amp; \mu \\
+\mu &amp; -2\mu &amp; \mu \\
+\mu &amp; \mu &amp; -2\mu
+\end{pmatrix}\]
+
+<p>For an ordered character, we only allow changes between <em>adjacent</em>
+states. The rates between states 0 and 2 are therefore set to zero:</p>
+
+\[Q_{\text{ordered}} = \begin{pmatrix}
+-\mu &amp; \mu &amp; 0 \\
+\mu &amp; -2\mu &amp; \mu \\
+0 &amp; \mu &amp; -\mu
+\end{pmatrix}\]
+
+<p>With more states, the same pattern continues: the only non-zero rates
+lie immediately above and below the diagonal. Two consequences are
+worth keeping in mind:</p>
+
+<ul>
+  <li><strong>Ordering does not forbid observing states 0 and 2 in two closely
+related taxa.</strong> Over a branch of finite length, a character can make
+both steps (0 → 1 → 2), so the <em>probability</em> of going from 0 to 2
+along a branch is not zero. It is, however, smaller than under the
+unordered model, especially on short branches, because two changes are
+needed instead of one.</li>
+  <li><strong>For binary characters, ordering makes no difference.</strong> With only two
+states, the two states are always adjacent, and the ordered and
+unordered rate matrices are identical.</li>
+</ul>
+
+<h2 class="section" id="sec_ordered_analysis">Example: Inferring a Phylogeny of Herons</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="subsec_data_files">Data and Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Download the data file <a href="data/Ardeidae.nex"><code class="language-plaintext highlighter-rouge">Ardeidae.nex</code></a> and save it
+to your <code class="language-plaintext highlighter-rouge">data</code> directory.</p>
+</blockquote>
+
+<p>We use a matrix of 88 morphological characters scored for 34 taxa
+<a class="citation" href="#Mayr2019">(Mayr et al. 2019)</a>: 26 extant herons, egrets and bitterns (Ardeidae),
+five outgroup taxa (a stork, two ibises, the shoebill and the hamerkop),
+and three fossil herons. Characters have between two and four states, so
+just as in <a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a> we will partition the
+matrix by the number of states. In addition, the authors of the matrix
+coded 16 of the characters as ordered.</p>
+
+<p>If you open <code class="language-plaintext highlighter-rouge">Ardeidae.nex</code> in a text editor, you will find the
+information about which characters are ordered at the end of the file,
+in the <code class="language-plaintext highlighter-rouge">TYPESET</code> command of an <code class="language-plaintext highlighter-rouge">ASSUMPTIONS</code> block:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TYPESET * UNTITLED  = ord: 1-4 7 9 11 13-17 19 24 41-42, unord: 5-6 8 10 12 18 20-23 25-40 43-88;
+</code></pre></div></div>
+
+<p>RevBayes does not read this information from the file (in our copy of
+the matrix the block is placed inside a NEXUS comment, <code class="language-plaintext highlighter-rouge">[ ... ]</code>, so
+that RevBayes skips it). Instead, we will tell RevBayes which characters
+are ordered in our Rev script.</p>
+
+<h3 class="subsection" id="subsec_creating_files">Creating Rev Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Create the Rev-script files <strong>model_ordered_partition.Rev</strong> and
+<strong>mcmc_ordered.Rev</strong> in your <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
+
+<p>We continue to reuse <code class="language-plaintext highlighter-rouge">model_tree.Rev</code>, unchanged, from
+<a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a>.</p>
+
+<h3 class="subsection" id="subsec_load_data">Load Data Matrices</h3>
+<hr class="subsection" />
+
+<p><code class="language-plaintext highlighter-rouge">mcmc_ordered.Rev</code> starts exactly like the scripts on the previous pages:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho = readDiscreteCharacterData("data/Ardeidae.nex")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
+num_taxa &lt;- taxa.size()
+num_branches &lt;- 2 * num_taxa - 2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_tree.Rev")
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_split">Splitting Ordered and Unordered Characters</h3>
+<hr class="subsection" />
+
+<p>In <code class="language-plaintext highlighter-rouge">model_ordered_partition.Rev</code>, we first write down which characters
+are ordered. This is a direct translation of the <code class="language-plaintext highlighter-rouge">ord:</code> part of the
+<code class="language-plaintext highlighter-rouge">TYPESET</code> command, with the ranges written out (<code class="language-plaintext highlighter-rouge">1-4</code> becomes
+<code class="language-plaintext highlighter-rouge">1, 2, 3, 4</code>, and so on):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ordered_chars = v(1, 2, 3, 4, 7, 9, 11, 13, 14, 15, 16, 17, 19, 24, 41, 42)
+</code></pre></div></div>
+
+<p>Next, we make two copies of the data matrix. In the first copy, we
+exclude all characters and then include only the ordered ones; in the
+second copy, we exclude the ordered characters, which leaves all of the
+unordered ones:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_ordered &lt;- morpho
+morpho_ordered.excludeAll()
+morpho_ordered.includeCharacter(ordered_chars)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_unordered &lt;- morpho
+morpho_unordered.excludeCharacter(ordered_chars)
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Check that the split worked by typing <code class="language-plaintext highlighter-rouge">morpho_ordered.nchar()</code> and
+<code class="language-plaintext highlighter-rouge">morpho_unordered.nchar()</code> in the RevBayes console. You should get 16
+and 72, which add up to the 88 characters of the full matrix.</p>
+</blockquote>
+
+<h3 class="subsection" id="subsec_partition">Partitioning by Number of States</h3>
+<hr class="subsection" />
+
+<p>Now we partition each of the two copies by the number of states, using
+the same loop as in <a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>. This time we
+use the largest state in the matrix as the upper bound of the loop:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_max_states &lt;- morpho.getStateDescriptions().size()
+idx = 1
+morpho_unordered_bystate[1] &lt;- morpho_unordered
+morpho_ordered_bystate[1] &lt;- morpho_ordered
+</code></pre></div></div>
+
+<p>(Setting the first element of each vector is only needed so that
+RevBayes does not complain about an empty element at index 1; the loop
+itself starts at two states.)</p>
+
+<p>Within the loop, the unordered characters with <code class="language-plaintext highlighter-rouge">i</code> states get the usual
+<code class="language-plaintext highlighter-rouge">i</code>-by-<code class="language-plaintext highlighter-rouge">i</code> Jukes-Cantor rate matrix, exactly as before:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_unordered_bystate[i] &lt;- morpho_unordered
+    morpho_unordered_bystate[i].setNumStatesPartition(i)
+    nc = morpho_unordered_bystate[i].nchar()
+
+    if (nc &gt; 0) {
+        q[idx] &lt;- fnJC(i)
+        m_morph[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=q[idx], nSites=nc, type="Standard")
+        m_morph[idx].clamp(morpho_unordered_bystate[i])
+        idx = idx + 1
+    }
+</code></pre></div></div>
+
+<p>The ordered characters with <code class="language-plaintext highlighter-rouge">i</code> states are handled in exactly the same
+way. The only difference is the rate matrix: <code class="language-plaintext highlighter-rouge">fnOrderedRateMatrix(i,
+1.0, 1.0)</code> creates an <code class="language-plaintext highlighter-rouge">i</code>-by-<code class="language-plaintext highlighter-rouge">i</code> matrix in which only changes between
+adjacent states are allowed. The second and third arguments are the
+rates of moving one state up (e.g. 0 → 1) and one state down (e.g. 1 →
+0). Here, we set both to 1, so that steps in either direction are
+equally likely, and RevBayes rescales the matrix so that branch lengths
+are still measured in expected changes per character.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_ordered_bystate[i] &lt;- morpho_ordered
+    morpho_ordered_bystate[i].setNumStatesPartition(i)
+    nc = morpho_ordered_bystate[i].nchar()
+
+    if (nc &gt; 0) {
+        q[idx] &lt;- fnOrderedRateMatrix(i, 1.0, 1.0)
+        m_morph[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=q[idx], nSites=nc, type="Standard")
+        m_morph[idx].clamp(morpho_ordered_bystate[i])
+        idx = idx + 1
+    }
+</code></pre></div></div>
+
+<p>For the heron data, this gives five partitions:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Characters</th>
+      <th style="text-align: right">2 states</th>
+      <th style="text-align: right">3 states</th>
+      <th style="text-align: right">4 states</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Unordered</td>
+      <td style="text-align: right">52</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">6</td>
+    </tr>
+    <tr>
+      <td>Ordered</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>A few things are worth noticing here:</p>
+
+<ul>
+  <li><strong>The one binary ordered character behaves exactly like an unordered
+one</strong>, because the 2-by-2 ordered and unordered matrices are the same
+(see <a href="#subsec_ordered_Q"></a>). We could just as well have put it
+with the unordered binary characters.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">setNumStatesPartition()</code> groups characters by their largest state,
+not by how many different states were observed.</strong> (RevBayes prints a
+note to remind you of this.) For example, characters 1 and 2 are only
+ever scored as 1 or 2 in this matrix, but they are placed in the
+3-state partition. For ordered characters this is exactly what we
+want: state 0 is part of the sequence, even if no taxon in our matrix
+happens to have it.</li>
+  <li><strong>The counts add up to 86, not 88.</strong> Characters 39 and 73 are scored
+as state 0 in every taxon. Such constant characters have only one
+state, so they do not fall into any of the partitions, which start at
+two states.</li>
+</ul>
+
+<p>Back in <code class="language-plaintext highlighter-rouge">mcmc_ordered.Rev</code>, we source the model file:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_ordered_partition.Rev")
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_run">Running the Analysis</h3>
+<hr class="subsection" />
+
+<p>The rest of <code class="language-plaintext highlighter-rouge">mcmc_ordered.Rev</code> sets up the monitors, runs two
+independent MCMC chains, and summarizes the trees, exactly as on the
+previous pages:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/ordered.log", printgen=10) )
+monitors.append( mnFile(filename="output/ordered.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=1000, tree_length) )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=20000, tuningInterval=200)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/ordered.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+mapTree(trace, file="output/ordered.map.tre")
+consensusTree(trace, file="output/ordered.majrule.tre")
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Run the analysis with <code class="language-plaintext highlighter-rouge">source("scripts/mcmc_ordered.Rev")</code>.
+This should take about 5 to 10 minutes.</p>
+</blockquote>
+
+<h3 class="subsection" id="subsec_results">Results</h3>
+<hr class="subsection" />
+
+<p>Load <code class="language-plaintext highlighter-rouge">output/ordered_run_1.log</code> and <code class="language-plaintext highlighter-rouge">output/ordered_run_2.log</code> into
+<code class="language-plaintext highlighter-rouge">Tracer</code> and check that the two runs agree (see
+<a href="/tutorials/convergence/">Convergence assessment</a>).</p>
+
+<p>Next, open <code class="language-plaintext highlighter-rouge">output/ordered.majrule.tre</code> in <code class="language-plaintext highlighter-rouge">FigTree</code> and root it on the
+outgroup (<em>Ciconia</em>, <em>Plegadis</em>, <em>Threskiornis</em>, <em>Balaeniceps</em> and
+<em>Scopus</em>). The herons, and within them the bitterns (<em>Botaurus</em> and
+<em>Ixobrychus</em>), should form well-supported clades. Then look for the
+three fossils: which of them can be placed with confidence, and which
+cannot? Keep in mind that most of their characters are scored as
+missing.</p>
+
+<h2 class="section" id="sec_ordered_adventure">Choose Your Own Adventure</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="what-if-we-ignore-the-ordering">What If We Ignore the Ordering?</h3>
+<hr class="subsection" />
+
+<p>To see what difference the ordering makes, make a copy of
+<code class="language-plaintext highlighter-rouge">model_ordered_partition.Rev</code> and replace <code class="language-plaintext highlighter-rouge">fnOrderedRateMatrix(i, 1.0,
+1.0)</code> with <code class="language-plaintext highlighter-rouge">fnJC(i)</code>. All characters are then treated as unordered,
+while the partitions stay the same. Make a matching copy of
+<code class="language-plaintext highlighter-rouge">mcmc_ordered.Rev</code> that sources the new model file and writes its output
+to <code class="language-plaintext highlighter-rouge">output/unordered*</code>, and run it.</p>
+
+<p>Load both sets of log files into <code class="language-plaintext highlighter-rouge">Tracer</code>, and compare the two
+majority-rule trees:</p>
+
+<ul>
+  <li>Do the well-supported clades change when the ordering is ignored?</li>
+  <li>Which of the poorly supported relationships change? Pay particular
+attention to the fossils.</li>
+  <li>How do the likelihoods compare? Keep in mind that a higher likelihood
+alone is not a formal model comparison; for that, see
+<a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a>.</li>
+</ul>
+
+<h3 class="subsection" id="asymmetric-steps">Asymmetric Steps</h3>
+<hr class="subsection" />
+
+<p>We assumed that steps up and down the sequence of states happen at the
+same rate. Because RevBayes rescales the ordered rate matrix, only the
+<em>ratio</em> of the two rates matters, so we can estimate a single parameter:
+how much faster characters step up than down. Try replacing the ordered
+rate matrix in your model file with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>up_down_ratio ~ dnLognormal(0.0, 1.0)
+moves.append( mvScale(up_down_ratio, lambda=0.5, weight=2.0) )
+</code></pre></div></div>
+
+<p>placed before the loop, and</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q[idx] := fnOrderedRateMatrix(i, up_down_ratio, 1.0)
+</code></pre></div></div>
+
+<p>inside it (note the <code class="language-plaintext highlighter-rouge">:=</code>, because the matrix now depends on a
+stochastic parameter). A ratio above 1 means that characters tend to
+move towards higher-numbered states, and a ratio below 1 the opposite.
+Bear in mind that state numbers are only labels chosen by the authors of
+the matrix, so a single ratio shared by all ordered characters is only
+meaningful if the states were numbered consistently (e.g., always from
+small to large). This idea – that changes in one direction can be more
+likely than in the other – is the topic of the next page.</p>
+
+<h3 class="subsection" id="adding-rate-variation">Adding Rate Variation</h3>
+<hr class="subsection" />
+
+<p>As in <a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>, you can add among-character
+rate variation by defining Gamma-distributed rates before the loop and
+passing <code class="language-plaintext highlighter-rouge">siteRates=rates_morpho</code> to every <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> in the loop.</p>
+
+<p>When you are ready, move on to <a href="/tutorials/morph_tree/state_frequencies.html">Discrete morphology - Among-character state-frequency variation</a>,
+where we relax the assumption that changes between two states are
+equally likely in both directions.</p>
+
+</div>
+<ol class="bibliography"><li><span id="Mayr2019">Mayr G., De Pietri V.L., Scofield R.P., Smith T. 2019. A fossil heron from the early Oligocene of Belgium: the earliest temporally well-constrained record of the Ardeidae. Ibis. 161:79–90.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://github.com/revbayes/revbayes/discussions">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

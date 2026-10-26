@@ -1,0 +1,56 @@
+################################################################################
+#
+# RevBayes Example: Inferring a phylogeny of herons (Ardeidae) with ordered
+#                   and unordered characters
+#
+# This file: Runs the full MCMC.
+#
+# authors -- Basanta Khakurel and April Wright
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+morpho = readDiscreteCharacterData("data/Ardeidae.nex")
+
+## helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+source("scripts/model_tree.Rev")
+
+####################################################
+# Substitution model with ordered and unordered    #
+# characters, partitioned by the number of states  #
+####################################################
+
+source("scripts/model_ordered_partition.Rev")
+
+########
+# MCMC #
+########
+
+mymodel = model(phylogeny)
+
+monitors.append( mnModel(filename="output/ordered.log", printgen=10) )
+monitors.append( mnFile(filename="output/ordered.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=1000, tree_length) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=20000, tuningInterval=200)
+
+trace = readTreeTrace("output/ordered.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+mapTree(trace, file="output/ordered.map.tre")
+consensusTree(trace, file="output/ordered.majrule.tre")
+
+q()

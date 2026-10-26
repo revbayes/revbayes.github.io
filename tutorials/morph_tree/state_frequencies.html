@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Among-character state-frequency variation</title>
+  </head>
+  <body>
+    <div class="container">
+      
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Among-character state-frequency variation</h1>
+	<h3 class="subtitle">Relaxing the assumption of equal state frequencies</h3>
+	<h4 class="authors">April M. Wright, Michael J. Landis, and Sebastian Höhna</h4>
+  <h5>Last modified on October 25, 2026</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a></li>
+          
+            <li><a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a></li>
+          
+            <li><a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+            <strong>Data Files</strong>
+            <ul id="data_files" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/data/Cinctans.nex">Cinctans.nex</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/data/bears.nex">bears.nex</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+        
+            <strong>Scripts</strong>
+            <ul id="scripts" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_mkv_beta.Rev">mcmc_mkv_beta.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_multistate_beta.Rev">mcmc_multistate_beta.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_ACRV_gamma.Rev">model_ACRV_gamma.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_freqs_beta.Rev">model_freqs_beta.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_multistate_beta.Rev">model_multistate_beta.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_multistate_partition.Rev">model_multistate_partition.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_tree.Rev">model_tree.Rev</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+</blockquote>
+
+
+
+
+</div>
+<div class="tutorial-content">
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>The Mk model makes a number of assumptions, but one that may strike you
+as unrealistic is the assumption that characters are equally likely to
+change from any one state to any other state. That means that a trait is
+as likely to be gained as lost. While this may hold true for some
+traits, we expect that it may be untrue for many others.</p>
+
+<p>RevBayes has functionality to allow us to relax this assumption. Recall
+from <a href="/tutorials/ctmc/">Nucleotide substitution models</a> that stationary frequencies impact how likely we
+are to see changes in a character. For example, it may be very likely,
+in a character, to change from 0 to 1. But if the frequency of 0 is very
+low, we will still seldom see this change.</p>
+
+<p>We can exploit the relationship between state frequencies and observed
+changes to allow for variable Q matrices across characters
+(<a href="#morpho_graphical_model"></a>). This tutorial shows how to do this
+for binary characters using a <strong>discretized Beta distribution</strong>. This is
+an example of a <strong>mixture model</strong>: there are assumed to be subdivisions
+in the data, which may require different parameters (in this case,
+state frequencies). These subdivisions are not defined <em>a priori</em>. The
+model has previously been shown to be effective for a range of empirical
+and simulated datasets <a class="citation" href="#Wright2016">(Wright et al. 2016)</a>.</p>
+
+<figure id="morpho_graphical_model"><p><img src="figures/tikz/morpho_gm.png" width="400" /></p>
+<figcaption>Graphical model demonstrating the
+discretized Beta distribution for allowing variable state frequencies.</figcaption>
+</figure>
+
+<p>We continue to build on the bears dataset and the Gamma-ACRV model from
+<a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a>.</p>
+
+<h2 class="section" id="sec_disc_analysis">Example: A Discretized Beta Distribution</h2>
+<hr class="section" />
+
+<blockquote class="instruction">
+  <p>Make a copy of <code class="language-plaintext highlighter-rouge">model_ACRV_gamma.Rev</code> and call it <strong>model_freqs_beta.Rev</strong>.
+Make a copy of <code class="language-plaintext highlighter-rouge">mcmc_mkv_gamma.Rev</code> and call it <strong>mcmc_mkv_beta.Rev</strong>. You
+will need to modify the <code class="language-plaintext highlighter-rouge">Rev</code> code provided in this section in these files.</p>
+</blockquote>
+
+<p>We will use a discretized Beta distribution to place a prior on state
+frequencies. The Beta distribution has two parameters, $\alpha$ and
+$\beta$. These two parameters specify the shape of the distribution.
+State frequencies will be evaluated according to this distribution, in
+the same way that rate variation is evaluated according to the Gamma
+distribution. The discretized distribution is split into multiple
+classes, each with its own set of frequencies for the 0 and 1 characters.
+The number of classes can vary; we have chosen 5 for tractability. Note
+that we need to make sure that this discretization results in a
+symmetric model, therefore we will use only one parameter for the Beta
+distribution: <code class="language-plaintext highlighter-rouge">beta_scale</code> so that $\alpha = \beta$.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_cats = 5
+</code></pre></div></div>
+
+<p>Second, we specify the parameter of the Beta distribution. This
+parameter <code class="language-plaintext highlighter-rouge">beta_scale</code> is drawn from a lognormal distribution, similar
+to the suggestion of the prior on Gamma rate categories <a class="citation" href="#Fabreti2023">(Fabreti and Höhna 2023)</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+beta_scale.setValue( 1.0 )
+moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+</code></pre></div></div>
+
+<p>Next, we set the categories to each represent a quadrant of the Beta
+distribution specified by the <code class="language-plaintext highlighter-rouge">beta_scale</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+</code></pre></div></div>
+
+<p>Using these state frequencies, we will generate a new vector of Q
+matrices. Because we are varying the state frequencies, we must use a Q
+matrix generation function that allows for state frequencies to vary as
+a parameter. We will, therefore, use the <code class="language-plaintext highlighter-rouge">fnF81</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:cats.size()) {
+    Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
+}
+</code></pre></div></div>
+
+<p>Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
+of the $Q$-matrices. For this model the probabilities must be equal because we need to guarantee that
+the model is symmetric. Thus, we use a <code class="language-plaintext highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>matrix_probs &lt;- simplex( rep(1, num_cats) )
+</code></pre></div></div>
+
+<p>The only other specification that needs to change in the model
+specification is the CTMC, which now takes the vector of Q matrices and
+the <code class="language-plaintext highlighter-rouge">siteMatrices</code> argument telling it how likely each matrix is to
+apply to any given character:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
+phyMorpho.clamp(morpho)
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Remember to change all output filenames, e.g., from <code class="language-plaintext highlighter-rouge">output/mkv_gamma.log</code>
+to <code class="language-plaintext highlighter-rouge">output/mkv_beta.log</code>.</p>
+</blockquote>
+
+<p>Run <code class="language-plaintext highlighter-rouge">mcmc_mkv_beta.Rev</code>. This estimation will take longer than the
+previous ones, due to increased model complexity.</p>
+
+<h3 class="subsection" id="trace">Evaluate and Summarize Your Results</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="subsubsec_MCMC_conv">Checking Convergence</h4>
+<hr class="subsubsection" />
+
+<figure id="add_files"><p><img src="figures/convergence.png" width="90%" /></p>
+<figcaption>Assessing convergence using <code class="language-plaintext highlighter-rouge">convenience</code> <a class="citation" href="#Fabreti2022">(Fabreti and Höhna 2022)</a>. Here we show the difference in split frequencies. These runs have converged for us.</figcaption>
+</figure>
+
+<h4 class="subsubsection" id="subsubsec_Eval_MCMC">Evaluate MCMC</h4>
+<hr class="subsubsection" />
+
+<p>We will use <code class="language-plaintext highlighter-rouge">Tracer</code> to evaluate the MCMC samples from our three
+estimations (<code class="language-plaintext highlighter-rouge">mkv</code>, <code class="language-plaintext highlighter-rouge">mkv_gamma</code>, <code class="language-plaintext highlighter-rouge">mkv_beta</code>). Load all three of the MCMC
+logs into the <code class="language-plaintext highlighter-rouge">Tracer</code> window. Highlight all three files in the upper
+left-hand viewer (<a href="#add_files_2"></a>) by right- or command-clicking
+all three files.</p>
+
+<figure id="add_files_2"><p><img src="figures/AddFiles.png" width="50%" /></p>
+<figcaption>Highlight all three files for model comparison.</figcaption>
+</figure>
+
+<p>Once all three trace logs are loaded and highlighted, first look at the
+estimated likelihoods. You will notice that the plain Mkv model is
+improved by allowing rate heterogeneity, and improved further still by
+also allowing state-frequency heterogeneity (<a href="#tracer_llik"></a>).
+Likely, we would need to perform stepping-stone model assessment to
+truly tell whether the more complicated model is statistically
+justified; you will find instructions for performing that analysis in
+<a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a>.</p>
+
+<figure id="tracer_llik"><p><img src="figures/likelihoods.png" width="100%" /></p>
+<figcaption>Comparison of likelihood scores for all three models.</figcaption>
+</figure>
+
+<p>Click on the <code class="language-plaintext highlighter-rouge">Trace</code> panel. In the lower left hand corner, you will
+notice an option to color each trace by the file it came from. Choose
+this option (you may need to expand the window slightly to see it). Next
+to this option, you can also see an option to add a legend to your trace
+window. The results of this coloring can be seen in
+<a href="#coltrace"></a>. When the coloring is working, you will see that
+the plain Mkv model mixes quite well, but that mixing becomes worse as we
+relax the assumption of equal state frequencies. This is because we are
+greatly increasing model complexity. Therefore, we would need to run the
+MCMC chains longer if we were to use these analyses in a paper.</p>
+
+<figure id="coltrace"><p><img src="figures/colortrace.png" width="80%" /></p>
+<figcaption>The Trace window. The traces are colored by which version of the Mk model
+they correspond to.</figcaption>
+</figure>
+
+<p>We are also interested in characterizing the degree of heterogeneity
+estimated by the beta-discretized model. If the data were distributed by
+a single morphological rate matrix, then we would expect to see very
+little variation among the different values in <code class="language-plaintext highlighter-rouge">cats</code>, and a very large
+value for <code class="language-plaintext highlighter-rouge">beta_scale</code>. For example, if <code class="language-plaintext highlighter-rouge">beta_scale</code> were 1000, then
+that would cause all discrete-beta categories to have values approaching
+0.5, which approximates a symmetric Mkv model.</p>
+
+<figure id="tracer_cats"><p><img src="figures/results/cats.png" width="50%" /></p>
+<figcaption>Posterior discretized state frequencies for the discrete-beta model.</figcaption>
+</figure>
+
+<figure id="tracer_alpha_beta"><p><img src="figures/results/alpha_beta.png" width="50%" /></p>
+<figcaption>Posterior alpha and beta parameters for the discrete-beta model.</figcaption>
+</figure>
+
+<p><a href="#tracer_cats"></a> shows that the four discrete-beta state
+frequencies do not all have the exact same value. In addition,
+<a href="#tracer_alpha_beta"></a> shows that the prior on <code class="language-plaintext highlighter-rouge">beta_scale</code> is small
+enough that we expect to see variance among <code class="language-plaintext highlighter-rouge">cats</code> values. If the data
+contained no information regarding the distribution of <code class="language-plaintext highlighter-rouge">cats</code> values,
+then the posterior estimate for <code class="language-plaintext highlighter-rouge">beta_scale</code> would resemble the prior.</p>
+
+<figure id="mk_discretized_majrule"><p><img src="figures/results/mk_discretized_majrule_tre.png" width="75%" /></p>
+<figcaption>Majority rule consensus tree for the beta-discretized Mkv analysis.</figcaption>
+</figure>
+
+<p>The majority-rule consensus trees for the plain Mkv model and the
+beta-discretized model are very similar (<a href="#mk_discretized_majrule"></a>).
+In general, it is important to assess whether your results are sensitive
+to model assumptions, such as the degree of model complexity, and any
+mechanistic assumptions that motivate the model’s design. In this case,
+our tree estimate appears to be robust to model complexity.</p>
+
+<h2 class="section" id="sec_multistate_freqs">What About Multistate Characters?</h2>
+<hr class="section" />
+
+<p>The discretized-Beta model only applies to binary characters, because a
+Beta distribution describes the frequencies of just two states. A
+natural idea for multistate characters is to draw the state frequencies
+of each category from a Dirichlet distribution instead, similar to the
+CAT model for molecular data <a class="citation" href="#Lartillot2004">(Lartillot and Philippe 2004)</a>. However, such a
+model has to respect one important property of morphological data: the
+state labels are arbitrary. Whether the authors of a matrix call a
+particular condition “0”, “1”, or “2” is a matter of convention, so the
+likelihood must not change when the states of a character are
+relabelled.</p>
+
+<p>For binary characters, the discretized-Beta model guarantees this
+through the constraint $\alpha = \beta$. Because the Beta distribution
+is then symmetric, its categories come in mirrored pairs: for every
+category in which state 0 has frequency $q$, there is another in which
+it has frequency $1-q$. Swapping the labels 0 and 1 therefore only swaps
+categories within the mixture and leaves the likelihood unchanged.</p>
+
+<p>For a character with $k$ states, the same guarantee would require every
+set of frequencies in the mixture to be accompanied by all of its $k!$
+possible relabellings: 6 for a three-state character and 24 for a
+four-state character. Simply drawing frequencies from a symmetric
+Dirichlet distribution is not enough, because each individual draw is
+still asymmetric. A Dirichlet mixture model for multistate characters
+would therefore be wrong. For example, if we relabel the states of a
+character, say swap state 0 and 2, the likelihood would differ even
+though the data themselves are exactly the same. For this reason,
+we do not use such a model in these tutorials. In the activity below,
+we instead combine the Beta mixture for the binary characters with the
+standard Mk model for the multistate characters.</p>
+
+<h2 class="section" id="sec_activity_partition_beta">Activity: Asymmetric Rates in a Partitioned Analysis</h2>
+<hr class="section" />
+
+<p>As discussed above, the discretized-Beta model only applies to binary
+characters. Most real morphological matrices, however, mix binary and multistate characters,
+like the cinctan dataset from <a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>. The
+partitioning scheme from that page gives us a natural way to combine the
+two: since every state-count partition already gets its own Q matrix, we
+can give the <strong>binary</strong> partition the mixture of asymmetric F81 matrices
+from this page, while every partition with three or more states keeps
+its <code class="language-plaintext highlighter-rouge">i</code>-by-<code class="language-plaintext highlighter-rouge">i</code> Jukes-Cantor matrix.</p>
+
+<blockquote class="instruction">
+  <p>Make a copy of <code class="language-plaintext highlighter-rouge">model_multistate_partition.Rev</code> and call it
+<strong>model_multistate_beta.Rev</strong>. Make a copy of <code class="language-plaintext highlighter-rouge">mcmc_multistate.Rev</code> and
+call it <strong>mcmc_multistate_beta.Rev</strong>, and change it to source
+<code class="language-plaintext highlighter-rouge">model_multistate_beta.Rev</code> and write its output to
+<code class="language-plaintext highlighter-rouge">output/multistate_beta.*</code>.</p>
+</blockquote>
+
+<p>Try to modify <code class="language-plaintext highlighter-rouge">model_multistate_beta.Rev</code> yourself before looking at the
+solution. You will need to:</p>
+
+<ol>
+  <li>Set up <code class="language-plaintext highlighter-rouge">beta_scale</code>, the discretized Beta categories <code class="language-plaintext highlighter-rouge">cats</code>, the
+vector of F81 matrices, and <code class="language-plaintext highlighter-rouge">matrix_probs</code> exactly as in
+<a href="#sec_disc_analysis"></a>, <em>before</em> the loop over state counts.
+(Give the vector of Q matrices a different name, such as <code class="language-plaintext highlighter-rouge">Q_binary</code>,
+so that it does not clash with the Q matrices of the other partitions.)</li>
+  <li>Inside the loop, check whether the current partition is the binary
+one (<code class="language-plaintext highlighter-rouge">i == 2</code>). If it is, pass the vector of F81 matrices and
+<code class="language-plaintext highlighter-rouge">siteMatrices=matrix_probs</code> to <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code>; otherwise, use
+<code class="language-plaintext highlighter-rouge">fnJC(i)</code> as before.</li>
+  <li>Keep sharing the same tree and the same Gamma-distributed ACRV
+(<code class="language-plaintext highlighter-rouge">rates_morpho</code>) across all partitions.</li>
+</ol>
+
+<p>The solution is provided as
+<a href="scripts/model_multistate_beta.Rev"><code class="language-plaintext highlighter-rouge">model_multistate_beta.Rev</code></a> and
+<a href="scripts/mcmc_multistate_beta.Rev"><code class="language-plaintext highlighter-rouge">mcmc_multistate_beta.Rev</code></a>. The key
+change is the <code class="language-plaintext highlighter-rouge">if</code> statement inside the loop:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (i == 2) {
+            # binary characters: a mixture of F81 matrices with
+            # Beta-distributed state frequencies
+            m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                        Q=Q_binary,
+                                        siteMatrices=matrix_probs,
+                                        nSites=nc,
+                                        siteRates=rates_morpho,
+                                        type="Standard")
+        } else {
+            # multistate characters: an i-by-i Jukes-Cantor matrix
+            m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                        Q=fnJC(i),
+                                        nSites=nc,
+                                        siteRates=rates_morpho,
+                                        type="Standard")
+        }
+</code></pre></div></div>
+
+<p>Run <code class="language-plaintext highlighter-rouge">mcmc_multistate_beta.Rev</code>, then load <code class="language-plaintext highlighter-rouge">output/multistate.log</code> (from
+<a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>) and <code class="language-plaintext highlighter-rouge">output/multistate_beta.log</code>
+into <code class="language-plaintext highlighter-rouge">Tracer</code>, and consider:</p>
+
+<ul>
+  <li>Does the posterior of <code class="language-plaintext highlighter-rouge">beta_scale</code> differ from its prior? Small values
+mean the binary characters have strongly unequal state frequencies;
+very large values mean the model is close to the symmetric Mk model.</li>
+  <li>How do the likelihood and <code class="language-plaintext highlighter-rouge">tree_length</code> compare between the two
+analyses?</li>
+  <li>Do the summary trees differ?</li>
+</ul>
+
+<p>As an extension, try adding ascertainment-bias correction
+(<code class="language-plaintext highlighter-rouge">coding="variable"</code>) to every partition, as described in
+<a href="/tutorials/morph_tree/multistate.html">Discrete morphology - Multistate characters</a>.</p>
+
+<p>When you are ready, move on to <a href="/tutorials/morph_tree/covariomorph.html">Discrete morphology - The covariomorph model</a>,
+where we relax another assumption of the Mk model: that a
+character’s rate of evolution never changes over time.</p>
+
+</div>
+<ol class="bibliography"><li><span id="Fabreti2022">Fabreti L.G., Höhna S. 2022. Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution. 13:77–90.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13727">https://doi.org/10.1111/2041-210X.13727</a>
+
+</li>
+<li><span id="Fabreti2023">Fabreti L.G., Höhna S. 2023. Nucleotide substitution model selection is not necessary for Bayesian inference of phylogeny with well-behaved priors. Systematic Biology. 72:1418–1432.</span>
+
+</li>
+<li><span id="Lartillot2004">Lartillot N., Philippe H. 2004. A Bayesian mixture model for across-site heterogeneities in the amino-acid replacement process. Molecular Biology and Evolution. 21:1095–1109.</span>
+
+</li>
+<li><span id="Wright2016">Wright A.M., Lloyd G.T., Hillis D.M. 2016. Modeling Character Change Heterogeneity in Phylogenetic Analyses of Morphology through the Use of Priors. Systematic Biology. 65:602–611.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv122">10.1093/sysbio/syv122</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://github.com/revbayes/revbayes/discussions">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

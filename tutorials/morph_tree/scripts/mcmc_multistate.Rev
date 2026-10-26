@@ -1,0 +1,61 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# This file: Runs the full MCMC, partitioning characters by their number of
+#            observed states, with Gamma-distributed ACRV.
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+morpho <- readDiscreteCharacterData("data/Cinctans.nex")
+
+## helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+source("scripts/model_tree.Rev")
+
+###########################################
+# Multistate morphological substitution model #
+###########################################
+
+source("scripts/model_multistate_partition.Rev")
+
+########
+# MCMC #
+########
+
+mymodel = model(phylogeny)
+
+monitors.append( mnModel(filename="output/multistate.log", printgen=10) )
+monitors.append( mnFile(filename="output/multistate.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=50000, tuningInterval=200)
+
+# Read in the tree trace and summarize tree topology #
+trace = readTreeTrace("output/multistate.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+
+# maximum clade credibility tree
+mccTree(trace, file="output/multistate.mcc.tre")
+# maximum a posteriori tree
+mapTree(trace, file="output/multistate.map.tre")
+# majority rule consensus tree
+consensusTree(trace, file="output/multistate.majrule.tre")
+
+q()

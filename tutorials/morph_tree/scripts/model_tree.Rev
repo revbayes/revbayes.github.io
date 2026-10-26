@@ -1,0 +1,16 @@
+################################################################################
+#
+# RevBayes: Discrete morphology
+# shared tree model
+################################################################################
+
+# We assume a uniform prior on topology, and exponentially distributed branch lengths.
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(10.0))
+
+# it is often useful to monitor the tree length, the total amount of
+# evolutionary change on the tree
+tree_length := phylogeny.treeLength()
+
+moves.append( mvNNI(phylogeny, weight=num_branches) )
+moves.append( mvSPR(phylogeny, weight=num_branches/5.0) )
+moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )

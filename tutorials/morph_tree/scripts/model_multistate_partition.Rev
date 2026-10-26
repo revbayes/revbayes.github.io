@@ -2,39 +2,39 @@
 #
 # RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
 #
-# This file: Specifies the morphological substitution model  ...
-#
 # authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
 #
 ################################################################################
 
 # Set up Gamma-distributed rate variation.
 alpha_morpho ~ dnUniform( 0.0, 1E6 )
-rates_morpho := fnDiscretizeDistribution( dnLognormal(ln(alpha_morpho), 0.01), 4 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-# Moves on the parameters to the Gamma distribution.
-moves.append( mvScale(alpha_morpho,lambda=1, weight=2.0) )
+# Moves on the parameter of the Gamma distribution.
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
 
+# We do not know in advance how many states the most variable character in our
+# matrix has, so we set an upper bound and simply skip any partition that turns
+# out to be empty.
 n_max_states <- 7
 idx = 1
 morpho_bystate[1] <- morpho
 for (i in 2:n_max_states) {
-    # make local tmp copy of data
-    # only keep character blocks with state space equal to size i
-
+    # make a local copy of the data, keeping only the characters with a state
+    # space of size i
     morpho_bystate[i] <- morpho
     morpho_bystate[i].setNumStatesPartition(i)
 
-	  # get number of characters per character size wth i-sized states
+    # get the number of characters with i-sized state spaces
     nc = morpho_bystate[i].nchar()
 
     # for non-empty character blocks
     if (nc > 0) {
 
-        # make i-by-i rate matrix
+        # make an i-by-i rate matrix
         q[idx] <- fnJC(i)
 
-        # create model of evolution for the character block
+        # create the model of evolution for the character block
         m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
                                     Q=q[idx],
                                     nSites=nc,
@@ -42,7 +42,7 @@ for (i in 2:n_max_states) {
                                     type="Standard")
 
         # attach the data
-	      m_morph[idx].clamp(morpho_bystate[i])
+        m_morph[idx].clamp(morpho_bystate[i])
 
         # increment counter
         idx = idx + 1

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Multistate characters</title>
+  </head>
+  <body>
+    <div class="container">
+      
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><class="header-search">
+  <form class="header-search-form" action="/search.html" method="get">
+    <input type="text" id="search-box-nav" placeholder="Search..." name="query" style="border-color:black;background-color:white;height:32px;">
+    <button type="submit" style="color:black; border-color:black;width:32px;height:32px;padding-top:4px">
+        <img src="https://revbayes.github.io/assets/img/search.png" height="22px" width="28px"/>
+    </button>
+  </form>
+</div>
+
+</li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+      <!-- adds margin to main content -->
+      <div class="container" style="padding-left:20px padding-right:20px;">
+          <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Multistate characters</h1>
+	<h3 class="subtitle">Partitioning characters by their number of states</h3>
+	<h4 class="authors">April M. Wright and Basanta Khakurel</h4>
+  <h5>Last modified on October 23, 2026</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a></li>
+          
+            <li><a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+            <strong>Data Files</strong>
+            <ul id="data_files" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/data/Cinctans.nex">Cinctans.nex</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+        
+            <strong>Scripts</strong>
+            <ul id="scripts" class="file-list">
+        
+
+        
+        
+
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/mcmc_multistate.Rev">mcmc_multistate.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_multistate_partition.Rev">model_multistate_partition.Rev</a>
+            </li>
+        
+            <li >
+                <a href="/tutorials/morph_tree/scripts/model_tree.Rev">model_tree.Rev</a>
+            </li>
+        
+        </ul>
+
+        
+
+    
+</blockquote>
+
+
+
+
+</div>
+<div class="tutorial-content">
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>So far in this tutorial series we have only worked with binary
+characters. Real morphological matrices very often mix characters with
+different numbers of observed states in the same matrix: some characters
+are simple presence/absence codings, while others (like “shape of
+element X: round / oval / triangular”) have three, four, or more states.
+This tutorial shows how to combine the Mk model and ACRV
+(<a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a>) with a dataset like this.</p>
+
+<p>We will use a dataset of 27 extinct echinoderm (cinctan) taxa and 60
+binary and multistate characters, from <a class="citation" href="#zamora2013">Zamora et al. (2013)</a>.</p>
+
+<h3 class="subsection" id="the-key-idea-partitioning-by-number-of-states">The Key Idea: Partitioning by Number of States</h3>
+<hr class="subsection" />
+
+<p>A single Q matrix has a fixed number of rows and columns, matching the
+number of states of the characters it describes. This means we cannot
+use one Q matrix for a matrix that mixes 2-state and 4-state characters.
+Instead, RevBayes lets us split (“partition”) the data matrix into
+blocks that each contain only characters with the same number of
+observed states, and give each block its own, appropriately-sized Q
+matrix <a class="citation" href="#Khakurel2024">(Khakurel et al. 2024)</a>. All of the blocks still share the same tree and, if we want,
+the same ACRV hyperparameters — only the
+dimension of the Q matrix changes from block to block.</p>
+
+<h2 class="section" id="sec_multistate_analysis">Example: Inferring a Phylogeny of Extinct Cinctans</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="subsec_data_files">Data and Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Download the data file called <a href="data/Cinctans.nex"><code class="language-plaintext highlighter-rouge">Cinctans.nex</code></a> and save
+it to your <code class="language-plaintext highlighter-rouge">data</code> directory.</p>
+</blockquote>
+
+<h3 class="subsection" id="subsec_creating_files">Creating Rev Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Create the Rev-script files <strong>model_multistate_partition.Rev</strong> and
+<strong>mcmc_multistate.Rev</strong> in your <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
+
+<p>We continue to reuse <code class="language-plaintext highlighter-rouge">model_tree.Rev</code>, unchanged, from
+<a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a>.</p>
+
+<h3 class="subsection" id="subsec_load_data">Load Data Matrices</h3>
+<hr class="subsection" />
+
+<p>Loading the data matrix works exactly as before.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/Cinctans.nex")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
+num_taxa &lt;- taxa.size()
+num_branches &lt;- 2 * num_taxa - 2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_tree.Rev")
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_partition">Partitioning by Number of States</h3>
+<hr class="subsection" />
+
+<p>In <code class="language-plaintext highlighter-rouge">model_multistate_partition.Rev</code>, we again start with Gamma-distributed
+ACRV, exactly as in <a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0.0, 1E6 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+</code></pre></div></div>
+
+<p>We do not know in advance how many states the most variable character in
+our matrix has, so we pick a generous upper bound (<code class="language-plaintext highlighter-rouge">n_max_states</code>) and
+loop over every possible number of states from 2 up to that bound. For
+each candidate state count <code class="language-plaintext highlighter-rouge">i</code>, we make a local copy of the data,
+restrict it to only the characters that actually have <code class="language-plaintext highlighter-rouge">i</code> states using
+<code class="language-plaintext highlighter-rouge">setNumStatesPartition()</code>, and skip the block entirely if it turns out
+to be empty.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_max_states &lt;- 7
+idx = 1
+morpho_bystate[1] &lt;- morpho
+for (i in 2:n_max_states) {
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_bystate[i] &lt;- morpho
+    morpho_bystate[i].setNumStatesPartition(i)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nc = morpho_bystate[i].nchar()
+</code></pre></div></div>
+
+<p>For every non-empty block, we build an <code class="language-plaintext highlighter-rouge">i</code>-by-<code class="language-plaintext highlighter-rouge">i</code> Jukes-Cantor matrix
+with <code class="language-plaintext highlighter-rouge">fnJC(i)</code>, and give it its own <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code>, sharing the same tree
+and the same discretized rates across all blocks:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if (nc &gt; 0) {
+
+        # make an i-by-i rate matrix
+        q[idx] &lt;- fnJC(i)
+
+        # create the model of evolution for the character block
+        m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                    Q=q[idx],
+                                    nSites=nc,
+                                    siteRates=rates_morpho,
+                                    type="Standard")
+
+        # attach the data
+        m_morph[idx].clamp(morpho_bystate[i])
+
+        # increment counter
+        idx = idx + 1
+        idx
+    }
+}
+</code></pre></div></div>
+
+<p>It would not make sense to model a 5-state character using a 2-state Q
+matrix (or vice versa), which is exactly what this partitioning scheme
+avoids.</p>
+
+<p>Back in <code class="language-plaintext highlighter-rouge">mcmc_multistate.Rev</code>, source this file, build the model, and
+run the MCMC exactly as before.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_multistate_partition.Rev")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/multistate.log", printgen=10) )
+monitors.append( mnFile(filename="output/multistate.trees", printgen=10, phylogeny) )
+monitors.append( mnScreen(printgen=100) )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=50000, tuningInterval=200)
+</code></pre></div></div>
+
+<p>Once the analysis is complete, we can compute several different types of
+summary trees:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/multistate.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+
+# maximum clade credibility tree
+mccTree(trace, file="output/multistate.mcc.tre")
+# maximum a posteriori tree
+mapTree(trace, file="output/multistate.map.tre")
+# majority rule consensus tree
+consensusTree(trace, file="output/multistate.majrule.tre")
+</code></pre></div></div>
+
+<h2 class="section" id="choose-your-own-adventure">Choose Your Own Adventure</h2>
+<hr class="section" />
+
+<p>For this next portion of the tutorial, we will edit some pieces of the
+model. Feel free to add your own innovations. Make copies of the
+relevant scripts and modify them; make sure to change the output
+filenames accordingly before running the MCMC!</p>
+
+<h3 class="subsection" id="ascertainment-bias">Ascertainment Bias</h3>
+<hr class="subsection" />
+
+<p>As discussed in <a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a>, we should correct for
+ascertainment bias whenever our matrix has no invariant characters — as
+is typical of morphological data assembled under parsimony. Because our
+substitution model is now split across several <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> calls (one
+per state-count partition), the fix is to add <code class="language-plaintext highlighter-rouge">coding="variable"</code> to
+<em>each</em> of them. Try adding it to
+<code class="language-plaintext highlighter-rouge">model_multistate_partition.Rev</code> yourself, and compare the resulting
+tree-length estimates to your original, uncorrected run — you should see
+the same inflation-without-correction pattern we saw for the binary
+bears dataset in <a href="/tutorials/morph_tree/">Discrete morphology - The Mk model</a>.</p>
+
+<h3 class="subsection" id="a-lognormal-alternative">A Lognormal Alternative</h3>
+<hr class="subsection" />
+
+<p>As in <a href="/tutorials/morph_tree/rates.html">Discrete morphology - Among-character rate variation</a>, you can also try substituting a
+discretized lognormal distribution for the Gamma distribution in
+<code class="language-plaintext highlighter-rouge">model_multistate_partition.Rev</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates_morpho := fnDiscretizeDistribution( dnLognormal(ln(alpha_morpho), 0.01), 4 )
+</code></pre></div></div>
+
+<p>Have each person at your table try a different one of these variants,
+load all of the resulting log files into <code class="language-plaintext highlighter-rouge">Tracer</code>, and see how they
+differ.</p>
+
+<p>When you are ready, move on to <a href="/tutorials/morph_tree/ordered.html">Discrete morphology - Ordered characters</a>, where
+we use the same partitioning scheme for a matrix in which some characters
+are ordered, so that they can only change between adjacent states.</p>
+
+</div>
+<ol class="bibliography"><li><span id="Khakurel2024">Khakurel B., Grigsby C., Tran T.D., Zariwala J., Höhna S., Wright A.M. 2024. The fundamental role of character coding in Bayesian morphological phylogenetics. Systematic Biology. 73:861–871.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syae033">10.1093/sysbio/syae033</a>
+
+</li>
+<li><span id="zamora2013">Zamora S., Rahman I.A., Smith A.B. 2013. The ontogeny of cinctans (stem-group Echinodermata) as revealed by a new genus, GraciaCystis, from the middle Cambrian of Spain. Palaeontology. 56:399–410.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      </div>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://github.com/revbayes/revbayes/discussions">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

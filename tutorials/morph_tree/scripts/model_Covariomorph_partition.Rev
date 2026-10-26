@@ -1,0 +1,61 @@
+################################################################################
+#
+# RevBayes: Discrete morphology tutorials -- the covariomorph model,
+#           partitioned by the number of observed states per character
+#
+################################################################################
+
+inverse_sd ~ dnUniform(0, 1E3)
+inverse_sd.setValue(1)
+moves.append( mvScale(inverse_sd, lambda=0.5, weight=4) )
+moves.append( mvScale(inverse_sd, lambda=2.0, weight=4) )
+sd_morpho := 1 / inverse_sd
+rate_scalars := normalize(fnDiscretizeDistribution(dnLognormal(0.0, sd_morpho), NUM_CATEGORIES))
+
+global_switch_rate ~ dnUniform(0, 1E4)
+global_switch_rate.setValue(0.001)
+moves.append( mvScale(global_switch_rate, lambda=0.5, weight=4) )
+moves.append( mvScale(global_switch_rate, lambda=2.0, weight=4) )
+switching_rate := global_switch_rate * (1 / (NUM_CATEGORIES - 1))
+
+for (i in 1:NUM_CATEGORIES) {
+    for (j in 1:NUM_CATEGORIES) {
+        if (i == j) {
+            switch_rates[i][j] := 0
+        } else {
+            switch_rates[i][j] := switching_rate
+        }
+    }
+}
+
+# Partition the data by the number of observed states
+max_states = morpho.getStateDescriptions().size()
+idx = 1
+
+for (i in 1:(max_states-1)) {
+    partition_state[i] = morpho
+    partition_state[i].setNumStatesPartition(i+1)
+
+    # `expandCharacters()` needs a matrix whose state descriptions have been
+    # freshly (re-)computed for exactly this partition's characters, so we
+    # write this partition out and read it back in before expanding it.
+    temp_data <- partition_state[i]
+    temp_data.removeExcludedCharacters()
+    nc = temp_data.nchar()
+
+    if (nc > 0) {
+        writeNexus(filename="output/covariomorph_partition_" + (i+1) + "_states.nexus", temp_data)
+        partition_state[i] = readDiscreteCharacterData("output/covariomorph_partition_" + (i+1) + "_states.nexus")
+
+        for (j in 1:NUM_CATEGORIES) {
+            Q_sub[idx][j] := fnJC(i+1)
+        }
+        Q_morpho[idx] := fnCovarion(Q_sub[idx], RateScalars=rate_scalars, SwitchRates=switch_rates, rescaled=FALSE)
+
+        phyMorpho[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho[idx], nSites=nc, type="NaturalNumbers")
+        expanded_partition_state[idx] = partition_state[i].expandCharacters(NUM_CATEGORIES)
+        phyMorpho[idx].clamp(expanded_partition_state[idx])
+
+        idx = idx + 1
+    }
+}
