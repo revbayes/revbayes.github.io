@@ -550,7 +550,7 @@ three analyses do not overwrite each other:
 {% snippet scripts/mcmc_covariomorph.Rev %}
 monitors.append( mnModel(filename="output/snakes_" + MODEL + ".log", printgen=10) )
 monitors.append( mnFile(filename="output/snakes_" + MODEL + ".trees", printgen=10, phylogeny) )
-monitors.append( mnScreen(printgen=1000, tree_length) )
+monitors.append( mnScreen(printgen=10, tree_length) )
 {% endsnippet %}
 The rest of the script runs two independent MCMC chains and summarizes
 the sampled trees, exactly as before:
