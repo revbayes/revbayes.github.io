@@ -69,7 +69,7 @@
 	<h1 class="maintitle">Discrete morphology - The covariomorph model</h1>
 	<h3 class="subtitle">Letting a character's rate of evolution change over time</h3>
 	<h4 class="authors">Basanta Khakurel and Sebastian Höhna</h4>
-  <h5>Last modified on October 25, 2026</h5>
+  <h5>Last modified on October 29, 2026</h5>
 </div>
 
 
@@ -619,6 +619,7 @@ nc = temp_data.nchar()
 
 if (nc &gt; 0) {
     writeNexus(filename="output/covariomorph_partition_" + (i+1) + "_states.nexus", temp_data)
+
     partition_state[i] = readDiscreteCharacterData("output/covariomorph_partition_" + (i+1) + "_states.nexus")
 </code></pre></div></div>
 
@@ -631,9 +632,10 @@ matrix of <a href="#subsec_cov_Q"></a>. We set <code class="language-plaintext h
 rate scalars already have a mean of 1, so the matrix does not need any
 further rescaling:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (j in 1:NUM_CATEGORIES) {
-            Q_sub[idx][j] := fnJC(i+1)
-        }
-        Q_morpho[idx] := fnCovarion(Q_sub[idx], RateScalars=rate_scalars, SwitchRates=switch_rates, rescaled=FALSE)
+  Q_sub[idx][j] := fnJC(i+1)
+}
+
+Q_morpho[idx] := fnCovarion(Q_sub[idx], RateScalars=rate_scalars, SwitchRates=switch_rates, rescaled=FALSE)
 </code></pre></div></div>
 
 <p>Finally, because we only ever observe a character’s state, not its
@@ -645,7 +647,9 @@ are now indexed by these compound (state, category) integers rather than
 the letters/digits of a “Standard” morphological matrix, we use
 <code class="language-plaintext highlighter-rouge">type="NaturalNumbers"</code> instead of <code class="language-plaintext highlighter-rouge">type="Standard"</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho[idx], nSites=nc, type="NaturalNumbers")
+
 expanded_partition_state[idx] = partition_state[i].expandCharacters(NUM_CATEGORIES)
+
 phyMorpho[idx].clamp(expanded_partition_state[idx])
 </code></pre></div></div>
 
@@ -706,7 +710,7 @@ in how they treat rate variation.</p>
 three analyses do not overwrite each other:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/snakes_" + MODEL + ".log", printgen=10) )
 monitors.append( mnFile(filename="output/snakes_" + MODEL + ".trees", printgen=10, phylogeny) )
-monitors.append( mnScreen(printgen=1000, tree_length) )
+monitors.append( mnScreen(printgen=10, tree_length) )
 </code></pre></div></div>
 
 <p>The rest of the script runs two independent MCMC chains and summarizes
