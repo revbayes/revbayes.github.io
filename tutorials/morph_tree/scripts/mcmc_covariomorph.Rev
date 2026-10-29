@@ -50,7 +50,7 @@ mymodel = model(phylogeny)
 
 monitors.append( mnModel(filename="output/snakes_" + MODEL + ".log", printgen=10) )
 monitors.append( mnFile(filename="output/snakes_" + MODEL + ".trees", printgen=10, phylogeny) )
-monitors.append( mnScreen(printgen=1000, tree_length) )
+monitors.append( mnScreen(printgen=10, tree_length) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 mymcmc.run(generations=20000, tuningInterval=200)

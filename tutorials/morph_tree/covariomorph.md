@@ -82,7 +82,6 @@ inference from whole matrices of discrete morphological characters,
 under the name **covariomorph model**; this tutorial follows their
 implementation in RevBayes.
 
-
 {% section The Covariomorph Model | sec_covarion_theory %}
 
 {% subsection Covarion vs. ACRV | subsec_cov_vs_acrv %}
@@ -102,7 +101,6 @@ In other words, ACRV models variation in rate *among characters*, while
 the covarion model additionally models variation in rate *within a
 character, over time*. As we will see below, ACRV is in fact a special
 case of the covarion model.
-
 
 {% subsection Observed States and Hidden Rate Categories | subsec_cov_states %}
 
@@ -148,7 +146,6 @@ observed state, at the switching rate $\delta$ (black arrows). Modified
 from {% citet Khakurel2026 %}.
 {% endfigcaption %}
 {% endfigure %}
-
 
 {% subsection The Covariomorph Q Matrix | subsec_cov_Q %}
 
@@ -202,7 +199,6 @@ category (or vice versa), as two separate events. (In the model we use
 below, the two switching rates are equal, $s_{12} = s_{21}$; see
 {% ref subsec_cov_params %}.)
 
-
 {% subsection Rate Categories and Switching Rates | subsec_cov_params %}
 
 The covariomorph model as we implement it here has two kinds of free
@@ -249,7 +245,6 @@ probability with which we assume each character starts in each category
 at the root of the tree -- exactly the equal-probability categories of
 the ACRV model.
 
-
 {% subsection Two Limiting Cases: Mk and ACRV | subsec_cov_limits %}
 
 It is useful to think about what happens at the two extremes of the
@@ -287,7 +282,6 @@ As we will see in {% ref subsec_cov_rates %} and
 model leans towards the Mk model unless the data clearly support rate
 variation and rate switching.
 
-
 {% subsection Computing the Likelihood with Hidden Categories | subsec_cov_likelihood %}
 
 Because the hidden rate category is never observed, we cannot simply
@@ -308,7 +302,6 @@ so a covariomorph analysis with $m = 3$ categories is considerably
 slower than the equivalent Mk or ACRV analysis. Keep $m$ small (3 or 4
 is a common choice) unless you have a good reason to do otherwise.
 
-
 {% subsection The Example Dataset | subsec_cov_data %}
 
 >Download the data file [`snakes.nex`](data/snakes.nex) and save it to
@@ -328,7 +321,6 @@ number of states. All characters are treated as unordered: the
 covariomorph model uses an unordered (Mk-type) rate matrix within each
 rate category.
 
-
 {% section The Covariomorph Model in RevBayes | sec_covarion_model %}
 
 >Create the Rev-script files **model_Covariomorph_partition.Rev** and
@@ -340,7 +332,6 @@ We continue to reuse the shared tree model, `model_tree.Rev`, from
 substitution model, and we build it in three steps: the hidden rate
 categories, the switching rate, and finally one covariomorph Q matrix per
 state-count partition.
-
 
 {% subsection The Rate Categories | subsec_cov_rates %}
 
@@ -378,7 +369,6 @@ rate_scalars := normalize(fnDiscretizeDistribution(dnLognormal(0.0, sd_morpho), 
 >category changes at all. Set `inverse_sd.setValue(1)` again when you
 >are done.
 {:.instruction}
-
 
 {% subsection The Switching Rate | subsec_cov_switch %}
 
@@ -437,7 +427,6 @@ The rate categories and the switching rate are shared by all partitions:
 a 2-state and a 4-state character draw from the same set of rate
 categories and switch between them at the same rate.
 
-
 {% subsection One Covariomorph Q Matrix per Partition | subsec_cov_partition %}
 
 Now we partition the matrix by the number of states, as in
@@ -469,6 +458,7 @@ nc = temp_data.nchar()
 
 if (nc > 0) {
     writeNexus(filename="output/covariomorph_partition_" + (i+1) + "_states.nexus", temp_data)
+
     partition_state[i] = readDiscreteCharacterData("output/covariomorph_partition_" + (i+1) + "_states.nexus")
 {% endsnippet %}
 
@@ -481,10 +471,11 @@ matrix of {% ref subsec_cov_Q %}. We set `rescaled=FALSE` because the
 rate scalars already have a mean of 1, so the matrix does not need any
 further rescaling:
 {% snippet scripts/model_Covariomorph_partition.Rev %}
-        for (j in 1:NUM_CATEGORIES) {
-            Q_sub[idx][j] := fnJC(i+1)
-        }
-        Q_morpho[idx] := fnCovarion(Q_sub[idx], RateScalars=rate_scalars, SwitchRates=switch_rates, rescaled=FALSE)
+for (j in 1:NUM_CATEGORIES) {
+  Q_sub[idx][j] := fnJC(i+1)
+}
+
+Q_morpho[idx] := fnCovarion(Q_sub[idx], RateScalars=rate_scalars, SwitchRates=switch_rates, rescaled=FALSE)
 {% endsnippet %}
 
 Finally, because we only ever observe a character's state, not its
@@ -497,7 +488,9 @@ the letters/digits of a "Standard" morphological matrix, we use
 `type="NaturalNumbers"` instead of `type="Standard"`.
 {% snippet scripts/model_Covariomorph_partition.Rev %}
 phyMorpho[idx] ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho[idx], nSites=nc, type="NaturalNumbers")
+
 expanded_partition_state[idx] = partition_state[i].expandCharacters(NUM_CATEGORIES)
+
 phyMorpho[idx].clamp(expanded_partition_state[idx])
 {% endsnippet %}
 
@@ -515,7 +508,6 @@ Note that we do not use the ascertainment-bias correction
 available for the covariomorph model, so the covariomorph model is an
 extension of the *Mk* model, not of the Mkv model. We explain why at the
 end of this tutorial, in {% ref sec_cov_ascertainment %}.
-
 
 {% section Running the Analysis | sec_cov_run %}
 
@@ -580,7 +572,6 @@ mymcmc.run(generations=20000, tuningInterval=200)
 >rows and columns.
 {:.instruction}
 
-
 {% section Interpreting the Results | sec_cov_results %}
 
 {% subsection What Did the Covariomorph Model Learn? | subsec_cov_estimates %}
@@ -620,7 +611,6 @@ For the snake data:
 The snake data are therefore in the covarion-like region of the table:
 they contain signal both for rate variation among characters and for
 switching between rate categories along the tree.
-
 
 {% subsection Does It Matter for the Tree? | subsec_cov_clades %}
 
@@ -683,7 +673,6 @@ randomness of the MCMC: the Mk analysis mixes less well than the other
 two, and longer runs would reduce this. Second, none of the three
 analyses corrects for ascertainment bias (see
 {% ref sec_cov_ascertainment %}).
-
 
 {% section Choose Your Own Adventure | sec_cov_adventure %}
 
