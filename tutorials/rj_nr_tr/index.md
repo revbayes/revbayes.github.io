@@ -2,8 +2,8 @@
 title: Testing for non-reversible substitution with reversible-jump MCMC
 subtitle: Comparing the time-reversible and non-reversible nucleotide models in one analysis
 authors:  John Huelsenbeck, Sebastian Höhna and Matthias Köppe
-level: 3
-order: 3.6
+level: 2
+order: 0.4
 prerequisites:
 - intro
 - mcmc
