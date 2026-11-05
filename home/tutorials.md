@@ -59,6 +59,7 @@ tutorials to tailor their learning to their desired analyses.
     1. [General introduction to model selection]({{ base.url }}/tutorials/model_selection_bayes_factors/bf_intro).
     2. [Model selection for one locus]({{ base.url }}/tutorials/model_selection_bayes_factors/bf_subst_model).
     3. [Model selection for partition models]({{ base.url }}/tutorials/model_selection_bayes_factors/bf_partition_model).
+    4. [Testing for non-reversible substitution]({{ base.url }}/tutorials/rj_nr_tr). Compares the time-reversible and non-reversible nucleotide models in a single reversible-jump MCMC analysis.
 
 By the end of this module, you should be able to infer a phylogenetic tree with a simple molecular 
 evolution model. Depending on your interests, you will also have learned about how to set up
