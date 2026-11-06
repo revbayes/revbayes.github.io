@@ -234,10 +234,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeath.html">dnFossilizedBirthDeath</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGeneralizedLineageHeterogeneousBirthDeathProcess.html">dnGeneralizedLineageHeterogeneousBirthDeathProcess</a></li>
@@ -299,6 +295,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/dnNbinomial.html">dnNbinomial</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnNormal.html">dnNormal</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/dnNucleotideRateMatrixMixture.html">dnNucleotideRateMatrixMixture</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnOrnsteinUhlenbeck.html">dnOrnsteinUhlenbeck</a></li>
         
@@ -768,6 +766,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/geometricMean.html">geometricMean</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/getNumProcesses.html">getNumProcesses</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/getOption.html">getOption</a></li>
         
         <li class="sidebar_item"><a href="/documentation/getwd.html">getwd</a></li>
@@ -1048,6 +1048,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvFNPR.html">mvFNPR</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/mvFossilSiteTimeSlideUniform.html">mvFossilSiteTimeSlideUniform</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeSlideUniform.html">mvFossilTipTimeSlideUniform</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeUniform.html">mvFossilTipTimeUniform</a></li>
@@ -1087,6 +1089,10 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/mvLevyJump.html">mvLevyJump</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvLevyJumpSum.html">mvLevyJumpSum</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQRateMatrix.html">mvMPQRateMatrix</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQTree.html">mvMPQTree</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvMatrixElementScale.html">mvMatrixElementScale</a></li>
         
@@ -1162,7 +1168,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvRateAgeSubtreeProposal.html">mvRateAgeSubtreeProposal</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/mvResampleFBD.html">mvResampleFBD</a></li>
+        <li class="sidebar_item"><a href="/documentation/mvReversibilityAwareBranchLengthScale.html">mvReversibilityAwareBranchLengthScale</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvRootTimeScaleBactrian.html">mvRootTimeScaleBactrian</a></li>
         
@@ -1333,190 +1339,63 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">dnFossilizedBirthDeathSpecies</code></p>
+        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">getNumProcesses</code> - Get the number of MPI processes</p>
 </h2>
 
         
-
-        
-            <h3 class="help-section-header">Aliases</h3>
-            <div class="help-section-body">
-            <ul class="list-unstyled">
-            
-            <li>dnFBDSP</li>
-            
-            </ul>
+            <div class="help-description">
+            Returns the number of processes used by the current RevBayes session.
             </div>
+        
+
         
 
         
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            dnFossilizedBirthDeathSpecies(<a href="/documentation/RealPos.html">RealPos</a> originAge, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> psi, <a href="/documentation/Probability.html">Probability</a> rho, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa, <a href="/documentation/Bool.html">Bool</a> complete, <a href="/documentation/RealPos.html">RealPos</a> lambda_a, <a href="/documentation/Probability.html">Probability</a> beta)
+            getNumProcesses()
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
-                
-                <tr>
-                    <td class="lhs argument">originAge : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The start time of the process.</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">lambda : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The speciation rate(s).</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">mu : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The extinction rate(s).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">psi : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The fossil sampling rate(s).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">rho : </td>
-                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The extant sampling fraction.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 1</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">timeline : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The rate interval change times of the piecewise constant process.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : NULL</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">condition : </td>
-                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The condition of the process.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : time</td>
-                </tr>
-                
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Options : time|sampling|survival</td>
-                </tr>
-                
-                
-                <tr>
-                    <td class="lhs argument">taxa : </td>
-                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The taxa with fossil occurrence information.</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">complete : </td>
-                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">Assume complete fossil sampling?</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">lambda_a : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The anagenetic speciation rate(s).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">beta : </td>
-                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The probability of symmetric speciation.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
                 
             </table>
             </div>
         
 
         
-            <h3 class="help-section-header">Domain Type</h3>
+            <h3 class="help-section-header">Return Type</h3>
             <div class="help-section-body">
-            <a href="TimeTree.html">TimeTree</a>
+            <a href="Natural.html">Natural</a>
             </div>
         
 
         
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            In an MPI-enabled build (i.e., `rb-mpi`, launched as `mpirun -np N ./rb-mpi`),
+the function returns `N` (i.e., the size of the `MPI_COMM_WORLD` communicator).
+In a non-MPI build, it always returns 1. The value is the number of MPI ranks,
+not necessarily the number of hardware CPU cores.
+
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># For `mpirun -np 16 ./rb-mpi`, this prints 16:
+getNumProcesses()
+
+# Record the process count for reproducibility bookkeeping
+print("Running on " + getNumProcesses() + " process(es).")
+
+# Guard-check the launch configuration
+if (getNumProcesses() != 32) {
+    stop("Expected 32 processes, got " + getNumProcesses() + ".")
+}
+</code></pre></div></div>
 
         
 
@@ -1532,7 +1411,7 @@ Rev Language Reference
 
         <h3 class="help-section-header"></h3>
         <div class="help-section-header" text-align="right">
-        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/dnFossilizedBirthDeathSpecies.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/getNumProcesses.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
         </div>
     
 </div>

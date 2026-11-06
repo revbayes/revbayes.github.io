@@ -234,10 +234,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeath.html">dnFossilizedBirthDeath</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGeneralizedLineageHeterogeneousBirthDeathProcess.html">dnGeneralizedLineageHeterogeneousBirthDeathProcess</a></li>
@@ -299,6 +295,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/dnNbinomial.html">dnNbinomial</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnNormal.html">dnNormal</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/dnNucleotideRateMatrixMixture.html">dnNucleotideRateMatrixMixture</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnOrnsteinUhlenbeck.html">dnOrnsteinUhlenbeck</a></li>
         
@@ -768,6 +766,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/geometricMean.html">geometricMean</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/getNumProcesses.html">getNumProcesses</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/getOption.html">getOption</a></li>
         
         <li class="sidebar_item"><a href="/documentation/getwd.html">getwd</a></li>
@@ -1048,6 +1048,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvFNPR.html">mvFNPR</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/mvFossilSiteTimeSlideUniform.html">mvFossilSiteTimeSlideUniform</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeSlideUniform.html">mvFossilTipTimeSlideUniform</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeUniform.html">mvFossilTipTimeUniform</a></li>
@@ -1087,6 +1089,10 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/mvLevyJump.html">mvLevyJump</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvLevyJumpSum.html">mvLevyJumpSum</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQRateMatrix.html">mvMPQRateMatrix</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQTree.html">mvMPQTree</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvMatrixElementScale.html">mvMatrixElementScale</a></li>
         
@@ -1162,7 +1168,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvRateAgeSubtreeProposal.html">mvRateAgeSubtreeProposal</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/mvResampleFBD.html">mvResampleFBD</a></li>
+        <li class="sidebar_item"><a href="/documentation/mvReversibilityAwareBranchLengthScale.html">mvReversibilityAwareBranchLengthScale</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvRootTimeScaleBactrian.html">mvRootTimeScaleBactrian</a></li>
         
@@ -1333,42 +1339,59 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">dnFossilizedBirthDeathRange</code></p>
+        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">mvMPQRateMatrix</code> - Rate-matrix updates and reversible-jump proposals for dnNucleotideRateMatrixMixture</p>
 </h2>
 
         
             <div class="help-description">
-            The fossilized birth death range process (FBDRP) describes the distribution of a matrix of species origination and extinction times under a model of asymmetric speciation and sampling of extinct species.
+            Updates a nucleotide rate matrix drawn from `dnNucleotideRateMatrixMixture`, including proposals
+between the time-reversible and non-reversible models.
+
             </div>
         
 
-        
-            <h3 class="help-section-header">Aliases</h3>
-            <div class="help-section-body">
-            <ul class="list-unstyled">
-            
-            <li>dnFBDRP</li>
-            
-            </ul>
-            </div>
         
 
         
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            dnFossilizedBirthDeathRange(<a href="/documentation/Bool.html">Bool</a> BDS, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> psi, <a href="/documentation/Probability.html">Probability</a> rho, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa, <a href="/documentation/Bool.html">Bool</a> complete)
+            mvMPQRateMatrix(<a href="/documentation/RateGenerator.html">RateGenerator</a> Q, <a href="/documentation/Bool.html">Bool</a> tune, <a href="/documentation/Bool.html">Bool</a> tuneModelPrior, <a href="/documentation/RealPos.html">RealPos</a> polyhedronAlpha, <a href="/documentation/RealPos.html">RealPos</a>[] polyhedronCenter, <a href="/documentation/RealPos.html">RealPos</a> weight)
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
                 
                 <tr>
-                    <td class="lhs argument">BDS : </td>
+                    <td class="lhs argument">Q : </td>
+                    <td class="rhs argument"><a href="/documentation/RateGenerator.html">RateGenerator</a> (&lt;stochastic&gt; pass by reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The general nucleotide rate matrix on which this move operates.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tune : </td>
                     <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">Assume complete lineage sampling? (BDS model of Silvestro et al. 2019)</td>
+                    <td class="lhs"/><td class="rhs">Should we tune the scaling factor during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tuneModelPrior : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should the prior on the model indicator be adapted toward equal time in the two models? This changes the target distribution, so it must only be done during burnin: run the burnin with a tuningInterval, then do the production run without one. The tilt that was reached is reported as lnPriorOdds by the operator summary, and the Bayes factor is recovered from it as BF_NR = (p_N/p_R) * exp(lnPriorOdds). Note that this has no effect unless tune=TRUE, since that is what makes the MCMC call the move's tuning function at all.</td>
                 </tr>
                 
                 <tr>
@@ -1378,49 +1401,11 @@ Rev Language Reference
                 
                 
                 <tr>
-                    <td class="lhs argument">lambda : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                    <td class="lhs argument">polyhedronAlpha : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The speciation rate(s).</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">mu : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The extinction rate(s).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">psi : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The fossil sampling rate(s).</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : 0</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">rho : </td>
-                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The extant sampling fraction.</td>
+                    <td class="lhs"/><td class="rhs">Concentration of the point drawn from the polyhedron when jumping between models. At one the draw is uniform over the polyhedron, which is an independence proposal and mixes badly when the data are informative about the rate matrix. Above one it concentrates near the time-reversible center, making the jump a small move; below one it spreads toward the facets. Which direction helps depends on the data, so monitor Q.getU() to see where the non-reversible model sits and read the jump acceptance rates from the operator summary. This affects the acceptance rate only, never the target.</td>
                 </tr>
                 
                 <tr>
@@ -1430,57 +1415,29 @@ Rev Language Reference
                 
                 
                 <tr>
-                    <td class="lhs argument">timeline : </td>
-                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                    <td class="lhs argument">polyhedronCenter : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The rate interval change times of the piecewise constant process.</td>
-                </tr>
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Default : NULL</td>
-                </tr>
-                
-                
-                
-                <tr>
-                    <td class="lhs argument">condition : </td>
-                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The condition of the process.</td>
+                    <td class="lhs"/><td class="rhs">The point (u1,u2,u3) in the polyhedron about which the jump proposal is centred, or an empty vector to use the time-reversible point (1/2,1/2,1/2). Establish it with a short run confined to the non-reversible model, monitoring Q.getU(), and pass the posterior mean. Because the polyhedron changes shape with every proposal, a centre it cannot accommodate is pulled back along the line toward the time-reversible point for that proposal only; the value given here is kept and tried afresh each time.</td>
                 </tr>
                 
                 <tr>
-                    <td class="lhs"/><td class="rhs">Default : time</td>
-                </tr>
-                
-                
-                <tr>
-                    <td class="lhs"/><td class="rhs">Options : time|sampling|survival</td>
-                </tr>
-                
-                
-                <tr>
-                    <td class="lhs argument">taxa : </td>
-                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
-                </tr>
-                <tr>
-                    <td class="lhs"/><td class="rhs">The taxa with fossil occurrence information.</td>
+                    <td class="lhs"/><td class="rhs">Default : [ ]</td>
                 </tr>
                 
                 
                 
                 <tr>
-                    <td class="lhs argument">complete : </td>
-                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                    <td class="lhs argument">weight : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">Assume complete fossil sampling?</td>
+                    <td class="lhs"/><td class="rhs">The weight determines the relative frequency with which this move will be attempted. For details, see the description of the 'moveschedule' parameter on the documentation page for 'mcmc()'.</td>
                 </tr>
                 
                 <tr>
-                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
                 </tr>
                 
                 
@@ -1490,30 +1447,56 @@ Rev Language Reference
         
 
         
-            <h3 class="help-section-header">Domain Type</h3>
-            <div class="help-section-body">
-            <a href="MatrixReal.html">MatrixReal</a>
-            </div>
-        
 
         
             <h3 class="help-section-header">Details</h3>
             <div class="help-section-body">
-            Fossil species are represented by a collection of fossil occurrences with uncertainty. Speciation, extinction and sampling rates may be time-homogeneous or piecewise time-heterogeneous. If time-heterogeneous rates are provided, then a vector of rate change time-points musts also be provided. If only a subset of fossil occurrences is provided for each species (e.g. only first and last occurrencces), then the remaining number of fossil samples may be marginalized by specifying `complete=FALSE`. Under the hood, the fossil data is augmented with oldest occurrence ages for each species, which must be sampled during MCMC using `mvResampleFBD`. Setting `BDS` to true causes the model to assume complete lineage sampling i.e. using the Birth-Death with Rateshifts (BDS) model of Silvestro et al. (2019).
+            `Q` must be a stochastic rate matrix drawn from `dnNucleotideRateMatrixMixture`. When that
+distribution uses `fixedModel="free"`, this move can change the model
+indicator. When a model is fixed, model-switching proposals are disabled.
+
+`polyhedronAlpha` controls the concentration of the non-reversible
+jump proposal. Its default value, one, gives a uniform draw over the
+polyhedron. Larger values concentrate the proposal near its center;
+values below one favor points nearer its boundary. This parameter
+changes the proposal distribution, not the target distribution.
+
+`polyhedronCenter` optionally specifies three coordinates for the
+proposal center. An empty vector, the default, uses the reversible
+point (0.5, 0.5, 0.5). A center can be chosen using the posterior mean
+of `Q.getU()` from a preliminary non-reversible analysis. If a proposed
+polyhedron cannot accommodate the requested center, the center is
+moved toward the reversible point for that proposal.
+
+`tuneModelPrior` defaults to FALSE. If enabled together with `tune`,
+it adapts the model prior during burn-in to encourage balanced model
+occupancy. This changes the target distribution. Finish all adaptation
+before collecting production samples, and monitor `Q.lnPriorOdds()`
+to retain the final prior odds needed to calculate the Bayes factor.
+A checkpoint stores the adapted prior odds with the rate matrix, so a
+resumed run keeps the same target distribution. The tuned proposal
+widths are not stored; after a restart they return to their starting
+values, which affects mixing but not the target.
+
             </div>
         
 
         
             <h3 class="help-section-header">Example</h3>
             
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda ~ dnExp(10)
-mu ~ dnExp(10)
-psi ~ dnExp(10)
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q ~ dnNucleotideRateMatrixMixture(alpha=v(1,1,1,1), lnPriorOdds=0.0)
+moves = VectorMoves()
 
-bd ~ dnFBDRP(lambda=lambda, mu=mu, psi=psi, rho=1, taxa=taxa)
+# Default proposal with adaptation disabled.
+moves.append(mvMPQRateMatrix(Q, weight=10,
+                            tune=FALSE, tuneModelPrior=FALSE))
 
-moves.append( mvMatrixElementScale(bd, weight=taxa.size()) )
-moves.append( mvMatrixElementSlide(bd, weight=taxa.size()) )
+# Alternative proposal with a specified center and concentration.
+# In an analysis, choose the proposal settings appropriate to the data.
+shifted_move = mvMPQRateMatrix(Q, weight=10,
+                              tune=FALSE, tuneModelPrior=FALSE,
+                              polyhedronCenter=v(0.56,0.54,0.34),
+                              polyhedronAlpha=10.0)
 </code></pre></div></div>
 
         
@@ -1525,9 +1508,11 @@ moves.append( mvMatrixElementSlide(bd, weight=taxa.size()) )
             <div class="help-section-body">
             <ul class="list-unstyled">
             
-            <li><a href="dnBirthDeathSamplingTreatment.html">dnBirthDeathSamplingTreatment</a></li>
+            <li><a href="dnNucleotideRateMatrixMixture.html">dnNucleotideRateMatrixMixture</a></li>
             
-            <li><a href="mvResampleFBD.html">mvResampleFBD</a></li>
+            <li><a href="mvMPQTree.html">mvMPQTree</a></li>
+            
+            <li><a href="mvReversibilityAwareBranchLengthScale.html">mvReversibilityAwareBranchLengthScale</a></li>
             
             </ul>
             </div>
@@ -1541,7 +1526,7 @@ moves.append( mvMatrixElementSlide(bd, weight=taxa.size()) )
 
         <h3 class="help-section-header"></h3>
         <div class="help-section-header" text-align="right">
-        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/dnFossilizedBirthDeathRange.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        <a href="https://github.com/revbayes/revbayes/edit/development/help/md/mvMPQRateMatrix.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
         </div>
     
 </div>

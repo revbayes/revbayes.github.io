@@ -234,10 +234,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeath.html">dnFossilizedBirthDeath</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGeneralizedLineageHeterogeneousBirthDeathProcess.html">dnGeneralizedLineageHeterogeneousBirthDeathProcess</a></li>
@@ -299,6 +295,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/dnNbinomial.html">dnNbinomial</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnNormal.html">dnNormal</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/dnNucleotideRateMatrixMixture.html">dnNucleotideRateMatrixMixture</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnOrnsteinUhlenbeck.html">dnOrnsteinUhlenbeck</a></li>
         
@@ -768,6 +766,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/geometricMean.html">geometricMean</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/getNumProcesses.html">getNumProcesses</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/getOption.html">getOption</a></li>
         
         <li class="sidebar_item"><a href="/documentation/getwd.html">getwd</a></li>
@@ -1048,6 +1048,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvFNPR.html">mvFNPR</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/mvFossilSiteTimeSlideUniform.html">mvFossilSiteTimeSlideUniform</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeSlideUniform.html">mvFossilTipTimeSlideUniform</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeUniform.html">mvFossilTipTimeUniform</a></li>
@@ -1087,6 +1089,10 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/mvLevyJump.html">mvLevyJump</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvLevyJumpSum.html">mvLevyJumpSum</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQRateMatrix.html">mvMPQRateMatrix</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQTree.html">mvMPQTree</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvMatrixElementScale.html">mvMatrixElementScale</a></li>
         
@@ -1162,7 +1168,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvRateAgeSubtreeProposal.html">mvRateAgeSubtreeProposal</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/mvResampleFBD.html">mvResampleFBD</a></li>
+        <li class="sidebar_item"><a href="/documentation/mvReversibilityAwareBranchLengthScale.html">mvReversibilityAwareBranchLengthScale</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvRootTimeScaleBactrian.html">mvRootTimeScaleBactrian</a></li>
         
@@ -1427,7 +1433,7 @@ The currently available keys and their associated values are as follows:
 
     tolerance=<numeric>          Tolerance for comparing doubles.
 
-        DEFAULT: 10e-10
+        DEFAULT: 1e-09
 
     debugMCMC=<0,1>              How much work to perform to check MCMC?
 
@@ -1455,14 +1461,14 @@ The currently available keys and their associated values are as follows:
         
             <h3 class="help-section-header">Example</h3>
             
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># compute the absolute value of a real number
-getOption("linewidth")
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># find out what the current line width is
+getOption("lineWidth")
 
-# let us set the linewidth to a new value
-setOption("linewidth", 200)
+# let's set the line width to a new value
+setOption("lineWidth", 200)
 
 # now let's check what the value is
-getOption("linewidth")
+getOption("lineWidth")
 </code></pre></div></div>
 
         

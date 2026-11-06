@@ -234,10 +234,6 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeath.html">dnFossilizedBirthDeath</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
-        
-        <li class="sidebar_item"><a href="/documentation/dnFossilizedBirthDeathSpecies.html">dnFossilizedBirthDeathSpecies</a></li>
-        
         <li class="sidebar_item"><a href="/documentation/dnGamma.html">dnGamma</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnGeneralizedLineageHeterogeneousBirthDeathProcess.html">dnGeneralizedLineageHeterogeneousBirthDeathProcess</a></li>
@@ -299,6 +295,8 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/dnNbinomial.html">dnNbinomial</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnNormal.html">dnNormal</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/dnNucleotideRateMatrixMixture.html">dnNucleotideRateMatrixMixture</a></li>
         
         <li class="sidebar_item"><a href="/documentation/dnOrnsteinUhlenbeck.html">dnOrnsteinUhlenbeck</a></li>
         
@@ -768,6 +766,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/geometricMean.html">geometricMean</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/getNumProcesses.html">getNumProcesses</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/getOption.html">getOption</a></li>
         
         <li class="sidebar_item"><a href="/documentation/getwd.html">getwd</a></li>
@@ -1048,6 +1048,8 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvFNPR.html">mvFNPR</a></li>
         
+        <li class="sidebar_item"><a href="/documentation/mvFossilSiteTimeSlideUniform.html">mvFossilSiteTimeSlideUniform</a></li>
+        
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeSlideUniform.html">mvFossilTipTimeSlideUniform</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvFossilTipTimeUniform.html">mvFossilTipTimeUniform</a></li>
@@ -1087,6 +1089,10 @@ Rev Language Reference
         <li class="sidebar_item"><a href="/documentation/mvLevyJump.html">mvLevyJump</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvLevyJumpSum.html">mvLevyJumpSum</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQRateMatrix.html">mvMPQRateMatrix</a></li>
+        
+        <li class="sidebar_item"><a href="/documentation/mvMPQTree.html">mvMPQTree</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvMatrixElementScale.html">mvMatrixElementScale</a></li>
         
@@ -1162,7 +1168,7 @@ Rev Language Reference
         
         <li class="sidebar_item"><a href="/documentation/mvRateAgeSubtreeProposal.html">mvRateAgeSubtreeProposal</a></li>
         
-        <li class="sidebar_item"><a href="/documentation/mvResampleFBD.html">mvResampleFBD</a></li>
+        <li class="sidebar_item"><a href="/documentation/mvReversibilityAwareBranchLengthScale.html">mvReversibilityAwareBranchLengthScale</a></li>
         
         <li class="sidebar_item"><a href="/documentation/mvRootTimeScaleBactrian.html">mvRootTimeScaleBactrian</a></li>
         
@@ -1333,12 +1339,14 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">dnSoftBoundUniformNormal</code> - Softbound Uniform Distribution with Normal distributed tails.</p>
+        <h2 class="help-title"><p><code class="language-plaintext highlighter-rouge">dnSoftBoundUniformNormal</code> - Soft-bounded uniform-normal distribution</p>
 </h2>
 
         
             <div class="help-description">
-            A softbound uniform distribution with normally distributed tails outside the interval of the uniform distribution.
+            A soft-bounded uniform distribution with one or two normally distributed tails
+outside the domain of the uniform component.
+
             </div>
         
 
@@ -1348,7 +1356,7 @@ Rev Language Reference
             <h3 class="help-section-header">Usage</h3>
             
             <div class="help-section-body">
-            dnSoftBoundUniformNormal(<a href="/documentation/Real.html">Real</a> min, <a href="/documentation/Real.html">Real</a> max, <a href="/documentation/RealPos.html">RealPos</a> sd, <a href="/documentation/Probability.html">Probability</a> p)
+            dnSoftBoundUniformNormal(<a href="/documentation/Real.html">Real</a> min, <a href="/documentation/Real.html">Real</a> max, <a href="/documentation/RealPos.html">RealPos</a> sd, <a href="/documentation/Probability.html">Probability</a> p, <a href="/documentation/String.html">String</a> boundary)
             </div>
             <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
@@ -1379,7 +1387,11 @@ Rev Language Reference
                     <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The standard deviation of the normal distribution.</td>
+                    <td class="lhs"/><td class="rhs">The standard deviation of the normal tail(s). Can be specified directly, or computed from 'p'.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
                 </tr>
                 
                 
@@ -1389,9 +1401,31 @@ Rev Language Reference
                     <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
                 </tr>
                 <tr>
-                    <td class="lhs"/><td class="rhs">The probability of being within the uniform distribution.</td>
+                    <td class="lhs"/><td class="rhs">The probability of being within the uniform boundaries. Can be specified directly, or computed from 'sd'.</td>
                 </tr>
                 
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">boundary : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Which boundary should be soft?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : both</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : both|upper|lower</td>
+                </tr>
                 
                 
             </table>
@@ -1408,21 +1442,33 @@ Rev Language Reference
         
             <h3 class="help-section-header">Details</h3>
             <div class="help-section-body">
-            The center piece of this distribution a uniform distribution defined between the given interval. A variable is drawn from that uniform distribution with probability p and with probability 1-p outside the interval. The probability density outside the interval is described by a normal distribution with standard deviation sd.
+            Draws from a uniform distribution defined between the `min` and `max` values
+with probability `p`. The tail probability (1 - `p`) is assigned to values
+smaller than `min` (if `boundary="lower"`), values larger than `max` (if
+`boundary="upper"`), or apportioned equally between the lower and upper tails
+(by default, when `boundary="both"`). The probability density outside the
+[`min`, `max`] interval is that of a normal distribution whose standard
+deviation can be either automatically computed from `p` or directly specified
+using the `sd` argument. Exactly one of `sd` and `p` must be specified, with
+the unspecified value automatically computed so that the density is continuous
+at `min` and `max`.
+
             </div>
         
 
         
             <h3 class="help-section-header">Example</h3>
             
-            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p ~ dnBeta(1.0,1.0)
-x ~ dnBernoulli(p)
-x.clamp(1)
-moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-monitors[1] = screenmonitor(printgen=1000, separator = "        ", speciation)
-mymodel = model(p)
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create a simple model (unclamped)
+calib ~ dnSoftBoundUniformNormal( 13.6, 25, p=0.95, "upper" )
+mymodel = model(calib)
+
+# Create a move vector and a monitor vector
+moves[1] = mvSlide(calib, delta=0.1, weight=1.0)
+monitors[1] = mnScreen(calib, printgen=1000)
+
+# Use MCMC to draw samples from the specified distribution
 mymcmc = mcmc(mymodel, monitors, moves)
-mymcmc.burnin(generations=20000,tuningInterval=100)
 mymcmc.run(generations=200000)
 </code></pre></div></div>
 
@@ -1434,6 +1480,8 @@ mymcmc.run(generations=200000)
             <h3 class="help-section-header">See Also</h3>
             <div class="help-section-body">
             <ul class="list-unstyled">
+            
+            <li><a href="dnNormal.html">dnNormal</a></li>
             
             <li><a href="dnUniform.html">dnUniform</a></li>
             
