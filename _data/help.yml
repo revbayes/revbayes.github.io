@@ -2958,7 +2958,7 @@
     
     The computation to obtain the mean for each category, when `median = FALSE`, is more complex, making use of the incomplete beta function (Majumder & Bhattacharjee 1973).
     
-    A real-world use case is available in Wright et al. (2016), with discussion of the properties of the beta distribution. Corresponding tutorials are available at https://www.palass.org/sites/default/files/media/publications/newsletters/number_106/number_106_0.pdf and https://revbayes.github.io/tutorials/morph_tree/multistate.html.
+    A real-world use case is available in Wright et al. (2016), with discussion of the properties of the beta distribution. Corresponding tutorials are available at https://www.palass.org/sites/default/files/media/publications/newsletters/number_106/number_106_0.pdf and https://revbayes.github.io/tutorials/morph_tree/V2.html.
   example: |
     # Values to represent four quadrants of a symmetric beta distribution
     categories := fnDiscretizeBeta(0.2, 0.2, 4)
@@ -7256,6 +7256,35 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'getNumProcesses'
+  return_type: 'Natural'
+  usage: 'getNumProcesses()'
+  arguments:
+  title: 'Get the number of MPI processes'
+  aliases:
+  description: 'Returns the number of processes used by the current RevBayes session.'
+  details: |
+    In an MPI-enabled build (i.e., `rb-mpi`, launched as `mpirun -np N ./rb-mpi`),
+    the function returns `N` (i.e., the size of the `MPI_COMM_WORLD` communicator).
+    In a non-MPI build, it always returns 1. The value is the number of MPI ranks,
+    not necessarily the number of hardware CPU cores.
+  example: |
+    # For `mpirun -np 16 ./rb-mpi`, this prints 16:
+    getNumProcesses()
+    
+    # Record the process count for reproducibility bookkeeping
+    print("Running on " + getNumProcesses() + " process(es).")
+    
+    # Guard-check the launch configuration
+    if (getNumProcesses() != 32) {
+        stop("Expected 32 processes, got " + getNumProcesses() + ".")
+    }
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'getOption'
   return_type: 'void'
   usage: 'getOption(String<any> key)'
@@ -8631,7 +8660,7 @@
         - 'clock'
         - 'non-clock'
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -8818,7 +8847,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -8861,7 +8890,7 @@
       default: 'FALSE'
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -8928,7 +8957,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -8957,7 +8986,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9065,7 +9094,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9094,7 +9123,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9130,7 +9159,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9166,7 +9195,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9195,7 +9224,7 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9290,7 +9319,7 @@
       default: 'NULL'
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -9608,13 +9637,13 @@
   references:
 - name: 'rootedTripletDist'
   return_type: 'RootedTripletDistribution'
-  usage: 'rootedTripletDist(Tree<any> geneTrees, String[]<any> speciesNames, Bool<any> keepBranchLengths)'
+  usage: 'rootedTripletDist(TimeTree[]|BranchLengthTree[]<any> geneTrees, String[]<any> speciesNames, Bool<any> keepBranchLengths)'
   arguments:
     - label: 'geneTrees'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
-      value_type: 'Tree'
+      value_type: 'TimeTree[]'
       default:
       options:
     - label: 'speciesNames'
@@ -9855,7 +9884,7 @@
     
         tolerance=<numeric>          Tolerance for comparing doubles.
     
-            DEFAULT: 10e-10
+            DEFAULT: 1e-09
     
         debugMCMC=<0,1>              How much work to perform to check MCMC?
     
@@ -9877,14 +9906,14 @@
     
             DEFAULT: 0
   example: |
-    # compute the absolute value of a real number
-    getOption("linewidth")
+    # find out what the current line width is
+    getOption("lineWidth")
     
-    # let us set the linewidth to a new value
-    setOption("linewidth", 200)
+    # let's set the line width to a new value
+    setOption("lineWidth", 200)
     
     # now let's check what the value is
-    getOption("linewidth")
+    getOption("lineWidth")
   authors:
   see_also: 'getOption'
   type_spec:
@@ -10502,11 +10531,11 @@
       default: '0.25'
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. It may not be empty.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
-      default:
+      default: ''
       options:
     - label: 'verbose'
       description: 'Printing verbose output'
@@ -10995,11 +11024,11 @@
       default:
       options:
     - label: 'separator/delimiter'
-      description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+      description: 'The field separator string. It may not be empty.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
-      default:
+      default: ''
       options:
   title:
   aliases: 'writeCharacterDataDelimited'
@@ -12704,7 +12733,7 @@
           default: '[ Iteration, Posterior, Likelihood, Prior, Replicate_ID ]'
           options:
         - label: 'separator'
-          description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+          description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
@@ -15852,7 +15881,7 @@
           default:
           options:
         - label: 'separator'
-          description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+          description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
@@ -18965,205 +18994,6 @@
           options:
   methods:
   references:
-- name: 'dnFossilizedBirthDeathRange'
-  title:
-  aliases: 'dnFBDRP'
-  description: 'The fossilized birth death range process (FBDRP) describes the distribution of a matrix of species origination and extinction times under a model of asymmetric speciation and sampling of extinct species.'
-  details: 'Fossil species are represented by a collection of fossil occurrences with uncertainty. Speciation, extinction and sampling rates may be time-homogeneous or piecewise time-heterogeneous. If time-heterogeneous rates are provided, then a vector of rate change time-points musts also be provided. If only a subset of fossil occurrences is provided for each species (e.g. only first and last occurrencces), then the remaining number of fossil samples may be marginalized by specifying `complete=FALSE`. Under the hood, the fossil data is augmented with oldest occurrence ages for each species, which must be sampled during MCMC using `mvResampleFBD`. Setting `BDS` to true causes the model to assume complete lineage sampling i.e. using the Birth-Death with Rateshifts (BDS) model of Silvestro et al. (2019).'
-  example: |
-    lambda ~ dnExp(10)
-    mu ~ dnExp(10)
-    psi ~ dnExp(10)
-    
-    bd ~ dnFBDRP(lambda=lambda, mu=mu, psi=psi, rho=1, taxa=taxa)
-    
-    moves.append( mvMatrixElementScale(bd, weight=taxa.size()) )
-    moves.append( mvMatrixElementSlide(bd, weight=taxa.size()) )
-  authors:
-  see_also:
-    - 'dnBirthDeathSamplingTreatment'
-    - 'mvResampleFBD'
-  type_spec:
-    - 'Distribution__RealPos[][]'
-    - 'Distribution'
-    - 'RevObject'
-  domain: 'MatrixReal'
-  constructor:
-    - usage: 'dnFossilizedBirthDeathRange(Bool<any> BDS, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, String<any> condition {valid options: "time"|"sampling"|"survival"}, Taxon[]<any> taxa, Bool<any> complete)'
-      arguments:
-        - label: 'BDS'
-          description: 'Assume complete lineage sampling? (BDS model of Silvestro et al. 2019)'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'Bool'
-          default: 'FALSE'
-          options:
-        - label: 'lambda'
-          description: 'The speciation rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'mu'
-          description: 'The extinction rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'psi'
-          description: 'The fossil sampling rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'rho'
-          description: 'The extant sampling fraction.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Probability'
-          default: '1'
-          options:
-        - label: 'timeline'
-          description: 'The rate interval change times of the piecewise constant process.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'condition'
-          description: 'The condition of the process.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'String'
-          default: 'time'
-          options:
-            - 'time'
-            - 'sampling'
-            - 'survival'
-        - label: 'taxa'
-          description: 'The taxa with fossil occurrence information.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Taxon[]'
-          default:
-          options:
-        - label: 'complete'
-          description: 'Assume complete fossil sampling?'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'Bool'
-          default: 'FALSE'
-          options:
-  methods:
-  references:
-    - citation: 'The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Stadler, Tanja et al. Journal of theoretical biology, 447:41-55.'
-      doi:
-      url: 'https://www.sciencedirect.com/science/article/pii/S002251931830119X'
-    - citation: 'Improved estimation of macroevolutionary rates from fossil data using a Bayesian framework. Silvestro, Daniele et al. Paleobiology, 45:546-570.'
-      doi: 'https://doi.org/10.1017/pab.2019.23'
-      url: 'https://www.cambridge.org/core/journals/paleobiology/article/improved-estimation-of-macroevolutionary-rates-from-fossil-data-using-a-bayesian-framework/334F08A74A6C92F1FEAD91A71FE59A1C'
-- name: 'dnFossilizedBirthDeathSpecies'
-  title:
-  aliases: 'dnFBDSP'
-  description:
-  details:
-  example:
-  authors:
-  see_also:
-  type_spec:
-    - 'FossilizedBirthDeathRangeProcess'
-    - 'Distribution__TimeTree'
-    - 'Distribution'
-    - 'RevObject'
-  domain: 'TimeTree'
-  constructor:
-    - usage: 'dnFossilizedBirthDeathSpecies(RealPos<any> originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, String<any> condition {valid options: "time"|"sampling"|"survival"}, Taxon[]<any> taxa, Bool<any> complete, RealPos|RealPos[]<any> lambda_a, Probability|Probability[]<any> beta)'
-      arguments:
-        - label: 'originAge'
-          description: 'The start time of the process.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'lambda'
-          description: 'The speciation rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'mu'
-          description: 'The extinction rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'psi'
-          description: 'The fossil sampling rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'rho'
-          description: 'The extant sampling fraction.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Probability'
-          default: '1'
-          options:
-        - label: 'timeline'
-          description: 'The rate interval change times of the piecewise constant process.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'condition'
-          description: 'The condition of the process.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'String'
-          default: 'time'
-          options:
-            - 'time'
-            - 'sampling'
-            - 'survival'
-        - label: 'taxa'
-          description: 'The taxa with fossil occurrence information.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Taxon[]'
-          default:
-          options:
-        - label: 'complete'
-          description: 'Assume complete fossil sampling?'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'Bool'
-          default: 'FALSE'
-          options:
-        - label: 'lambda_a'
-          description: 'The anagenetic speciation rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'beta'
-          description: 'The probability of symmetric speciation.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Probability'
-          default: '0'
-          options:
-  methods:
-  references:
 - name: 'dnGamma'
   title: 'Gamma Distribution'
   aliases:
@@ -21432,6 +21262,92 @@
           pass_by: 'const reference'
           value_type: 'RealPos'
           default:
+          options:
+  methods:
+  references:
+- name: 'dnNucleotideRateMatrixMixture'
+  title: 'Distribution on reversible and non-reversible nucleotide rate matrices'
+  aliases:
+  description: |
+    Defines a nucleotide substitution rate matrix that can move between
+    time-reversible and non-reversible models during reversible-jump MCMC.
+  details: |
+    Use this distribution with `mvMPQRateMatrix` to sample the rate matrix
+    and propose changes between the two models.
+    
+    `alpha` is a vector of four positive Dirichlet concentration parameters
+    for the stationary nucleotide frequencies. Setting all four entries to
+    one gives a uniform prior on these frequencies.
+    
+    `fixedModel` defaults to `"free"`, allowing transitions between models.
+    Set it to `"reversible"` or `"nonreversible"` to restrict the analysis
+    to that model; model-switching proposals are then disabled.
+    
+    `lnPriorOdds` specifies log(rho_R/rho_N), where rho_R and rho_N are the
+    prior probabilities of the reversible and non-reversible models.
+    Its default, zero, gives equal prior probabilities. Positive values
+    favor reversibility; negative values favor non-reversibility.
+    
+    For a free-model analysis with fixed prior odds, the Bayes factor
+    favoring the non-reversible model is
+    
+        BF_NR = (p_N / p_R) * exp(lnPriorOdds)
+    
+    where p_N and p_R are the posterior model probabilities estimated from
+    the sampled model indicators. Use production samples after burn-in,
+    with adequate mixing between models.
+    
+    If `mvMPQRateMatrix` adapts the model prior during burn-in, freeze that
+    adaptation before collecting production samples and use the final
+    value reported by `Q.lnPriorOdds()` in the calculation.
+  example: |
+    # Create a rate matrix with equal prior probabilities for the models.
+    Q ~ dnNucleotideRateMatrixMixture(alpha=v(1,1,1,1), lnPriorOdds=0.0)
+    
+    moves = VectorMoves()
+    moves.append(mvMPQRateMatrix(Q, tune=FALSE, tuneModelPrior=FALSE))
+    
+    # Define quantities that can be monitored during MCMC.
+    reversible := ifelse(Q.isReversible(), 1.0, 0.0)
+    frequencies := Q.getPi()
+    log_prior_odds := Q.lnPriorOdds()
+    
+    # Alternatively, restrict a separate matrix to one model.
+    Q_NR ~ dnNucleotideRateMatrixMixture(alpha=v(1,1,1,1), fixedModel="nonreversible")
+  authors:
+  see_also:
+    - 'mvMPQRateMatrix'
+    - 'mvMPQTree'
+    - 'mvReversibilityAwareBranchLengthScale'
+    - 'dnPhyloCTMC'
+  type_spec:
+    - 'Distribution__RateGenerator'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'RateGenerator'
+  constructor:
+    - usage: 'dnNucleotideRateMatrixMixture(RealPos[]<any> alpha, String<any> fixedModel, Real<any> lnPriorOdds)'
+      arguments:
+        - label: 'alpha'
+          description: 'The alpha shape parameter.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+        - label: 'fixedModel'
+          description: 'Confine the chain to one model: "free" (the default) lets the reversible jump operate, while "reversible" or "nonreversible" starts the chain in that model and suppresses the jump moves entirely. Use this to measure the two models separately.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'free'
+          options:
+        - label: 'lnPriorOdds'
+          description: 'The prior odds on the model indicator, as log(rho_R/rho_N), where rho_R and rho_N are the prior probabilities of the time-reversible and non-reversible models. The default of zero gives the two models equal prior probability. A positive value favours the time-reversible model. The odds are held fixed unless the move is given tuneModelPrior=TRUE, in which case they are adapted during burn-in and then frozen.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Real'
+          default: '0'
           options:
   methods:
   references:
@@ -23946,22 +23862,38 @@
   methods:
   references:
 - name: 'dnSoftBoundUniformNormal'
-  title: 'Softbound Uniform Distribution with Normal distributed tails.'
+  title: 'Soft-bounded uniform-normal distribution'
   aliases:
-  description: 'A softbound uniform distribution with normally distributed tails outside the interval of the uniform distribution.'
-  details: 'The center piece of this distribution a uniform distribution defined between the given interval. A variable is drawn from that uniform distribution with probability p and with probability 1-p outside the interval. The probability density outside the interval is described by a normal distribution with standard deviation sd.'
+  description: |
+    A soft-bounded uniform distribution with one or two normally distributed tails
+    outside the domain of the uniform component.
+  details: |
+    Draws from a uniform distribution defined between the `min` and `max` values
+    with probability `p`. The tail probability (1 - `p`) is assigned to values
+    smaller than `min` (if `boundary="lower"`), values larger than `max` (if
+    `boundary="upper"`), or apportioned equally between the lower and upper tails
+    (by default, when `boundary="both"`). The probability density outside the
+    [`min`, `max`] interval is that of a normal distribution whose standard
+    deviation can be either automatically computed from `p` or directly specified
+    using the `sd` argument. Exactly one of `sd` and `p` must be specified, with
+    the unspecified value automatically computed so that the density is continuous
+    at `min` and `max`.
   example: |
-    p ~ dnBeta(1.0,1.0)
-    x ~ dnBernoulli(p)
-    x.clamp(1)
-    moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "        ", speciation)
-    mymodel = model(p)
+    # Create a simple model (unclamped)
+    calib ~ dnSoftBoundUniformNormal( 13.6, 25, p=0.95, "upper" )
+    mymodel = model(calib)
+    
+    # Create a move vector and a monitor vector
+    moves[1] = mvSlide(calib, delta=0.1, weight=1.0)
+    monitors[1] = mnScreen(calib, printgen=1000)
+    
+    # Use MCMC to draw samples from the specified distribution
     mymcmc = mcmc(mymodel, monitors, moves)
-    mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
   authors:
-  see_also: 'dnUniform'
+  see_also:
+    - 'dnNormal'
+    - 'dnUniform'
   type_spec:
     - 'ContinuousDistribution'
     - 'Distribution__Real'
@@ -23969,7 +23901,7 @@
     - 'RevObject'
   domain: 'Real'
   constructor:
-    - usage: 'dnSoftBoundUniformNormal(Real<any> min, Real<any> max, RealPos<any> sd, Probability<any> p)'
+    - usage: 'dnSoftBoundUniformNormal(Real<any> min, Real<any> max, RealPos<any> sd, Probability<any> p, String<any> boundary {valid options: "both"|"upper"|"lower"})'
       arguments:
         - label: 'min'
           description: 'The min value of the uniform distribution.'
@@ -23986,19 +23918,29 @@
           default:
           options:
         - label: 'sd'
-          description: 'The standard deviation of the normal distribution.'
+          description: 'The standard deviation of the normal tail(s). Can be specified directly, or computed from ''p''.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
-          default:
+          default: 'NULL'
           options:
         - label: 'p'
-          description: 'The probability of being within the uniform distribution.'
+          description: 'The probability of being within the uniform boundaries. Can be specified directly, or computed from ''sd''.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
-          default:
+          default: 'NULL'
           options:
+        - label: 'boundary'
+          description: 'Which boundary should be soft?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'both'
+          options:
+            - 'both'
+            - 'upper'
+            - 'lower'
   methods:
   references:
 - name: 'dnStairwayPlot'
@@ -24631,7 +24573,7 @@
     - 'RevObject'
   domain: 'BranchLengthTree'
   constructor:
-    - usage: 'dnUniformTopologyBranchLength(Taxon[]<any> taxa, Clade<any> outgroup, Distribution__RealPos<any> branchLengthDistribution)'
+    - usage: 'dnUniformTopologyBranchLength(Taxon[]<any> taxa, Clade<any> outgroup, Distribution__RealPos<any> branchLengthDistribution, Bool<any> rooted)'
       arguments:
         - label: 'taxa'
           description: 'The vector of taxa that will be used for the tips.'
@@ -24653,6 +24595,13 @@
           pass_by: 'value'
           value_type: 'Distribution__RealPos'
           default:
+          options:
+        - label: 'rooted'
+          description: 'Is the distribution over rooted topologies?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
           options:
   methods:
   references:
@@ -25107,7 +25056,7 @@
           default:
           options:
         - label: 'checkpointInterval'
-          description: 'The interval when to write parameters values to a files for checkpointing.'
+          description: 'The interval when to write parameters values to a file for checkpointing.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
@@ -25386,7 +25335,7 @@
           default:
           options:
         - label: 'checkpointInterval'
-          description: 'The interval when to write parameters values to a files for checkpointing.'
+          description: 'The interval when to write parameters values to a file for checkpointing.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
@@ -28585,7 +28534,7 @@
     The new value is set to `u`.
     The simplex is then renormalized.
     
-    Usage examples can be found at https://revbayes.github.io/tutorials/morph_tree/multistate.html and https://revbayes.github.io/tutorials/morph_ase/ase_free.html
+    Usage examples can be found at https://revbayes.github.io/tutorials/morph_tree/V2.html and https://revbayes.github.io/tutorials/morph_ase/ase_free.html
   details:
   example:
   authors:
@@ -29001,6 +28950,164 @@
     - citation: 'Höhna S, Defoin-Platel M, Drummond AJ (2008). Clock-constrained tree proposal operators in Bayesian phylogenetic inference. 1--7 in 8th IEEE International Conference on BioInformatics and BioEngineering (BIBE 2008). Athens, Greece, October 2008.'
       doi: '10.1109/BIBE.2008.4696663'
       url: 'https://alexeidrummond.org/assets/publications/2008-hoehna-clock-bibe.pdf'
+- name: 'mvFossilSiteTimeSlideUniform'
+  title: 'Move to simultaneously update the ages of site-linked fossils'
+  aliases:
+    - 'mvFossilSiteSlideUniform'
+    - 'mvSiteTimeSlideUniform'
+  description: |
+    Proposes simultaneous additive updates to the ages of fossil taxa that come
+    from the same site and are therefore known to be contemporaneous, even if their
+    exact age remains uncertain (King & Rücklin 2020).
+  details: |
+    The move takes a vector of `Taxon` objects, representing the fossils whose ages
+    are to be treated as linked. The minimum and maximum ages of the site that the
+    fossils come from can either be supplied to the move via the `min` and `max`
+    arguments, or taken directly from the `Taxon` objects. Internally, the minimum
+    and maximum values are recomputed to account for the current tree topology,
+    which may impose additional constraints beyond those provided by the age range
+    of the site (since a node cannot be older than its parent, and a sampled
+    ancestor cannot be younger than its oldest descendant). Like other slide moves,
+    `mvFossilSiteSlideUniform` then draws a uniformly distributed random number and
+    adds the draw to the current value. The width of the uniform distribution
+    determines the "boldness" of the proposal; it can be specified by the `delta`
+    argument and, if `tune=TRUE`, automatically adjusted to ensure that the
+    acceptance rate of the move reaches `tuneTarget`. The minimum and maximum ages
+    are used as reflection boundaries if the addition of the uniform draw to the
+    current age produces a value that is too low or too high.
+    
+    Note that there are cases in which the ages of site-linked taxa may (seemingly)
+    diverge even if they are updated using `mvFossilSiteSlideUniform`. This may
+    occur when the ages of the taxa in question are also adjusted using moves that
+    are not site-aware (`mvFossilTipTimeSlideUniform`, `mvFossilTipTimeUniform`).
+    These moves can be used without specifying the `tip` argument, in which case
+    they randomly pick a fossil every time they are performed, and may consequently
+    update the age of one site-linked fossil but not of the others. Similarly, if
+    an analysis also employs the `mvCollapseExpandFossilBranch` move, which turns
+    tips into sampled ancestors and _vice versa_, the resulting summary trees may
+    show the site-linked taxa to have different ages even if their ages are in fact
+    exactly identical in every single individual MCMC sample. This is because the
+    corresponding point estimates are averaged over different subsets of samples,
+    determined by the status of a given fossil as a tip or a sampled ancestor. The
+    behavior can be suppressed by specifying `conditionalAges=TRUE` in the tree
+    summary functions (`mapTree()`, `mccTree()`), which ensures that the tip age
+    point estimates are averaged across only those samples whose entire topology
+    equals the summary tree.
+  example: |
+    # Assume that the min/max ages of each taxon have been read from a TSV file
+    # Extract all fossil taxa in the tree
+    fossils = fbd_tree.getFossils()
+    
+    # Specify a uniform prior spanning the age uncertainty range of each fossil
+    for(i in 1:fossils.size())
+    {
+        t[i] := tmrca(fbd_tree, clade(fossils[i]))
+    
+        a[i] = fossils[i].getMinAge()
+        b[i] = fossils[i].getMaxAge()
+    
+        F[i] ~ dnUniform(t[i] - b[i], t[i] - a[i])
+        F[i].clamp( 0 )
+    }
+    
+    # Create a vector including all fossils known from the same site
+    sitelinked_fossils[1] = taxon("fossil_X")
+    sitelinked_fossils[2] = taxon("fossil_Y")
+    sitelinked_fossils[3] = taxon("fossil_Z")
+    
+    # Add a move to update the ages of these fossils simultaneously
+    moves.append( mvFossilSiteSlideUniform(fbd_tree, origin_time, taxa=sitelinked_fossils,
+                                           weight=10.0) )
+    
+    # The ages of the remaining fossils should be updated independently
+    nonsitelinked_fossils = fossils
+    nonsitelinked_fossils.erase( sitelinked_fossils )
+    
+    for(i in 1:nonsitelinked_fossils.size())
+    {
+        moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time,
+                                               tip=nonsitelinked_fossils[i], weight=5.0) )
+    }
+  authors:
+  see_also:
+    - 'mvCollapseExpandFossilBranch'
+    - 'mvFossilTipTimeSlideUniform'
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvFossilSiteTimeSlideUniform(TimeTree<stochastic> tree, RealPos<any> origin, RealPos<any> max, RealPos<any> min, Taxon[]<any> taxa, RealPos<any> delta, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          default:
+          options:
+        - label: 'origin'
+          description: 'The variable for the origin of the process giving a maximum age.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'max'
+          description: 'The variable for the maximum age of this fossil site.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'min'
+          description: 'The variable for the minimun age of this fossil site.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'taxa'
+          description: 'A vector of taxon objects with fossils from the same site'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Taxon[]'
+          default: 'NULL'
+          options:
+        - label: 'delta'
+          description: 'The window size parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the window size during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+    - citation: 'King B, Rücklin M (2020). Tip dating with fossil sites and stratigraphic sequences. PeerJ, 8:e9368.'
+      doi: '10.7717/peerj.9368'
+      url: 'https://peerj.com/articles/9368/'
 - name: 'mvFossilTipTimeSlideUniform'
   title: 'Sliding move to change a fossil tip age'
   aliases:
@@ -29029,7 +29136,7 @@
         moves.append( mvFossilTipTimeSlideUniform(fbd_tree, origin_time, min=a[i], max=b[i], tip=fossils[i], weight=5.0) )
     }
   authors:
-  see_also: 'mvFossilTipTimeSlideUniform'
+  see_also: 'mvFossilTipTimeUniform'
   type_spec:
     - 'Move'
     - 'WorkspaceToCoreWrapperObject'
@@ -29572,7 +29679,7 @@
           default: '0'
           options:
         - label: 'edges'
-          description: 'A vector of [i,j] edges to target with this proposal. An empty vector is interpretted as the full list of edges.'
+          description: 'A vector of [i,j] edges to target with this proposal. An empty vector is interpreted as the full list of edges.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[][]'
@@ -30197,6 +30304,181 @@
           options:
   methods:
   references:
+- name: 'mvMPQRateMatrix'
+  title: 'Rate-matrix updates and reversible-jump proposals for dnNucleotideRateMatrixMixture'
+  aliases:
+  description: |
+    Updates a nucleotide rate matrix drawn from `dnNucleotideRateMatrixMixture`, including proposals
+    between the time-reversible and non-reversible models.
+  details: |
+    `Q` must be a stochastic rate matrix drawn from `dnNucleotideRateMatrixMixture`. When that
+    distribution uses `fixedModel="free"`, this move can change the model
+    indicator. When a model is fixed, model-switching proposals are disabled.
+    
+    `polyhedronAlpha` controls the concentration of the non-reversible
+    jump proposal. Its default value, one, gives a uniform draw over the
+    polyhedron. Larger values concentrate the proposal near its center;
+    values below one favor points nearer its boundary. This parameter
+    changes the proposal distribution, not the target distribution.
+    
+    `polyhedronCenter` optionally specifies three coordinates for the
+    proposal center. An empty vector, the default, uses the reversible
+    point (0.5, 0.5, 0.5). A center can be chosen using the posterior mean
+    of `Q.getU()` from a preliminary non-reversible analysis. If a proposed
+    polyhedron cannot accommodate the requested center, the center is
+    moved toward the reversible point for that proposal.
+    
+    `tuneModelPrior` defaults to FALSE. If enabled together with `tune`,
+    it adapts the model prior during burn-in to encourage balanced model
+    occupancy. This changes the target distribution. Finish all adaptation
+    before collecting production samples, and monitor `Q.lnPriorOdds()`
+    to retain the final prior odds needed to calculate the Bayes factor.
+    A checkpoint stores the adapted prior odds with the rate matrix, so a
+    resumed run keeps the same target distribution. The tuned proposal
+    widths are not stored; after a restart they return to their starting
+    values, which affects mixing but not the target.
+  example: |
+    Q ~ dnNucleotideRateMatrixMixture(alpha=v(1,1,1,1), lnPriorOdds=0.0)
+    moves = VectorMoves()
+    
+    # Default proposal with adaptation disabled.
+    moves.append(mvMPQRateMatrix(Q, weight=10,
+                                tune=FALSE, tuneModelPrior=FALSE))
+    
+    # Alternative proposal with a specified center and concentration.
+    # In an analysis, choose the proposal settings appropriate to the data.
+    shifted_move = mvMPQRateMatrix(Q, weight=10,
+                                  tune=FALSE, tuneModelPrior=FALSE,
+                                  polyhedronCenter=v(0.56,0.54,0.34),
+                                  polyhedronAlpha=10.0)
+  authors:
+  see_also:
+    - 'dnNucleotideRateMatrixMixture'
+    - 'mvMPQTree'
+    - 'mvReversibilityAwareBranchLengthScale'
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMPQRateMatrix(RateGenerator<stochastic> Q, Bool<any> tune, Bool<any> tuneModelPrior, RealPos<any> polyhedronAlpha, RealPos[]<any> polyhedronCenter, RealPos<any> weight)'
+      arguments:
+        - label: 'Q'
+          description: 'The general nucleotide rate matrix on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RateGenerator'
+          default:
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'tuneModelPrior'
+          description: 'Should the prior on the model indicator be adapted toward equal time in the two models? This changes the target distribution, so it must only be done during burnin: run the burnin with a tuningInterval, then do the production run without one. The tilt that was reached is reported as lnPriorOdds by the operator summary, and the Bayes factor is recovered from it as BF_NR = (p_N/p_R) * exp(lnPriorOdds). Note that this has no effect unless tune=TRUE, since that is what makes the MCMC call the move''s tuning function at all.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'polyhedronAlpha'
+          description: 'Concentration of the point drawn from the polyhedron when jumping between models. At one the draw is uniform over the polyhedron, which is an independence proposal and mixes badly when the data are informative about the rate matrix. Above one it concentrates near the time-reversible center, making the jump a small move; below one it spreads toward the facets. Which direction helps depends on the data, so monitor Q.getU() to see where the non-reversible model sits and read the jump acceptance rates from the operator summary. This affects the acceptance rate only, never the target.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'polyhedronCenter'
+          description: 'The point (u1,u2,u3) in the polyhedron about which the jump proposal is centred, or an empty vector to use the time-reversible point (1/2,1/2,1/2). Establish it with a short run confined to the non-reversible model, monitoring Q.getU(), and pass the posterior mean. Because the polyhedron changes shape with every proposal, a centre it cannot accommodate is pulled back along the line toward the time-reversible point for that proposal only; the value given here is kept and tried afresh each time.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos[]'
+          default: '[ ]'
+          options:
+        - label: 'weight'
+          description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+  methods:
+  references:
+- name: 'mvMPQTree'
+  title: 'Tree proposals for reversible and non-reversible substitution analyses'
+  aliases:
+  description: |
+    Proposes tree updates in analyses using the reversible and non-reversible
+    nucleotide models implemented by `dnNucleotideRateMatrixMixture`, optionally updating root position.
+  details: |
+    `tree` should be a stochastic, non-clock tree parameterized by branch
+    lengths, as produced by `dnUniformTopologyBranchLength`.
+    
+    `updateRoot` defaults to TRUE and allows proposals that change root
+    position. Set it to FALSE when the root must remain on a specified
+    outgroup branch. This move does not automatically detect an assigned
+    outgroup or enforce that root constraint.
+    
+    Root position can affect the likelihood under a non-reversible model.
+    Under the stationary time-reversible model, the likelihood is unchanged
+    by moving the root on a fixed unrooted tree with fixed branch lengths;
+    the root must nevertheless be handled consistently with the tree prior.
+    
+    This move does not take a rate-matrix argument. Connect the tree and
+    the rate matrix through the phylogenetic likelihood, using `dnPhyloCTMC`.
+  example: |
+    taxa <- v(taxon("A"), taxon("B"), taxon("C"), taxon("D"))
+    
+    tree ~ dnUniformTopologyBranchLength(
+        taxa=taxa, branchLengthDistribution=dnExp(10.0), rooted=TRUE)
+    
+    moves = VectorMoves()
+    moves.append(mvMPQTree(tree=tree, updateRoot=TRUE, weight=4))
+    
+    # If the root must stay on an assigned outgroup branch, instead
+    # construct the move with updateRoot=FALSE.
+  authors:
+  see_also:
+    - 'dnNucleotideRateMatrixMixture'
+    - 'dnUniformTopologyBranchLength'
+    - 'dnPhyloCTMC'
+    - 'mvMPQRateMatrix'
+    - 'mvReversibilityAwareBranchLengthScale'
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMPQTree(Tree<stochastic> tree, Bool<any> updateRoot, RealPos<any> weight)'
+      arguments:
+        - label: 'tree'
+          description: 'The phylogeny.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Tree'
+          default:
+          options:
+        - label: 'updateRoot'
+          description: 'Should the position of the root be updated? Set this to FALSE whenever an outgroup has been assigned. The move cannot work this out for itself: the tree prior does not enforce the outgroup once the MCMC is running (RevBayes issue #157), so a root move would walk the root off the outgroup and nothing would object.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+  methods:
+  references:
 - name: 'mvMatrixElementScale'
   title:
   aliases:
@@ -30211,7 +30493,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvMatrixElementScale(RealPos[][]|Real[][]|MatrixRealSymmetric|MatrixReal<stochastic> x, RealPos<any> lambda, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvMatrixElementScale(RealPos[][]|Real[][]|MatrixRealSymmetric|MatrixReal<stochastic> x, RealPos<any> lambda, Bool<any> tune, Natural<any> row, Natural<any> col, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'x'
           description: 'The variable on which this move operates.'
@@ -30233,6 +30515,20 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'TRUE'
+          options:
+        - label: 'row'
+          description: 'Confine the move to this row; omit to use every element.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
+          options:
+        - label: 'col'
+          description: 'Confine the move to this column; omit to use every element.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
           options:
         - label: 'weight'
           description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
@@ -30264,7 +30560,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvMatrixElementSlide(RealPos[][]|Real[][]|MatrixRealSymmetric|MatrixReal<stochastic> x, RealPos<any> delta, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvMatrixElementSlide(RealPos[][]|Real[][]|MatrixRealSymmetric|MatrixReal<stochastic> x, RealPos<any> delta, Bool<any> tune, Natural<any> row, Natural<any> col, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'x'
           description: 'The variable on which this move operates.'
@@ -30286,6 +30582,20 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'TRUE'
+          options:
+        - label: 'row'
+          description: 'Confine the move to this row; omit to use every element.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
+          options:
+        - label: 'col'
+          description: 'Confine the move to this column; omit to use every element.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
           options:
         - label: 'weight'
           description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
@@ -31045,7 +31355,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvNodeTimeSlidePathTruncatedNormal(TimeTree<stochastic> tree, TimeTree<stochastic> sigma, Bool<any> scaleByAge, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvNodeTimeSlidePathTruncatedNormal(TimeTree<stochastic> tree, RealPos<any> sigma, Bool<any> scaleByAge, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'tree'
           description: 'The tree on which this move operates.'
@@ -31056,9 +31366,9 @@
           options:
         - label: 'sigma'
           description: 'The sd of the proposal.'
-          dag_type: '<stochastic>'
-          pass_by: 'reference'
-          value_type: 'TimeTree'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
           default: '1'
           options:
         - label: 'scaleByAge'
@@ -32121,33 +32431,76 @@
           default:
           options:
   references:
-- name: 'mvResampleFBD'
-  title:
+- name: 'mvReversibilityAwareBranchLengthScale'
+  title: 'Branch-length scaling that keeps the root edge together'
   aliases:
-  description: 'This move resamples an oldest occurrence age for a random species in a fossilized birth death process described by `dnFBDRP` or `dnFBDRMatrix`'
-  details: 'Under the hood, FBD fossil data is augmented with oldest occurrence ages for each species, which are automatically marginalized during when the model is sampled using MCMC. These ages can also be resampled manually using this move.'
-  example: |
-    bd ~ dnFBDRP(lambda=lambda, mu=mu, psi=psi, rho=1, taxa=taxa, resample=FALSE)
+  description: |
+    Scales the length of a randomly chosen non-root branch. When that branch
+    descends from a bifurcating root, its sibling is scaled by the same
+    factor, so the two root branches change together and keep their length
+    ratio.
+  details: |
+    Use this move on a stochastic, non-clock tree parameterized by branch
+    lengths, such as a rooted tree drawn from
+    `dnUniformTopologyBranchLength`.
     
-    moves.append( mvResampleFBD(bd, weight=taxa.size()) )
+    Every branch not attached to the root is scaled on its own, as in
+    `mvBranchLengthScale`. Under a stationary time-reversible substitution
+    model, the two root branches correspond to one edge of the unrooted
+    tree. Their combined length affects the likelihood, whereas their
+    relative lengths are informed by the prior alone. Scaling them jointly
+    updates the combined length without changing their ratio. The move is
+    also usable under the non-reversible model and does not require a
+    rate-matrix argument.
+    
+    Use this move alongside an ordinary single-branch scaler such as
+    `mvBranchLengthScale`. Joint scaling alone cannot explore the ratio
+    of the two root-branch lengths.
+  example: |
+    taxa <- v(taxon("A"), taxon("B"), taxon("C"), taxon("D"))
+    
+    tree ~ dnUniformTopologyBranchLength(
+        taxa=taxa, branchLengthDistribution=dnExp(10.0), rooted=TRUE)
+    
+    moves = VectorMoves()
+    moves.append(mvBranchLengthScale(tree, tune=FALSE, weight=4))
+    moves.append(mvReversibilityAwareBranchLengthScale(
+        tree, delta=1.0, tune=FALSE, weight=4))
   authors:
   see_also:
-    - 'dnFossilizedBirthDeathRange'
-    - 'dnFossilizedBirthDeathRangeMatrix'
+    - 'dnNucleotideRateMatrixMixture'
+    - 'dnUniformTopologyBranchLength'
+    - 'mvBranchLengthScale'
+    - 'mvMPQTree'
+    - 'mvMPQRateMatrix'
   type_spec:
     - 'Move'
     - 'WorkspaceToCoreWrapperObject'
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvResampleFBD(TimeTree|MatrixReal<stochastic> x, RealPos<any> weight)'
+    - usage: 'mvReversibilityAwareBranchLengthScale(Tree<stochastic> tree, RealPos<any> delta, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
-        - label: 'x'
-          description: 'The fossilized birth death process whose ages to resample.'
+        - label: 'tree'
+          description: 'The tree variable the move operates on.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
-          value_type: 'TimeTree'
+          value_type: 'Tree'
           default:
+          options:
+        - label: 'delta'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight determines the relative frequency with which this move will be attempted. For details, see the description of the ''moveschedule'' parameter on the documentation page for ''mcmc()''.'
@@ -32156,11 +32509,15 @@
           value_type: 'RealPos'
           default: '1'
           options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.234'
+          options:
   methods:
   references:
-    - citation: 'The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Stadler, Tanja et al. Journal of theoretical biology, 447:41-55.'
-      doi:
-      url: 'https://www.sciencedirect.com/science/article/pii/S002251931830119X'
 - name: 'mvRootTimeScaleBactrian'
   title:
   aliases:
@@ -35009,7 +35366,7 @@
           default:
           options:
         - label: 'separator'
-          description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+          description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
@@ -35185,6 +35542,8 @@
     estimate marginal likelihoods for model selection or hypothesis testing via
     Bayes factors (Gelman & Meng 1998; Friel & Pettitt 2008).
   details: |
+    Description
+    
     A power posterior analysis samples from a series of importance distributions of
     the form:
         f_beta(theta | Y) = f(theta) x f(Y | theta)^beta
@@ -35214,32 +35573,174 @@
     reasons of numerical stability, the beta of this final stone is not set exactly
     to 0 but to an extremely small positive number (~ 1.2e-302).
     
-    The RevBayes implementation of power posterior analysis is fully parallelized
-    (Hoehna et al. 2021). In general, after a common pre-burnin stage that should
-    allow the sampler to converge to the posterior (see the `.burnin()` method),
-    the `.run()` method will distribute the K stones among M available CPUs in such
-    a way that each CPU handles floor(K/M) or ceiling(K/M) consecutive powers. This
-    has the advantage of allowing the last sample for one power to be used as the
-    starting state for the subsequent power. However, to account for the transition
-    from one power to the next, each power posterior should still include a small
-    burnin fraction (set to 0.25 by default and specified by the `burninFraction`
-    argument to the `.run()` method). For example, with K = 50, M = 8, and a single
-    CPU used for each likelihood computation (`procPerLikelihood=1`, by default),
-    the individual power posteriors will be distributed among the CPUs as follows:
+    Implementation
     
-        -----------------------------------------------------------------
-                            Filename suffix (= K - i)
-        -----------------------------------------------------------------
-        | CPU 1 | CPU 2 | CPU 3 | CPU 4 | CPU 5 | CPU 6 | CPU 7 | CPU 8 |
-        |-------|-------|-------|-------|-------|-------|-------|-------|
-        |   1   |   7   |   13  |   19  |   26  |   32  |   38  |   44  |
-        |   2   |   8   |   14  |   20  |   27  |   33  |   39  |   45  |
-        |  ...  |  ...  |  ...  |  ...  |  ...  |  ...  |  ...  |  ...  |
-        |   6   |   12  |   18  |   24  |   31  |   37  |   43  |   49  |
-        |       |       |       |   25  |       |       |       |   50  |
+    A power posterior analysis consists of up to four distinct stages:
     
-    More flexible strategies are enabled by the `.runOneStone()` method, which
-    allows the user to execute a separate analysis for each power posterior.
+        1. Global pre-burnin
+        2. Stone-specific pre-burnin
+        3. Stone-specific burnin
+        4. Stone-specific sampling phase
+    
+    The global pre-burnin (1) is executed using the `.burnin()` method and is meant
+    to allow the sampler to converge to the posterior. No samples are collected, 
+    and a separate generation counter is used, much like with `mcmc.burnin()`. This
+    stage is executed using a single worker, which corresponds either to a single
+    process, or to a group of `procPerLikelihood` processes if this argument
+    (controlling the number of processes used for each likelihood computation) is
+    set to a value other than 1 (default).
+    
+    In contrast, the remaining three stages are executed using the `.run()` method
+    and fully parallelized (see Höhna et al. 2021, though note that the current
+    implementation diverges somewhat from that described therein). The K stones are
+    distributed among M available workers in such a way that each worker handles
+    floor(K/M) or ceiling(K/M) consecutive powers. This allows the last sample for
+    one power to be used as the starting state for the next power. The assignment
+    of stones to available workers is summarized in a table printed at the start of
+    every analysis. For example, with K = 50, M = 8, and `procPerLikelihood=1`, the
+    individual power posteriors will be distributed among processes as follows:
+    
+        Process | Step 1 | Step 2 | Step 3 | Step 4 | Step 5 | Step 6 | Step 7
+        --------|--------|--------|--------|--------|--------|--------|--------
+              1 |      1 |      2 |      3 |      4 |      5 |      6 |
+              2 |      7 |      8 |      9 |     10 |     11 |     12 |
+              3 |     13 |     14 |     15 |     16 |     17 |     18 |
+              4 |     19 |     20 |     21 |     22 |     23 |     24 |     25
+              5 |     26 |     27 |     28 |     29 |     30 |     31 |
+              6 |     32 |     33 |     34 |     35 |     36 |     37 |
+              7 |     38 |     39 |     40 |     41 |     42 |     43 |
+              8 |     44 |     45 |     46 |     47 |     48 |     49 |     50
+    
+    To facilitate the transitions from one power to the next, which may require
+    additional move tuning (since moves should become bolder for powers closer to
+    0), a stone-specific pre-burnin (2) is performed. No samples are collected
+    during this stage, and another separate generation counter is used. By default,
+    this pre-burnin doubles the specified stone length, so if the user specifies
+    `.run(generations=1000)`, it will consist of 1000 generations for each stone.
+    This value can be changed by setting the `preburninGenerations` argument of the
+    `.run()` method.
+    
+    Additionally, samples collected during the transition from one likelihood power
+    to another can be discarded as a stone-specific burnin (3), which is set to 25%
+    of the specified stone length by default. This value can be changed by setting
+    the `burninFraction` argument of the `.run()` method. The burnin phase shares
+    its generation counter with the sampling phase, so in the example above, the
+    first logged iteration would actually be 250 (with iterations 0--240 discarded
+    as burnin).
+    
+    Finally, during the stone-specific sampling phase (4), samples are drawn from
+    a given power posterior. Its length is jointly determined by the `generations`
+    and `burninFraction` arguments of the `.run()` method, so in the example above,
+    it would consist of 750 generations for each stone (1000 specified generations
+    minus the 25% reserved for burnin).
+    
+    In addition to the `.run()` method, which distributes stones among workers 
+    automatically, `powerPosterior` also supports more flexible parallelization
+    strategies via the `.runOneStone()` method, which allows the user to execute
+    a separate analysis for each power posterior. This increased flexibility comes
+    at the cost of lower-quality starting values: as `.runOneStone(index=<x>, ...)`
+    is not guaranteed to have been called before `.runOneStone(index=<x+1>, ...)`, 
+    the latter cannot be initialized with the output of the former, and will simply 
+    start from whatever state the sampler happens to currently hold.
+    
+    Checkpointing
+    
+    Stages 1 (global pre-burnin), 3 (stone-specific burnin), and 4 (stone-specific
+    sampling phase) can be checkpointed and resumed from a checkpoint. For highly
+    parallelized analyses where each stone is assigned to a separate worker, the
+    amount of time spent in stages 2--4 may be negligible compared to the amount
+    of time required to converge to the posterior. In such a case, it may be useful
+    to checkpoint and resume the global pre-burnin as follows:
+    
+        pow_p.burnin(generations=10000, tuningInterval=100,
+                     checkpointFile="pow_p_burnin.ckp", checkpointInterval=100)
+        pow_p.initializeFromCheckpoint("pow_p_burnin.ckp")
+        pow_p.burnin(tuningInterval=100)
+    
+    The checkpointing mechanism automatically records the planned length specified
+    in the first call to `.burnin()`. As a result, there is no need to specify the
+    `generations` argument upon resumption. If, for example, the original analysis
+    was interrupted at generation 7500, the second call to `.burnin()` will ensure
+    that the resumed analysis completes the remaining 2500 generations. However,
+    the `generations` argument can be set in the second call as well. In this case,
+    it extends the pre-burnin by the specified number of generations:
+    
+        pow_p.initializeFromCheckpoint("pow_p_burnin.ckp")
+        pow_p.burnin(generations=5000, tuningInterval=100)
+    
+    Note that the necessary checkpoint files can also be produced by regular MCMC
+    or MCMCMC analyses, so the `powerPosterior` sampler makes it possible to re-use
+    the output of such analyses without requiring a lengthy global pre-burnin stage
+    of its own. The `generations` must be explicitly set in this scenario, as there
+    is no planned length for the "resume-to-target" functionality to utilize.
+    
+    Individual stones can also be checkpointed and resumed from a checkpoint. To do
+    so, the `.initializeFromCheckpoint()` method takes a `stones` argument that
+    allows the user to specify exactly which power posteriors should be restarted.
+    This can be a single index or a vector thereof. Following on the example above,
+    if the original analysis was interrupted during the very last step (step 7), we
+    may resume it as follows:
+    
+        pow_p.run(generations=1000, checkpointFile="analysis.ckp",
+                  checkpointInterval=100)
+        pow_p.initializeFromCheckpoint("analysis.ckp", [25, 50])
+        pow_p.run(generations=800)
+        
+    When applied to individual stones, the checkpointing mechanism also records the
+    planned burnin length. Therefore, if the original analysis was interrupted
+    at generation 200 (i.e., still within the 250-generation-long burnin stage),
+    the commands above will cause the resumed analysis to complete the remaining 50
+    generations of burnin, followed by sampling for 750 generations (numbered 250
+    through 1000) -- exactly as though no interruption had occurred in the first
+    place. The `burninFraction` argument of the `.run()` call (which would normally
+    cause the first 0.25 times 800 = 200 generations to be discarded as burnin) is
+    ignored in this case, and a warning is printed to this effect.
+    
+    If the analysis was interrupted at an earlier step, we may have to resurrect
+    entire sequences of stones. In this case, a nested vector (vector of vectors)
+    of stone indices is passed to `.initializeFromCheckpoint()` via its `stones`
+    argument. Each inner vector then corresponds to a sequence of stones to be
+    executed by one parallel worker. Only the first stone from each sequence needs
+    to have a checkpoint associated with it, as each subsequent stone will instead
+    use the output of the previous stone as its starting state. For example, if the
+    original analysis was interrupted during step 2, we could resume it as follows:
+    
+        pow_p.initializeFromCheckpoint("analysis.ckp",
+                  [ 2:6, 8:12, 14:18, 20:25, 27:31, 33:37, 39:43, 45:50 ])
+        pow_p.run(generations=800)
+        
+    Or as follows if it was interrupted during step 6:
+    
+        pow_p.initializeFromCheckpoint("analysis.ckp",
+                  [ [6], [12], [18], 24:25, [31], [37], [43], 49:50 ])
+    
+    Note that in this case, the `.run()` call honors the assignment of stones to
+    workers specified in `.initializeFromCheckpoint()`, instead of automatically
+    generating an assignment of its own. An exception is thrown if the length of
+    the outer vector (i.e., the number of parallel workers requested by the user
+    for the resumed analysis) exceeds the number of workers available. Note also
+    that when the `stones` argument is specified using the range-based notation,
+    it makes a difference whether the range is enclosed in square brackets. The
+    following:
+    
+        pow_p.initializeFromCheckpoint( "analysis.ckp", 1:5 )
+        
+    means "resurrect stones 1 through 5, and leave it up to the `.run()` method to
+    decide how to assign them to available workers". Checkpoint files must be
+    available for all 5 specified stones. In contrast,
+    
+        pow_p.initializeFromCheckpoint( "analysis.ckp", [1:5] )
+        
+    means "resurrect stone 1, and then run stones 2 through 5 on the same parallel
+    worker, using the last sample from the previous stone as the starting point for
+    the next". In this case, we only require checkpoint files for stone 1.
+    
+    Finally, checkpointing is also available for the `.runOneStone()` method:
+    
+        pow_p.runOneStone(index=16, generations=500, checkpointFile="analysis.ckp",
+                          checkpointInterval=50)
+        pow_p.initializeFromCheckpoint("analysis.ckp", 16)
+        pow_p.runOneStone(index=16, generations=500)
   example: |
     # Create a simple model (unclamped)
     a ~ dnExponential(1)
@@ -35339,14 +35840,14 @@
   methods:
     - name: 'burnin'
       return_type: 'void'
-      usage: 'burnin(Natural<any> generations, Natural<any> tuningInterval)'
+      usage: 'burnin(Natural<any> generations, Natural<any> tuningInterval, String<any> checkpointFile, Natural<any> checkpointInterval)'
       arguments:
         - label: 'generations'
-          description: 'The number of generations to run.'
+          description: 'The number of generations to run. Can be omitted when resuming from a checkpoint to complete the originally planned length.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
-          default:
+          default: 'NULL'
           options:
         - label: 'tuningInterval'
           description: 'The frequency at which the moves are tuned (usually between 50 and 1000).'
@@ -35355,9 +35856,41 @@
           value_type: 'Natural'
           default:
           options:
+        - label: 'checkpointFile'
+          description: 'The filename for the checkpoint file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'checkpointInterval'
+          description: 'The interval when to write parameters values to a file for checkpointing.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
+          options:
+    - name: 'initializeFromCheckpoint'
+      return_type: 'void'
+      usage: 'initializeFromCheckpoint(String<any> checkpointFile, Natural|Natural[]|Natural[][]<any> stones)'
+      arguments:
+        - label: 'checkpointFile'
+          description: 'The checkpoint file base name.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'stones'
+          description: '1-based index, vector, or nested vector; for nested layouts only the first index in each inner vector requires a checkpoint file. Not required when resuming the pre-burnin.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
+          options:
     - name: 'run'
       return_type: 'void'
-      usage: 'run(Natural<any> generations, Probability<any> burninFraction, Natural<any> preburninGenerations, Natural<any> tuningInterval)'
+      usage: 'run(Natural<any> generations, Probability<any> burninFraction, Natural<any> preburninGenerations, Natural<any> tuningInterval, String<any> checkpointFile, Natural<any> checkpointInterval)'
       arguments:
         - label: 'generations'
           description: 'The number of generations to run.'
@@ -35387,9 +35920,23 @@
           value_type: 'Natural'
           default: '100'
           options:
+        - label: 'checkpointFile'
+          description: 'The filename for the checkpoint file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'checkpointInterval'
+          description: 'The interval when to write parameters values to a file for checkpointing.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
+          options:
     - name: 'runOneStone'
       return_type: 'void'
-      usage: 'runOneStone(Natural<any> index, Natural<any> generations, Probability<any> burninFraction, Natural<any> preburninGenerations, Natural<any> tuningInterval)'
+      usage: 'runOneStone(Natural<any> index, Natural<any> generations, Probability<any> burninFraction, Natural<any> preburninGenerations, Natural<any> tuningInterval, String<any> checkpointFile, Natural<any> checkpointInterval)'
       arguments:
         - label: 'index'
           description: 'Index of the stone/power to run.'
@@ -35425,6 +35972,20 @@
           pass_by: 'value'
           value_type: 'Natural'
           default: '100'
+          options:
+        - label: 'checkpointFile'
+          description: 'The filename for the checkpoint file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'checkpointInterval'
+          description: 'The interval when to write parameters values to a file for checkpointing.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
           options:
     - name: 'summarize'
       return_type: 'void'
@@ -35721,8 +36282,26 @@
   aliases:
   description: |
     Terminates an MCMC run once the specified number of iterations have been
-    performed. This rule would typically be used alongside other stopping criteria.
-  details:
+    performed.
+  details: |
+    For an analysis conducted from scratch, employing the maximum iteration rule is
+    exactly equivalent to specifying the `generations` argument:
+    
+        mcmc.run( [srMaxIteration(10000)] )
+    
+    as well as the following:
+    
+        mcmc.run(generations=10000)
+    
+    will both stop the analysis once it has completed 10,000 generations. However,
+    the two `.run()` calls above will behave differently when they follow a call to
+    `.initializeFromCheckpoint()` -- i.e., when resuming a checkpointed analysis.
+    For example, if such an analysis was interrupted at generation 5000, resuming
+    it with `generations=10000` will cause it to be extended by another 10,000
+    generations, yielding a total length of 15,000 generations. In contrast,
+    specifying `srMaxIteration(10000)` upon resumption will stop the analysis once
+    it has reached a total length of 10,000 generations, limiting the resumed run
+    to just 5000 generations.
   example: |
     # Binomial example: estimate success probability given 7 successes out of 20 trials
     r ~ dnExp(10)
@@ -36182,7 +36761,7 @@
           default:
           options:
         - label: 'separator'
-          description: 'The field separator character. Values on each line of the file are separated by this character. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
+          description: 'The field separator string. Values on each line of the file are separated by this string. If sep = "" the separator is ''white space'', that is one or more spaces, tabs, newlines or carriage returns.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
@@ -36447,7 +37026,7 @@
     If X ~ dist then tnLog(dist) is the distribution of log(X).
     
     The distribution `dist` can be either univariate (dnExponential) or
-    multivariate (dnDirichlet).
+    multivariate (dnIID).
     
     This is NOT the same as dnLog(dist), which provides a distribution
     that has distribution `dist` on the log-scale.
@@ -36456,9 +37035,9 @@
     x ~ dnExponential(1) |> tnLog()   # Expressed using pipes.
     
     y ~ dnExponential(1)
-    x := log(y)                       # This is also equivalent.
+    x := ln(y)                        # This is also equivalent.
     
-    x ~ dnDirichlet([1,1,1,1]) |> tnLog()
+    xs ~ dnIID(4, dnExponential(1)) |> tnLog()
   authors:
   see_also: 'tnExp, tnLogit, tnInvlogit'
   type_spec:
@@ -36476,7 +37055,7 @@
           value_type: 'Distribution__RealPos'
           default:
           options:
-    - usage: 'tnLog(Distribution__RealPos[]|Distribution__Probability[]|Distribution__Simplex<any> baseDistribution)'
+    - usage: 'tnLog(Distribution__RealPos[]|Distribution__Probability[]<any> baseDistribution)'
       arguments:
         - label: 'baseDistribution'
           description: 'The distribution to be transformed.'
@@ -36495,7 +37074,7 @@
     If P ~ dist then tnLogit(dist) is the distribution of log(P/(1-P)).
     
     The distribution `dist` can be either univariate (dnBeta) or
-    multivariate (dnDirichlet).
+    multivariate (dnIID).
   example: |
     x ~ tnLogit(dnBeta(1,2))         # The log-odds of an Beta random variable.
     x ~ dnBeta(1,2)|> tnLogit()      # Expressed using pipes.
@@ -36503,7 +37082,7 @@
     p ~ dnBeta(1,2)
     x := logit(p)                    # Expressed as a deterministic function of the probability.
     
-    xs ~ dnDirichlet([1,1,1,1]) |> tnLogit()
+    xs ~ dnIID(4, dnBeta(1,2)) |> tnLogit()
   authors:
   see_also: 'logit, tnExp, tnLog, tnInvlogitit'
   type_spec:
@@ -36521,7 +37100,7 @@
           value_type: 'Distribution__Probability'
           default:
           options:
-    - usage: 'tnLogit(Distribution__Probability[]|Distribution__Simplex<any> baseDistribution)'
+    - usage: 'tnLogit(Distribution__Probability[]<any> baseDistribution)'
       arguments:
         - label: 'baseDistribution'
           description: 'The distribution to be transformed.'
