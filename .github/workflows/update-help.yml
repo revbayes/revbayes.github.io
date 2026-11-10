@@ -1,0 +1,103 @@
+name: Update help for a RevBayes release
+
+# Started by notify-website.yml in revbayes/revbayes when a release is published.
+on:
+  repository_dispatch:
+    types: [revbayes-release]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'RevBayes release tag, e.g. v1.5.0'
+        required: true
+
+concurrency:
+  group: update-help
+
+permissions:
+  contents: read
+
+jobs:
+  update-help:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check the tag
+        id: tag
+        env:
+          TAG: ${{ github.event.client_payload.tag || inputs.tag }}
+        run: |
+          if [[ ! "${TAG}" =~ ^v[0-9][0-9A-Za-z.-]*$ ]] ; then
+             echo "Not a release tag: '${TAG}'"
+             exit 1
+          fi
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      # A pull request opened with GITHUB_TOKEN would not run the checks that source requires.
+      - name: Get a token for this repository
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.WEBSITE_APP_ID }}
+          private-key: ${{ secrets.WEBSITE_APP_KEY }}
+
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          ref: source
+          token: ${{ steps.app-token.outputs.token }}
+
+      # The help comes from the released rb itself, so it matches what users install.
+      - name: Generate help.json with the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          mkdir -p "${RUNNER_TEMP}/revbayes"
+          gh release download "${TAG}" --repo revbayes/revbayes --pattern "revbayes-${TAG}-linux64.tar.gz" --dir "${RUNNER_TEMP}/revbayes"
+          tar -xzf "${RUNNER_TEMP}/revbayes/revbayes-${TAG}-linux64.tar.gz" -C "${RUNNER_TEMP}/revbayes"
+          "${RUNNER_TEMP}/revbayes/revbayes-${TAG}/bin/rb" --dump-help-json _data/help.json < /dev/null
+          jq -e 'length > 0' _data/help.json > /dev/null
+
+          # Releases before --dump-help-json only had help.yml, which Jekyll would also load as site.data.help
+          git rm --quiet --ignore-unmatch _data/help.yml
+          sed -i "s/^version: .*/version: ${TAG}/" _config.yml
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Build Jekyll site
+        env:
+          JEKYLL_ENV: production
+        run: |
+          bundle exec jekyll build
+
+      - name: Open a pull request that merges once the checks pass
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          git add _data/help.json _config.yml
+          if git diff --cached --quiet ; then
+             echo "The website is already up to date for ${TAG}"
+             exit 0
+          fi
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+
+          branch="update-help-${TAG}"
+          git switch --quiet -c "${branch}"
+          git commit -m "Update website for ${TAG}"
+          git push --force origin "${branch}"
+
+          # A rerun replaces the branch and reuses its pull request
+          if [ -z "$(gh pr list --head "${branch}" --state open --json number --jq '.[].number')" ] ; then
+             gh pr create --base source --head "${branch}" \
+                --title "Update website for ${TAG}" \
+                --body "Regenerates \`_data/help.json\` with \`rb\` from the RevBayes ${TAG} linux64 release and sets the website version to ${TAG}. It merges by itself once the required checks pass."
+          fi
+          gh pr merge "${branch}" --auto --merge
