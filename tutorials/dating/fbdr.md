@@ -44,7 +44,7 @@ models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
 
-For a more comprehensive description of these models check out the tutorials written by Tracy Heath, April Wright and Walker Pett.
+For a more comprehensive description of these models check out the tutorials written by Tracy Heath, April Wright and June Walker.
 
 * [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/)
 * [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Fossil and Extant Specimens]({{ base.url }}/tutorials/fbd/fbd_specimen)
@@ -215,4 +215,4 @@ It'll be more fun to examine the tree output once we infer the phylognetic posit
 
 * [Estimating speciation times using total-evidence dating]({{ base.url }}/tutorials/dating/tefbd)
 
-For further options and information about the models used in this exercise see Tracy Heath, April Wright and Walker Pett's tutorial [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/)
+For further options and information about the models used in this exercise see Tracy Heath, April Wright and June Walker's tutorial [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/)
