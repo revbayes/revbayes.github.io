@@ -20,7 +20,7 @@ This tutorial aims to guide you through different options for calibrating specie
 
 * [Relaxed Clocks & Time Trees]({{ base.url }}/tutorials/clocks/) written by Tracy Heath
 * [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/) written by Tracy Heath and Sebastian Höhna
-* [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ base.url }}/tutorials/fbd_simple/) written by Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, Walker Pett, and Tracy A. Heath
+* [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ base.url }}/tutorials/fbd_simple/) written by Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, June Walker, and Tracy A. Heath
 
 In [exercises 1]({{ base.url }}/tutorials/dating/global) and [2]({{ base.url }}/tutorials/dating/relaxed) we'll use the molecular sequence data to infer the relationships among living species and transform the branch lengths assuming a strict or relaxed clock model. Since these analyses don't incorporate any information from the geological record, this approach can only be used to infer the *relative* age of speciation events. 
 

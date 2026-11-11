@@ -183,7 +183,7 @@ Examine the posterior probabilities and ages for the sampled ancestors and node 
 
 Hooray! You've reached the end of the tutorial!
 
-For further options and information about the tree model used in this exercise see Tracy Heath, April Wright and Walker Pett's tutorial [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/).
+For further options and information about the tree model used in this exercise see Tracy Heath, April Wright and June Walker's tutorial [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/).
 
 For further information about morphological models of character evolution see April Wright, Michael Landis and Sebastian Höhna's tutorial [Discrete morphology - Tree Inference]({{ base.url }}/tutorials/morph/morph_dec2018).
 
