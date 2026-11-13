@@ -73,7 +73,8 @@ They do not need to be perfect: making them public allows others to comment on y
 - Q: How much information?  A: Try to include the essential information without letting the file get too long.
 - The `description` should be about 1 line.  Longer information goes in the `details`.
 - General background information (e.g. "what is a prior"?) that can be found on wikipedia should not go in the help files.
-- You need to run `projects/generate_help.sh` to copy information from the markdown files in `help/md` into the C++ code.
+- Rebuild `rb` to see your changes with `?name`. The build embeds the files in `help/md` directly, so there is nothing else to run.
+- Indent examples with spaces only, or with tabs only. `rb --dump-help-json` reports pages that mix them, and CI runs it on every pull request.
 
 
 

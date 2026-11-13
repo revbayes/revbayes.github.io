@@ -114,6 +114,17 @@ code_layout: Rev
             </div>
         {% endif %}
 
+        {% if page.entry.authors %}
+            <h3 class="help-section-header">Authors</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for author in page.entry.authors %}
+            <li>{{ author }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+
         {% if page.entry.derived %}
             <h3 class="help-section-header">Derived Types</h3>
             <div class="help-section-body">
