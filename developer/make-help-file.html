@@ -69,7 +69,7 @@
 	<h1 class="maintitle">Adding a RevBayes help file</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on March 17, 2025</h5>
+  <h5>Last modified on November 10, 2026</h5>
 </div>
 
 
@@ -161,7 +161,8 @@ They do not need to be perfect: making them public allows others to comment on y
   <li>Q: How much information?  A: Try to include the essential information without letting the file get too long.</li>
   <li>The <code class="language-plaintext highlighter-rouge">description</code> should be about 1 line.  Longer information goes in the <code class="language-plaintext highlighter-rouge">details</code>.</li>
   <li>General background information (e.g. “what is a prior”?) that can be found on wikipedia should not go in the help files.</li>
-  <li>You need to run <code class="language-plaintext highlighter-rouge">projects/generate_help.sh</code> to copy information from the markdown files in <code class="language-plaintext highlighter-rouge">help/md</code> into the C++ code.</li>
+  <li>Rebuild <code class="language-plaintext highlighter-rouge">rb</code> to see your changes with <code class="language-plaintext highlighter-rouge">?name</code>. The build embeds the files in <code class="language-plaintext highlighter-rouge">help/md</code> directly, so there is nothing else to run.</li>
+  <li>Indent examples with spaces only, or with tabs only. <code class="language-plaintext highlighter-rouge">rb --dump-help-json</code> reports pages that mix them, and CI runs it on every pull request.</li>
 </ul>
 
 
